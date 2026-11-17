@@ -45,7 +45,7 @@ export function YouScreen({
     },
   ];
   return (
-    <section className="screen active" aria-label="You screen">
+    <section className="screen active compact-screen compact-you" aria-label="You screen">
       <div className="profile-top">
         <span className="avatar profile-large">JW</span>
         <div>
