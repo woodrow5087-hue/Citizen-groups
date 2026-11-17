@@ -98,8 +98,8 @@ export function BibleExperience({
                 fictional personal reflection. It stays on this device.
               </p>
             )}
+            <BibleAttribution />
           </details>
-          <BibleAttribution />
         </>
       )}
     </div>
