@@ -1,0 +1,35 @@
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
+
+# engwebp_vpl.txt is intended to be imported into Bibleworks and other
+# Bible study program formats.
+# engwebp_vpl.xml contains the same information, but in XML and with
+# SIL/UBS standard book abbreviations.
+# engwebp_vpl.sql file contains the same information for creating a
+# SQL data table. These files ONLY contain the actual Bible text,
+# and no formatting, paragraph or verse marks, notes noncanonical section
+# headers, introductions, etc. Use another input format, like USFX, from
+# https:\eBible.orgScriptures if you need those features.
+# ___
+# You may use the sha256sum and gpg programs to verify the integrity of the text in this archive.
+# Use sha256sum -c to check each of the files listed below. http://en.wikipedia.org/wiki/SHA-2
+# The sha256sum program is a Linux core program and is available in Cygwin for Windows. http://cygwin.com
+# Use Gnu Privacy Guard to check that this file has not been altered. http://gnupg.org/
+# The public key to use to verify this signature is at http://eBible.org/web/keys.asc for you to
+# import into your gpg keyring before verifying this signature with gpg.
+# Updates and revisions of redistributable texts are posted at https://eBible.org/Scriptures/ and
+# ftp://eBible.org/pub/Scriptures/.
+# Digitally signed 2026-11-17 01:18
+2d89677e7bfe70a2810a25ab4621cbdae0edf4df1fd4da121b6ec38aff71da4f  engwebp_about.htm
+2d22ee66db074c801210dcd7091c8345e900faea52862c0022f2eff63b32bdda  engwebp_vpl.txt
+f0dbd3559ce956ddcf4adae5151b188e34bd5ab3dc1e339a6b5ab8a621133f13  engwebp_vpl.sql
+c61f0e46973b2c8a247c172a2c5e619cbaee022ae3647481360c452e908ca5e3  engwebp_vpl.xml
+b0bafca14b3632a01adb83e8b8683ad86e76b4eb65131f0ed90ff3103787c175  haiola.css
+-----BEGIN PGP SIGNATURE-----
+Comment: https://mljohnson.org/gpg.htm https://mljohnson.org/active-keys.asc
+
+iHEEARECADEWIQRU1xTXaVbaZnPcHupfYgCdk1BfJgUCavurYRMcZWRpdG9yc0Bl
+YmlibGUub3JnAAoJEF9iAJ2TUF8m5IMAoLqL3ro2wQDPWFaYSkXLUCX1nmqzAKDK
+cwLWEu9b9YFlKCFr+W+4tSw/9w==
+=3VKf
+-----END PGP SIGNATURE-----
