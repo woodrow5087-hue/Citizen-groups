@@ -43,3 +43,7 @@ npm run test:browser
 On machines using an existing Chromium, set `PLAYWRIGHT_CHROMIUM_EXECUTABLE` to its absolute path. Browser tests start Vite preview automatically unless a preview server is already running. To exercise an accessible Netlify preview instead, set `BIBLE_PREVIEW_URL` to its URL. Netlify-protected previews may require a signed-in session; no protection is bypassed by the app.
 
 Publisher source downloads are unnecessary for ordinary tests/builds. Source import is a separate reviewed maintenance task. Browser artifacts are ignored by Git.
+
+## Preview delivery status
+
+PR #3 is open against `design-system/v04`. Netlify has not posted a deploy-preview status/check for the feature head; the expected preview URL returned 404. The site may require preview/branch settings for this target, as the prior PR targets a different development branch. No Netlify credentials are available in this workspace, and the Cloud browser failed to start, so admin settings could not be inspected or changed. Hosted preview delivery is pending Netlify access/configuration; local production-build browser verification is complete. No production deployment or merge was performed.
