@@ -4,6 +4,18 @@ import { describe, expect, it } from "vitest";
 import App from "./App";
 import { KEY } from "./state/storage";
 describe("local demo journeys", () => {
+  it("keeps primary actions visible as compact entry points into deeper screens", async () => {
+    const user = userEvent.setup();
+    render(<App />);
+    expect(screen.getByRole("article", { name: "Latest group update" })).toBeVisible();
+    expect(screen.getByRole("button", { name: /Check in\\s*Reach out/ })).toBeVisible();
+    await user.click(screen.getByRole("button", { name: /Go to feed/ }));
+    expect(screen.getByRole("tab", { name: "Feed" })).toHaveAttribute("aria-selected", "true");
+    await user.click(screen.getByRole("button", { name: "Grow" }));
+    expect(screen.getByRole("button", { name: /Open Bible/ })).toBeVisible();
+    await user.click(screen.getByRole("button", { name: "You" }));
+    expect(screen.getByRole("button", { name: /Leader tools/ })).toBeVisible();
+  });
   it("retains RSVP and a post on reload, renders input as text", async () => {
     const user = userEvent.setup();
     const view = render(<App />);
