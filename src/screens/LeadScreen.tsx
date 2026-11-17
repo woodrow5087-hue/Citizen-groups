@@ -1,4 +1,5 @@
 import { followups } from "../data/examples";
+import { Icon } from "../components/Icon";
 import type { DemoData, Screen } from "./types";
 type Props = {
   data: DemoData;
@@ -15,98 +16,98 @@ export function LeadScreen({
   markFollowup,
 }: Props) {
   return (
-    <section className="screen current" hidden={screen !== "lead"} id="lead">
-      <div className="hero compact">
-        <div className="hero-inner">
-          <div className="overline light">LEADER VIEW / SAMPLE DATA</div>
-          <h1>
-            PEOPLE
-            <br />
-            OVER NUMBERS.
-          </h1>
-          <p>
-            Give group leaders practical tools without treating spiritual growth
-            as a score.
-          </p>
-        </div>
-      </div>
-      <div className="section-top">
+    <section
+      className="screen leader-screen"
+      hidden={screen !== "lead"}
+      id="lead"
+    >
+      <div className="leader-heading">
+        <span className="leader-badge">
+          <Icon name="lead" size={28} />
+        </span>
         <div>
-          <span className="eyed">Your group at a glance</span>
-          <h2>This week's pulse.</h2>
+          <p className="eyebrow">Leader workspace · Fictional data</p>
+          <h1>Lead with care.</h1>
+          <p>Tuesday Community</p>
         </div>
-        <span className="tag">Demo only</span>
       </div>
       <div className="stat-grid">
         <div className="stat">
-          <strong>08</strong>
+          <strong>8</strong>
           <small>Members</small>
         </div>
         <div className="stat">
-          <strong>01</strong>
+          <strong>1</strong>
           <small>Gathering</small>
         </div>
         <div className="stat">
-          <strong id="followups-count">
-            {String(2 - data.followed.length).padStart(2, "0")}
-          </strong>
+          <strong>{2 - data.followed.length}</strong>
           <small>Follow-ups</small>
         </div>
       </div>
-      <div className="section-top">
-        <div>
-          <span className="eyed">Care with intention</span>
-          <h2>People to connect with.</h2>
-        </div>
+      <div className="section-heading">
+        <h2>People to connect with</h2>
       </div>
-      <div className="panel" id="followups">
+      <div className="panel followups">
         {followups.map((p) => (
           <div className="followup" key={p.id}>
-            <div className="ava" aria-hidden="true">
-              {p.name
-                .split(" ")
-                .map((n) => n[0])
-                .join("")}
-            </div>
-            <div className="left">
-              <div className="name">{p.name}</div>
-              <div className="sub">{p.why} · Sample</div>
+            <div className="followup-person">
+              <span className="ava">
+                {p.name
+                  .split(" ")
+                  .map((n) => n[0])
+                  .join("")}
+              </span>
+              <div>
+                <strong>{p.name}</strong>
+                <small>{p.why}</small>
+              </div>
             </div>
             <button
-              className="btn small black"
+              className={
+                "btn " + (data.followed.includes(p.id) ? "outline" : "black")
+              }
               aria-label={`Mark ${p.name} reached`}
               aria-pressed={data.followed.includes(p.id)}
               onClick={() => markFollowup(p.id)}
             >
-              {data.followed.includes(p.id) ? "✓ DONE" : "MARK REACHED"}
+              <Icon
+                name={data.followed.includes(p.id) ? "check" : "connect"}
+                size={18}
+              />
+              {data.followed.includes(p.id) ? "Reached" : "Mark reached"}
             </button>
           </div>
         ))}
       </div>
-      <div className="section-top">
-        <div>
-          <span className="eyed">Come prepared</span>
-          <h2>Leader resources.</h2>
-        </div>
+      <div className="section-heading">
+        <h2>Ready for Tuesday</h2>
       </div>
-      <div className="panel">
-        <h3>Tuesday's discussion</h3>
-        <p>Belonging, community, and making space for others.</p>
-        <div className="actionrow">
-          <button className="btn small" onClick={() => openGuide()}>
-            DISCUSSION GUIDE
-          </button>
-          <button className="btn small outline" onClick={() => openNotes()}>
-            MY NOTES
-          </button>
-        </div>
+      <div className="stack">
+        <button className="resource-row" onClick={openGuide}>
+          <span className="action-icon">
+            <Icon name="guide" />
+          </span>
+          <span>
+            <strong>Discussion guide</strong>
+            <small>Belonging & making space</small>
+          </span>
+          <Icon name="arrow" size={18} />
+        </button>
+        <button className="resource-row" onClick={openNotes}>
+          <span className="action-icon">
+            <Icon name="note" />
+          </span>
+          <span>
+            <strong>My notes</strong>
+            <small>Your local planning space</small>
+          </span>
+          <Icon name="arrow" size={18} />
+        </button>
       </div>
-      <div className="demo-note">
-        <b>Privacy first.</b> This leader dashboard is mock data. A real version
-        must use consent, secure group permissions, and private-by-default
-        prayer and care information. Leaders should not see someone's personal
-        devotional history.
-      </div>
+      <p className="context-note">
+        Demo workspace, visible to everyone. Use fictional notes only.
+      </p>
     </section>
   );
 }

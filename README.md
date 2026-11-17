@@ -1,6 +1,6 @@
 # Citizen Groups · local concept v0.3
 
-React + TypeScript + Vite migration of the supplied v0.2 prototype. An unofficial design exploration, not a church service or production release. All examples are fictional. Use fictional text only: browser storage is neither private nor secure.
+React + TypeScript + Vite migration of the supplied v0.2 prototype, now evolved into a compact mobile app UI. An unofficial design exploration, not a church service or production release. All examples are fictional. Use fictional text only: browser storage is neither private nor secure.
 
 ## Run and verify
 
@@ -44,4 +44,4 @@ v0.3 uses `citizen-groups-concept-v03`; v0.2 browser entries are intentionally n
 
 The official remote logo and photo are replaced by a plain text mark and CSS background. The provisional red/black/white palette, bold headings, mobile layout and content direction remain. No official artwork is included in `dist/`; original remote references remain only in the internal source archive. No distribution license for church trademarks or supplied assets is implied.
 
-See [audit](docs/AUDIT.md) and [roadmap](docs/ROADMAP.md) for scope and next review steps.
+See [mobile design review](docs/MOBILE-REDESIGN.md), [audit](docs/AUDIT.md) and [roadmap](docs/ROADMAP.md) for scope and next review steps.

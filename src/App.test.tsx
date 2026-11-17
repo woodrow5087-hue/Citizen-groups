@@ -12,8 +12,8 @@ describe("local demo journeys", () => {
       "aria-pressed",
       "true",
     );
-    await user.click(screen.getByRole("button", { name: /GO TO MY GROUP/ }));
-    await user.click(screen.getByRole("button", { name: /SHARE/ }));
+    await user.click(screen.getByRole("button", { name: /Go to my group/i }));
+    await user.click(screen.getByRole("button", { name: /Share something/i }));
     await user.type(
       screen.getByLabelText("Your thought"),
       "<img src=x onerror=alert(1)>",
@@ -38,8 +38,8 @@ describe("local demo journeys", () => {
   it("validates a request, traps focus, closes with Escape and restores focus", async () => {
     const user = userEvent.setup();
     render(<App />);
-    await user.click(screen.getByRole("button", { name: "PRAYER" }));
-    const trigger = screen.getByRole("button", { name: /REQUEST/ });
+    await user.click(screen.getByRole("button", { name: "Prayer" }));
+    const trigger = screen.getByRole("button", { name: /Add a request/i });
     await user.click(trigger);
     const dialog = screen.getByRole("dialog");
     await user.click(
@@ -57,12 +57,49 @@ describe("local demo journeys", () => {
   it("confirms reset before clearing entries", async () => {
     const user = userEvent.setup();
     render(<App />);
-    await user.click(screen.getByRole("button", { name: /I.M GOING/ }));
+    await user.click(screen.getByRole("button", { name: /I.M GOING/i }));
     await user.click(screen.getByRole("button", { name: /RESET DEMO/i }));
     await user.click(screen.getByRole("button", { name: "Cancel" }));
     expect(localStorage.getItem(KEY)).not.toBeNull();
     await user.click(screen.getByRole("button", { name: /RESET DEMO/i }));
     await user.click(screen.getByRole("button", { name: "Clear local demo" }));
     expect(localStorage.getItem(KEY)).toBeNull();
+  });
+  it("completes the dashboard rhythm through check-in, share and prayer", async () => {
+    const user = userEvent.setup();
+    render(<App />);
+    await user.click(
+      screen.getByRole("button", { name: /Check in\s*Reach out today/ }),
+    );
+    await user.click(screen.getByRole("button", { name: "I reached out" }));
+    expect(screen.getByRole("progressbar")).toHaveAttribute(
+      "aria-valuenow",
+      "1",
+    );
+    await user.click(
+      screen.getByRole("button", { name: /Share\s*Start a conversation/ }),
+    );
+    await user.type(
+      screen.getByLabelText("Your thought"),
+      "Fictional encouragement",
+    );
+    await user.click(
+      screen.getByRole("button", { name: "Post to demo group" }),
+    );
+    await user.click(
+      screen.getByRole("button", { name: /Pray\s*Care for someone/ }),
+    );
+    await user.click(
+      screen.getByRole("button", { name: "Mark prayer time complete" }),
+    );
+    expect(screen.getByRole("button", { name: "Prayer" })).toHaveAttribute(
+      "aria-current",
+      "page",
+    );
+    await user.click(screen.getByRole("button", { name: "Home" }));
+    expect(screen.getByRole("progressbar")).toHaveAttribute(
+      "aria-valuenow",
+      "3",
+    );
   });
 });

@@ -1,5 +1,5 @@
-import { Feed } from "../components/Feed";
-import { stepOptions } from "./types";
+import { Icon, type IconName } from "../components/Icon";
+import { MeetingCard } from "../components/MeetingCard";
 import type { DemoData, Step, Screen } from "./types";
 type Props = {
   data: DemoData;
@@ -8,107 +8,42 @@ type Props = {
   page: (name: Screen) => void;
   step: (id: Step) => void;
   rsvp: () => void;
-  openCheckin: () => void;
 };
-export function HomeScreen({
-  data,
-  done,
-  screen,
-  page,
-  step,
-  rsvp,
-  openCheckin,
-}: Props) {
+const actions: { id: Step; icon: IconName; title: string; sub: string }[] = [
+  { id: "connect", icon: "connect", title: "Check in", sub: "Reach out today" },
+  { id: "reflect", icon: "share", title: "Share", sub: "Start a conversation" },
+  { id: "pray", icon: "prayer", title: "Pray", sub: "Care for someone" },
+];
+export function HomeScreen({ data, done, screen, page, step, rsvp }: Props) {
   return (
-    <section className="screen current" hidden={screen !== "home"} id="home">
-      <div className="hero photo">
-        <div className="hero-inner">
-          <div className="line"></div>
-          <div className="overline light">SMALL GROUPS · LOCAL CONCEPT</div>
-          <h1>
-            YOU
-            <br />
-            BELONG
-            <br />
-            HERE.
-          </h1>
-          <p>
-            Real community doesn't end when the gathering does. Stay connected,
-            grow together, and make room for everyone.
-          </p>
-          <button className="btn" onClick={() => page("group")}>
-            GO TO MY GROUP <span aria-hidden="true">→</span>
-          </button>
-        </div>
+    <section className="screen" hidden={screen !== "home"} id="home">
+      <div className="page-heading">
+        <p className="eyebrow">Your everyday community</p>
+        <h1>Good to see you.</h1>
+        <p>A little connection goes a long way.</p>
       </div>
-      <div className="section-top">
-        <div>
-          <span className="eyed">Your community</span>
-          <h2>Life happens together.</h2>
-        </div>
-        <span className="tag">Sample group</span>
+      <MeetingCard
+        going={data.rsvp}
+        onRsvp={rsvp}
+        onDetails={() => page("group")}
+      />
+      <div className="section-heading">
+        <h2>Make a little room</h2>
+        <span className="dim">{done} of 3 today</span>
       </div>
-      <div className="two-col">
-        <div className="panel">
-          <span className="overline">UP NEXT</span>
-          <h3>Tuesday Community</h3>
-          <p>Tuesday · 6:30 PM · Albuquerque</p>
-          <div className="people" aria-label="Fictional example group members">
-            <div className="person">AL</div>
-            <div className="person">JM</div>
-            <div className="person">MC</div>
-            <div className="person">TD</div>
-            <div className="person">+4</div>
-          </div>
-          <div className="actionrow">
-            <button
-              className="btn small"
-              onClick={() => rsvp()}
-              id="rsvp-button"
-              aria-pressed={data.rsvp}
-            >
-              {data.rsvp ? "✓ GOING" : "I’M GOING"}
-            </button>
-            <button className="btn small outline" onClick={() => page("group")}>
-              GROUP DETAILS
-            </button>
-          </div>
-        </div>
-        <div className="red-card">
-          <span className="subtext">THIS WEEK'S FOCUS</span>
-          <h3>
-            MAKE ROOM
-            <br />
-            FOR SOMEONE.
-          </h3>
-          <p>Connection starts with an intentional step.</p>
-          <button className="btn small white" onClick={() => openCheckin()}>
-            CHECK IN WITH YOUR GROUP →
-          </button>
-        </div>
-      </div>
-      <div className="section-top">
-        <div>
-          <span className="eyed">A simple rhythm</span>
-          <h2>Show up for each other.</h2>
-        </div>
-        <span className="dim" id="progress-caption">
-          {done} of 3 steps
-        </span>
-      </div>
-      <div className="tiles" id="steps">
-        {stepOptions.map(([id, icon, title, desc]) => (
+      <div className="quick-actions">
+        {actions.map((a) => (
           <button
-            key={id}
-            className={data.steps[id] ? "tile is-done" : "tile"}
-            aria-pressed={data.steps[id]}
-            onClick={() => step(id)}
+            key={a.id}
+            className={"quick-action " + (data.steps[a.id] ? "is-done" : "")}
+            aria-pressed={data.steps[a.id]}
+            onClick={() => step(a.id)}
           >
-            <span className="symbol" aria-hidden="true">
-              {data.steps[id] ? "✓" : icon}
+            <span className="action-icon">
+              <Icon name={data.steps[a.id] ? "check" : a.icon} size={25} />
             </span>
-            <strong>{title}</strong>
-            <span>{data.steps[id] ? "Done today" : desc}</span>
+            <strong>{a.title}</strong>
+            <span>{data.steps[a.id] ? "Done today" : a.sub}</span>
           </button>
         ))}
       </div>
@@ -123,20 +58,40 @@ export function HomeScreen({
         <div
           className="progress-fill"
           style={{ width: `${(done / 3) * 100}%` }}
-        ></div>
+        />
       </div>
-      <div className="section-top">
+      <div className="focus-card">
+        <span className="focus-art" aria-hidden="true">
+          <span />
+          <span />
+          <span />
+        </span>
         <div>
-          <span className="eyed">Join the conversation</span>
-          <h2>Around the table.</h2>
+          <span className="eyebrow">This week’s intention</span>
+          <h2>Make room for someone.</h2>
+          <p>A simple invitation can mean a lot.</p>
         </div>
-        <button className="btn small clear" onClick={() => page("group")}>
-          VIEW GROUP →
+      </div>
+      <div className="section-heading">
+        <h2>At the table</h2>
+        <button className="text-button" onClick={() => page("group")}>
+          View group <Icon name="arrow" size={16} />
         </button>
       </div>
-      <div className="panel" id="home-feed">
-        <Feed entries={data.posts} />
-      </div>
+      <button className="conversation-preview" onClick={() => page("group")}>
+        <span className="ava">{data.posts.length ? "YO" : "AL"}</span>
+        <span>
+          <strong>
+            {data.posts.length ? "You" : "Alex L."}
+            <small>Group conversation</small>
+          </strong>
+          <span className="preview-text">
+            {data.posts[0] ||
+              "This week I’m thinking about how a simple invitation can change somebody’s day."}
+          </span>
+        </span>
+        <Icon name="arrow" size={18} />
+      </button>
     </section>
   );
 }

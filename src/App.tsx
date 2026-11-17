@@ -1,3 +1,4 @@
+import { Icon } from "./components/Icon";
 import { LeadScreen } from "./screens/LeadScreen";
 import { PrayerScreen } from "./screens/PrayerScreen";
 import { GroupScreen } from "./screens/GroupScreen";
@@ -179,29 +180,28 @@ export default function App() {
         </p>
         <header className="masthead">
           <div className="brand">
-            <div className="brand-symbol">
-              <span className="fallback">C</span>
-            </div>
+            <span className="brand-symbol" aria-hidden="true">
+              <span />
+              <span />
+              <span />
+            </span>
             <div className="brand-type">
-              <strong>CITIZEN</strong>
+              <strong>
+                citizen<span className="brand-dot">.</span>
+              </strong>
               <span>
-                GROUPS{" "}
-                <span style={{ color: "#aaa", letterSpacing: ".09em" }}>
-                  / CONCEPT
-                </span>
+                GROUPS <span className="concept-label">/ CONCEPT</span>
               </span>
             </div>
           </div>
-          <div className="mast-actions">
-            <span className="tiny-tag">UNOFFICIAL LOCAL DEMO · V0.3</span>
-            <button
-              className="profile"
-              onClick={() => showAbout()}
-              aria-label="About this demo"
-            >
-              JW
-            </button>
-          </div>
+          <button
+            className="profile"
+            onClick={showAbout}
+            aria-label="About this demo"
+          >
+            JW
+            <span className="profile-dot" />
+          </button>
         </header>
         <main id="main" tabIndex={-1} ref={mainRef}>
           <HomeScreen
@@ -211,7 +211,6 @@ export default function App() {
             page={page}
             step={step}
             rsvp={rsvp}
-            openCheckin={openCheckin}
           />
           <GroupScreen
             data={data}
@@ -235,71 +234,38 @@ export default function App() {
             markFollowup={markFollowup}
           />
         </main>
-        <div className="demo-note">
-          <b>Exploratory design prototype.</b> Inspired by Citizen Church's
-          public branding. Not an official Citizen Church app or live church
-          service. Example people, gatherings and posts are fictional. Content
-          you enter is stored only in this browser; no server, account system,
-          or real messaging exists. Official logo and photography are omitted.
-          Branding and asset permissions require review before distribution. Use
-          fictional entries only.
-        </div>
-        <div className="footer">
-          CITIZEN GROUPS · CONCEPT V0.3 · NOT FOR PUBLIC RELEASE{" "}
-          <button className="btn clear small" onClick={() => resetDemo()}>
-            RESET DEMO
+        <footer className="footer">
+          <span>Unofficial concept · Fictional data · Device only</span>
+          <button className="text-button" onClick={resetDemo}>
+            Reset demo
           </button>
-        </div>
+        </footer>
       </div>
       <nav
         inert={dialog !== null}
         className="tabs"
         aria-label="Main navigation"
       >
-        <button
-          className={screen === "home" ? "navbutton on" : "navbutton"}
-          aria-current={screen === "home" ? "page" : undefined}
-          data-name="home"
-          onClick={() => page("home")}
-        >
-          <span className="nav-ico" aria-hidden="true">
-            ⌂
-          </span>
-          HOME
-        </button>
-        <button
-          className={screen === "group" ? "navbutton on" : "navbutton"}
-          aria-current={screen === "group" ? "page" : undefined}
-          data-name="group"
-          onClick={() => page("group")}
-        >
-          <span className="nav-ico" aria-hidden="true">
-            ◎
-          </span>
-          MY GROUP
-        </button>
-        <button
-          className={screen === "prayer" ? "navbutton on" : "navbutton"}
-          aria-current={screen === "prayer" ? "page" : undefined}
-          data-name="prayer"
-          onClick={() => page("prayer")}
-        >
-          <span className="nav-ico" aria-hidden="true">
-            ♡
-          </span>
-          PRAYER
-        </button>
-        <button
-          className={screen === "lead" ? "navbutton on" : "navbutton"}
-          aria-current={screen === "lead" ? "page" : undefined}
-          data-name="lead"
-          onClick={() => page("lead")}
-        >
-          <span className="nav-ico" aria-hidden="true">
-            ▤
-          </span>
-          LEAD
-        </button>
+        {(
+          [
+            { id: "home", label: "Home", icon: "home" },
+            { id: "group", label: "My Group", icon: "group" },
+            { id: "prayer", label: "Prayer", icon: "prayer" },
+            { id: "lead", label: "Leader", icon: "lead" },
+          ] as const
+        ).map((item) => (
+          <button
+            key={item.id}
+            className={screen === item.id ? "navbutton on" : "navbutton"}
+            aria-current={screen === item.id ? "page" : undefined}
+            onClick={() => page(item.id)}
+          >
+            <span className="nav-icon">
+              <Icon name={item.icon} />
+            </span>
+            <span>{item.label}</span>
+          </button>
+        ))}
       </nav>
       {dialog && (
         <Modal title={titles[dialog]} onClose={close}>

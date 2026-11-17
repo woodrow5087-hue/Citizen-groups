@@ -1,4 +1,6 @@
-# v0.2 audit and phase-one review
+# v0.2 audit and initial phase-one review
+
+Historical migration baseline. The subsequent mobile redesign is documented in [MOBILE-REDESIGN.md](MOBILE-REDESIGN.md), including current layout and touch-target checks.
 
 ## Source inspected
 
