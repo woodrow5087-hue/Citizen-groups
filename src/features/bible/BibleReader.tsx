@@ -75,6 +75,8 @@ export function BibleReader({
         </h1>
         <p>WEBP · 66-book edition</p>
       </div>
+      <details className="reader-controls" open>
+        <summary>Book, chapter &amp; text settings</summary>
       <div className="bible-selectors">
         <label>
           Book
@@ -135,6 +137,7 @@ export function BibleReader({
           </button>
         </div>
       </div>
+      </details>
       <div className="chapter-navigation" aria-label="Chapter navigation">
         <PrimaryPill
           secondary
