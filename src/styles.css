@@ -1447,3 +1447,335 @@ a:focus-visible,
     font-size: 29px;
   }
 }
+
+
+/* v0.5.1 · compact app-first screens.
+   Primary dashboards favor one visible viewport. Long content can still scroll. */
+.app-shell {
+  padding-bottom: calc(85px + env(safe-area-inset-bottom));
+}
+.app-header { height: 72px; }
+.tabbar {
+  height: calc(70px + env(safe-area-inset-bottom));
+  padding-top: 5px;
+  padding-bottom: calc(6px + env(safe-area-inset-bottom));
+}
+.compact-screen .intro,
+.compact-screen .screen-heading {
+  margin: 2px 0 12px;
+}
+.compact-screen .intro .eyebrow,
+.compact-screen .screen-heading .eyebrow {
+  margin-bottom: 5px;
+}
+.compact-screen .intro h1,
+.compact-screen .screen-heading h1 {
+  font-size: clamp(27px, 7.5vw, 32px);
+  line-height: 1.08;
+}
+.compact-screen .intro > p:last-child,
+.compact-screen .screen-heading > p:last-child {
+  margin-top: 4px;
+  font-size: 12px;
+}
+.compact-inline-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin: 8px 0 3px;
+  min-height: 36px;
+}
+.compact-inline-head h2 {
+  font-size: 15px;
+  letter-spacing: -.02em;
+  margin: 0;
+}
+.compact-inline-head .text-link {
+  font-size: 11px;
+  min-height: 44px;
+  padding: 0;
+  white-space: nowrap;
+}
+.compact-today .group-hero {
+  min-height: 126px;
+  padding: 12px 14px;
+  box-shadow: none;
+}
+.compact-today .hero-top .section-chip {
+  font-size: 9px;
+  padding: 4px 8px;
+}
+.compact-today .hero-arrow {
+  width: 30px;
+  height: 30px;
+}
+.compact-today .hero-content {
+  margin: 9px 0 10px;
+}
+.compact-today .hero-title {
+  font-size: clamp(21px, 6vw, 26px);
+  line-height: 1.1;
+  white-space: nowrap;
+}
+.compact-today .hero-desc { display: none; }
+.compact-today .hero-bottom { gap: 10px; }
+.compact-today .hero-bottom .member-avatar {
+  width: 30px;
+  height: 30px;
+  font-size: 9px;
+  border-width: 2px;
+}
+.compact-today .hero-bottom .member-label {
+  font-size: 10px;
+}
+.compact-today .hero-watermark {
+  width: 130px;
+  height: 130px;
+  right: -23px;
+  bottom: -10px;
+  opacity: .11;
+}
+.compact-today .action-grid { gap: 7px; }
+.compact-today .action-tile {
+  height: 84px;
+  padding: 10px 8px;
+  border-radius: 14px;
+  gap: 2px;
+  box-shadow: none;
+}
+.compact-today .action-tile .icon {
+  width: 21px !important;
+  height: 21px !important;
+}
+.compact-today .action-tile strong {
+  font-size: 13px;
+  margin-top: 1px;
+}
+.compact-today .action-tile small {
+  font-size: 9px;
+  line-height: 1.1;
+}
+.compact-today .event-card {
+  min-height: 68px;
+  border-radius: 15px;
+}
+.compact-today .event-date { width: 59px; }
+.compact-today .event-date strong { font-size: 22px; }
+.compact-today .event-date span { font-size: 9px; }
+.compact-today .event-main { padding: 9px 11px; gap: 2px; }
+.compact-today .event-main strong { font-size: 13px; }
+.compact-today .event-main span { font-size: 11px; }
+.compact-feed-row {
+  min-height: 72px;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 9px 10px;
+  border-radius: 15px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+}
+.compact-feed-row .member-avatar {
+  width: 32px;
+  height: 32px;
+  border: none;
+  margin: 0;
+  flex: none;
+  font-size: 10px;
+}
+.compact-feed-body { flex: 1; min-width: 0; }
+.compact-feed-body strong { font-size: 12px; display: block; }
+.compact-feed-body p {
+  margin: 3px 0 0;
+  font-size: 11px;
+  color: var(--muted);
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.compact-encourage {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  min-height: 44px;
+  padding: 0 7px;
+  border-radius: 12px;
+  border: 1px solid #7b3645;
+  background: #30131c;
+  color: #ffd4db;
+  font-size: 10px;
+  font-weight: 700;
+  flex: none;
+}
+.compact-encourage[aria-pressed="true"] {
+  background: #8f1831;
+  border-color: #e63a58;
+  color: white;
+}
+/* Group content scrolls only when it is intrinsically long, such as the feed. */
+.compact-group .screen-heading {
+  margin: 2px 0 11px;
+}
+.compact-group .screen-heading .eyebrow { margin-bottom: 4px; }
+.compact-group .screen-heading h1 { font-size: 31px; }
+.compact-group .screen-heading > p:last-child {
+  margin: 4px 0 0;
+  font-size: 12px;
+}
+.compact-group .group-members { margin-bottom: 11px; }
+.compact-group .segmented { margin-bottom: 12px; }
+.compact-group .compose { min-height: 55px; margin-bottom: 12px; }
+.compact-group .section-row { margin: 12px 0 8px; }
+.compact-group .person-row { min-height: 61px; }
+/* Grow landing: reader itself is deliberately unaffected. */
+.compact-grow .bible-experience { margin: 10px 0 0; }
+.compact-grow .daily-passage {
+  padding: 13px 15px;
+  border-radius: 17px;
+}
+.compact-grow .daily-passage .eyebrow {
+  font-size: 9px;
+  margin-bottom: 5px;
+}
+.compact-grow .daily-passage h2 {
+  font-size: 22px;
+  margin: 2px 0;
+}
+.compact-grow .daily-passage blockquote {
+  margin: 6px 0;
+  font-size: 13px;
+  line-height: 1.35;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+}
+.compact-grow .daily-passage .passage-translation {
+  margin: 5px 0;
+  font-size: 10px;
+}
+.compact-grow .daily-passage .pill { min-height: 44px; margin-top: 5px; }
+.compact-grow .resource-card {
+  min-height: 58px;
+  margin: 8px 0;
+  padding: 8px 12px;
+}
+.compact-grow .saved-reflections {
+  margin: 8px 0;
+  padding: 0 12px;
+}
+.compact-grow .saved-reflections summary {
+  min-height: 46px;
+  font-size: 12px;
+}
+.compact-grow .saved-reflections summary span {
+  display: inline;
+  margin-left: 5px;
+  font-size: 10px;
+}
+.compact-rhythm {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+.compact-rhythm button {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 84px;
+  padding: 9px 6px;
+  border-radius: 15px;
+  border: 1px solid #42464e;
+  background: var(--surface-2);
+  color: var(--text);
+  text-align: center;
+}
+.compact-rhythm button:first-child {
+  background: #381820;
+  border-color: #8a3247;
+}
+.compact-rhythm .rhythm-no {
+  width: 24px;
+  height: 20px;
+  background: transparent;
+  color: #ff7b8e;
+  font-size: 10px;
+}
+.compact-rhythm strong { font-size: 13px; }
+.compact-rhythm small {
+  font-size: 9px;
+  color: var(--muted);
+  margin-top: 3px;
+}
+.compact-guide-link {
+  width: 100%;
+  min-height: 44px;
+  margin: 8px 0;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  background: transparent;
+  color: var(--muted);
+  border: 0;
+  font-size: 12px;
+  font-weight: 700;
+  text-align: left;
+}
+.compact-guide-link .icon:last-child { margin-left: auto; }
+/* Profile keeps every tool discoverable without the tall, stacked-card look. */
+.compact-you .profile-top {
+  margin: 10px 0 16px;
+  gap: 12px;
+}
+.compact-you .profile-large {
+  width: 56px;
+  height: 56px;
+  font-size: 18px;
+}
+.compact-you .profile-top h1 { font-size: 27px; }
+.compact-you .section-row { margin: 12px 0 8px; }
+.compact-you .my-week div { padding: 9px 3px; border-radius: 14px; }
+.compact-you .my-week strong { font-size: 22px; }
+.compact-you .resource-card {
+  min-height: 63px;
+  padding: 9px 12px;
+  margin: 7px 0;
+}
+.compact-you .resource-icon {
+  width: 36px;
+  height: 36px;
+}
+.compact-you .privacy-note { margin: 10px 0; font-size: 10px; }
+@media (max-width: 350px) {
+  .app-shell { padding-left: 14px; padding-right: 14px; }
+  .compact-today .hero-title { font-size: 20px; }
+  .compact-today .action-tile strong { font-size: 12px; }
+  .compact-feed-row { gap: 6px; padding: 8px 7px; }
+  .compact-encourage { font-size: 9px; padding: 0 5px; }
+  .compact-grow .daily-passage h2 { font-size: 20px; }
+  .compact-rhythm { gap: 5px; }
+  .compact-rhythm button { padding-left: 3px; padding-right: 3px; }
+}
+@media (max-height: 750px) and (max-width: 480px) {
+  .app-header { height: 64px; }
+  .tabbar { height: calc(64px + env(safe-area-inset-bottom)); }
+  .compact-screen .intro,
+  .compact-screen .screen-heading { margin-bottom: 7px; }
+  .compact-today .group-hero { min-height: 108px; padding: 9px 12px; }
+  .compact-today .hero-content { margin: 3px 0 6px; }
+  .compact-today .hero-title { font-size: 22px; }
+  .compact-today .hero-bottom .member-avatar { height: 25px; width: 25px; }
+  .compact-today .action-tile { height: 72px; }
+  .compact-today .event-card { min-height: 61px; }
+  .compact-today .compact-inline-head { min-height: 30px; margin: 4px 0 1px; }
+  .compact-today .compact-feed-row { min-height: 59px; }
+  .compact-grow .daily-passage { padding: 10px 12px; }
+  .compact-grow .daily-passage blockquote { -webkit-line-clamp: 1; }
+  .compact-rhythm button { min-height: 68px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .compact-screen { animation: none; }
+}

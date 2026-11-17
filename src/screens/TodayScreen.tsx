@@ -1,10 +1,10 @@
 import { GroupHero } from "../components/GroupHero";
 import { ActionTile } from "../components/ActionTile";
 import { EventCard } from "../components/EventCard";
-import { PostCard } from "../components/PostCard";
 import { Icon } from "../components/Icon";
 import { groupPosts, posts } from "../data/examples";
 import type { DemoData, Step } from "./types";
+
 export function TodayScreen({
   data,
   done,
@@ -12,7 +12,6 @@ export function TodayScreen({
   onPlan,
   onStep,
   onEncourage,
-  onReply,
 }: {
   data: DemoData;
   done: number;
@@ -23,69 +22,64 @@ export function TodayScreen({
   onReply: () => void;
 }) {
   const recent = data.posts.length ? groupPosts(data.posts)[0] : posts[1];
+  const encouraged = data.encouraged.includes(recent.id);
   return (
-    <section className="screen active" aria-label="Today screen">
+    <section className="screen active compact-screen compact-today" aria-label="Today screen">
       <div className="intro">
-        <p className="eyebrow">
-          <span className="red-rule" />
-          Your community, today
-        </p>
-        <h1>
-          Hey, Jonathan<span className="accent">.</span>
-        </h1>
-        <p>Good things happen when we show up for each other.</p>
+        <p className="eyebrow"><span className="red-rule" />Your community, today</p>
+        <h1>Hey, Jonathan<span className="accent">.</span></h1>
+        <p>Your people. Your daily rhythm.</p>
       </div>
       <GroupHero onOpen={onGroup} />
-      <div className="section-row">
+
+      <div className="compact-inline-head">
         <h2>Keep connected</h2>
-        <span className="subtle-label" role="status">
-          {done} of 3 today
-        </span>
+        <span className="subtle-label" role="status">{done} of 3 today</span>
       </div>
       <div className="action-grid">
         <ActionTile
-          title="Check in"
-          subtitle="Reach out"
-          icon="check"
-          primary
-          completed={data.steps.connect}
-          onClick={() => onStep("connect")}
+          title="Check in" subtitle="Reach out" icon="check" primary
+          completed={data.steps.connect} onClick={() => onStep("connect")}
         />
         <ActionTile
-          title="Share"
-          subtitle="Start a conversation"
-          icon="message"
-          completed={data.steps.reflect}
-          onClick={() => onStep("reflect")}
+          title="Share" subtitle="Start a conversation" icon="message"
+          completed={data.steps.reflect} onClick={() => onStep("reflect")}
         />
         <ActionTile
-          title="Pray"
-          subtitle="Care for someone"
-          icon="prayer"
-          completed={data.steps.pray}
-          onClick={() => onStep("pray")}
+          title="Pray" subtitle="Care for someone" icon="prayer"
+          completed={data.steps.pray} onClick={() => onStep("pray")}
         />
       </div>
-      <div className="section-row">
+
+      <div className="compact-inline-head">
         <h2>Coming up</h2>
         <button className="text-link" onClick={onPlan}>
           See details <Icon name="arrow" size="tiny" />
         </button>
       </div>
       <EventCard onOpen={onPlan} />
-      <div className="section-row">
+
+      <div className="compact-inline-head">
         <h2>From your circle</h2>
         <button className="text-link" onClick={onGroup}>
           Go to feed <Icon name="arrow" size="tiny" />
         </button>
       </div>
-      <PostCard
-        post={recent}
-        preview
-        encouraged={data.encouraged.includes(recent.id)}
-        onEncourage={() => onEncourage(recent.id)}
-        onReply={onReply}
-      />
+      <article className="compact-feed-row" aria-label="Latest group update">
+        <span className={`member-avatar mv-${recent.color}`} aria-hidden="true">{recent.initial}</span>
+        <div className="compact-feed-body">
+          <strong>{recent.name}</strong>
+          <p>{recent.text}</p>
+        </div>
+        <button
+          className="compact-encourage"
+          aria-pressed={encouraged}
+          onClick={() => onEncourage(recent.id)}
+        >
+          <Icon name="prayer" size="tiny" />
+          {encouraged ? "Encouraged" : "Encourage"}
+        </button>
+      </article>
     </section>
   );
 }

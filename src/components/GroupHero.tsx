@@ -18,12 +18,7 @@ export function GroupHero({ onOpen }: { onOpen: () => void }) {
         </span>
       </div>
       <div className="hero-content">
-        <div className="hero-title">
-          Wednesday
-          <br />
-          Group<span className="accent">.</span>
-        </div>
-        <div className="hero-desc">A place to belong, all week long.</div>
+        <div className="hero-title">Wednesday Group<span className="accent">.</span></div>
       </div>
       <div className="hero-bottom">
         <Avatars />

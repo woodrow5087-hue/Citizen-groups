@@ -1,0 +1,351 @@
+/* Bible experience: inherits the approved v0.4 tokens and controls. */
+.bible-experience {
+  margin: 20px 0;
+}
+.bible-status {
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.5;
+  margin: 10px 0;
+}
+.bible-status:empty {
+  display: none;
+}
+.daily-passage {
+  border: 1px solid #703042;
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  background: var(--surface);
+}
+.daily-passage h2 {
+  font-size: 26px;
+  line-height: 1.2;
+  letter-spacing: -0.6px;
+  margin: 8px 0;
+}
+.daily-passage blockquote {
+  margin: 16px 0;
+  font-size: 17px;
+  line-height: 1.7;
+  color: var(--text);
+}
+.passage-translation {
+  display: block;
+  font-size: 11px;
+  color: var(--muted);
+  margin: 14px 0;
+}
+.daily-passage .pill {
+  width: 100%;
+  margin-top: 8px;
+}
+.saved-reflections {
+  margin: 20px 0;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 0 16px;
+}
+.saved-reflections summary {
+  cursor: pointer;
+  min-height: 60px;
+  align-content: center;
+  font-weight: 700;
+  font-size: 14px;
+}
+.saved-reflections summary > span {
+  display: block;
+  font-size: 11px;
+  font-weight: 400;
+  color: var(--muted);
+  margin: 5px 0;
+}
+.saved-reflections article {
+  border-top: 1px solid var(--line);
+  padding: 18px 0;
+}
+.saved-reflections h3 {
+  font-size: 16px;
+  margin: 0 0 10px;
+}
+.saved-reflections article p {
+  font-size: 14px;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+.bible-attribution {
+  font-size: 11px;
+  color: var(--muted);
+  margin: 20px 0;
+  line-height: 1.6;
+}
+.bible-attribution summary {
+  min-height: 44px;
+  align-content: center;
+  cursor: pointer;
+}
+.bible-attribution a {
+  color: var(--text);
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 8px 0;
+}
+.bible-attribution p {
+  margin: 10px 0;
+}
+.reader-heading {
+  margin: 12px 0 18px;
+}
+.reader-heading h1 {
+  font-size: 30px;
+  line-height: 1.2;
+  letter-spacing: -0.7px;
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+.reader-heading > p:last-child {
+  font-size: 12px;
+  color: var(--muted);
+  margin: 8px 0;
+}
+.bible-selectors {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 92px;
+  gap: 10px;
+}
+.bible-selectors label {
+  font-size: 11px;
+  color: var(--muted);
+  font-weight: 700;
+}
+.bible-selectors select {
+  display: block;
+  min-height: 48px;
+  width: 100%;
+  margin-top: 6px;
+  padding: 10px 8px;
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  color: var(--text);
+  font: inherit;
+  font-size: 16px;
+  min-width: 0;
+}
+.reader-preferences {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 14px 0;
+  font-size: 12px;
+  color: var(--muted);
+}
+.reader-preferences output {
+  color: var(--text);
+  margin-left: 5px;
+}
+.reader-preferences > div {
+  display: flex;
+  gap: 8px;
+}
+.reader-preferences button {
+  height: 44px;
+  width: 48px;
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  color: var(--text);
+  font-size: 16px;
+  font-weight: 700;
+}
+.chapter-navigation {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+.chapter-navigation .pill {
+  flex: 1;
+  font-size: 12px;
+}
+.verse-actions {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 14px;
+  margin: 12px 0;
+  box-shadow: 0 6px 18px #0004;
+}
+.verse-actions p {
+  font-size: 12px;
+  margin: 0 0 10px;
+  overflow-wrap: anywhere;
+}
+.verse-actions .pill {
+  font-size: 12px;
+  padding: 8px 12px;
+}
+.verse-actions small {
+  display: block;
+  margin-top: 10px;
+  color: var(--muted);
+  font-size: 10px;
+  line-height: 1.5;
+}
+.bible-verses {
+  padding: 8px 0;
+  margin: 0;
+  list-style: none;
+}
+.bible-verse {
+  display: grid;
+  grid-template-columns: 24px minmax(0, 1fr);
+  gap: 8px;
+  width: 100%;
+  text-align: left;
+  padding: 10px 7px;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--text);
+  font: inherit;
+  line-height: 1.85;
+  min-height: 48px;
+}
+.bible-verse > span:last-child {
+  overflow-wrap: anywhere;
+}
+.bible-verse .verse-number {
+  font-size: 11px;
+  line-height: 2.5;
+  font-weight: 700;
+  color: var(--muted);
+}
+.bible-verse[aria-pressed="true"] {
+  background: var(--red-soft);
+  border-color: #ad3448;
+}
+.bible-verse[aria-pressed="true"] .verse-number {
+  color: #ff7b8e;
+}
+.bible-verse:hover:not(:disabled) {
+  border-color: var(--line);
+}
+.bible-verse:disabled {
+  opacity: 1;
+  cursor: not-allowed;
+}
+.reading-complete {
+  width: 100%;
+  margin: 14px 0;
+}
+.reflection-editor {
+  padding-bottom: 10px;
+  border-top: 1px solid var(--line);
+  margin-top: 18px;
+}
+.reflection-editor label {
+  display: block;
+  font-size: 13px;
+  font-weight: 700;
+  margin: 12px 0 8px;
+}
+.reflection-editor textarea {
+  display: block;
+  width: 100%;
+  min-height: 150px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  color: var(--text);
+  padding: 14px;
+  font: inherit;
+  font-size: 16px;
+  line-height: 1.6;
+  resize: vertical;
+}
+.reflection-meta {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  margin: 8px 0 14px;
+  font-size: 10px;
+  color: var(--muted);
+}
+.verse-preview {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 16px;
+}
+.verse-preview blockquote {
+  margin: 12px 0;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  line-height: 1.75;
+  font-size: 16px;
+}
+.verse-preview h3 {
+  font-size: 19px;
+}
+.verse-preview > p:last-child {
+  font-size: 11px;
+}
+.dialog .verse-preview + button {
+  margin-top: 18px;
+}
+.bible-selectors select:focus-visible,
+.saved-reflections summary:focus-visible,
+.bible-attribution summary:focus-visible {
+  outline: 2px solid var(--red-hot);
+  outline-offset: 3px;
+}
+@media (max-width: 350px) {
+  .bible-selectors {
+    grid-template-columns: minmax(0, 1fr) 80px;
+  }
+  .verse-actions {
+    padding: 10px;
+  }
+  .verse-actions .pill {
+    font-size: 11px;
+  }
+  .bible-verse {
+    padding-left: 0;
+    padding-right: 0;
+    grid-template-columns: 22px minmax(0, 1fr);
+    gap: 5px;
+  }
+}
+
+
+/* v0.5.1 — controls can be collapsed while reading. */
+.reader-controls {
+  border: 1px solid var(--line);
+  border-radius: 15px;
+  background: var(--surface);
+  margin: 9px 0 12px;
+  padding: 0 12px;
+}
+.reader-controls > summary {
+  min-height: 44px;
+  display: list-item;
+  align-content: center;
+  font-size: 12px;
+  color: var(--muted);
+  font-weight: 750;
+  cursor: pointer;
+}
+.reader-controls[open] { padding-bottom: 10px; }
+.reader-controls[open] > summary { margin-bottom: 6px; }
+.reader-controls .reader-preferences { margin: 10px 0 0; }
+.reader-controls > summary:focus-visible {
+  outline: 2px solid var(--red-hot);
+  outline-offset: 3px;
+}
+.reader-heading { margin: 8px 0 12px; }
+.reader-heading h1 { font-size: 27px; }
