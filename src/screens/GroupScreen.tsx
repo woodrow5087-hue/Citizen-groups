@@ -30,18 +30,14 @@ export function GroupScreen({
   onConnect,
 }: Props) {
   return (
-    <section className="screen active" aria-label="My Group screen">
+    <section className="screen active compact-group" aria-label="My Group screen">
       <div className="screen-heading">
         <p className="eyebrow">
           <span className="red-rule" />
           My circle
         </p>
-        <h1>
-          Wednesday
-          <br />
-          Group<span className="accent">.</span>
-        </h1>
-        <p>Eight people. One community.</p>
+        <h1>My Group<span className="accent">.</span></h1>
+        <p>Wednesday Group · 8 fictional members</p>
       </div>
       <div className="group-members">
         <Avatars />
