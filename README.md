@@ -1,29 +1,47 @@
-# Citizen Groups — branded internal concept v0.2
+# Citizen Groups · local concept v0.3
 
-An independent, mobile-friendly, single-file prototype of a small-group app inspired by Citizen Church's publicly visible style. It is a **design exploration**, not an official Citizen Church release.
+React + TypeScript + Vite migration of the supplied v0.2 prototype, now evolved into a compact mobile app UI. An unofficial design exploration, not a church service or production release. All examples are fictional. Use fictional text only: browser storage is neither private nor secure.
 
-## Run / deploy
+## Run and verify
 
-1. Open `index.html` in a browser, or deploy the folder contents to Netlify (drag-and-drop directory or ZIP contents).
-2. Use the bottom menu to view Home, My Group, Prayer, and Lead.
-3. Try the interactive demo: mark check-in steps, RSVP to a fictional gathering, write a sample group post, add a prayer request, mark prayers, open discussion guide, and save leader notes.
-4. Use Reset Demo at the bottom to clear locally stored information.
+Use Node 24 (see `.nvmrc`) and npm:
 
-## Important limitations
+```sh
+npm ci
+npm run dev
+npm test
+npm run build
+npm run preview
+```
 
-- No backend, sign-in, online storage, push notifications, payments, secure church member data, or live messages.
-- Everything entered stays in the local browser `localStorage`. Do not enter private real-world church information.
-- Names, group information, gatherings, sample posts, and the leader dashboard are fictional.
-- Church name, logo, and photograph are referenced remotely from their **public website**. They are not bundled. Those images may not render offline, and official brand asset permissions/production hosting should be resolved with the church before any public launch.
-- The color palette is visually sampled/inspired by Citizen's website; not validated against the official brand guidelines. Ask the creative/communications team for official colors, typefaces, logo SVG files, and brand guidelines.
-- A production app needs explicit authorization, technical review, authentication, consent, privacy-by-default, moderation, secure role-based access, accessibility testing, data protection, and support/maintenance plans.
+Vite prints the local URL. `build` checks strict TypeScript before generating `dist/`. Tests use Vitest, Testing Library, and jsdom; `npm run test:watch` runs them interactively. No environment variables or external services are required.
 
-## Design direction
+## Structure
 
-Palette: `#ED0033` (provisional bright Citizen red), `#111111` black, `#FFFFFF` white, `#F5F5F4` background, charcoal/gray text. Strong bold headline type, distinct red accent, grid-oriented sections, and community-focused messaging. Original layout: not an imitation of Sagebrush BuddyCheck.
+- `src/App.tsx`: typed application state, actions and dialog content. Navigation remains local state, matching v0.2; refresh starts on Home.
+- `src/screens/`: Home, My Group, Prayer and Lead view modules with typed props.
+- `src/components/`: shared accessible modal and conversation feed.
+- `src/data/examples.ts`: fictional fixtures.
+- `src/state/storage.ts`: typed state, runtime storage validation, local-date rollover, load/save error reporting.
+- `src/styles.css`: preserved prototype styles plus accessibility fixes.
+- `src/**/*.test.*`: interaction and persistence regression checks.
+- `docs/AUDIT.md`: source audit, migration decisions and known limits.
+- `docs/ROADMAP.md`: reviewable phases and future service boundary.
+- `reference/`: unchanged supplied prototype and README, for internal comparison only. Not copied into the production build.
+- `netlify.toml`: production build, Node version and response headers.
 
-## Referenced public site assets
+## Deploy to Netlify
 
-- Logo: `https://static1.squarespace.com/static/690989b0c6f2f33fc8c52aa9/t/69580e9e6e8bc25924dffee9/1767378590409/citizensocial.png?format=750w`
-- Community photo: `https://images.squarespace-cdn.com/content/v1/690989b0c6f2f33fc8c52aa9/d9372fb2-b899-4969-99b1-bdb070721591/TV_2-18%2BLarge.jpeg?format=1500w`
-- Brand/content references: https://www.citizen.church/ and https://www.citizen.church/groups
+Run `npm ci`, `npm test`, and `npm run build` first. For a connected repository, set the base directory to this project folder (or leave it empty if this folder is the repository root). Netlify reads `netlify.toml`: command `npm run build`, publish directory `dist`, Node 24. Alternatively upload **only `dist/`** for a manual deploy; manual uploads do not apply headers from `netlify.toml` automatically. Do not upload the project root or `reference/` as a static site.
+
+There are no URL routes yet, so an SPA redirect is unnecessary. No Supabase keys, accounts, backend or deployment were created. Review an internal deploy preview before any publication; church naming and final branding still require authorization. Netlify headers should be checked on the actual preview deployment.
+
+## Local behavior
+
+RSVP toggles; daily Connect, Reflect and Pray steps complete through their existing flows. Posts and requests are capped at 12 each. Prayer acknowledgements reset daily; follow-ups remain marked until reset. Notes, RSVP, posts and requests survive reload in the same browser and origin. Steps reset at the local calendar date boundary (checked on load, window focus and once per minute). Dialogs close with Escape or the backdrop, contain keyboard focus, and return focus to their opener. Reset requires confirmation.
+
+v0.3 uses `citizen-groups-concept-v03`; v0.2 browser entries are intentionally not imported. Reset clears only the v0.3 key. Old v0.2 entries, if any, must be removed through the original demo or browser storage controls. Invalid v0.3 storage falls back to fresh examples with a warning; failed saves retain session state with a warning. No cross-tab synchronization is implemented.
+
+The official remote logo and photo are replaced by a plain text mark and CSS background. The provisional red/black/white palette, bold headings, mobile layout and content direction remain. No official artwork is included in `dist/`; original remote references remain only in the internal source archive. No distribution license for church trademarks or supplied assets is implied.
+
+See [mobile design review](docs/MOBILE-REDESIGN.md), [audit](docs/AUDIT.md) and [roadmap](docs/ROADMAP.md) for scope and next review steps.
