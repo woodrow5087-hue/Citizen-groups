@@ -31,3 +31,14 @@ describe("storage boundary", () => {
     expect(saveData(initialData())).toContain("could not be saved");
   });
 });
+
+it("upgrades existing state without reactions and validates new reaction data", () => {
+  const { encouraged: _, ...old } = initialData();
+  old.notes = "Existing fictional plan";
+  const upgraded = parseData(JSON.stringify(old));
+  expect(upgraded.notes).toBe(old.notes);
+  expect(upgraded.encouraged).toEqual([]);
+  expect(() =>
+    parseData(JSON.stringify({ ...old, encouraged: "bad" })),
+  ).toThrow();
+});

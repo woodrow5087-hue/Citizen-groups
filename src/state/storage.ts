@@ -9,6 +9,7 @@ export interface DemoData {
   prayed: string[];
   followed: string[];
   notes: string;
+  encouraged: string[];
 }
 export function today() {
   const d = new Date();
@@ -24,6 +25,7 @@ export function initialData(): DemoData {
     prayed: [],
     followed: [],
     notes: "",
+    encouraged: [],
   };
 }
 function strings(v: unknown, limit: number): v is string[] {
@@ -45,6 +47,9 @@ export function parseData(raw: string): DemoData {
     !(["connect", "reflect", "pray"] as const).every(
       (k) => typeof v.steps[k] === "boolean",
     ) ||
+    (v.encouraged !== undefined &&
+      (!strings(v.encouraged, 14) ||
+        v.encouraged.some((x: string) => x.length > 610))) ||
     !strings(v.posts, 12) ||
     v.posts.some((x: string) => x.length > 600) ||
     !strings(v.prayed, 14) ||
@@ -77,6 +82,7 @@ export function parseData(raw: string): DemoData {
     prayed: [...new Set<string>(v.prayed)],
     followed: [...new Set<string>(v.followed)],
     notes: v.notes,
+    encouraged: [...new Set<string>(v.encouraged ?? [])],
   };
   return data.day === base.day
     ? data

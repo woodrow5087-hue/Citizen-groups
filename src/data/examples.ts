@@ -1,15 +1,35 @@
-export const posts = [
+import type { Post } from "../components/PostCard";
+export const posts: Post[] = [
   {
+    id: "alex",
     name: "Alex L.",
     initial: "AL",
-    text: "This week I’m thinking about how a simple invitation can change somebody’s day.",
+    color: "red",
+    time: "Yesterday",
+    text: "Our conversation last night really encouraged me. Appreciate this group.",
   },
   {
+    id: "jordan",
     name: "Jordan M.",
     initial: "JM",
-    text: "Really grateful for everyone who made time to connect last week.",
+    color: "peach",
+    time: "2h ago",
+    text: "Had a meaningful conversation today. Grateful for the people who show up and listen.",
   },
 ];
+export function groupPosts(entries: string[]): Post[] {
+  return [
+    ...entries.map((text) => ({
+      id: "post:" + text,
+      name: "You",
+      initial: "JW",
+      color: "red",
+      time: "Saved locally",
+      text,
+    })),
+    ...posts,
+  ];
+}
 export const prayers = [
   {
     id: "a",

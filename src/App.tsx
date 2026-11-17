@@ -1,10 +1,14 @@
-import { Icon } from "./components/Icon";
 import { LeadScreen } from "./screens/LeadScreen";
-import { PrayerScreen } from "./screens/PrayerScreen";
+import { TodayScreen } from "./screens/TodayScreen";
 import { GroupScreen } from "./screens/GroupScreen";
-import { HomeScreen } from "./screens/HomeScreen";
+import { GrowScreen } from "./screens/GrowScreen";
+import { YouScreen } from "./screens/YouScreen";
+import { BrandHeader } from "./components/BrandHeader";
+import { TabBar } from "./components/TabBar";
+import { PrimaryPill } from "./components/PrimaryPill";
+import { PrayerCircle } from "./components/PrayerCircle";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Modal } from "./components/Modal";
+import { ActionSheet } from "./components/ActionSheet";
 import {
   initialData,
   loadData,
@@ -14,8 +18,10 @@ import {
   type DemoData,
   type Step,
 } from "./state/storage";
-import type { Screen } from "./screens/types";
+import type { GroupTab, Screen } from "./screens/types";
 type Dialog =
+  | "inbox"
+  | "reply"
   | "checkin"
   | "post"
   | "prayer"
@@ -26,6 +32,8 @@ type Dialog =
   | "about"
   | "reset";
 const titles: Record<Dialog, string> = {
+  inbox: "Messages",
+  reply: "Join the conversation",
   checkin: "Show up for someone",
   post: "Share a thought",
   prayer: "Add a prayer request",
@@ -40,7 +48,8 @@ export default function App() {
   const [loaded] = useState(loadData);
   const [data, setData] = useState(loaded.data);
   const [warning, setWarning] = useState(loaded.warning);
-  const [screen, setScreen] = useState<Screen>("home");
+  const [screen, setScreen] = useState<Screen>("today");
+  const [groupTab, setGroupTab] = useState<GroupTab>("feed");
   const [dialog, setDialog] = useState<Dialog | null>(null);
   const [draft, setDraft] = useState("");
   const [error, setError] = useState("");
@@ -82,15 +91,14 @@ export default function App() {
         ? "instant"
         : "smooth",
     });
-    mainRef.current?.focus();
+    mainRef.current?.focus({ preventScroll: true });
   }
   function open(kind: Dialog) {
     setDraft(kind === "notes" ? data.notes : "");
     setError("");
     setDialog(kind);
   }
-  const openCheckin = () => open("checkin"),
-    openPost = () => open("post"),
+  const openPost = () => open("post"),
     openPrayer = () => open("prayer"),
     openGuide = () => open("guide"),
     openInvite = () => open("invite"),
@@ -98,16 +106,30 @@ export default function App() {
     showAbout = () => open("about"),
     resetDemo = () => open("reset");
   function step(id: Step) {
-    if (id === "connect") openCheckin();
+    if (id === "connect") open("checkin");
     else if (id === "reflect") openPost();
     else {
-      page("prayer");
       open("pray");
     }
   }
   function markStep(id: Step) {
     update((d) => ({ ...d, steps: { ...d.steps, [id]: true } }));
     close();
+  }
+  function group(tab: GroupTab) {
+    setGroupTab(tab);
+    page("group");
+  }
+  function encourage(id: string) {
+    update(
+      (d) => ({
+        ...d,
+        encouraged: d.encouraged.includes(id)
+          ? d.encouraged.filter((x) => x !== id)
+          : [id, ...d.encouraged].slice(0, 14),
+      }),
+      "Encouragement updated on this device only.",
+    );
   }
   function rsvp() {
     update((d) => ({ ...d, rsvp: !d.rsvp }));
@@ -165,11 +187,14 @@ export default function App() {
   const done = Object.values(data.steps).filter(Boolean).length;
   return (
     <>
-      <div className="brandbar"></div>
       <a className="skip" href="#main">
         Skip to content
       </a>
-      <div className="layout" inert={dialog !== null}>
+      <div className="app-shell" inert={dialog !== null}>
+        <BrandHeader
+          onMessages={() => open("inbox")}
+          onProfile={() => page("you")}
+        />
         {warning && (
           <p className="warning" role="alert">
             {warning}
@@ -178,97 +203,63 @@ export default function App() {
         <p className="sr-only" role="status">
           {status}
         </p>
-        <header className="masthead">
-          <div className="brand">
-            <span className="brand-symbol" aria-hidden="true">
-              <span />
-              <span />
-              <span />
-            </span>
-            <div className="brand-type">
-              <strong>
-                citizen<span className="brand-dot">.</span>
-              </strong>
-              <span>
-                GROUPS <span className="concept-label">/ CONCEPT</span>
-              </span>
-            </div>
-          </div>
-          <button
-            className="profile"
-            onClick={showAbout}
-            aria-label="About this demo"
-          >
-            JW
-            <span className="profile-dot" />
-          </button>
-        </header>
         <main id="main" tabIndex={-1} ref={mainRef}>
-          <HomeScreen
-            data={data}
-            done={done}
-            screen={screen}
-            page={page}
-            step={step}
-            rsvp={rsvp}
-          />
-          <GroupScreen
-            data={data}
-            screen={screen}
-            rsvp={rsvp}
-            openGuide={openGuide}
-            openPost={openPost}
-            openInvite={openInvite}
-          />
-          <PrayerScreen
-            data={data}
-            screen={screen}
-            openPrayer={openPrayer}
-            prayFor={prayFor}
-          />
-          <LeadScreen
-            data={data}
-            screen={screen}
-            openGuide={openGuide}
-            openNotes={openNotes}
-            markFollowup={markFollowup}
-          />
+          {screen === "today" && (
+            <TodayScreen
+              data={data}
+              done={done}
+              onGroup={() => group("feed")}
+              onPlan={() => group("plan")}
+              onStep={step}
+              onEncourage={encourage}
+              onReply={() => open("reply")}
+            />
+          )}
+          {screen === "group" && (
+            <GroupScreen
+              data={data}
+              tab={groupTab}
+              onTab={setGroupTab}
+              rsvp={rsvp}
+              openGuide={openGuide}
+              openPost={openPost}
+              openInvite={openInvite}
+              onEncourage={encourage}
+              onReply={() => open("reply")}
+              onConnect={() => open("checkin")}
+            />
+          )}
+          {screen === "grow" && (
+            <GrowScreen done={done} onStep={step} onGuide={openGuide} />
+          )}
+          {screen === "you" && (
+            <YouScreen
+              data={data}
+              onAbout={showAbout}
+              onReset={resetDemo}
+              onLeader={() => page("lead")}
+              onPrayer={() => open("pray")}
+            />
+          )}
+          {screen === "lead" && (
+            <>
+              <button className="text-link" onClick={() => page("you")}>
+                ← Back to You
+              </button>
+              <LeadScreen
+                data={data}
+                screen={screen}
+                openGuide={openGuide}
+                openNotes={openNotes}
+                markFollowup={markFollowup}
+              />
+            </>
+          )}
         </main>
-        <footer className="footer">
-          <span>Unofficial concept · Fictional data · Device only</span>
-          <button className="text-button" onClick={resetDemo}>
-            Reset demo
-          </button>
-        </footer>
       </div>
-      <nav
-        inert={dialog !== null}
-        className="tabs"
-        aria-label="Main navigation"
-      >
-        {(
-          [
-            { id: "home", label: "Home", icon: "home" },
-            { id: "group", label: "My Group", icon: "group" },
-            { id: "prayer", label: "Prayer", icon: "prayer" },
-            { id: "lead", label: "Leader", icon: "lead" },
-          ] as const
-        ).map((item) => (
-          <button
-            key={item.id}
-            className={screen === item.id ? "navbutton on" : "navbutton"}
-            aria-current={screen === item.id ? "page" : undefined}
-            onClick={() => page(item.id)}
-          >
-            <span className="nav-icon">
-              <Icon name={item.icon} />
-            </span>
-            <span>{item.label}</span>
-          </button>
-        ))}
-      </nav>
+      <TabBar screen={screen} onNavigate={page} inert={dialog !== null} />
       {dialog && (
-        <Modal title={titles[dialog]} onClose={close}>
+        <ActionSheet title={titles[dialog]} onClose={close}>
           {(["post", "prayer", "notes"] as Dialog[]).includes(dialog) ? (
             <form
               onSubmit={(e) => {
@@ -302,13 +293,13 @@ export default function App() {
                   {error}
                 </p>
               )}
-              <button className="btn" type="submit">
+              <PrimaryPill type="submit">
                 {dialog === "notes"
                   ? "Save notes locally"
                   : dialog === "post"
                     ? "Post to demo group"
                     : "Save in demo"}
-              </button>
+              </PrimaryPill>
             </form>
           ) : dialog === "checkin" ? (
             <>
@@ -320,20 +311,17 @@ export default function App() {
                 This demo will not message anyone. Marking this step is a
                 reminder for yourself.
               </p>
-              <button className="btn" onClick={() => markStep("connect")}>
+              <PrimaryPill onClick={() => markStep("connect")}>
                 I reached out
-              </button>
+              </PrimaryPill>
             </>
           ) : dialog === "pray" ? (
-            <>
-              <p>
-                Spend a moment praying for someone in your group. Read their
-                example requests on the Prayer tab.
-              </p>
-              <button className="btn" onClick={() => markStep("pray")}>
-                Mark prayer time complete
-              </button>
-            </>
+            <PrayerCircle
+              data={data}
+              onPray={prayFor}
+              onRequest={openPrayer}
+              onComplete={() => markStep("pray")}
+            />
           ) : dialog === "guide" ? (
             <>
               <p>
@@ -363,9 +351,27 @@ export default function App() {
               <p className="dim">
                 Original sample prompts, not an official church lesson plan.
               </p>
-              <button className="btn outline" onClick={close}>
+              <PrimaryPill secondary onClick={close}>
                 Close guide
-              </button>
+              </PrimaryPill>
+            </>
+          ) : dialog === "inbox" ? (
+            <>
+              <p>
+                No real messages or notifications exist in this concept. Nothing
+                is sent or received.
+              </p>
+              <PrimaryPill secondary onClick={close}>
+                Close
+              </PrimaryPill>
+            </>
+          ) : dialog === "reply" ? (
+            <>
+              <p>
+                Threaded replies need shared accounts and permissions. You can
+                add a standalone local thought with Share.
+              </p>
+              <PrimaryPill onClick={openPost}>Share a thought</PrimaryPill>
             </>
           ) : dialog === "invite" ? (
             <>
@@ -378,9 +384,9 @@ export default function App() {
                 No links are generated. Future invitations need expiry and group
                 privacy controls.
               </p>
-              <button className="btn outline" onClick={close}>
+              <PrimaryPill secondary onClick={close}>
                 Got it
-              </button>
+              </PrimaryPill>
             </>
           ) : dialog === "reset" ? (
             <>
@@ -389,12 +395,10 @@ export default function App() {
                 be undone.
               </p>
               <div className="actionrow">
-                <button className="btn outline" onClick={close}>
+                <PrimaryPill secondary onClick={close}>
                   Cancel
-                </button>
-                <button className="btn" onClick={reset}>
-                  Clear local demo
-                </button>
+                </PrimaryPill>
+                <PrimaryPill onClick={reset}>Clear local demo</PrimaryPill>
               </div>
             </>
           ) : (
@@ -406,16 +410,16 @@ export default function App() {
                 access.
               </p>
               <p>
-                The text mark and CSS background replace official logo and
-                photography. Branding and asset rights need approval before
-                distribution.
+                The user-supplied Citizen flag is used for this internal review
+                only. Branding and asset rights require church approval before
+                public distribution.
               </p>
-              <button className="btn outline" onClick={close}>
+              <PrimaryPill secondary onClick={close}>
                 Close
-              </button>
+              </PrimaryPill>
             </>
           )}
-        </Modal>
+        </ActionSheet>
       )}
     </>
   );

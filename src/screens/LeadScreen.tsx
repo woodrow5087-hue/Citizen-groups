@@ -1,3 +1,4 @@
+import { PrimaryPill } from "../components/PrimaryPill";
 import { followups } from "../data/examples";
 import { Icon } from "../components/Icon";
 import type { DemoData, Screen } from "./types";
@@ -17,18 +18,18 @@ export function LeadScreen({
 }: Props) {
   return (
     <section
-      className="screen leader-screen"
+      className="screen active leader-screen"
       hidden={screen !== "lead"}
       id="lead"
     >
       <div className="leader-heading">
         <span className="leader-badge">
-          <Icon name="lead" size={28} />
+          <Icon name="lead" size="large" />
         </span>
         <div>
           <p className="eyebrow">Leader workspace · Fictional data</p>
           <h1>Lead with care.</h1>
-          <p>Tuesday Community</p>
+          <p>Wednesday Group</p>
         </div>
       </div>
       <div className="stat-grid">
@@ -63,25 +64,23 @@ export function LeadScreen({
                 <small>{p.why}</small>
               </div>
             </div>
-            <button
-              className={
-                "btn " + (data.followed.includes(p.id) ? "outline" : "black")
-              }
+            <PrimaryPill
+              secondary={data.followed.includes(p.id)}
               aria-label={`Mark ${p.name} reached`}
               aria-pressed={data.followed.includes(p.id)}
               onClick={() => markFollowup(p.id)}
             >
               <Icon
                 name={data.followed.includes(p.id) ? "check" : "connect"}
-                size={18}
+                size="small"
               />
               {data.followed.includes(p.id) ? "Reached" : "Mark reached"}
-            </button>
+            </PrimaryPill>
           </div>
         ))}
       </div>
       <div className="section-heading">
-        <h2>Ready for Tuesday</h2>
+        <h2>Ready for Wednesday</h2>
       </div>
       <div className="stack">
         <button className="resource-row" onClick={openGuide}>
@@ -92,7 +91,7 @@ export function LeadScreen({
             <strong>Discussion guide</strong>
             <small>Belonging & making space</small>
           </span>
-          <Icon name="arrow" size={18} />
+          <Icon name="arrow" size="small" />
         </button>
         <button className="resource-row" onClick={openNotes}>
           <span className="action-icon">
@@ -102,7 +101,7 @@ export function LeadScreen({
             <strong>My notes</strong>
             <small>Your local planning space</small>
           </span>
-          <Icon name="arrow" size={18} />
+          <Icon name="arrow" size="small" />
         </button>
       </div>
       <p className="context-note">
