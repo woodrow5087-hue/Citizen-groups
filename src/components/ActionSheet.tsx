@@ -1,5 +1,5 @@
 import { useEffect, useRef, type ReactNode } from "react";
-export function Modal({
+export function ActionSheet({
   title,
   children,
   onClose,
@@ -45,7 +45,7 @@ export function Modal({
   }, [onClose]);
   return (
     <div
-      className="overlay open"
+      className="dialog-backdrop"
       onClick={(e) => {
         if (e.target === e.currentTarget) onClose();
       }}
@@ -58,9 +58,13 @@ export function Modal({
         aria-modal="true"
         aria-labelledby="dialog-title"
       >
-        <div className="dialog-top">
-          <span className="overline">LOCAL DEMO</span>
-          <button className="xbtn" aria-label="Close dialog" onClick={onClose}>
+        <div className="dialog-head">
+          <span className="eyebrow">CITIZEN GROUPS · CONCEPT</span>
+          <button
+            className="dialog-close"
+            aria-label="Close dialog"
+            onClick={onClose}
+          >
             ×
           </button>
         </div>

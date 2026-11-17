@@ -7,40 +7,35 @@ describe("local demo journeys", () => {
   it("retains RSVP and a post on reload, renders input as text", async () => {
     const user = userEvent.setup();
     const view = render(<App />);
-    await user.click(screen.getByRole("button", { name: /I.M GOING/i }));
-    expect(screen.getByRole("button", { name: /GOING/i })).toHaveAttribute(
+    await user.click(screen.getByRole("button", { name: /See details/ }));
+    await user.click(screen.getByRole("button", { name: "I'm going" }));
+    expect(screen.getByRole("button", { name: /Going/ })).toHaveAttribute(
       "aria-pressed",
       "true",
     );
-    await user.click(screen.getByRole("button", { name: /Go to my group/i }));
-    await user.click(screen.getByRole("button", { name: /Share something/i }));
+    await user.click(screen.getByRole("tab", { name: "Feed" }));
+    await user.click(screen.getByRole("button", { name: /Share something/ }));
     await user.type(
       screen.getByLabelText("Your thought"),
       "<img src=x onerror=alert(1)>",
     );
     await user.click(
-      screen.getByRole("button", { name: /Post to demo group/i }),
+      screen.getByRole("button", { name: "Post to demo group" }),
     );
-    expect(
-      within(screen.getByRole("main"))
-        .getAllByText("<img src=x onerror=alert(1)>")
-        .find((el) => !el.closest("[hidden]"))!,
-    ).toBeVisible();
+    expect(screen.getByText("<img src=x onerror=alert(1)>")).toBeVisible();
     view.unmount();
     render(<App />);
-    expect(
-      within(screen.getByRole("main"))
-        .getAllByText("<img src=x onerror=alert(1)>")
-        .find((el) => !el.closest("[hidden]"))!,
-    ).toBeVisible();
+    expect(screen.getByText("<img src=x onerror=alert(1)>")).toBeVisible();
     expect(JSON.parse(localStorage.getItem(KEY)!).steps.reflect).toBe(true);
   });
   it("validates a request, traps focus, closes with Escape and restores focus", async () => {
     const user = userEvent.setup();
     render(<App />);
-    await user.click(screen.getByRole("button", { name: "Prayer" }));
-    const trigger = screen.getByRole("button", { name: /Add a request/i });
+    const trigger = screen.getByRole("button", {
+      name: /Pray\s*Care for someone/,
+    });
     await user.click(trigger);
+    await user.click(screen.getByRole("button", { name: "Share a request" }));
     const dialog = screen.getByRole("dialog");
     await user.click(
       within(dialog).getByRole("button", { name: "Save in demo" }),
@@ -57,25 +52,23 @@ describe("local demo journeys", () => {
   it("confirms reset before clearing entries", async () => {
     const user = userEvent.setup();
     render(<App />);
-    await user.click(screen.getByRole("button", { name: /I.M GOING/i }));
-    await user.click(screen.getByRole("button", { name: /RESET DEMO/i }));
+    await user.click(screen.getByRole("button", { name: /See details/ }));
+    await user.click(screen.getByRole("button", { name: "I'm going" }));
+    await user.click(screen.getByRole("button", { name: "You" }));
+    await user.click(screen.getByRole("button", { name: /Reset demo data/ }));
     await user.click(screen.getByRole("button", { name: "Cancel" }));
     expect(localStorage.getItem(KEY)).not.toBeNull();
-    await user.click(screen.getByRole("button", { name: /RESET DEMO/i }));
+    await user.click(screen.getByRole("button", { name: /Reset demo data/ }));
     await user.click(screen.getByRole("button", { name: "Clear local demo" }));
     expect(localStorage.getItem(KEY)).toBeNull();
   });
-  it("completes the dashboard rhythm through check-in, share and prayer", async () => {
+  it("completes the daily rhythm from Today and Grow", async () => {
     const user = userEvent.setup();
     render(<App />);
     await user.click(
-      screen.getByRole("button", { name: /Check in\s*Reach out today/ }),
+      screen.getByRole("button", { name: /Check in\s*Reach out/ }),
     );
     await user.click(screen.getByRole("button", { name: "I reached out" }));
-    expect(screen.getByRole("progressbar")).toHaveAttribute(
-      "aria-valuenow",
-      "1",
-    );
     await user.click(
       screen.getByRole("button", { name: /Share\s*Start a conversation/ }),
     );
@@ -86,20 +79,85 @@ describe("local demo journeys", () => {
     await user.click(
       screen.getByRole("button", { name: "Post to demo group" }),
     );
-    await user.click(
-      screen.getByRole("button", { name: /Pray\s*Care for someone/ }),
-    );
+    await user.click(screen.getByRole("button", { name: "Grow" }));
+    await user.click(screen.getByRole("button", { name: /02.*Pray/ }));
     await user.click(
       screen.getByRole("button", { name: "Mark prayer time complete" }),
     );
-    expect(screen.getByRole("button", { name: "Prayer" })).toHaveAttribute(
-      "aria-current",
-      "page",
+    await user.click(screen.getByRole("button", { name: "Today" }));
+    expect(screen.getByText("3 of 3 today")).toBeVisible();
+  });
+  it("keeps subtabs across member navigation and supports arrow keys", async () => {
+    const user = userEvent.setup();
+    render(<App />);
+    await user.click(screen.getByRole("button", { name: "My Group" }));
+    const feed = screen.getByRole("tab", { name: "Feed" });
+    feed.focus();
+    await user.keyboard("{ArrowRight}");
+    expect(screen.getByRole("tab", { name: "People" })).toHaveFocus();
+    expect(screen.getByRole("tabpanel")).toHaveAccessibleName("People");
+    await user.click(screen.getByRole("button", { name: "Grow" }));
+    await user.click(screen.getByRole("button", { name: "My Group" }));
+    expect(screen.getByRole("tab", { name: "People" })).toHaveAttribute(
+      "aria-selected",
+      "true",
     );
-    await user.click(screen.getByRole("button", { name: "Home" }));
-    expect(screen.getByRole("progressbar")).toHaveAttribute(
-      "aria-valuenow",
-      "3",
+    await user.click(screen.getByRole("tab", { name: "Resources" }));
+    await user.click(
+      screen.getByRole("button", { name: /Discussion guide\s*Belonging/ }),
     );
+    expect(screen.getByRole("dialog")).toHaveAccessibleName("Discussion guide");
+  });
+  it("persists encouragement shared by Today and the group feed", async () => {
+    const user = userEvent.setup();
+    const view = render(<App />);
+    await user.click(screen.getByRole("button", { name: "Encourage" }));
+    expect(screen.getByRole("button", { name: "Encouraged" })).toHaveAttribute(
+      "aria-pressed",
+      "true",
+    );
+    await user.click(screen.getByRole("button", { name: /Go to feed/ }));
+    const jordan = within(screen.getByRole("tabpanel"))
+      .getByText("Jordan M.")
+      .closest("article")!;
+    expect(
+      within(jordan).getByRole("button", { name: "Encouraged" }),
+    ).toHaveAttribute("aria-pressed", "true");
+    view.unmount();
+    render(<App />);
+    expect(screen.getByRole("button", { name: "Encouraged" })).toHaveAttribute(
+      "aria-pressed",
+      "true",
+    );
+  });
+  it("retains prayer acknowledgements and leader tools outside primary navigation", async () => {
+    const user = userEvent.setup();
+    render(<App />);
+    expect(
+      within(screen.getByRole("navigation")).queryByRole("button", {
+        name: /Leader/,
+      }),
+    ).toBeNull();
+    await user.click(screen.getByRole("button", { name: "You" }));
+    await user.click(screen.getByRole("button", { name: /Prayer circle/ }));
+    const prayer = screen.getByRole("button", {
+      name: /I prayed for Jordan M\.:/,
+    });
+    await user.click(prayer);
+    expect(prayer).toHaveAttribute("aria-pressed", "true");
+    await user.keyboard("{Escape}");
+    await user.click(screen.getByRole("button", { name: /Leader tools/ }));
+    await user.click(
+      screen.getByRole("button", { name: "Mark Morgan C. reached" }),
+    );
+    expect(
+      screen.getByRole("button", { name: "Mark Morgan C. reached" }),
+    ).toHaveAttribute("aria-pressed", "true");
+    await user.click(screen.getByRole("button", { name: /My notes/ }));
+    await user.type(screen.getByLabelText("Planning notes"), "Fictional plan");
+    await user.click(
+      screen.getByRole("button", { name: "Save notes locally" }),
+    );
+    expect(JSON.parse(localStorage.getItem(KEY)!).notes).toBe("Fictional plan");
   });
 });

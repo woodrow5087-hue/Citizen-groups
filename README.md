@@ -1,10 +1,10 @@
-# Citizen Groups · local concept v0.3
+# Citizen Groups · v0.4 internal review
 
-React + TypeScript + Vite migration of the supplied v0.2 prototype, now evolved into a compact mobile app UI. An unofficial design exploration, not a church service or production release. All examples are fictional. Use fictional text only: browser storage is neither private nor secure.
+React + TypeScript + Vite application implementing the supplied v0.4 design system. Unofficial and unendorsed, with fictional members, posts and events. Use fictional entries only: localStorage is not secure prayer or member storage.
 
 ## Run and verify
 
-Use Node 24 (see `.nvmrc`) and npm:
+Use Node 24 (`.nvmrc`) and npm:
 
 ```sh
 npm ci
@@ -14,34 +14,34 @@ npm run build
 npm run preview
 ```
 
-Vite prints the local URL. `build` checks strict TypeScript before generating `dist/`. Tests use Vitest, Testing Library, and jsdom; `npm run test:watch` runs them interactively. No environment variables or external services are required.
+Vite prints the URL. The build checks strict TypeScript before producing `dist/`. Vitest/Testing Library run eleven checks; `npm run test:watch` enables watch mode. No environment variables or services are required.
 
-## Structure
+## App structure
 
-- `src/App.tsx`: typed application state, actions and dialog content. Navigation remains local state, matching v0.2; refresh starts on Home.
-- `src/screens/`: Home, My Group, Prayer and Lead view modules with typed props.
-- `src/components/`: shared accessible modal and conversation feed.
-- `src/data/examples.ts`: fictional fixtures.
-- `src/state/storage.ts`: typed state, runtime storage validation, local-date rollover, load/save error reporting.
-- `src/styles.css`: preserved prototype styles plus accessibility fixes.
-- `src/**/*.test.*`: interaction and persistence regression checks.
-- `docs/AUDIT.md`: source audit, migration decisions and known limits.
-- `docs/ROADMAP.md`: reviewable phases and future service boundary.
-- `reference/`: unchanged supplied prototype and README, for internal comparison only. Not copied into the production build.
-- `netlify.toml`: production build, Node version and response headers.
-
-## Deploy to Netlify
-
-Run `npm ci`, `npm test`, and `npm run build` first. For a connected repository, set the base directory to this project folder (or leave it empty if this folder is the repository root). Netlify reads `netlify.toml`: command `npm run build`, publish directory `dist`, Node 24. Alternatively upload **only `dist/`** for a manual deploy; manual uploads do not apply headers from `netlify.toml` automatically. Do not upload the project root or `reference/` as a static site.
-
-There are no URL routes yet, so an SPA redirect is unnecessary. No Supabase keys, accounts, backend or deployment were created. Review an internal deploy preview before any publication; church naming and final branding still require authorization. Netlify headers should be checked on the actual preview deployment.
+- `src/App.tsx`: typed local state/actions and navigation; refresh starts on Today.
+- `src/screens/`: Today, My Group, Grow, You and the separate demo-only Leader surface.
+- `src/components/`: BrandHeader, TabBar, GroupHero, ActionTile, EventCard, PostCard, GroupTabs, PrimaryPill, ActionSheet, prayer circle, initials avatars and SVG icons. Icon sizes are centralized in `Icon.tsx`.
+- `src/styles/tokens.css`: approved semantic color, surface, border and radius tokens.
+- `src/styles.css`: reference-derived component styles with accessibility adjustments.
+- `src/data/examples.ts`: fictional fixtures and local feed mapping.
+- `src/state/storage.ts`: runtime validation, date rollover and storage error handling.
+- `src/assets/`: supplied Citizen flag, authorized only for internal concept review; not a license for distribution.
+- `reference/`: original v0.2 source and v0.4 handoff/design-system documents; excluded from build output.
+- `docs/V04-IMPLEMENTATION.md`: current decisions, differences, verification and review checklist.
+- `docs/AUDIT.md`, `docs/ROADMAP.md`, `docs/MOBILE-REDESIGN.md`: earlier audit, future phases and previous mobile iteration.
 
 ## Local behavior
 
-RSVP toggles; daily Connect, Reflect and Pray steps complete through their existing flows. Posts and requests are capped at 12 each. Prayer acknowledgements reset daily; follow-ups remain marked until reset. Notes, RSVP, posts and requests survive reload in the same browser and origin. Steps reset at the local calendar date boundary (checked on load, window focus and once per minute). Dialogs close with Escape or the backdrop, contain keyboard focus, and return focus to their opener. Reset requires confirmation.
+Today → group hero opens Feed; event and See details open Plan. The primary My Group tab preserves the selected Feed/People/Plan/Resources subtab when navigating away and back. Group tabs support arrow keys, Home and End. Grow reuses reflection, prayer and connection actions. You contains About, prayer circle, reset and explicitly labeled **Leader tools · Demo only**. There are no role permissions or real accounts.
 
-v0.3 uses `citizen-groups-concept-v03`; v0.2 browser entries are intentionally not imported. Reset clears only the v0.3 key. Old v0.2 entries, if any, must be removed through the original demo or browser storage controls. Invalid v0.3 storage falls back to fresh examples with a warning; failed saves retain session state with a warning. No cross-tab synchronization is implemented.
+Check-ins, prayer acknowledgements and daily rhythm reset at the local date boundary on load, window focus and once per minute. Posts/requests are capped at 12 each. RSVP, posts, requests, reactions, completed follow-ups and notes survive reload in the same browser/origin. Reactions are local and reversible. Reply explains that threaded conversations are not available and offers a standalone Share action; nothing is sent. Reset requires confirmation.
 
-The official remote logo and photo are replaced by a plain text mark and CSS background. The provisional red/black/white palette, bold headings, mobile layout and content direction remain. No official artwork is included in `dist/`; original remote references remain only in the internal source archive. No distribution license for church trademarks or supplied assets is implied.
+Existing v0.3 data uses the unchanged `citizen-groups-concept-v03` key; the new encouraged-post list defaults to empty for older valid saves. v0.2 and standalone reference-prototype storage are not imported. Reset clears only the app's key. Corrupt data produces fresh examples and a warning; storage write failures preserve the session with a warning. There is no cross-tab synchronization or secure encryption.
 
-See [mobile design review](docs/MOBILE-REDESIGN.md), [audit](docs/AUDIT.md) and [roadmap](docs/ROADMAP.md) for scope and next review steps.
+## Netlify preview
+
+The `design-system/v04` PR targets `development/phase-1-foundation`. Review via its Netlify Deploy Preview check. Netlify reads `netlify.toml`: build `npm run build`, publish `dist`, Node 24. No URL routes exist, so no SPA redirect is necessary. No Supabase setup, backend, environment secrets or production publication is part of this work.
+
+The supplied flag is bundled for this **internal review preview only**. Netlify preview authentication may require signing into the connected team account. Do not publish this build to production or disable preview protection without the required review and branding authorization. Uploading the project root would expose reference material; only `dist/` is build output. A manual upload does not apply headers in `netlify.toml` automatically.
+
+Church brand permissions, privacy and security design, full accessibility review, device testing and an authorized pilot remain prerequisites for public release. See the [roadmap](docs/ROADMAP.md).

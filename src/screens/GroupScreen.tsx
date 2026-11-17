@@ -1,65 +1,165 @@
-import { Feed } from "../components/Feed";
+import { Avatars, members } from "../components/Avatars";
+import { GroupTabs, groupTabs } from "../components/GroupTabs";
+import { PrimaryPill } from "../components/PrimaryPill";
+import { PostCard } from "../components/PostCard";
 import { Icon } from "../components/Icon";
-import { MeetingCard } from "../components/MeetingCard";
-import type { DemoData, Screen } from "./types";
+import { groupPosts } from "../data/examples";
+import type { DemoData, GroupTab } from "./types";
 type Props = {
   data: DemoData;
-  screen: Screen;
+  tab: GroupTab;
+  onTab: (t: GroupTab) => void;
   rsvp: () => void;
   openGuide: () => void;
   openPost: () => void;
   openInvite: () => void;
+  onEncourage: (id: string) => void;
+  onReply: () => void;
+  onConnect: () => void;
 };
 export function GroupScreen({
   data,
-  screen,
+  tab,
+  onTab,
   rsvp,
   openGuide,
   openPost,
   openInvite,
+  onEncourage,
+  onReply,
+  onConnect,
 }: Props) {
   return (
-    <section className="screen" hidden={screen !== "group"} id="group">
-      <div className="page-heading">
-        <p className="eyebrow">My group</p>
-        <h1>Tuesday Community</h1>
-        <p>A place to belong. People to do life with.</p>
+    <section className="screen active" aria-label="My Group screen">
+      <div className="screen-heading">
+        <p className="eyebrow">
+          <span className="red-rule" />
+          My circle
+        </p>
+        <h1>
+          Wednesday
+          <br />
+          Group<span className="accent">.</span>
+        </h1>
+        <p>Eight people. One community.</p>
       </div>
-      <div className="members-strip">
-        <div className="people" aria-label="Eight fictional members">
-          {["AL", "JM", "MC", "TD", "+4"].map((n) => (
-            <span className="person" key={n}>
-              {n}
-            </span>
-          ))}
-        </div>
-        <button className="text-button" onClick={openInvite}>
-          Invite info <Icon name="plus" size={16} />
+      <div className="group-members">
+        <Avatars />
+        <button className="small-btn" onClick={openInvite}>
+          <Icon name="plus" size="tiny" />
+          Invite
         </button>
       </div>
-      <MeetingCard going={data.rsvp} onRsvp={rsvp} />
-      <button className="resource-row" onClick={openGuide}>
-        <span className="action-icon">
-          <Icon name="guide" />
-        </span>
-        <span>
-          <strong>A place to belong</strong>
-          <small>This week’s discussion guide</small>
-        </span>
-        <Icon name="arrow" size={18} />
-      </button>
-      <div className="section-heading">
-        <h2>Conversation</h2>
-        <span className="tag">Local only</span>
-      </div>
-      <button className="compose-button" onClick={openPost}>
-        <span className="ava self">YO</span>
-        <span>Share something with your group</span>
-        <Icon name="share" size={20} />
-      </button>
-      <div className="panel feed" id="feed">
-        <Feed entries={data.posts} />
-      </div>
+      <GroupTabs selected={tab} onSelect={onTab} />
+      {groupTabs.map((t) => (
+        <div
+          key={t}
+          id={`panel-${t}`}
+          role="tabpanel"
+          aria-labelledby={`tab-${t}`}
+          tabIndex={0}
+          hidden={tab !== t}
+        >
+          {t === "feed" ? (
+            <>
+              <button className="compose" onClick={openPost}>
+                <span className="avatar small">JW</span>
+                <span>Share something with your group...</span>
+                <Icon name="plus" />
+              </button>
+              {groupPosts(data.posts).map((p, i) => (
+                <PostCard
+                  key={`${p.id}-${i}`}
+                  post={p}
+                  encouraged={data.encouraged.includes(p.id)}
+                  onEncourage={() => onEncourage(p.id)}
+                  onReply={onReply}
+                />
+              ))}
+            </>
+          ) : t === "people" ? (
+            <>
+              <div className="section-row">
+                <h2>Your people</h2>
+                <span className="subtle-label">Demo members</span>
+              </div>
+              <div className="people-list">
+                {members.map((m) => (
+                  <div className="person-row" key={m.initial}>
+                    <span className={`member-avatar mv-${m.color}`}>
+                      {m.initial}
+                    </span>
+                    <span>
+                      <strong>{m.name}</strong>
+                      <small>Group member</small>
+                    </span>
+                    <button
+                      className="tiny-action"
+                      aria-label={`Encourage ${m.name}`}
+                      onClick={onConnect}
+                    >
+                      Encourage
+                    </button>
+                  </div>
+                ))}
+              </div>
+              <p className="privacy-note">
+                Four of eight fictional members shown.
+              </p>
+            </>
+          ) : t === "plan" ? (
+            <>
+              <div className="section-row">
+                <h2>Next gathering</h2>
+              </div>
+              <article className="detail-card">
+                <span className="eyebrow">
+                  WED · NOV 18 · 7:00 PM · FICTIONAL
+                </span>
+                <h3>Showing up together.</h3>
+                <p>Example location · Albuquerque</p>
+                <div className="plan-actions">
+                  <PrimaryPill aria-pressed={data.rsvp} onClick={rsvp}>
+                    {data.rsvp ? "✓ Going" : "I'm going"}
+                  </PrimaryPill>
+                  <PrimaryPill secondary onClick={openGuide}>
+                    View discussion guide
+                  </PrimaryPill>
+                </div>
+              </article>
+              <p className="privacy-note">
+                Demo RSVP only. No invitations or messages are sent.
+              </p>
+            </>
+          ) : (
+            <>
+              <div className="section-row">
+                <h2>Resources</h2>
+              </div>
+              <button className="resource-card" onClick={openGuide}>
+                <span className="resource-icon">
+                  <Icon name="guide" />
+                </span>
+                <span>
+                  <strong>Discussion guide</strong>
+                  <small>Belonging, listening, and making room</small>
+                </span>
+                <Icon name="chevron" />
+              </button>
+              <button className="resource-card" onClick={openInvite}>
+                <span className="resource-icon">
+                  <Icon name="group" />
+                </span>
+                <span>
+                  <strong>Invite a friend</strong>
+                  <small>How group invitations could work</small>
+                </span>
+                <Icon name="chevron" />
+              </button>
+            </>
+          )}
+        </div>
+      ))}
     </section>
   );
 }

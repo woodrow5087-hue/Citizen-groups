@@ -1,0 +1,22 @@
+:root {
+  color-scheme: dark;
+  --bg: #08090c;
+  --surface: #111318;
+  --surface-2: #191b21;
+  --surface-3: #22252b;
+  --line: #343840;
+  --line-active: #e32c3d;
+  --action-red: #df1231;
+  --selected-start: #e21937;
+  --red: #ef1635;
+  --red-hot: #fb233d;
+  --red-soft: #38171f;
+  --white: #f9f8f7;
+  --text: #f4f4f5;
+  --muted: #a7aab3;
+  --quiet: #7d828e;
+  --radius-sm: 12px;
+  --radius: 18px;
+  --radius-lg: 24px;
+  --shadow: 0 12px 40px rgba(0, 0, 0, 0.25);
+}
