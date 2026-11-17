@@ -1,3 +1,5 @@
+import { useBible } from "./features/bible/useBible";
+import type { VersePreview } from "./features/bible/BibleReader";
 import { LeadScreen } from "./screens/LeadScreen";
 import { TodayScreen } from "./screens/TodayScreen";
 import { GroupScreen } from "./screens/GroupScreen";
@@ -20,6 +22,7 @@ import {
 } from "./state/storage";
 import type { GroupTab, Screen } from "./screens/types";
 type Dialog =
+  | "bibleShare"
   | "inbox"
   | "reply"
   | "checkin"
@@ -32,6 +35,7 @@ type Dialog =
   | "about"
   | "reset";
 const titles: Record<Dialog, string> = {
+  bibleShare: "My Group · Demo preview",
   inbox: "Messages",
   reply: "Join the conversation",
   checkin: "Show up for someone",
@@ -45,6 +49,8 @@ const titles: Record<Dialog, string> = {
   reset: "Reset demo?",
 };
 export default function App() {
+  const bible = useBible();
+  const [versePreview, setVersePreview] = useState<VersePreview | null>(null);
   const [loaded] = useState(loadData);
   const [data, setData] = useState(loaded.data);
   const [warning, setWarning] = useState(loaded.warning);
@@ -180,6 +186,11 @@ export default function App() {
         "Demo reset for this session. Browser storage could not be cleared.",
       );
     }
+    const bibleWarning = bible.reset();
+    if (bibleWarning)
+      setWarning((previous) =>
+        [previous, bibleWarning].filter(Boolean).join(" "),
+      );
     setData(initialData());
     setStatus("Demo reset.");
     close();
@@ -230,7 +241,17 @@ export default function App() {
             />
           )}
           {screen === "grow" && (
-            <GrowScreen done={done} onStep={step} onGuide={openGuide} />
+            <GrowScreen
+              done={done}
+              onStep={step}
+              onGuide={openGuide}
+              bible={bible}
+              day={data.day}
+              onPreview={(preview) => {
+                setVersePreview(preview);
+                open("bibleShare");
+              }}
+            />
           )}
           {screen === "you" && (
             <YouScreen
@@ -301,6 +322,23 @@ export default function App() {
                     : "Save in demo"}
               </PrimaryPill>
             </form>
+          ) : dialog === "bibleShare" ? (
+            <>
+              <p className="safe-note">
+                <strong>Local demo preview only.</strong> Nothing is posted to
+                My Group or delivered to anyone. Your personal reflection is
+                never included.
+              </p>
+              <article className="verse-preview">
+                <span className="eyebrow">Wednesday Group · Fictional</span>
+                <h3>{versePreview?.reference}</h3>
+                <blockquote>{versePreview?.text}</blockquote>
+                <p>World English Bible (WEBP) · Public domain · eBible.org</p>
+              </article>
+              <PrimaryPill secondary onClick={close}>
+                Close preview
+              </PrimaryPill>
+            </>
           ) : dialog === "checkin" ? (
             <>
               <p>
@@ -391,8 +429,8 @@ export default function App() {
           ) : dialog === "reset" ? (
             <>
               <p>
-                Clear your local demo entries, notes, and progress? This cannot
-                be undone.
+                Clear your local demo entries, notes, Bible reflections, reading
+                progress and settings? This cannot be undone.
               </p>
               <div className="actionrow">
                 <PrimaryPill secondary onClick={close}>
