@@ -321,3 +321,31 @@
     gap: 5px;
   }
 }
+
+
+/* v0.5.1 — controls can be collapsed while reading. */
+.reader-controls {
+  border: 1px solid var(--line);
+  border-radius: 15px;
+  background: var(--surface);
+  margin: 9px 0 12px;
+  padding: 0 12px;
+}
+.reader-controls > summary {
+  min-height: 44px;
+  display: list-item;
+  align-content: center;
+  font-size: 12px;
+  color: var(--muted);
+  font-weight: 750;
+  cursor: pointer;
+}
+.reader-controls[open] { padding-bottom: 10px; }
+.reader-controls[open] > summary { margin-bottom: 6px; }
+.reader-controls .reader-preferences { margin: 10px 0 0; }
+.reader-controls > summary:focus-visible {
+  outline: 2px solid var(--red-hot);
+  outline-offset: 3px;
+}
+.reader-heading { margin: 8px 0 12px; }
+.reader-heading h1 { font-size: 27px; }
