@@ -183,3 +183,25 @@ test('foreground resume updates the screen and reschedules midnight on 23- and 2
     assert.match(ui.text(), /Mark reading complete/);
   }
 });
+
+
+test('Grow opens on Read by default, while direct Memorize navigation still works', t => {
+  const ui = open(t);
+  ui.tab('grow');
+  assert.ok(ui.document.querySelector('.seg-btn.active[data-grow="read"]'));
+  assert.match(ui.text(), /TODAY.S PASSAGE/);
+  ui.grow('memorize');
+  assert.ok(ui.document.querySelector('.seg-btn.active[data-grow="memorize"]'));
+  ui.tab('today');
+  ui.tab('grow');
+  assert.ok(ui.document.querySelector('.seg-btn.active[data-grow="read"]'));
+});
+
+test('daily progress ring labels remain structured for narrow phone screens', t => {
+  const ui = open(t);
+  const ring = ui.document.querySelector('.today-hero .daily-ring');
+  assert.ok(ring);
+  assert.equal(ring.querySelector('.ring-center strong').textContent, '0/4');
+  assert.deepEqual([...ring.querySelectorAll('.ring-label > span')].map(x => x.textContent), ['Daily', 'rhythm']);
+  assert.match(ring.getAttribute('aria-label'), /0 of 4 today/);
+});
