@@ -1,0 +1,13 @@
+{
+  "name": "citizen-groups",
+  "private": true,
+  "scripts": {
+    "test": "node --test"
+  },
+  "engines": {
+    "node": ">=22.12"
+  },
+  "devDependencies": {
+    "jsdom": "^26.1.0"
+  }
+}
