@@ -172,13 +172,10 @@
       </div>
       <section class="today-circle" aria-label="Fictional group activity">
         <div class="section-heading"><h2>From your circle</h2><button type="button" data-tab="groups">See all →</button></div>
-        <p class="circle-note">Small moments of encouragement, all week long.</p>
-        <small class="example-caption">Fictional group activity</small>
-        ${people.slice(0,2).map(p => `<div class="buddy-row">${avatar(p)}<div class="buddy-copy"><b>${p.name}</b><p>${p.activity}</p></div><button type="button" class="round-react ${state.daily.encouraged.includes(p.id) ? 'selected' : ''}" data-action="encourage" data-id="${p.id}" aria-pressed="${state.daily.encouraged.includes(p.id)}" aria-label="${p.progress===4 ? 'Celebrate' : 'Nudge'} ${p.name}">${icon('heart')}</button></div>`).join('')}
+        <small class="example-caption">Fictional group activity · Preview</small>
+        ${people.slice(0,1).map(p => `<div class="buddy-row">${avatar(p)}<div class="buddy-copy"><b>${p.name}</b><p>${p.activity}</p></div><button type="button" class="round-react ${state.daily.encouraged.includes(p.id) ? 'selected' : ''}" data-action="encourage" data-id="${p.id}" aria-pressed="${state.daily.encouraged.includes(p.id)}" aria-label="${p.progress===4 ? 'Celebrate' : 'Nudge'} ${p.name}">${icon('heart')}</button></div>`).join('')}
       </section>
-      <div class="section-heading"><h2>This week’s Scripture</h2></div>
-      <button class="reading-card" type="button" data-grow="read">${icon('book')}<div><strong>Life in the Spirit</strong><small>Romans 8:26–28 · KJV</small></div>${icon('right')}</button>
-      <p class="footer-note">UNOFFICIAL PROTOTYPE · Sample group data. Your activity is saved in this browser.</p>
+      <p class="today-demo-note">UNOFFICIAL DEMO · Fictional group information</p>
     </div>`;
   }
   function growView(){return `${banner('Grow', 'Daily practice')}<div class="seg-row">${keys.map(k=>`<button class="seg-btn ${growTab===k?'active':''}" type="button" data-grow="${k}">${k[0].toUpperCase()+k.slice(1)}${state.daily.done[k]?' ✓':''}</button>`).join('')}</div>${heading('Grow in God’s Word')}${growTab==='memorize'?memoryView():growTab==='read'?readView():growTab==='share'?shareView():prayView()}`}
