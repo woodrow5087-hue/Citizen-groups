@@ -1,12 +1,10 @@
-# Citizen Groups — Daily Rhythm (unofficial concept)
+# Citizen Connect — Daily Rhythm (unofficial concept)
 
 A clickable mobile-first front-end prototype inspired by BuddyCheck's daily Scripture/accountability workflow, styled using the earlier Citizen Groups visual design reference. This is **not an official app** or an endorsed project from Citizen Church or BuddyCheck.
 
 ## Deploy to Netlify
 
-1. Zip contains `index.html`, `styles.css`, `app.js`, and `icon.svg` at the top level.
-2. Open https://app.netlify.com/drop and drop the ZIP file on the page. Or add the folder to a GitHub repo for continuous deployment.
-3. Open the URL on a phone. No environment variables or build command are needed. Publish directory is the project root.
+The GitHub-connected Netlify site serves the project root. Include the `assets/` directory alongside `index.html`, `styles.css`, and `app.js`. No build command is needed.
 
 ## Try the interactions
 
@@ -25,7 +23,6 @@ Plain HTML, CSS and JavaScript, with no external libraries or API requests. Your
 ## Run and test
 
 Serve this directory with `python3 -m http.server 8000`, then open `http://localhost:8000`.
-Only the root HTML, CSS, JS and SVG files are required for deployment.
 For development tests, use Node 22.12 or later and run `npm ci` followed by
 `npm test`. The tests drive the app's controls in jsdom with a simulated local
 clock. Test dependencies are never loaded by the web app.
