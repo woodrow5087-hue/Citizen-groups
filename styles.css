@@ -447,3 +447,48 @@ button,.opportunity summary { touch-action:manipulation; }
   .today-view .daily-ring > .ring-center { width:100%; }
   .today-view .daily-ring .ring-label { font-size:9px; }
 }
+
+
+/* v0.3.9 — Intentional, solid matte header for Safari and installed web-app views. */
+@media (max-width:700px) {
+  html, body, .stage, .phone-shell {
+    background-color:#242329;
+    background-image:none;
+  }
+  .app-frame { background:#f5f4f4; }
+  .app-header {
+    position:relative;
+    isolation:isolate;
+    background:#242329;
+    background-image:none;
+    opacity:1;
+    border-bottom:1px solid #39373f;
+    box-shadow:none;
+    min-height:76px;
+    padding-top:calc(12px + env(safe-area-inset-top));
+    padding-bottom:13px;
+  }
+  .brand { opacity:1; transform:none; filter:none; }
+  .brand img {
+    display:block;
+    width:min(148px,42vw);
+    height:auto;
+    opacity:1;
+    filter:none;
+    transform:none;
+  }
+  .header-buttons .circle-icon {
+    background:#29282f;
+    color:#fff;
+    border-color:#5a5862;
+    opacity:1;
+    box-shadow:none;
+  }
+  .header-buttons .user-icon {
+    background:#ed0033;
+    border-color:#ed0033;
+  }
+}
+@media (max-width:359px) {
+  .brand img { width:min(132px,39vw); }
+}
