@@ -74,9 +74,9 @@ export function parseBible(raw: string): BibleData {
     })),
   };
 }
-export function loadBible() {
+export function loadBible(storageKey = BIBLE_KEY) {
   try {
-    const raw = localStorage.getItem(BIBLE_KEY);
+    const raw = localStorage.getItem(storageKey);
     return { data: raw ? parseBible(raw) : initialBible(), warning: "" };
   } catch {
     return {
@@ -86,9 +86,9 @@ export function loadBible() {
     };
   }
 }
-export function saveBible(data: BibleData) {
+export function saveBible(data: BibleData, storageKey = BIBLE_KEY) {
   try {
-    localStorage.setItem(BIBLE_KEY, JSON.stringify(data));
+    localStorage.setItem(storageKey, JSON.stringify(data));
     return "";
   } catch {
     return "Bible changes work for this session, but could not be saved on this device.";

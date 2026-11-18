@@ -3,7 +3,11 @@ import { Icon } from "./Icon";
 export function BrandHeader({
   onMessages,
   onProfile,
+  initials = "JW",
+  messageLabel = "Show demo messages",
 }: {
+  initials?: string;
+  messageLabel?: string;
   onMessages: () => void;
   onProfile: () => void;
 }) {
@@ -29,7 +33,7 @@ export function BrandHeader({
         <button
           className="round-button"
           onClick={onMessages}
-          aria-label="Show demo messages"
+          aria-label={messageLabel}
         >
           <Icon name="message" />
         </button>
@@ -38,7 +42,7 @@ export function BrandHeader({
           onClick={onProfile}
           aria-label="My profile"
         >
-          JW
+          {initials}
         </button>
       </div>
     </header>

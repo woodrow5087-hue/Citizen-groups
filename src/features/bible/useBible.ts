@@ -9,8 +9,8 @@ import {
   type Reflection,
 } from "./storage";
 import { locationKey, type Location } from "./catalog";
-export function useBible() {
-  const [loaded] = useState(loadBible);
+export function useBible(storageKey = BIBLE_KEY) {
+  const [loaded] = useState(() => loadBible(storageKey));
   const [data, setData] = useState(loaded.data);
   const [warning, setWarning] = useState(loaded.warning);
   const [status, setStatus] = useState("");
@@ -20,7 +20,7 @@ export function useBible() {
   function update(change: (d: BibleData) => BibleData, message = "") {
     const next = change(data);
     setData(next);
-    const error = saveBible(next);
+    const error = saveBible(next, storageKey);
     setWarning(error);
     setStatus(
       error
@@ -97,7 +97,7 @@ export function useBible() {
   function reset() {
     let message = "";
     try {
-      localStorage.removeItem(BIBLE_KEY);
+      localStorage.removeItem(storageKey);
     } catch {
       message =
         "Bible reset for this session; saved Bible storage could not be cleared.";

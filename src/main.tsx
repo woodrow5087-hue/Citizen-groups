@@ -14,7 +14,7 @@ class ErrorBoundary extends Component<
     return this.state.failed ? (
       <main className="layout">
         <h1>Something went wrong.</h1>
-        <p>Your local demo could not be displayed. Reload to try again.</p>
+        <p>The application could not be displayed. Reload to try again.</p>
         <button onClick={() => window.location.reload()}>Reload demo</button>
       </main>
     ) : (
