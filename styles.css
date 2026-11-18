@@ -125,3 +125,130 @@ button,.opportunity summary { touch-action:manipulation; }
  .rhythm-finished button { padding:10px 7px; }
  .today-view .habit-state { font-size:8px; }
 }
+
+
+/* v0.3.4 — Mobile-first refinement of the approved hybrid experience.
+   Keep full-width content easy to reach, scan and tap on real phones. */
+@media (max-width:700px) {
+  html, body, .stage { width:100%; overflow-x:hidden; }
+  html { -webkit-text-size-adjust:100%; }
+  .app-header {
+    min-height:70px;
+    padding:calc(12px + env(safe-area-inset-top)) 15px 12px;
+  }
+  .brand img { width:min(134px,38vw); height:auto; }
+  .header-buttons { gap:7px; }
+  .content-scroll {
+    padding:0 14px 24px;
+    scroll-padding-top:12px;
+  }
+  .view-banner, .today-hero { margin-inline:-14px; }
+  .today-hero {
+    padding:11px 16px 27px;
+    min-height:144px;
+    gap:9px;
+  }
+  .today-hero h1 { font-size:clamp(28px,7.7vw,36px); line-height:1.06; }
+  .daily-ring { width:clamp(72px,22vw,88px); }
+  .daily-ring strong { font-size:22px; }
+
+  /* Two legible actions per row instead of four narrow tap targets. */
+  .today-view .habit-grid {
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:8px;
+    margin:-13px 0 13px;
+  }
+  .today-view .habit-tile {
+    display:grid;
+    grid-template-columns:30px minmax(0,1fr);
+    grid-template-rows:auto auto;
+    column-gap:9px;
+    row-gap:2px;
+    align-content:center;
+    justify-content:stretch;
+    align-items:center;
+    min-height:70px;
+    padding:10px 12px;
+    text-align:left;
+    border-radius:14px;
+  }
+  .today-view .habit-tile .habit-symbols {
+    grid-column:1;
+    grid-row:1 / span 2;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    min-width:0;
+  }
+  .today-view .habit-tile .habit-symbols .ico:first-child { width:25px; height:25px; }
+  .today-view .habit-tile .habit-name {
+    grid-column:2;
+    grid-row:1;
+    font-size:clamp(13px,4vw,16px);
+    line-height:1.12;
+    min-width:0;
+  }
+  .today-view .habit-tile .habit-state {
+    grid-column:2;
+    grid-row:2;
+    font-size:11px;
+    line-height:1.15;
+  }
+  .group-photo { padding:14px; border-radius:17px; }
+  .group-photo>strong { font-size:clamp(24px,6.6vw,31px); }
+  .photo-gathering { font-size:12.5px; }
+  .photo-gathering>.ico:last-child {
+    width:40px;
+    height:40px;
+    padding:10px;
+    flex:none;
+  }
+  .rhythm-nudge { min-height:69px; margin:10px 0 13px; }
+  .quick-cards { gap:9px; }
+  .quick-cards button { min-height:82px; }
+  .today-circle .buddy-row { gap:9px; }
+  .today-circle .buddy-copy { min-width:0; }
+
+  .bottom-nav {
+    gap:2px;
+    padding:7px 9px calc(9px + env(safe-area-inset-bottom));
+  }
+  .nav-item {
+    min-height:57px;
+    gap:5px;
+    padding:7px 2px;
+    font-size:11px;
+    line-height:1.15;
+  }
+  .nav-item .ico { width:24px; height:24px; }
+
+  /* Keep the iOS keyboard from zooming into writing fields. */
+  .reflection-input, .prayer-input { font-size:16px; }
+  .seg-row { margin:12px 0 16px; gap:5px; }
+  .seg-btn { min-height:44px; font-size:12px; padding:10px 2px; }
+  .memory-card { padding:16px 13px; }
+  .verse-text { font-size:clamp(17px,4.8vw,20px); line-height:2; }
+  .blank { min-height:39px; min-width:54px; padding:6px 7px; }
+  .word-chip { min-height:44px; }
+  .sheet-card { padding-bottom:calc(24px + env(safe-area-inset-bottom)); }
+}
+@media (max-width:359px) {
+  .app-header { padding-inline:12px; }
+  .brand img { width:min(120px,36vw); }
+  .today-hero { min-height:134px; padding-inline:13px; }
+  .today-hero h1 { font-size:27px; }
+  .daily-ring { width:70px; }
+  .today-view .habit-tile { grid-template-columns:25px minmax(0,1fr); padding:9px; column-gap:7px; }
+  .today-view .habit-tile .habit-symbols .ico:first-child { width:23px; height:23px; }
+  .today-view .habit-tile .habit-name { font-size:13px; }
+  .rhythm-nudge { gap:8px; }
+  .group-photo>strong { font-size:23px; }
+  .quick-cards b { font-size:12px; }
+  .quick-cards small { font-size:10px; }
+  .group-shortcuts button { font-size:11px; padding:9px 4px; }
+}
+@media (max-width:700px) and (max-height:550px) {
+  .app-header { padding-top:calc(8px + env(safe-area-inset-top)); padding-bottom:8px; min-height:0; }
+  .nav-item { min-height:48px; gap:3px; }
+  .bottom-nav { padding-top:4px; }
+}
