@@ -45,7 +45,7 @@
   let state = load();
   let reflectionDraft = null;
   let midnightTimer;
-  let tab='today', growTab='memorize', profileTab='awards', sheet='', toastTimeout, celebrateTimeout;
+  let tab='today', growTab='read', profileTab='awards', sheet='', toastTimeout, celebrateTimeout;
   function save() {
     try { localStorage.setItem(STORAGE, JSON.stringify(state)); }
     catch { /* Keep the current session usable when storage is unavailable. */ }
@@ -193,7 +193,7 @@
   function stats(){return `${heading('Steady progress')}<h1 class="section-large">Your stats<span class="dot">.</span></h1><p class="section-sub">One step at a time adds up. Historical statistics below are illustrative.</p><div class="panel"><div class="history-row"><b>Current daily progress</b><span>${count()}/4</span></div><div class="history-row"><b>Sample 5-day streak</b><span>5 days</span></div><div class="history-row"><b>Sample active days</b><span>26</span></div><div class="history-row"><b>Today’s prayers acknowledged</b><span>${state.daily.prayed.length}</span></div><div class="history-row"><b>Buddies encouraged</b><span>${state.daily.encouraged.length}</span></div></div>`}
   function youView(){return `${banner("Your Journey","You")}<div class="journey-card">${progressRing()}<div class="journey-habits">${keys.map((k,i)=>`<span>${names[i]}<b>${state.daily.done[k]?"✓":"○"}</b></span>`).join("")}</div></div><div class="you-profile"><div class="large-avatar">JW</div><div><h2>Jonathan W.</h2><p>Wednesday Group · Demo profile</p></div><button class="mini-button" data-action="settings">${icon('info','inline-icon')} Demo</button></div><div class="profile-stats"><div>${icon('flame')}<b>5</b><small>Day streak*</small></div><div>${icon('check')}<b>26</b><small>Days active*</small></div><div>${icon('bars')}<b>${Math.round(count()/4*100)}%</b><small>Today</small></div></div><div class="profile-tabs">${['awards','history','stats'].map(p=>`<button class="${profileTab===p?'active':''}" data-profile="${p}">${p[0].toUpperCase()+p.slice(1)}</button>`).join('')}</div>${profileTab==='awards'?awards():profileTab==='history'?history():stats()}<div class="section-heading"><h2>Demo controls</h2></div><button class="settings-row" data-action="reset"><span>Reset today’s sample progress</span>${icon('reset')}</button><button class="settings-row" data-action="settings"><span>About this prototype</span>${icon('info')}</button><p class="footer-note">*Historical streak and activity totals are fictional examples, not real tracked data. This is an independent, unofficial concept—not an official Citizen Church app.</p>`}
   function render(preserve=false){const main=$('content');let y=preserve?main.scrollTop:0;main.innerHTML=tab==='today'?todayView():tab==='grow'?growView():tab==='groups'?groupsView():youView();$('bottom-nav').innerHTML=[['today','home','Today'],['grow','book','Grow'],['groups','users','My Group'],['you','profile','You']].map(([id,ic,label])=>`<button class="nav-item ${tab===id?'active':''}" data-tab="${id}" aria-current="${tab===id?'page':'false'}">${icon(ic)}<span>${label}</span></button>`).join('');main.scrollTop=y;renderSheet()}
-  function goto(t,sub){tab=t;if(sub)growTab=sub;render();}
+  function goto(t,sub){tab=t;if(sub)growTab=sub;else if(t==='grow')growTab='read';render();}
   function grow(sub){tab='grow';growTab=sub;render()}
   function notify(msg){const box=$('toast');box.textContent=msg;box.hidden=false;clearTimeout(toastTimeout);toastTimeout=setTimeout(()=>box.hidden=true,2950)}
   function celebrate(){const d=document.createElement('div');d.className='celebrate';d.innerHTML=`<div>${icon('award')}<h2>All four. Well done.</h2><p>You showed up for what matters today. Come back tomorrow and keep growing.</p></div>`;document.querySelector('.phone-shell').appendChild(d);clearTimeout(celebrateTimeout);celebrateTimeout=setTimeout(()=>d.remove(),2800)}
@@ -237,7 +237,7 @@
     if(action==='activity'||action==='settings'||action==='serve'){sheet=action;renderSheet();return}
     if(action==='close-sheet'){sheet='';renderSheet();return}
     if(action==='backdrop'){if(e.target===btn){sheet='';renderSheet()}return}
-    if(action==='reset'){if(window.confirm('Reset all local demo data, including saved reflections, prayer text and RSVP?')){state=fresh();reflectionDraft=null;save();tab='today';growTab='memorize';profileTab='awards';render();notify('Demo activity reset.')}}
+    if(action==='reset'){if(window.confirm('Reset all local demo data, including saved reflections, prayer text and RSVP?')){state=fresh();reflectionDraft=null;save();tab='today';growTab='read';profileTab='awards';render();notify('Demo activity reset.')}}
   });
   window.addEventListener('focus', resume);
   window.addEventListener('pageshow', resume);
