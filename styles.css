@@ -414,3 +414,36 @@ button,.opportunity summary { touch-action:manipulation; }
   .today-view .quick-cards b { font-size:11px; }
   .today-view .quick-cards small { font-size:9px; }
 }
+
+
+/* Progress-ring alignment: intentionally split the label across two centered lines. */
+.daily-ring > .ring-center {
+  width:100%;
+  height:100%;
+  min-width:0;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:2px;
+  text-align:center;
+  position:relative;
+  z-index:1;
+}
+.daily-ring .ring-label {
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  width:100%;
+  white-space:normal;
+  font-size:9px;
+  line-height:1.04;
+  letter-spacing:0;
+  font-weight:650;
+}
+.daily-ring .ring-label > span { display:block; }
+@media (max-width:700px) {
+  .today-view .daily-ring > .ring-center { width:100%; }
+  .today-view .daily-ring .ring-label { font-size:9px; }
+}
