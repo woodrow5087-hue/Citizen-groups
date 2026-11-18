@@ -8,52 +8,487 @@
 @media(max-width:700px){.stage{padding:0;display:block;background:var(--bg)}.desktop-pitch{display:none}.phone-shell{width:100vw;height:100dvh;min-height:0;border:0;border-radius:0;box-shadow:none}.app-header{padding:calc(16px + env(safe-area-inset-top)) 17px 13px}.bottom-nav{padding-bottom:max(13px,env(safe-area-inset-bottom))}.toast{bottom:calc(88px + env(safe-area-inset-bottom))}}@media(min-width:701px) and (max-height:710px){.stage{padding:8px}.phone-shell{height:calc(100dvh - 16px);min-height:0}}@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
 .inline-icon{width:16px;height:16px;display:inline-block;vertical-align:middle;margin-right:5px}.soft-button .inline-icon{width:14px;height:14px;display:inline-block;vertical-align:middle;margin-left:5px}
 
-/* Today dashboard */
-.today-view .eyebrow { margin: 12px 0 7px; }
-.today-view .hero-title { font-size: clamp(30px, 8vw, 36px); margin: 0 0 15px; }
-.today-view .section-heading { margin: 0 0 9px; }
-.today-view .section-heading h2, .serve-preview h2 { font-size: 20px; letter-spacing: -.045em; }
-.today-group { min-height: 0; padding: 13px 16px 15px; box-shadow: inset 0 1px #ffffff10, 0 5px 14px #0003; }
-.today-group h2 { max-width: none; margin: 10px 0 7px; font-size: clamp(27px, 7.8vw, 34px); }
-.today-group .group-pill { padding: 5px 9px; font-size: 10px; }
-.today-group .group-open { width: 27px; height: 27px; }
-.today-group:before { top: 22px; right: -118px; }
-.today-group .group-watermark { width: 155px; height: 155px; right: -20px; bottom: -32px; }
-.gathering-time, .group-members { display: flex; align-items: center; gap: 7px; position: relative; }
-.gathering-time { font-size: 12px; font-weight: 650; color: #e4dee3; }
-.gathering-time .ico { width: 16px; height: 16px; color: #faa3b6; }
-.group-members { gap: 8px; margin-top: 13px; font-size: 11px; color: #d8d5dc; }
-.group-members .avatar-line { margin: 0; }
-.group-members .buddy-avatar { width: 24px; height: 24px; font-size: 9px; border: 2px solid #251d25; margin-right: -5px; }
-.group-members .buddy-avatar:last-child { margin-right: 0; }
-.daily-rhythm { margin: 21px 0 10px; }
-.rhythm-meter { display: flex; gap: 4px; margin-bottom: 10px; }
-.rhythm-meter span { flex: 1; height: 3px; background: #37363f; border-radius: 2px; overflow: hidden; }
-.rhythm-meter .filled:before { content: ''; display: block; height: 100%; background: var(--red-light); transform-origin: left; }
-.today-view .habit-grid { gap: 8px; }
-.today-view .habit-tile { min-height: 84px; display: grid; align-content: center; justify-content: stretch; padding: 10px 13px; border-radius: 15px; box-shadow: inset 0 1px #ffffff09; }
-.habit-symbols { display: flex; justify-content: space-between; align-items: center; }
-.habit-symbols .ico { width: 19px; height: 19px; }
-.habit-symbols .ico:last-child { width: 15px; height: 15px; }
-.habit-name { font-size: 17px; font-weight: 800; letter-spacing: -.035em; margin-top: 6px; }
-.today-view .habit-tile small { color: #c7c5d0; font-size: 11px; line-height: 1.35; }
-.today-view .habit-tile.featured small { color: #fff; }
-.sample-streak { display: flex; align-items: center; gap: 5px; color: #acaab5; font-size: 11px; margin: 8px 0 0; }
-.sample-streak .ico { width: 14px; height: 14px; }
-.today-circle .section-heading { margin-bottom: 0; }
-.today-circle .section-heading button { min-height: 44px; }
-.example-caption { color: #b4b1be; font-size: 11px; }
-.today-circle .round-react { width: 44px; height: 44px; }
-.serve-preview { display: flex; align-items: flex-start; gap: 13px; margin: 18px 0 20px; padding: 16px; border: 1px solid #49353e; border-radius: 17px; background: #221c22; }
-.serve-icon { color: #ff799a; padding-top: 2px; }
-.serve-preview p { font-size: 13px; line-height: 1.45; margin: 7px 0 0; color: #dedbe2; }
-@media (prefers-reduced-motion: no-preference) {
-  .rhythm-meter .filled:before { animation: rhythm-fill .28s ease-out both; }
-  .today-view button { transition: transform .14s ease, border-color .14s ease; }
-  .today-view button:active { transform: scale(.985); }
+/* Hybrid surfaces: the phone shell keeps a charcoal masthead above a light canvas. */
+.app-frame,.sheet-card { --ink:#201f24; --secondary:#57565f; --edge:#dfdce0; --paper:#fff; --accent:#c90a38; color:var(--ink); background:#f5f4f4; }
+.app-header { background:#242329; color:white; padding-bottom:12px; }
+.circle-icon { width:44px; height:44px; box-shadow:none; }
+.content-scroll { padding:0 15px 24px; }
+button,.opportunity summary { touch-action:manipulation; }
+.view-banner,.today-hero { color:#fff; background-color:#242329; margin:0 -15px 14px; padding:13px 18px 21px; }
+.view-banner h1,.today-hero h1 { margin:0; letter-spacing:-.052em; font-weight:850; font-size:32px; line-height:1.04; }
+.view-banner .eyebrow,.today-hero .eyebrow { margin:0 0 8px; color:#e0dfe3; }
+.view-banner .eyebrow:before,.today-hero .eyebrow:before { display:none; }
+.today-hero { display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:0; padding:12px 19px 44px; background-image:linear-gradient(#242329e8,#1e1d23ef),url(assets/mountain.webp); background-position:center 49%; background-size:cover; }
+.today-hero h1 { font-size:clamp(30px,8.8vw,39px); }
+.daily-ring { position:relative; width:91px; aspect-ratio:1; flex:none; display:grid; place-items:center; }
+.daily-ring svg { width:100%; height:100%; position:absolute; inset:0; transform:rotate(-90deg); fill:none; stroke-width:8; }
+.ring-track { stroke:#56545e; }.ring-fill { stroke:var(--red); stroke-linecap:round; }
+.daily-ring>span:first-of-type { display:grid; text-align:center; gap:2px; font-size:10px; font-weight:650; }
+.daily-ring strong { font-size:23px; line-height:1; }
+.sr-only { position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%); }
+.today-view .habit-grid { display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px; margin:-27px 0 15px;position:relative; }
+.today-view .habit-tile { min-height:76px;padding:10px 1px;align-items:center;justify-content:center;gap:7px;color:var(--ink);background:#fff;border:1px solid var(--edge);border-radius:13px;box-shadow:0 2px 5px #25202b12; }
+.today-view .habit-tile.featured { background:#fff3f5; border-color:var(--red);box-shadow:inset 0 0 0 1px var(--red); }
+.habit-name { font-size:clamp(11px,3vw,13px);font-weight:800; }
+.habit-symbols { display:flex;color:var(--accent); }.habit-symbols .ico:last-child { display:none; }.complete .habit-symbols .ico:last-child { display:block; position:absolute; top:5px;right:5px;width:16px;height:16px;background:var(--red);border-radius:50%;color:#fff; }
+.group-photo { display:grid;gap:6px;text-align:left;width:100%;color:white; padding:16px;border:0;border-radius:17px;background:linear-gradient(90deg,#15141bd6,#18171c38),linear-gradient(0deg,#131318db,transparent 65%),url(assets/mountain.webp) center 53%/cover;box-shadow:0 3px 9px #211e2916; }
+/* G. Thomas, SandiaMtnNM (public domain), photographed from Bernalillo. */
+.today-view .group-photo { background-image:linear-gradient(90deg,#111018a8,transparent 86%),linear-gradient(0deg,#15141a80,transparent 58%),url(assets/sandia-sunset.webp); }
+.group-photo>small { text-transform:uppercase;letter-spacing:.17em;font-weight:750;font-size:10px; }
+.group-photo>strong { font-size:clamp(24px,7vw,31px);letter-spacing:-.045em;line-height:1.05; }
+.photo-avatars { display:flex;align-items:center;margin:4px 0; }
+.photo-avatars .buddy-avatar,.photo-avatars b { width:31px;height:31px;margin-right:-3px;border:2px solid white;border-radius:50%; }
+.photo-avatars b { display:grid;place-items:center;background:#47444b;font-size:11px; }
+.photo-gathering { display:flex;align-items:center;gap:9px;font-size:13px;font-weight:750; }
+.photo-gathering small,.quick-cards small,.opportunity small { display:block;font-size:11px;font-weight:500;margin-top:3px; }
+.photo-gathering>.ico:last-child { margin-left:auto;background:white;color:#242329;border-radius:50%;padding:4px;width:26px;height:26px; }
+.quick-cards,.group-shortcuts { display:flex;gap:8px;margin:12px 0; }
+.quick-cards button { flex:1; min-width:0;text-align:left;display:grid;grid-template-columns:23px 1fr;align-content:center;column-gap:8px;min-height:74px;padding:10px;border-radius:14px; }
+.quick-cards .ico { grid-row:span 2;color:var(--accent);width:22px;height:22px; }
+.quick-cards b { font-size:14px;letter-spacing:-.04em; }
+.today-circle,.panel,.panel-highlight,.group-counts>div,.profile-stats>div,.quick-cards button,.journey-card,.prayer-request,.reading-card,.memory-card,.settings-row,.opportunity {background:white;color:var(--ink);border:1px solid var(--edge);box-shadow:0 2px 7px #29242c0a;}
+.today-circle { border-radius:16px;padding:4px 13px; }.today-circle .section-heading {margin:0;}.section-heading button {color:var(--accent);min-height:44px;}
+.buddy-row {background:white;color:var(--ink);border:1px solid var(--edge);}.today-circle .buddy-row {border:0;border-top:1px solid var(--edge);border-radius:0;padding:8px 0;margin:0;}
+.buddy-avatar {object-fit:cover;}.round-react,.sheet-close {width:44px;height:44px;}
+.bottom-nav {background:white;border-color:var(--edge);box-shadow:0 -2px 8px #201d2409;}
+.nav-item,.nav-item.active {color:#56545d;background:transparent;box-shadow:none;border:0;}.nav-item.active {color:var(--accent);}
+.section-heading span,.example-caption,.buddy-copy p,.feed-text small,.feed-text p,.panel p,.section-sub,.small-copy,.lead,.body-label,.footer-note,.reading-card small,.group-counts small,.member-main small,.quick-cards small,.eyebrow,.you-profile p,.history-row,.history-row small,.profile-stats small,.award small,.input-counter,.request-top small,.small-reference,.small-pill {color:var(--secondary);}
+.example-caption {font-size:11px;}.section-heading h2 {letter-spacing:-.045em;}.history-row b,.reading-verse,.verse-text,.memory-card-head b,.panel .reading-verse {color:var(--ink);}
+.group-shortcuts button,.seg-btn,.profile-tabs button,.mini-button,.soft-button,.round-react,.sheet-close,.word-chip,.blank,.small-pill {background:#f2f0f1;color:#37343d;border:1px solid #d3cfd4;box-shadow:none;}
+.group-shortcuts button {flex:1;border-radius:12px;font-size:12px;font-weight:750;}
+.group-shortcuts button,.seg-btn,.profile-tabs button,.mini-button,.soft-button,.word-chip,.blank {min-height:44px;}
+.seg-btn.active,.profile-tabs button.active,.main-button {background:var(--accent);color:white;border-color:var(--accent);box-shadow:none;}
+.mini-button.selected,.round-react.selected,.soft-button.selected,.blank.filled {background:#ffedf1;color:#a30730;border-color:#dc7892;}
+.blank.wrong {background:#fff0e7;color:#872c05;border-color:#b74b26;}
+.reflection-input,.prayer-input {background:white;color:var(--ink);border-color:#aaa6af;}
+.member-row,.feed-story,.history-row,.week-day {border-color:var(--edge);}
+.member-dots span {background:#dedbe0;}.member-dots span.hit {background:var(--red);}
+.week-day {background:#f3f2f3;color:#403e46;}.week-day.completed {background:var(--accent);color:white;}.week-day.current {border-color:var(--accent);}
+.award-emblem,.award-emblem .award-core {background:#fce8ee;color:var(--accent);}.award-emblem svg {color:var(--accent);}
+.award.locked .award-core,.award.locked .award-emblem {background:#e6e4e8;}.award.locked svg {color:#55515b;}
+.journey-card {display:flex;align-items:center;gap:24px;padding:14px 20px;margin-bottom:14px;border-radius:17px;}
+.journey-card .ring-track {stroke:#e3e0e4;}.journey-habits {flex:1;display:grid;gap:6px;font-size:12px;font-weight:700;}.journey-habits span {display:flex;justify-content:space-between;}.journey-habits b {color:var(--accent);}
+.opportunity {border-radius:14px;margin-top:9px;padding:9px;}.opportunity summary {display:flex;align-items:center;gap:12px;cursor:pointer;list-style:none;min-height:52px;}.opportunity summary::-webkit-details-marker {display:none;}.opportunity summary img {width:61px;height:55px;border-radius:8px;object-fit:cover;}.opportunity .ico {margin-left:auto;color:var(--accent);}.opportunity p {margin:10px 4px;font-size:14px;}.opportunity[open] .ico {transform:rotate(90deg);}
+.celebrate>div {background:#fff;color:#252329;border:1px solid #ddd;box-shadow:0 6px 20px #0002;}.celebrate>div p {color:#554f59;}
+@media(prefers-reduced-motion:no-preference){.app-frame button,.opportunity summary {transition:transform .13s ease,background-color .13s ease;}.app-frame button:active,.opportunity summary:active {transform:scale(.98);}}
+@media(prefers-reduced-motion:reduce){button:active {transform:none!important;}}
+.photo-gathering>.ico:first-child { width:21px; height:21px; flex:none; }
+.buddy-row>.ico,.opportunity .ico { width:21px; height:21px; flex:none; }
+
+
+/* v0.3.3 — Engagement polish: matte, purposeful and human-centered. */
+.app-frame,.sheet-card { --accent:#ed0033; }
+.today-view .habit-tile { position:relative; gap:4px; overflow:hidden; border-color:#e3dde1; }
+.today-view .habit-tile.featured { background:#ed0033; border-color:#ed0033; color:#fff; box-shadow:0 3px 8px #21161b18; }
+.today-view .habit-tile.featured .habit-symbols { color:#fff; }
+.today-view .habit-tile.complete { background:#fff; border-color:#e8d2d9; }
+.today-view .habit-tile.complete .habit-symbols { color:#ed0033; }
+.today-view .habit-state { display:block; max-width:100%; white-space:nowrap; color:#77727c; font-size:9px; line-height:1.2; font-weight:750; }
+.today-view .habit-tile.featured .habit-state { color:#fff; }
+.today-view .habit-tile.complete .habit-state { color:#a41337; }
+.rhythm-nudge { width:100%; display:flex; align-items:center; gap:12px; margin:11px 0 13px; padding:12px 13px; text-align:left; border:1px solid #efd2d9; border-radius:15px; background:#fff6f7; color:#28232b; box-shadow:0 2px 7px #2220200a; }
+.rhythm-nudge>.ico:first-child { width:31px; height:31px; flex-shrink:0; padding:7px; border-radius:11px; color:#ed0033; background:#ffe3e9; }
+.rhythm-nudge>span { min-width:0; flex:1; display:grid; gap:3px; }
+.rhythm-nudge small { font-size:9px; font-weight:850; letter-spacing:.15em; color:#b00a34; }
+.rhythm-nudge strong { font-size:14px; letter-spacing:-.025em; line-height:1.2; }
+.rhythm-nudge em { font-style:normal; font-weight:500; font-size:11px; line-height:1.3; color:#68616c; }
+.rhythm-nudge>.ico:last-child { width:19px; height:19px; color:#b00a34; flex:none; }
+.rhythm-nudge:focus-visible { outline:3px solid #ee617e; outline-offset:2px; }
+.rhythm-nudge.rhythm-finished { background:#f7f7f5; border-color:#e2dfdf; }
+.rhythm-finished>.ico:first-child { background:#ecf4ec; color:#286c47; }
+.rhythm-finished small { color:#566b56; }
+.rhythm-finished button { flex:none; border:0; border-radius:11px; padding:11px 9px; background:#ed0033; color:white; font-size:11px; font-weight:800; display:flex; gap:2px; align-items:center; }
+.rhythm-finished button .ico { width:14px; height:14px; }
+.today-circle { padding:7px 13px; border-color:#e0dadd; }
+.today-circle .section-heading h2 { font-size:19px; }
+.circle-note { color:#59525e; font-size:12px; line-height:1.4; margin:0 0 3px; }
+.today-circle .buddy-row { min-height:65px; }
+.today-circle .buddy-row .buddy-copy b { font-size:13px; }
+.today-circle .round-react { border-radius:50%; }
+.today-circle .round-react.selected { background:#ed0033; border-color:#ed0033; color:white; }
+.quick-cards button:first-child { background:#fff5f7; border-color:#eec9d3; }
+.quick-cards button:focus-visible,.today-circle button:focus-visible { outline:3px solid #ed738f; outline-offset:2px; }
+.group-invitation { margin:2px 0 13px; padding:16px; border-radius:17px; background:#29272e; color:#fff; border:1px solid #413d45; }
+.group-invitation-label { display:block; font-size:9px; letter-spacing:.17em; font-weight:850; color:#ff8fa4; }
+.group-invitation h2 { margin:7px 0 6px; font-size:24px; line-height:1; letter-spacing:-.045em; }
+.group-invitation p { font-size:12px; line-height:1.5; color:#dfdce2; max-width:34ch; }
+.group-invitation button { margin-top:11px; display:inline-flex; align-items:center; gap:7px; background:#ed0033; color:white; border:0; min-height:44px; border-radius:11px; padding:10px 12px; font-size:12px; font-weight:750; }
+.group-invitation button .ico { width:15px; height:15px; }
+.ring-fill { stroke:#ed0033; }
+@media(prefers-reduced-motion:no-preference) {
+  .rhythm-nudge,.today-view .habit-tile,.group-invitation button { transition:background-color .18s ease,border-color .18s ease,transform .16s ease; }
+  .rhythm-nudge:active,.group-invitation button:active { transform:scale(.985); }
+  .today-view .habit-tile.featured .habit-symbols .ico:first-child { animation:habit-appear .3s ease-out both; }
 }
-@keyframes rhythm-fill { from { transform: scaleX(0); } to { transform: scaleX(1); } }
-@media (prefers-reduced-motion: reduce) {
-  .today-view button:active { transform: none; }
+@keyframes habit-appear { from { transform:translateY(4px); opacity:.55; } to { transform:translateY(0); opacity:1; } }
+@media(max-width:359px) {
+ .rhythm-nudge { gap:8px; padding:10px; }
+ .rhythm-nudge em { font-size:10px; }
+ .rhythm-finished button { padding:10px 7px; }
+ .today-view .habit-state { font-size:8px; }
 }
-.group-members .buddy-avatar:after { display: none; }
+
+
+/* v0.3.4 — Mobile-first refinement of the approved hybrid experience.
+   Keep full-width content easy to reach, scan and tap on real phones. */
+@media (max-width:700px) {
+  html, body, .stage { width:100%; overflow-x:hidden; }
+  html { -webkit-text-size-adjust:100%; }
+  .app-header {
+    min-height:70px;
+    padding:calc(12px + env(safe-area-inset-top)) 15px 12px;
+  }
+  .brand img { width:min(134px,38vw); height:auto; }
+  .header-buttons { gap:7px; }
+  .content-scroll {
+    padding:0 14px 24px;
+    scroll-padding-top:12px;
+  }
+  .view-banner, .today-hero { margin-inline:-14px; }
+  .today-hero {
+    padding:11px 16px 27px;
+    min-height:144px;
+    gap:9px;
+  }
+  .today-hero h1 { font-size:clamp(28px,7.7vw,36px); line-height:1.06; }
+  .daily-ring { width:clamp(72px,22vw,88px); }
+  .daily-ring strong { font-size:22px; }
+
+  /* Two legible actions per row instead of four narrow tap targets. */
+  .today-view .habit-grid {
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:8px;
+    margin:-13px 0 13px;
+  }
+  .today-view .habit-tile {
+    display:grid;
+    grid-template-columns:30px minmax(0,1fr);
+    grid-template-rows:auto auto;
+    column-gap:9px;
+    row-gap:2px;
+    align-content:center;
+    justify-content:stretch;
+    align-items:center;
+    min-height:70px;
+    padding:10px 12px;
+    text-align:left;
+    border-radius:14px;
+  }
+  .today-view .habit-tile .habit-symbols {
+    grid-column:1;
+    grid-row:1 / span 2;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    min-width:0;
+  }
+  .today-view .habit-tile .habit-symbols .ico:first-child { width:25px; height:25px; }
+  .today-view .habit-tile .habit-name {
+    grid-column:2;
+    grid-row:1;
+    font-size:clamp(13px,4vw,16px);
+    line-height:1.12;
+    min-width:0;
+  }
+  .today-view .habit-tile .habit-state {
+    grid-column:2;
+    grid-row:2;
+    font-size:11px;
+    line-height:1.15;
+  }
+  .group-photo { padding:14px; border-radius:17px; }
+  .group-photo>strong { font-size:clamp(24px,6.6vw,31px); }
+  .photo-gathering { font-size:12.5px; }
+  .photo-gathering>.ico:last-child {
+    width:40px;
+    height:40px;
+    padding:10px;
+    flex:none;
+  }
+  .rhythm-nudge { min-height:69px; margin:10px 0 13px; }
+  .quick-cards { gap:9px; }
+  .quick-cards button { min-height:82px; }
+  .today-circle .buddy-row { gap:9px; }
+  .today-circle .buddy-copy { min-width:0; }
+
+  .bottom-nav {
+    gap:2px;
+    padding:7px 9px calc(9px + env(safe-area-inset-bottom));
+  }
+  .nav-item {
+    min-height:57px;
+    gap:5px;
+    padding:7px 2px;
+    font-size:11px;
+    line-height:1.15;
+  }
+  .nav-item .ico { width:24px; height:24px; }
+
+  /* Keep the iOS keyboard from zooming into writing fields. */
+  .reflection-input, .prayer-input { font-size:16px; }
+  .seg-row { margin:12px 0 16px; gap:5px; }
+  .seg-btn { min-height:44px; font-size:12px; padding:10px 2px; }
+  .memory-card { padding:16px 13px; }
+  .verse-text { font-size:clamp(17px,4.8vw,20px); line-height:2; }
+  .blank { min-height:39px; min-width:54px; padding:6px 7px; }
+  .word-chip { min-height:44px; }
+  .sheet-card { padding-bottom:calc(24px + env(safe-area-inset-bottom)); }
+}
+@media (max-width:359px) {
+  .app-header { padding-inline:12px; }
+  .brand img { width:min(120px,36vw); }
+  .today-hero { min-height:134px; padding-inline:13px; }
+  .today-hero h1 { font-size:27px; }
+  .daily-ring { width:70px; }
+  .today-view .habit-tile { grid-template-columns:25px minmax(0,1fr); padding:9px; column-gap:7px; }
+  .today-view .habit-tile .habit-symbols .ico:first-child { width:23px; height:23px; }
+  .today-view .habit-tile .habit-name { font-size:13px; }
+  .rhythm-nudge { gap:8px; }
+  .group-photo>strong { font-size:23px; }
+  .quick-cards b { font-size:12px; }
+  .quick-cards small { font-size:10px; }
+  .group-shortcuts button { font-size:11px; padding:9px 4px; }
+}
+@media (max-width:700px) and (max-height:550px) {
+  .app-header { padding-top:calc(8px + env(safe-area-inset-top)); padding-bottom:8px; min-height:0; }
+  .nav-item { min-height:48px; gap:3px; }
+  .bottom-nav { padding-top:4px; }
+}
+
+
+/* v0.3.5 — One-screen Today: preserve details in Grow, My Group and the Serve sheet.
+   Responsive first-view overview, not clipped or hard-scrolled on compact devices. */
+@media (max-width:700px) {
+  .content-scroll { padding-bottom:0; }
+  .today-view {
+    display:flex;
+    flex-direction:column;
+    justify-content:space-between;
+    min-height:100%;
+    gap:6px;
+    padding-bottom:8px;
+  }
+  .today-view > * { flex-shrink:0; }
+  .today-view .today-hero {
+    min-height:101px;
+    padding:9px 15px 19px;
+    gap:8px;
+    margin-bottom:0;
+  }
+  .today-view .today-hero h1 {
+    font-size:clamp(25px,7.3vw,32px);
+    line-height:1.05;
+  }
+  .today-view .today-hero .eyebrow {
+    font-size:9px;
+    margin:0 0 5px;
+  }
+  .today-view .daily-ring { width:70px; }
+  .today-view .daily-ring strong { font-size:19px; }
+  .today-view .daily-ring>span:first-of-type { font-size:9px; }
+  .today-view .habit-grid {
+    display:grid;
+    grid-template-columns:repeat(4,minmax(0,1fr));
+    gap:6px;
+    margin:-12px 0 0;
+  }
+  .today-view .habit-tile {
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    min-height:66px;
+    padding:8px 2px 6px;
+    gap:2px;
+    border-radius:13px;
+  }
+  .today-view .habit-tile .habit-symbols {
+    display:flex;
+    min-width:0;
+    align-items:center;
+    justify-content:center;
+  }
+  .today-view .habit-tile .habit-symbols .ico:first-child { width:22px;height:22px; }
+  .today-view .habit-tile .habit-name {
+    font-size:clamp(10px,2.85vw,12px);
+    font-weight:850;
+    line-height:1.12;
+    white-space:nowrap;
+  }
+  .today-view .habit-tile .habit-state {
+    font-size:9px;
+    line-height:1.1;
+  }
+  .today-view .group-photo {
+    gap:3px;
+    padding:11px 13px;
+    min-height:129px;
+    border-radius:15px;
+  }
+  .today-view .group-photo>small { font-size:9px; }
+  .today-view .group-photo>strong { font-size:clamp(22px,6.4vw,28px); }
+  .today-view .photo-avatars { margin:0; }
+  .today-view .photo-avatars .buddy-avatar,
+  .today-view .photo-avatars b { width:27px;height:27px; }
+  .today-view .photo-gathering { font-size:11.5px; gap:6px; }
+  .today-view .photo-gathering small { font-size:10px; margin-top:1px; }
+  .today-view .photo-gathering>.ico:first-child { width:18px;height:18px; }
+  .today-view .photo-gathering>.ico:last-child { width:35px;height:35px;padding:8px; }
+  .today-view .rhythm-nudge {
+    min-height:55px;
+    padding:8px 11px;
+    margin:0;
+    gap:9px;
+    border-radius:13px;
+  }
+  .today-view .rhythm-nudge>.ico:first-child { width:30px;height:30px; }
+  .today-view .rhythm-nudge>span { gap:1px; }
+  .today-view .rhythm-nudge strong { font-size:13px; }
+  .today-view .rhythm-nudge em { font-size:10.5px; }
+  .today-view .rhythm-nudge small { font-size:8px; }
+  .today-view .rhythm-finished button { min-height:40px; }
+  .today-view .quick-cards {
+    gap:7px;
+    margin:0;
+  }
+  .today-view .quick-cards button {
+    min-height:59px;
+    padding:8px;
+    grid-template-columns:21px minmax(0,1fr);
+    column-gap:6px;
+    border-radius:12px;
+  }
+  .today-view .quick-cards .ico { width:19px;height:19px; }
+  .today-view .quick-cards b { font-size:12px;line-height:1.15; }
+  .today-view .quick-cards small { font-size:10px;line-height:1.15; }
+  .today-view .today-circle {
+    padding:5px 11px 3px;
+    border-radius:13px;
+  }
+  .today-view .today-circle .section-heading { margin:0;min-height:30px;align-items:center; }
+  .today-view .today-circle .section-heading h2 { font-size:15px; }
+  .today-view .today-circle .example-caption { font-size:9px;line-height:1.2;display:block; }
+  .today-view .today-circle .buddy-row { min-height:49px;padding:5px 0;gap:8px; }
+  .today-view .today-circle .buddy-avatar { width:31px;height:31px; }
+  .today-view .today-circle .buddy-copy b { font-size:11px; }
+  .today-view .today-circle .buddy-copy p {
+    font-size:10px;
+    margin-top:2px;
+    line-height:1.2;
+    display:-webkit-box;
+    -webkit-box-orient:vertical;
+    -webkit-line-clamp:1;
+    overflow:hidden;
+  }
+  .today-view .today-circle .round-react { width:38px;height:38px; }
+  .today-demo-note {
+    font-size:9px;
+    text-align:center;
+    line-height:1.25;
+    color:#716e77;
+    margin:0;
+  }
+}
+@media (max-width:700px) and (max-height:740px) {
+  .today-view { gap:4px;padding-bottom:5px; }
+  .today-view .today-hero { min-height:89px;padding-bottom:17px; }
+  .today-view .habit-tile { min-height:58px;padding:6px 2px; }
+  .today-view .habit-tile .habit-symbols .ico:first-child { width:20px;height:20px; }
+  .today-view .group-photo { min-height:113px;padding:9px 12px; }
+  .today-view .group-photo>strong { font-size:22px; }
+  .today-view .photo-avatars .buddy-avatar,
+  .today-view .photo-avatars b { width:23px;height:23px; }
+  .today-view .photo-gathering { line-height:1.15; }
+  .today-view .rhythm-nudge { min-height:49px;padding-block:6px; }
+  .today-view .quick-cards button { min-height:53px;padding:7px; }
+  .today-view .today-circle .buddy-row { min-height:45px; }
+  .today-view .today-circle .round-react { width:34px;height:34px; }
+  .today-view .today-circle .section-heading { min-height:26px; }
+}
+@media (max-width:359px) {
+  .today-view .habit-tile { padding-inline:1px; }
+  .today-view .habit-tile .habit-name { font-size:10px; }
+  .today-view .habit-tile .habit-state { font-size:8px; }
+  .today-view .group-photo>strong { font-size:21px; }
+  .today-view .quick-cards b { font-size:11px; }
+  .today-view .quick-cards small { font-size:9px; }
+}
+
+
+/* Progress-ring alignment: intentionally split the label across two centered lines. */
+.daily-ring > .ring-center {
+  width:100%;
+  height:100%;
+  min-width:0;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:2px;
+  text-align:center;
+  position:relative;
+  z-index:1;
+}
+.daily-ring .ring-label {
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  width:100%;
+  white-space:normal;
+  font-size:9px;
+  line-height:1.04;
+  letter-spacing:0;
+  font-weight:650;
+}
+.daily-ring .ring-label > span { display:block; }
+@media (max-width:700px) {
+  .today-view .daily-ring > .ring-center { width:100%; }
+  .today-view .daily-ring .ring-label { font-size:9px; }
+}
+
+
+/* v0.3.9 — Intentional, solid matte header for Safari and installed web-app views. */
+@media (max-width:700px) {
+  html, body, .stage, .phone-shell {
+    background-color:#242329;
+    background-image:none;
+  }
+  .app-frame { background:#f5f4f4; }
+  .app-header {
+    position:relative;
+    isolation:isolate;
+    background:#242329;
+    background-image:none;
+    opacity:1;
+    border-bottom:1px solid #39373f;
+    box-shadow:none;
+    min-height:76px;
+    padding-top:calc(12px + env(safe-area-inset-top));
+    padding-bottom:13px;
+  }
+  .brand { opacity:1; transform:none; filter:none; }
+  .brand img {
+    display:block;
+    width:min(148px,42vw);
+    height:auto;
+    opacity:1;
+    filter:none;
+    transform:none;
+  }
+  .header-buttons .circle-icon {
+    background:#29282f;
+    color:#fff;
+    border-color:#5a5862;
+    opacity:1;
+    box-shadow:none;
+  }
+  .header-buttons .user-icon {
+    background:#ed0033;
+    border-color:#ed0033;
+  }
+}
+@media (max-width:359px) {
+  .brand img { width:min(132px,39vw); }
+}
