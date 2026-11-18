@@ -86,7 +86,7 @@
     users:'<path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><path d="M20 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/>',
     profile:'<circle cx="12" cy="8" r="4"/><path d="M4 22v-2a8 8 0 0 1 16 0v2"/>',
     chat:'<path d="M20 11.5a7.8 7.8 0 0 1-8 8 9.3 9.3 0 0 1-3-.5l-5 2 1.8-4.5A7.8 7.8 0 0 1 4 11.5a8 8 0 0 1 16 0z"/>',
-    heart:'<path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8 7.8 0 0 0 0 10.6L12 23l8.9-7.8a7.8 7.8 0 0 0-.1-10.6z"/>',
+    heart:'<path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8L12 21.3l8.8-8.9a5.5 5.5 0 0 0 0-7.8z"/>',
     layers:'<path d="m12 2 9 5-9 5-9-5 9-5ZM3 12l9 5 9-5M3 17l9 5 9-5"/>',
     arrow:'<path d="M5 19 19 5M8 5h11v11"/>',
     right:'<path d="m9 18 6-6-6-6"/>',
@@ -113,9 +113,50 @@
   function avatar(p,extra=''){return `<span class="buddy-avatar ${extra}" style="background:${p.color}" aria-hidden="true">${p.initials}</span>`}
   function heading(hint){return `<div class="eyebrow">${hint}</div>`}
   function groupCard(){return `<button class="group-card" type="button" data-tab="groups" aria-label="Open Wednesday Group">${flagWatermark()}<div class="group-card-top"><span class="group-pill"><span class="red-bead"></span> Your Group</span><span class="group-open">${icon('arrow')}</span></div><h2>Wednesday<br>Group<span class="dot">.</span></h2><p>A place to grow, read, pray, and<br>keep each other going.</p><div class="avatar-line"><span class="mini-avatar av-red">AL</span><span class="mini-avatar av-peach">JM</span><span class="mini-avatar av-blue">MC</span><span class="mini-avatar av-sage">TD</span><span class="mini-avatar av-plus">+4</span><span class="people-count">8 people</span></div></button>`}
-  function tile(k,i){const descriptions=['Today’s passage','A verse or thought','Build it into your life','Lift up needs together'];return `<button class="habit-tile ${i===0?'featured':''} ${state.daily.done[k]?'complete':''}" type="button" data-grow="${k}" aria-label="${names[i]} ${state.daily.done[k]?'completed':'activity'}">${icon(['book','chat','layers','heart'][i])}${state.daily.done[k]?`<span class="tile-check">${icon('check')}</span>`:''}<div><h3>${names[i]}</h3><p>${state.daily.done[k]?'Completed today':descriptions[i]}</p></div></button>`}
-  function progressDots(){return `<div class="progress-dots">${keys.map(k=>`<span class="${state.daily.done[k]?'done':''}" title="${k}">${state.daily.done[k]?icon('tick'):''}</span>`).join('')}</div>`}
-  function todayView(){return `${heading('Your group, today')}<h1 class="hero-title">Hey, Jonathan<span class="dot">.</span></h1><p class="lead">Keep showing up. Good things happen when we grow in God’s Word together.</p>${groupCard()}<div class="status-row"><div class="streak-pill">${icon('flame')}<div><b>Holy Hot Streak</b><small>5-day sample streak</small></div></div><div class="progress-pill"><b><strong>${count()}</strong> of 4 today</b>${progressDots()}</div></div><div class="section-heading"><h2>Your Daily Habits</h2><span>${count()===4?'All done ✓':'A little every day'}</span></div><div class="habit-grid">${keys.map(tile).join('')}</div><div class="section-heading"><h2>Your Buddies</h2><button type="button" data-tab="groups">See all →</button></div>${people.slice(0,2).map(p=>`<div class="buddy-row">${avatar(p)}<div class="buddy-copy"><b>${p.name}</b><p>${p.activity}</p></div><button class="round-react ${state.daily.encouraged.includes(p.id)?'selected':''}" data-action="encourage" data-id="${p.id}" aria-label="${p.progress===4?'Celebrate':'Nudge'} ${p.name}">${icon('heart')}</button></div>`).join('')}<div class="section-heading"><h2>This week’s Scripture</h2><span>Romans 8</span></div><button class="reading-card" type="button" data-grow="read">${icon('book')}<div><strong>Life in the Spirit</strong><small>Read Romans 8:26–28 · KJV</small></div>${icon('right')}</button><p class="footer-note">UNOFFICIAL CONCEPT · Sample buddy activity. Your actions are saved only in this browser.</p>`}
+  function todayGroupCard() {
+    return `<button class="group-card today-group" type="button" data-tab="groups" aria-label="Open Wednesday Group, fictional group of 8">
+      ${flagWatermark()}
+      <span class="group-card-top"><span class="group-pill"><span class="red-bead"></span>Your group · Sample</span><span class="group-open">${icon('arrow')}</span></span>
+      <h2>Wednesday Group<span class="dot">.</span></h2>
+      <span class="gathering-time">${icon('calendar')}Next gathering · Wed, 6:30 PM</span>
+      <span class="group-members"><span class="avatar-line">${people.map(p => avatar(p)).join('')}</span>8 members</span>
+    </button>`;
+  }
+
+  function habitTile(key, index) {
+    const done = state.daily.done[key];
+    const descriptions = ['Romans 8:26–28', 'Write a reflection', 'Practice Romans 8:28', 'Pray for your circle'];
+    const next = keys.find(habit => !state.daily.done[habit]) === key;
+    return `<button class="habit-tile ${next ? 'featured' : ''} ${done ? 'complete' : ''}" type="button"
+      data-grow="${key}" aria-label="${names[index]} ${done ? 'completed' : 'activity'}">
+      <span class="habit-symbols">${icon(['book','chat','layers','heart'][index])}${icon(done ? 'check' : 'right')}</span>
+      <span class="habit-name">${names[index]}</span><small>${done ? 'Completed today' : descriptions[index]}</small>
+    </button>`;
+  }
+
+  function todayView() {
+    const date = new Date().toLocaleDateString('en-US', {weekday:'long', month:'short', day:'numeric'});
+    return `<div class="today-view">
+      ${heading(date)}
+      <h1 class="hero-title">Hey, Jonathan<span class="dot">.</span></h1>
+      ${todayGroupCard()}
+      <section class="daily-rhythm" aria-label="Daily habits">
+        <div class="section-heading"><h2>Your daily rhythm</h2><span>${count()} of 4 today</span></div>
+        <div class="rhythm-meter" aria-hidden="true">${keys.map(key => `<span class="${state.daily.done[key] ? 'filled' : ''}"></span>`).join('')}</div>
+        <div class="habit-grid">${keys.map(habitTile).join('')}</div>
+        <p class="sample-streak">${icon('flame')}5-day sample streak</p>
+      </section>
+      <section class="today-circle" aria-label="Fictional group activity">
+        <div class="section-heading"><h2>From your circle</h2><button type="button" data-tab="groups">View group →</button></div>
+        <small class="example-caption">Fictional group activity</small>
+        ${people.slice(0,2).map(p => `<div class="buddy-row">${avatar(p)}<div class="buddy-copy"><b>${p.name}</b><p>${p.activity}</p></div><button type="button" class="round-react ${state.daily.encouraged.includes(p.id) ? 'selected' : ''}" data-action="encourage" data-id="${p.id}" aria-pressed="${state.daily.encouraged.includes(p.id)}" aria-label="${p.progress===4 ? 'Celebrate' : 'Nudge'} ${p.name}">${icon('heart')}</button></div>`).join('')}
+      </section>
+      <section class="serve-preview"><div class="serve-icon">${icon('users')}</div><div><h2>Serve Together</h2><small class="example-caption">Fictional opportunity</small><p>Pack pantry boxes with your group on Saturday morning.</p></div></section>
+      <div class="section-heading"><h2>This week’s Scripture</h2></div>
+      <button class="reading-card" type="button" data-grow="read">${icon('book')}<div><strong>Life in the Spirit</strong><small>Romans 8:26–28 · KJV</small></div>${icon('right')}</button>
+      <p class="footer-note">UNOFFICIAL PROTOTYPE · Sample group data. Your activity is saved in this browser.</p>
+    </div>`;
+  }
   function growView(){return `<div class="seg-row">${keys.map(k=>`<button class="seg-btn ${growTab===k?'active':''}" type="button" data-grow="${k}">${k[0].toUpperCase()+k.slice(1)}${state.daily.done[k]?' ✓':''}</button>`).join('')}</div>${heading('Grow in God’s Word')}${growTab==='memorize'?memoryView():growTab==='read'?readView():growTab==='share'?shareView():prayView()}`}
   function readView(){return `<h1 class="section-large">Read<span class="dot">.</span></h1><p class="section-sub">A few intentional minutes in Scripture. One day at a time.</p><div class="panel padded"><div class="small-reference">TODAY’S PASSAGE · ROMANS 8:26–28 · KJV</div><p class="reading-verse"><sup>26</sup>Likewise the Spirit also helpeth our infirmities: for we know not what we should pray for as we ought: but the Spirit itself maketh intercession for us with groanings which cannot be uttered.</p><p class="reading-verse"><sup>27</sup>And he that searcheth the hearts knoweth what is the mind of the Spirit, because he maketh intercession for the saints according to the will of God.</p><p class="reading-verse"><sup>28</sup>And we know that all things work together for good to them that love God, to them who are the called according to his purpose.</p><button class="main-button" type="button" data-action="finish" data-key="read">${state.daily.done.read?'✓ Reading completed':'Mark reading complete'}</button></div><div class="panel"><div class="body-label">REFLECT</div><h3 style="margin-top:9px">What stands out?</h3><p>Where have you needed the Spirit’s help lately? What might this passage be inviting you to trust?</p><div style="height:13px"></div><button class="soft-button" type="button" data-grow="share">Share a thought ${icon('right')}</button></div>`}
   const expected=['know','good','love','called','purpose'];
