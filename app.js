@@ -1,4 +1,4 @@
-/* CITIZEN GROUPS – UNOFFICIAL INTERACTIVE DEMO
+/* CITIZEN CONNECT – UNOFFICIAL INTERACTIVE DEMO
    Static, dependency-free prototype. Everything saves only in this browser.
    Buddy names, activity, awards, history and group content are fictional examples.
 */
