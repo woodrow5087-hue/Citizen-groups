@@ -4,7 +4,9 @@
 */
 (() => {
   'use strict';
-  const STORAGE = 'citizen-buddycheck-concept-v1';
+  // New, isolated demo storage namespace: start this preview from a clean slate once.
+  // Subsequent activity continues to save and survive reloads as usual.
+  const STORAGE = 'citizen-connect-demo-v038';
   const $ = id => document.getElementById(id);
   function todayKey(date = new Date()) {
     return [date.getFullYear(), String(date.getMonth() + 1).padStart(2, '0'),
