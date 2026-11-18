@@ -8,3 +8,7 @@
   [headers.values]
     X-Content-Type-Options = "nosniff"
     Referrer-Policy = "no-referrer"
+
+# Public pull-request previews must never inherit a real beta data connection.
+[context.deploy-preview.environment]
+  VITE_APP_MODE = "demo"

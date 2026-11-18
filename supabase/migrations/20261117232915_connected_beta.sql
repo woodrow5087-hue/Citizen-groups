@@ -62,7 +62,8 @@ revoke all on function private.is_beta_member(), private.is_group_member(uuid), 
 grant usage on schema private to authenticated;
 grant execute on function private.is_beta_member(), private.is_group_member(uuid), private.is_group_leader(uuid), private.shares_group(uuid) to authenticated;
 
--- Only a trusted Auth admin invitation plus a pending DB invitation can create an account.
+-- Only a trusted Auth admin invitation plus pending DB admission activates beta access.
+-- The Auth service also disables public signup; an email match alone never grants a profile.
 -- Raw user metadata is never trusted for role, admission, group, or display name.
 create function private.require_invitation() returns trigger language plpgsql security definer set search_path = '' as $$
 begin
