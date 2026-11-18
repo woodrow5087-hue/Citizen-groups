@@ -117,7 +117,7 @@
     return `<div class="daily-ring" aria-label="${done} of 4 today">
       <svg viewBox="0 0 100 100" aria-hidden="true"><circle class="ring-track" cx="50" cy="50" r="44"/>
       <circle class="ring-fill" cx="50" cy="50" r="44" pathLength="4" stroke-dasharray="${done} 4" opacity="${done ? 1 : 0}"/></svg>
-      <span><strong>${done}/4</strong>Daily rhythm</span><span class="sr-only">${done} of 4 today</span></div>`;
+      <span class="ring-center"><strong>${done}/4</strong><span class="ring-label"><span>Daily</span><span>rhythm</span></span></span><span class="sr-only">${done} of 4 today</span></div>`;
   }
   function banner(title, label) {
     return `<header class="view-banner">${heading(label)}<h1>${title}</h1></header>`;
