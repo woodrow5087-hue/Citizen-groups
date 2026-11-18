@@ -1,10 +1,15 @@
-# Citizen Groups · v0.5 internal review
+# Citizen Groups · Connected beta foundation v0.6
 
-React + TypeScript + Vite application preserving the approved v0.4 design system and adding a built-in World English Bible reader in Grow. Unofficial and unendorsed, with fictional members, posts and events. Use fictional entries only: localStorage is not secure prayer or member storage.
+React, TypeScript and Vite with the approved compact v0.5.1 design. Two explicit modes:
 
-## Run and verify
+- **Fictional demo:** default when no backend is configured. Existing local posts, prayer requests, leader examples and Bible notes remain on the device.
+- **Connected beta:** Supabase invitation-only email sign-in, group membership/roles, shared posts/comments/prayers, leader-managed gatherings and shared RSVPs. Bible reflections stay local under the signed-in account’s device key. No demo content is imported.
 
-Use Node 24 (`.nvmrc`) and npm:
+See [connected beta setup, security evidence and remaining limits](docs/CONNECTED-BETA.md). That document contains the single hosted setup checklist. No hosted Supabase project or production deployment was created in this run.
+
+## Run and test
+
+Use Node 24 and npm:
 
 ```sh
 npm ci
@@ -14,41 +19,25 @@ npm run build
 npm run preview
 ```
 
-Vite prints the URL. The build checks strict TypeScript before producing `dist/`. Vitest/Testing Library run 25 checks; `npm run test:watch` enables watch mode. No environment variables or services are required.
+Without backend variables these commands run/build the demo. Copy `.env.example` for intentional configuration; never put a server secret/service-role key in a `VITE_` variable. The build rejects invalid live configuration and emits Netlify CSP headers for the exact configured backend origin. Keep public review previews in demo mode.
 
-## App structure
+```sh
+npm run beta:start
+npm run test:policies
+npm run test:beta:api
+npm run beta:stop
+```
 
-- `src/App.tsx`: typed local state/actions and navigation; refresh starts on Today.
-- `src/screens/`: Today, My Group, Grow, You and the separate demo-only Leader surface.
-- `src/components/`: BrandHeader, TabBar, GroupHero, ActionTile, EventCard, PostCard, GroupTabs, PrimaryPill, ActionSheet, prayer circle, initials avatars and SVG icons. Icon sizes are centralized in `Icon.tsx`.
-- `src/features/bible/`: 66-book WEBP reader, local reflections/progress, and public-domain attribution. See [v0.5 implementation](docs/BIBLE-V05.md) and [text provenance](docs/licenses/WORLD-ENGLISH-BIBLE.md).
-- `src/styles/tokens.css`: approved semantic color, surface, border and radius tokens.
-- `src/styles.css`: reference-derived component styles with accessibility adjustments.
-- `src/data/examples.ts`: fictional fixtures and local feed mapping.
-- `src/state/storage.ts`: runtime validation, date rollover and storage error handling.
-- `src/assets/`: supplied Citizen flag, authorized only for internal concept review; not a license for distribution.
-- `reference/`: original v0.2 source and v0.4 handoff/design-system documents; excluded from build output.
-- `docs/V04-IMPLEMENTATION.md`: current decisions, differences, verification and review checklist.
-- `docs/AUDIT.md`, `docs/ROADMAP.md`, `docs/MOBILE-REDESIGN.md`: earlier audit, future phases and previous mobile iteration.
+These optional commands target only the labelled, disposable localhost Docker test stack and its fictional accounts. See the setup document for connected-browser checks and normal Supabase CLI alternatives. Run `npx playwright install chromium` and `npm run test:browser` for the existing Bible browser suite. `PLAYWRIGHT_CHROMIUM_EXECUTABLE` can point to an installed Chromium.
 
-## Local behavior
+## Structure
 
-Today → group hero opens Feed; event and See details open Plan. The primary My Group tab preserves the selected Feed/People/Plan/Resources subtab when navigating away and back. Group tabs support arrow keys, Home and End. Grow reuses reflection, prayer and connection actions. You contains About, prayer circle, reset and explicitly labeled **Leader tools · Demo only**. There are no role permissions or real accounts.
+- `src/App.tsx`: fail-closed demo/beta boundary; `src/DemoApp.tsx`: preserved fictional demo.
+- `src/features/beta/`: email Auth gate, typed database repository, group refresh, connected screens and forms.
+- `supabase/migrations/`: version-controlled schema, admission triggers, grants and RLS. `supabase/tests/security.sql`: transactional policy tests.
+- `src/features/bible/`: 66-book WEBP reader and private local reflections; [text provenance](docs/licenses/WORLD-ENGLISH-BIBLE.md).
+- `src/styles/` and shared components: approved dark design tokens and controls.
+- `scripts/`: localhost-only test stack, schema type generation and integration/browser runners. `.beta-local/` is ignored and contains ephemeral local test credentials only.
+- `netlify.toml` and generated `dist/_headers`: build and response headers. No production publication is authorized.
 
-Check-ins, prayer acknowledgements and daily rhythm reset at the local date boundary on load, window focus and once per minute. Posts/requests are capped at 12 each. RSVP, posts, requests, reactions, completed follow-ups and notes survive reload in the same browser/origin. Reactions are local and reversible. Reply explains that threaded conversations are not available and offers a standalone Share action; nothing is sent. Reset requires confirmation.
-
-Existing v0.3 data uses the unchanged `citizen-groups-concept-v03` key; the new encouraged-post list defaults to empty for older valid saves. v0.2 and standalone reference-prototype storage are not imported. Reset clears the group app key and the separate Bible state key. Corrupt data produces fresh examples and a warning; storage write failures preserve the session with a warning. There is no cross-tab synchronization or secure encryption.
-
-## Bible and browser checks
-
-Grow includes all 66 books of the public-domain World English Bible (Protestant edition), adjustable reader text, local personal reflections, daily passages and chapter completion. Selected verses can be viewed in an explicitly labeled My Group demo preview; nothing is posted or delivered, and reflections are excluded. No third-party Bible API or proprietary translation is used.
-
-After `npm run build`, install Chromium with `npx playwright install chromium`, then run `npm run test:browser` for five mobile/desktop Playwright journeys and automated axe checks.
-
-## Netlify preview
-
-The `feature/bible-v05` PR targets `design-system/v04`. Review via its Netlify Deploy Preview check. Netlify reads `netlify.toml`: build `npm run build`, publish `dist`, Node 24. No URL routes exist, so no SPA redirect is necessary. No Supabase setup, backend, environment secrets or production publication is part of this work.
-
-The supplied flag is bundled for this **internal review preview only**. Netlify preview authentication may require signing into the connected team account. Do not publish this build to production or disable preview protection without the required review and branding authorization. Uploading the project root would expose reference material; only `dist/` is build output. A manual upload does not apply headers in `netlify.toml` automatically.
-
-Church brand permissions, privacy and security design, full accessibility review, device testing and an authorized pilot remain prerequisites for public release. See the [roadmap](docs/ROADMAP.md).
+User-supplied Citizen branding remains provisional for internal review. Real-user beta admission requires hosted configuration verification, privacy/retention review and authorized church brand use. Local Bible storage is not encrypted and is not a secure pastoral record.

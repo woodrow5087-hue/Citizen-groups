@@ -8,7 +8,7 @@ describe("local demo journeys", () => {
     const user = userEvent.setup();
     render(<App />);
     expect(screen.getByRole("article", { name: "Latest group update" })).toBeVisible();
-    expect(screen.getByRole("button", { name: /Check in\\s*Reach out/ })).toBeVisible();
+    expect(screen.getByRole("button", { name: /Check in\s*Reach out/ })).toBeVisible();
     await user.click(screen.getByRole("button", { name: /Go to feed/ }));
     expect(screen.getByRole("tab", { name: "Feed" })).toHaveAttribute("aria-selected", "true");
     await user.click(screen.getByRole("button", { name: "Grow" }));

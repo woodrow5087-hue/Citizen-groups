@@ -1,0 +1,1 @@
+import {execFileSync}from'node:child_process';import{localConfig}from'./beta-fixtures.mjs';const c=localConfig();execFileSync('npm',['run','build'],{stdio:'inherit',env:{...process.env,VITE_APP_MODE:'beta',VITE_SUPABASE_URL:c.url,VITE_SUPABASE_PUBLISHABLE_KEY:c.anonKey}});

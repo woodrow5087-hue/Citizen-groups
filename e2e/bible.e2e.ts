@@ -9,7 +9,7 @@ for (const width of [320, 375, 390, 430, 980]) {
     await page.setViewportSize({ width, height: 844 });
     await page.goto("/");
     await page.getByRole("button", { name: "Grow", exact: true }).click();
-    await expect(page.getByRole("heading", { name: /One day/ })).toBeVisible();
+    await expect(page.getByRole("heading", { name: /^Grow\.$/ })).toBeVisible();
     await page.getByRole("button", { name: /Read today’s passage/ }).click();
     await expect(page.getByRole("list", { name: /verses$/ })).toBeVisible();
     await page
