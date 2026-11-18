@@ -32,6 +32,8 @@ button,.opportunity summary { touch-action:manipulation; }
 .habit-name { font-size:clamp(11px,3vw,13px);font-weight:800; }
 .habit-symbols { display:flex;color:var(--accent); }.habit-symbols .ico:last-child { display:none; }.complete .habit-symbols .ico:last-child { display:block; position:absolute; top:5px;right:5px;width:16px;height:16px;background:var(--red);border-radius:50%;color:#fff; }
 .group-photo { display:grid;gap:6px;text-align:left;width:100%;color:white; padding:16px;border:0;border-radius:17px;background:linear-gradient(90deg,#15141bd6,#18171c38),linear-gradient(0deg,#131318db,transparent 65%),url(assets/mountain.webp) center 53%/cover;box-shadow:0 3px 9px #211e2916; }
+/* G. Thomas, SandiaMtnNM (public domain), photographed from Bernalillo. */
+.today-view .group-photo { background-image:linear-gradient(90deg,#111018a8,transparent 86%),linear-gradient(0deg,#15141a80,transparent 58%),url(assets/sandia-sunset.webp); }
 .group-photo>small { text-transform:uppercase;letter-spacing:.17em;font-weight:750;font-size:10px; }
 .group-photo>strong { font-size:clamp(24px,7vw,31px);letter-spacing:-.045em;line-height:1.05; }
 .photo-avatars { display:flex;align-items:center;margin:4px 0; }
