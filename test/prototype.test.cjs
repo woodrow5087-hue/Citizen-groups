@@ -6,9 +6,10 @@ const { JSDOM } = require('jsdom');
 
 process.env.TZ = 'America/Denver';
 const source = name => readFileSync(join(__dirname, '..', name), 'utf8');
-const storageKey = 'citizen-buddycheck-concept-v1';
+const storageKey = 'citizen-connect-demo-v038';
+const oldStorageKey = 'citizen-buddycheck-concept-v1';
 
-function open(t, { time = '2026-11-18T23:59:59', saved } = {}) {
+function open(t, { time = '2026-11-18T23:59:59', saved, oldSaved } = {}) {
   const dom = new JSDOM(source('index.html'), { url: 'https://demo.test', runScripts: 'outside-only' });
   t.after(() => dom.window.close());
   const { window } = dom;
@@ -26,6 +27,7 @@ function open(t, { time = '2026-11-18T23:59:59', saved } = {}) {
   };
   window.clearTimeout = id => timers.delete(id);
   if (saved) localStorage.setItem(storageKey, JSON.stringify(saved));
+  if (oldSaved) localStorage.setItem(oldStorageKey, JSON.stringify(oldSaved));
   window.eval(source('app.js'));
 
   function click(selector) {
@@ -204,4 +206,20 @@ test('daily progress ring labels remain structured for narrow phone screens', t 
   assert.equal(ring.querySelector('.ring-center strong').textContent, '0/4');
   assert.deepEqual([...ring.querySelectorAll('.ring-label > span')].map(x => x.textContent), ['Daily', 'rhythm']);
   assert.match(ring.getAttribute('aria-label'), /0 of 4 today/);
+});
+
+test('new preview starts at zero despite earlier demo selections and retains new progress', t => {
+  const ui = open(t, { oldSaved: { version:2, daily: {
+    date:'2026-11-18', done:{read:true,share:true,memorize:false,pray:false},
+    prayed:[], encouraged:[], words:[], memoryResult:''
+  }, persistent:{reflections:{},prayerRequest:'',prayerDraft:null,rsvp:'',reactions:[],totalComplete:0} } });
+  assert.equal(ui.saved().daily.done.read, false);
+  assert.equal(ui.saved().daily.done.share, false);
+  assert.match(ui.text(), /0 of 4 today/);
+  assert.ok(ui.document.querySelector('.habit-tile.featured[data-grow="read"]'));
+  ui.grow('read');
+  ui.action('finish');
+  const reloaded = open(t, { saved:ui.saved() });
+  assert.equal(reloaded.saved().daily.done.read, true);
+  assert.equal(reloaded.saved().daily.done.share, false);
 });
