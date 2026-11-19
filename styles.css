@@ -23,7 +23,7 @@ button,.opportunity summary { touch-action:manipulation; }
 .daily-ring { position:relative; width:91px; aspect-ratio:1; flex:none; display:grid; place-items:center; }
 .daily-ring svg { width:100%; height:100%; position:absolute; inset:0; transform:rotate(-90deg); fill:none; stroke-width:8; }
 .ring-track { stroke:#56545e; }.ring-fill { stroke:var(--red); stroke-linecap:round; }
-.daily-ring>span:first-of-type { display:grid; text-align:center; gap:2px; font-size:10px; font-weight:650; }
+.daily-ring>.ring-center { display:grid; text-align:center; gap:2px; font-size:10px; font-weight:650; }
 .daily-ring strong { font-size:23px; line-height:1; }
 .sr-only { position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%); }
 .today-view .habit-grid { display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px; margin:-27px 0 15px;position:relative; }
@@ -285,7 +285,7 @@ button,.opportunity summary { touch-action:manipulation; }
   }
   .today-view .daily-ring { width:70px; }
   .today-view .daily-ring strong { font-size:19px; }
-  .today-view .daily-ring>span:first-of-type { font-size:9px; }
+  .today-view .daily-ring>.ring-center { font-size:9px; }
   .today-view .habit-grid {
     display:grid;
     grid-template-columns:repeat(4,minmax(0,1fr));

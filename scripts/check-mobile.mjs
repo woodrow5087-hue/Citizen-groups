@@ -40,6 +40,12 @@ try {
     await page.locator('.habit-tile.featured[data-grow="read"]').waitFor();
     const id=`${engine}-${width}x${height}${safe?'-safe':''}`;
     async function measure(step) {
+      const ring = await page.locator('.today-hero .daily-ring').evaluate(e=>{
+        const center=e.querySelector('.ring-center'), count=center.querySelector('strong').getBoundingClientRect(), label=center.querySelector('.ring-label').getBoundingClientRect(), bounds=e.getBoundingClientRect();
+        return {display:getComputedStyle(center).display,gap:label.top-count.bottom,offset:Math.abs((count.top+label.bottom)/2-(bounds.top+bounds.bottom)/2),horizontal:Math.abs((label.left+label.right)/2-(bounds.left+bounds.right)/2)};
+      });
+      assert.equal(ring.display,'flex',`${id} centered ring layout`);
+      assert.ok(Math.abs(ring.gap-2)<=1 && ring.offset<=1 && ring.horizontal<=1,`${id} ring text alignment ${JSON.stringify(ring)}`);
       const result = await page.evaluate(()=>{
         const main=document.querySelector('#content'), nav=document.querySelector('nav'), bounds=nav.getBoundingClientRect();
         const frame=document.querySelector('.app-frame').getBoundingClientRect();
