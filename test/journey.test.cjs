@@ -96,3 +96,12 @@ test('Returning to the journey restores local choices but still offers a fresh f
   ui.click('[data-stage="activate"]');
   assert.equal(ui.document.querySelector('[data-serve="camp-prep"]').getAttribute('aria-pressed'), 'true');
 });
+
+test('Group-specific gathering day and time match the selected fictional group', t => {
+  const ui = open(t);
+  ui.click('[data-choose-group="family"]');
+  assert.equal(ui.stage(), 'connect');
+  assert.match(ui.text(), /Family Circle/);
+  assert.match(ui.text(), /SUN/);
+  assert.match(ui.text(), /5:00/);
+});
