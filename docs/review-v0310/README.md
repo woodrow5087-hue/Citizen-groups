@@ -93,3 +93,18 @@ navigation targets meet the 44 × 44 CSS pixel minimum.
 [Detailed browser measurements](metrics-chromium.json) include all five states
 for each viewport. The screenshots above are viewport captures, not full-page
 images hiding a scroll requirement.
+
+## Optional dark appearance
+
+Open **You → Dark appearance** in the preview. Light remains the default; the
+choice saves on this device, separately from daily activity.
+
+[Dark Today screenshot](today-dark.png). Both appearances retain the same layout,
+brand assets and actions. The appearance switch is keyboard accessible and does
+not rerender the screen or discard focused controls or unsaved input.
+
+Appearance verification: all 13 logic tests and 22 Chromium viewport cases pass
+(11 sizes/inset combinations in each appearance, with 0/4–4/4 progress states).
+Dark mode also passes axe checks across Today, Grow, My Group and You at the
+390px safe-area viewport. Keyboard Space toggling was checked in the browser.
+Native Safari/VoiceOver review remains a device check, as noted above.

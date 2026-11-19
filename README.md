@@ -63,3 +63,18 @@ also complement, rather than replace, assistive technology testing.
 This branch remains a static prototype: there is no bundling/build step or
 runtime dependency. Netlify's existing root publish configuration is unchanged.
 Browser-testing packages are development-only and are not imported by the app.
+
+## Appearance
+
+Open **You → Dark appearance** to switch between the original light design and
+matte charcoal surfaces. Light remains the default. The accessible switch keeps
+keyboard focus when toggled, and the choice is saved on this browser/origin under
+`citizen-connect-theme`, independently of activity data. It survives navigation,
+reload and daily rollover. Resetting demo activities does not reset appearance.
+When browser storage is unavailable, switching still works for the current page
+session. No preference is sent to a server. The small `theme.js` initializer runs
+before styles load to apply the saved appearance before the app is painted.
+
+The browser regression suite checks both appearances at every viewport, including
+progress-ring alignment, completion flows, persistence and accessibility. The
+existing preview remains the review destination; nothing is published to production.

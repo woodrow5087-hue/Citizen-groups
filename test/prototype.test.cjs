@@ -9,7 +9,7 @@ const source = name => readFileSync(join(__dirname, '..', name), 'utf8');
 const storageKey = 'citizen-connect-demo-v038';
 const oldStorageKey = 'citizen-buddycheck-concept-v1';
 
-function open(t, { time = '2026-11-18T23:59:59', saved, oldSaved } = {}) {
+function open(t, { time = '2026-11-18T23:59:59', saved, oldSaved, theme, unavailableStorage = false } = {}) {
   const dom = new JSDOM(source('index.html'), { url: 'https://demo.test', runScripts: 'outside-only' });
   t.after(() => dom.window.close());
   const { window } = dom;
@@ -28,6 +28,9 @@ function open(t, { time = '2026-11-18T23:59:59', saved, oldSaved } = {}) {
   window.clearTimeout = id => timers.delete(id);
   if (saved) localStorage.setItem(storageKey, JSON.stringify(saved));
   if (oldSaved) localStorage.setItem(oldStorageKey, JSON.stringify(oldSaved));
+  if (theme) localStorage.setItem('citizen-connect-theme', theme);
+  if (unavailableStorage) window.Storage.prototype.setItem = () => { throw new Error('Unavailable'); };
+  window.eval(source('theme.js'));
   window.eval(source('app.js'));
 
   function click(selector) {
@@ -274,4 +277,33 @@ test('Today previews and local encouragement preserve their disclosures and navi
     assert.equal(reloaded.document.querySelector('nav [aria-current="page"]').dataset.tab, id);
     assert.equal(reloaded.document.querySelectorAll('nav button svg[aria-hidden="true"]').length, 4);
   }
+});
+
+
+test('appearance switch defaults to light, persists separately, and leaves progress and drafts intact', t => {
+  const ui = open(t);
+  assert.equal(ui.document.documentElement.dataset.theme, 'light');
+  ui.grow('read'); ui.action('finish');
+  ui.tab('you');
+  const before = ui.saved();
+  const control = ui.document.querySelector('[role="switch"]');
+  control.focus(); control.click();
+  assert.equal(ui.document.activeElement, control);
+  assert.equal(control.getAttribute('aria-checked'), 'true');
+  assert.equal(ui.document.documentElement.dataset.theme, 'dark');
+  assert.deepEqual(ui.saved(), before);
+  const reloaded = open(t, {saved:ui.saved(),theme:ui.window.localStorage.getItem('citizen-connect-theme')});
+  assert.equal(reloaded.document.documentElement.dataset.theme, 'dark');
+  reloaded.tab('you'); reloaded.action('toggle-theme');
+  assert.equal(reloaded.document.documentElement.dataset.theme, 'light');
+  assert.equal(reloaded.document.querySelector('[role="switch"]').getAttribute('aria-checked'), 'false');
+});
+
+test('invalid appearance values fall back to light and unavailable storage allows session toggling', t => {
+  const ui = open(t, {theme:'invalid',unavailableStorage:true});
+  assert.equal(ui.document.documentElement.dataset.theme,'light');
+  ui.tab('you'); ui.action('toggle-theme');
+  assert.equal(ui.document.documentElement.dataset.theme,'dark');
+  ui.tab('today'); ui.tab('you');
+  assert.equal(ui.document.querySelector('[role="switch"]').getAttribute('aria-checked'),'true');
 });

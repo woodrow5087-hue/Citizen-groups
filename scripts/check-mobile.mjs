@@ -26,19 +26,25 @@ try {
   // This is a layout simulation, not a claim of testing physical iOS Safari.
   const css = await (await fetch(new URL('/styles.css',url))).text();
   const cases = [[320,568,false],[375,635,false],[375,667,false],[390,664,false],[375,812,false],[375,812,true],[390,844,false],[390,844,true],[430,932,false],[430,932,true],[1280,900,false]];
-  for (const [width,height,safe] of cases) {
+  for (const theme of ['light','dark']) for (const [width,height,safe] of cases) {
     const context = await browser.newContext({viewport:{width,height},isMobile:width<701,hasTouch:width<701,deviceScaleFactor:1});
     const page = await context.newPage();
     const errors=[];
     page.on('pageerror',e=>errors.push(e.message));
     page.on('response',r=>{if(r.status()>=400) errors.push(`${r.status()} ${r.url()}`);});
     await page.goto(url);
+    if(theme==='dark') {
+      await page.locator('nav [data-tab="you"]').click();
+      await page.getByRole('switch',{name:'Dark appearance'}).click();
+      await page.locator('nav [data-tab="today"]').click();
+    }
+    assert.equal(await page.locator('html').getAttribute('data-theme'),theme);
     async function safeArea() {
       if(safe) await page.addStyleTag({content:css.replaceAll('env(safe-area-inset-top)',width===430?'59px':'47px').replaceAll('env(safe-area-inset-bottom)','34px')});
     }
     await safeArea();
     await page.locator('.habit-tile.featured[data-grow="read"]').waitFor();
-    const id=`${engine}-${width}x${height}${safe?'-safe':''}`;
+    const id=`${engine}-${theme}-${width}x${height}${safe?'-safe':''}`;
     async function measure(step) {
       const ring = await page.locator('.today-hero .daily-ring').evaluate(e=>{
         const center=e.querySelector('.ring-center'), count=center.querySelector('strong').getBoundingClientRect(), label=center.querySelector('.ring-label').getBoundingClientRect(), bounds=e.getBoundingClientRect();
@@ -77,6 +83,7 @@ try {
       await measure(index+1);
     }
     await page.reload(); await safeArea();
+    assert.equal(await page.locator('html').getAttribute('data-theme'),theme);
     assert.equal(await page.locator('.daily-ring').getAttribute('aria-label'),'4 of 4 today');
     await page.locator('[data-action="encourage"]').click();
     assert.equal(await page.locator('[data-action="encourage"]').getAttribute('aria-pressed'),'true');
@@ -88,11 +95,16 @@ try {
     assert.equal(await page.evaluate(()=>document.activeElement.id),'group-gathering');
     await page.locator('[data-action="rsvp"][data-value="going"]').click();
     await page.reload(); await safeArea();
+    assert.equal(await page.locator('html').getAttribute('data-theme'),theme);
     await page.locator('nav [data-tab="groups"]').click();
     assert.match(await page.locator('[data-action="rsvp"][data-value="going"]').textContent(),/Going/);
     for(const tab of ['grow','groups','you','today']) {
       await page.locator(`nav [data-tab="${tab}"]`).click();
       assert.equal(await page.locator('nav [aria-current="page"]').getAttribute('data-tab'),tab);
+      if(theme==='dark' && width===390 && safe) {
+        const results=await new AxeBuilder({page}).include('.app-frame').withTags(['wcag2a','wcag2aa','wcag21aa']).analyze();
+        assert.deepEqual(results.violations.map(v=>({id:v.id,nodes:v.nodes.map(n=>n.target)})),[],`${id} ${tab} accessibility`);
+      }
       assert.ok(await page.locator('#content').evaluate(e=>e.scrollWidth<=e.clientWidth),`${id} ${tab} overflow`);
     }
     await page.emulateMedia({reducedMotion:'reduce'});
@@ -103,7 +115,7 @@ try {
     assert.deepEqual(errors,[],`${id} browser/network errors`);
     await context.close();
   }
-  console.log(`Passed ${cases.length} ${engine} viewport cases, all five progress states, real activity flows, persistence, previews, navigation, reduced motion, and WCAG A/AA axe checks.`);
+  console.log(`Passed ${cases.length*2} light/dark ${engine} viewport cases, all five progress states, real activity flows, persistence, previews, navigation, reduced motion, and WCAG A/AA axe checks.`);
 } finally {
   await writeFile(resolve(output,`metrics-${engine}.json`),JSON.stringify(metrics,null,2)+'\n');
   await browser?.close(); server?.kill();
