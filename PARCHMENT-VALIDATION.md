@@ -52,3 +52,23 @@ Axe WCAG A/AA checks reported no detected violations on all five fresh screens a
 every size and on the completed reading/activity states. Gradient-related
 contrast checks that require manual review are covered by the explicit palette
 contrast calculations above. This does not replace physical Safari/VoiceOver review.
+
+## Branded intro follow-up
+
+The red intro reuses the existing embedded logo pixels in three SVG apertures
+(flag, Citizen, Connect), so the supplied branding stays intact and the page
+remains self-contained. No new imagery or external dependency is required.
+The existing application script is byte-for-byte unchanged. A separate bootstrap
+controls only the intro, temporary inert state, theme color and a session-only key.
+
+Four new Node tests verify automatic timing, tap/keyboard skipping, reduced
+motion, session dismissal and blocked-storage fallback, with saved demo data
+unchanged. The original eight tests remain in the suite.
+
+All 12 Node tests pass. Browser intro checks pass at 320×568, 375×812,
+390×844, 430×932 and desktop 1280×1000, including tap, keyboard, automatic timing,
+reduced motion, blocked session storage and simulated safe-area handling. An axe
+A/AA check of the visible intro reports no detected violations. The audit holds
+its own test page open longer; production still dismisses at one second.
+The browser checks verify saved progress is unchanged, all five tabs still work,
+a reflection saves after dismissal, and reload does not replay the intro.

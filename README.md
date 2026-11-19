@@ -66,3 +66,21 @@ retain existing activity. This change leaves stored data intact.
 
 Citizen branding remains provisional pending church approval. This branch is
 for review only; no merge into main or production publish is authorized.
+
+## Branded intro
+
+A short Citizen-red intro appears once per tab session, with the existing flag
+and wordmark arranged vertically. It automatically reveals Today after one
+second with a 180ms fade. Tap anywhere, press Enter/Space, or Escape to skip.
+Reduced-motion preference removes the fade and the underlying view entrance
+animation. The intro scales to the existing phone frame and mobile safe areas.
+
+Only `sessionStorage['citizen-connect-intro-seen-v1']` records dismissal. Demo
+localStorage, completion state and all existing navigation stay independent.
+Reloading the same tab skips the intro; a fresh tab session shows it again. If
+session storage is blocked, dismissal still works for the current visit.
+
+The intro is a separate bootstrap; the existing inline app script is unchanged.
+While visible, the covered app is hidden and inert. Keyboard skipping moves focus
+to the main content, and the browser theme color is restored after dismissal.
+There is no simulated loading progress, account check or backend request.
