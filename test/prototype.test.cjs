@@ -116,6 +116,7 @@ test('midnight clears daily actions and retains saved writings, reactions and RS
   ui.grow('memorize');
   ui.click('[data-word=know]');
   ui.tab('groups');
+  ui.action('open-group');
   ui.action('encourage');
   ui.action('react');
   ui.click('[data-value=going]');
@@ -182,4 +183,50 @@ test('foreground resume updates the screen and reschedules midnight on 23- and 2
     ui.window.dispatchEvent(new ui.window.Event('pageshow'));
     assert.match(ui.text(), /Mark reading complete/);
   }
+});
+
+test('all five destinations work and Read opens on Scripture first', t => {
+  const ui=open(t);
+  assert.deepEqual([...ui.document.querySelectorAll('nav button span')].map(e=>e.textContent),['Today','My Group','Read','Serve','Progress']);
+  for(const id of ['today','groups','grow','serve','you']) {
+    ui.tab(id);
+    assert.equal(ui.document.querySelectorAll('nav [aria-current="page"]').length,1);
+    assert.equal(ui.document.querySelector('nav [aria-current="page"]').dataset.tab,id);
+    assert.ok(ui.text().trim().length>50);
+  }
+  ui.tab('grow');
+  assert.match(ui.text(),/TODAY’S PASSAGE/);
+  ui.grow('memorize');
+  assert.match(ui.text(),/Check Answer/);
+});
+
+test('joining a demo opportunity persists across reload and midnight, and can be removed', t => {
+  const ui=open(t);ui.tab('serve');ui.action('join-serve');
+  assert.equal(ui.saved().persistent.opportunities.foodDrive,true);
+  assert.match(ui.document.querySelector('#toast').textContent,/No organiser was contacted/);
+  const again=open(t,{saved:ui.saved()});again.advance('2026-11-19T00:00:00');again.tab('serve');
+  assert.equal(again.saved().persistent.opportunities.foodDrive,true);
+  again.action('manage-serve');
+  assert.match(again.document.querySelector('[role="dialog"]').textContent,/not a real registration/);
+  again.action('leave-serve');
+  assert.equal(again.saved().persistent.opportunities.foodDrive,false);
+  assert.equal(again.document.querySelector('[role="dialog"]'),null);
+});
+
+test('dialogs support Escape, restore focus and isolate background controls', t => {
+  const ui=open(t);const trigger=ui.document.querySelector('[data-action="activity"]');trigger.focus();trigger.click();
+  assert.equal(ui.document.activeElement.className,'sheet-close');
+  assert.equal(ui.document.querySelector('.app-frame').inert,true);
+  ui.document.dispatchEvent(new ui.window.KeyboardEvent('keydown',{key:'Escape',bubbles:true}));
+  assert.equal(ui.document.querySelector('[role="dialog"]'),null);
+  assert.equal(ui.document.activeElement,trigger);
+  assert.equal(ui.document.querySelector('.app-frame').inert,false);
+});
+
+test('saved reflections are escaped and remain local across the reference group landing and details', t => {
+  const ui=open(t);ui.grow('share');ui.type('#reflection','<img src=x onerror=alert(1)>');ui.action('save-share');ui.tab('groups');
+  assert.match(ui.text(),/<img src=x onerror=alert\(1\)>/);
+  assert.equal(ui.document.querySelector('[onerror]'),null);
+  ui.action('open-group');assert.equal(ui.document.querySelector('[onerror]'),null);
+  assert.match(ui.text(),/No real|fictional|sample/i);
 });
