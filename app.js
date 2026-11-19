@@ -164,7 +164,7 @@
   }
   function todayView() {
     return `<div class="today-view">
-      <header class="today-hero"><div>${heading('Today')}<h1>Keep growing<br>together.</h1></div>${progressRing()}</header>
+      <header class="today-hero"><div>${heading('Today')}<h1>Keep growing<br>together.</h1><a class="journey-cta" href="journey.html">Explore the connection journey <span aria-hidden="true">↗</span></a></div>${progressRing()}</header>
       <div class="habit-grid" aria-label="Daily activities">${keys.map(habitTile).join('')}</div>
       ${groupCard()}
       ${nextStepView()}
