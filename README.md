@@ -85,7 +85,9 @@ automatic dismissal, tap/keyboard skip and reduced-motion support.
 
 `netlify.toml` runs `npm run build` and publishes `dist`. No secrets, environment
 variables, accounts or server functions are required. The preview branch is
-`feature/premium-experience-vnext`, targeting `feature/premium-hybrid-v1-demo`.
+`feature/premium-experience-vnext`, based on `feature/premium-hybrid-v1-demo`.
+The draft PR targets `main` to use the existing Netlify PR preview workflow; it
+must not be merged. The isolated redesign diff starts at `a1825a7`.
 Do not merge or publish production without approval. A new preview origin has its
 own browser storage; existing notes remain at the old preview URL. Browsers
 cannot read another origin’s notes.

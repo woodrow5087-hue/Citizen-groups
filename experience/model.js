@@ -62,7 +62,7 @@
       return true;
     }
     rollover();
-    const id = prefix => `${prefix}-${clock().getTime()}-${++sequence}`;
+    const id = prefix => `${prefix}-${clock().getTime()}-${++sequence}-${Math.random().toString(36).slice(2,10)}`;
     const change = fn => {rollover();const result=fn();extra.history[state.day]={...state.done};persist();return result;};
     const toggle=(key,value)=>change(()=>{state[key]=state[key].includes(value)?state[key].filter(v=>v!==value):[...state[key],value];if(key==='joined'){if(state[key].includes(value))extra.commitmentDates[value]=eventDate(value,clock()).toISOString();else delete extra.commitmentDates[value];}return state[key].includes(value);});
     const toggleExtra=(key,value)=>change(()=>{extra[key]=extra[key].includes(value)?extra[key].filter(v=>v!==value):[...extra[key],value];return extra[key].includes(value);});
