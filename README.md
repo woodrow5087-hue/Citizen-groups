@@ -1,8 +1,9 @@
 # Citizen Connect — reference-red leadership demo
 
 A functional, mobile-first five-tab demo based on `main` (`33b44a9`). The supplied
-reference images drive the solid red canvas, large heavy type, warm cream actions,
-black cards, photo-led group and serving screens, and persistent five-tab navigation.
+references drive the bold typography, photo-led screens and five-tab navigation.
+The mobile refinement balances the same Citizen red with charcoal canvases,
+cream content sections and clear action contrast.
 This is an unofficial prototype with fictional people and opportunities.
 
 ## Run, test and build
@@ -101,3 +102,16 @@ Do not merge or publish to production without review.
 For iPhone review, append `?ntl-drawer-state=hidden` to the preview URL so Netlify's
 feedback overlay does not cover bottom navigation. This is a per-tab display
 preference, not a production setting change.
+
+## Mobile contrast refinement
+
+The red token remains `#dc001f`. Charcoal `#25262c` now separates content from the
+red masthead, hero and primary actions. My Group has a cream identity panel; Read
+has a cream reading canvas; Serve has a cream rhythm section; Progress highlights
+encouragement in a red panel. Smaller fluid headlines and spacing retain the bold
+identity while fitting phone widths. Selected navigation labels use dark ink for
+accessible contrast, with the red icon and indicator preserving the active state.
+
+The browser suite now also enforces no vertical scrolling for the four landing
+screens at 390×844, and 44px minimum targets for their actions. Smaller and
+safe-area-constrained views scroll normally. Storage and activity logic are unchanged.

@@ -30,6 +30,8 @@ try {
    const m=await page.evaluate(()=>{const main=document.querySelector('#content'),f=document.querySelector('.app-frame').getBoundingClientRect(),nav=document.querySelector('nav').getBoundingClientRect();return {mainHeight:main.clientHeight,scrollHeight:main.scrollHeight,width:main.clientWidth,scrollWidth:main.scrollWidth,docWidth:document.documentElement.scrollWidth,navBottom:nav.bottom,frameBottom:f.bottom,offscreen:[...main.querySelectorAll('button')].filter(e=>{const r=e.getBoundingClientRect();return r.width>0&&(r.left<f.left-1||r.right>f.right+1)}).map(e=>e.textContent.trim())};});
    assert.ok(m.docWidth<=width&&m.scrollWidth<=m.width,`${id} ${tab} horizontal overflow ${JSON.stringify(m)}`);
    assert.deepEqual(m.offscreen,[],`${id} ${tab} offscreen buttons`);
+   if(width===390 && height===844 && !safe && ['today','groups','serve','you'].includes(tab))assert.ok(m.scrollHeight<=m.mainHeight+1,`${id} ${tab} landing screen requires scrolling`);
+   if(['today','groups','serve','you'].includes(tab))for(const box of await page.locator('#content button').evaluateAll(es=>es.map(e=>({w:e.getBoundingClientRect().width,h:e.getBoundingClientRect().height}))))assert.ok(box.w>=44&&box.h>=44,`${id} ${tab} touch target`);
    assert.ok(m.navBottom<=m.frameBottom+1&&m.navBottom<=height+1,`${id} ${tab} clipped navigation`);
    for(const box of await page.locator('nav button').evaluateAll(es=>es.map(e=>({w:e.getBoundingClientRect().width,h:e.getBoundingClientRect().height}))))assert.ok(box.w>=44&&box.h>=44);
    await page.locator('#content').evaluate(e=>e.scrollTop=e.scrollHeight);

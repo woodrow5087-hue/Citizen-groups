@@ -1,4 +1,4 @@
-# Reference-red demo review
+# Mobile contrast demo review
 
 Based on main `33b44a9`; a dedicated preview branch. [Open gallery](index.html).
 
@@ -13,14 +13,14 @@ checked at 390px. This is not a claim of physical Safari or VoiceOver testing.
 
 | CSS viewport | Insets | Today scroll | Group scroll | Serve scroll | Progress scroll |
 | --- | --- | --- | --- | --- | --- |
-| 320x568 | 0 | 229px | 252px | 174px | 264px |
-| 375x667 | 0 | 170px | 165px | 126px | 174px |
-| 375x812 | 0 | 25px | 20px | None | 29px |
-| 375x812 | 47/34px | 103px | 98px | 59px | 107px |
+| 320x568 | 0 | 234px | 261px | 176px | 259px |
+| 375x667 | 0 | 142px | 170px | 123px | 167px |
+| 375x812 | 0 | None | 25px | None | 22px |
+| 375x812 | 47/34px | 74px | 102px | 55px | 99px |
 | 390x844 | 0 | None | None | None | None |
-| 390x844 | 47/34px | 55px | 75px | 41px | 58px |
-| 430x932 | 59/34px | None | 22px | None | None |
-| 1280x900 | 0 | None | 10px | None | None |
+| 390x844 | 47/34px | 47px | 76px | 37px | 49px |
+| 430x932 | 59/34px | None | 11px | None | None |
+| 1280x900 | 0 | None | 6px | None | None |
 
 No horizontal overflow or cut-off navigation was found. Shorter viewports scroll
 normally; the final content remains reachable above the persistent navigation.
@@ -38,3 +38,13 @@ The reference's five-tab navigation replaces the old visible navigation while
 keeping its activity and local-storage logic. Existing awards, profile, history,
 stats and reset remain available through the header profile control. All shared
 activity and historical totals are clearly disclosed as fictional.
+
+## Mobile contrast update
+
+The original red token is unchanged. Charcoal content areas and cream reading,
+group identity and rhythm sections reduce continuous red coverage. Fluid
+headlines, compact spacing and an explicit active tab improve phone scanning.
+All ten logic tests, the build and eight viewport cases pass after the update.
+The four landing screens fit at 390×844 without vertical scrolling; their
+interactive targets are at least 44px in both dimensions. The original activity
+and persistence checks remain in the browser suite.
