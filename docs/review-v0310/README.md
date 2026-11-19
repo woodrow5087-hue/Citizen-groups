@@ -96,7 +96,7 @@ images hiding a scroll requirement.
 
 ## Optional dark appearance
 
-Open **You → Dark appearance** in the preview. Light remains the default; the
+Open **You → Demo controls → Dark appearance** in the preview. Light remains the default; the
 choice saves on this device, separately from daily activity.
 
 [Dark Today screenshot](today-dark.png). Both appearances retain the same layout,
@@ -108,3 +108,18 @@ Appearance verification: all 13 logic tests and 22 Chromium viewport cases pass
 Dark mode also passes axe checks across Today, Grow, My Group and You at the
 390px safe-area viewport. Keyboard Space toggling was checked in the browser.
 Native Safari/VoiceOver review remains a device check, as noted above.
+
+## You refinement
+
+The appearance switch is now in the bottom Demo controls section. The journey
+uses a red identity/progress card, stronger stat accents, and original shield,
+seal and hexagonal milestone crests. Historical awards remain samples; the
+Memorizer state still comes from completing today's practice.
+
+[Light You screenshot](you-light.png) · [Dark You screenshot](you-dark.png).
+
+All 14 logic tests pass. Focused You checks pass at four widths in both
+appearances, across Awards, History and Stats, with keyboard switching, bottom
+controls, no horizontal overflow, and zero detected axe A/AA violations.
+
+The full 22-case light/dark app regression suite also passes after the You refinement.

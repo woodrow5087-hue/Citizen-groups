@@ -3,7 +3,8 @@
   "private": true,
   "scripts": {
     "test": "node --test",
-    "test:browser": "node scripts/check-mobile.mjs"
+    "test:browser": "node scripts/check-mobile.mjs",
+    "test:you": "node scripts/check-you.mjs"
   },
   "engines": {
     "node": ">=22.12"

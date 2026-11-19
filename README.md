@@ -66,7 +66,7 @@ Browser-testing packages are development-only and are not imported by the app.
 
 ## Appearance
 
-Open **You → Dark appearance** to switch between the original light design and
+Open **You → Demo controls → Dark appearance** to switch between the original light design and
 matte charcoal surfaces. Light remains the default. The accessible switch keeps
 keyboard focus when toggled, and the choice is saved on this browser/origin under
 `citizen-connect-theme`, independently of activity data. It survives navigation,
@@ -78,3 +78,14 @@ before styles load to apply the saved appearance before the app is painted.
 The browser regression suite checks both appearances at every viewport, including
 progress-ring alignment, completion flows, persistence and accessibility. The
 existing preview remains the review destination; nothing is published to production.
+
+The appearance switch lives at the bottom of You under **Demo controls**.
+You uses a Citizen-red identity/progress card and collectible shield, seal and
+hexagonal award crests. Historical awards remain explicitly marked as samples;
+the Memorizer award still follows today's completed practice. Award artwork is
+original CSS and inline SVG, with no new image dependencies.
+
+Run `npm run test:you` for the focused 320/375/390/430px light/dark journey checks
+(all three tabs, award states, bottom controls, keyboard toggle, overflow and axe).
+It starts a local Python server. `CHROMIUM_PATH` supports an installed browser,
+and `BASE_URL` supports a running preview, like the full browser suite.

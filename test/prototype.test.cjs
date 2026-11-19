@@ -307,3 +307,22 @@ test('invalid appearance values fall back to light and unavailable storage allow
   ui.tab('today'); ui.tab('you');
   assert.equal(ui.document.querySelector('[role="switch"]').getAttribute('aria-checked'),'true');
 });
+
+test('You keeps appearance in bottom controls and preserves the live Memorizer award state', t => {
+  const ui = open(t);
+  ui.tab('you');
+  for (const section of ['awards','history','stats']) {
+    ui.click('[data-profile="' + section + '"]');
+    assert.ok(ui.document.querySelector('.demo-controls [role="switch"]'));
+    assert.equal(ui.document.querySelector('.you-hero [role="switch"]'), null);
+  }
+  ui.click('[data-profile="awards"]');
+  assert.equal(ui.document.querySelectorAll('.award').length,8);
+  assert.match(ui.document.querySelectorAll('.award')[2].textContent,/Next to unlock/);
+  ui.tab('grow'); ui.grow('memorize');
+  for (const word of ['know','good','love','called','purpose']) ui.click('[data-word="' + word + '"]');
+  ui.action('check-memory'); ui.tab('you');
+  const memory = ui.document.querySelectorAll('.award')[2];
+  assert.equal(memory.classList.contains('locked'), false);
+  assert.match(memory.textContent,/Earned today/);
+});
