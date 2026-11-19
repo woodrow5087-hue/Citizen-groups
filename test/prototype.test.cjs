@@ -9,7 +9,7 @@ const source = name => readFileSync(join(__dirname, '..', name), 'utf8');
 const storageKey = 'citizen-connect-demo-v038';
 const oldStorageKey = 'citizen-buddycheck-concept-v1';
 
-function open(t, { time = '2026-11-18T23:59:59', saved, oldSaved } = {}) {
+function open(t, { time = '2026-11-18T23:59:59', saved, oldSaved, theme, unavailableStorage = false } = {}) {
   const dom = new JSDOM(source('index.html'), { url: 'https://demo.test', runScripts: 'outside-only' });
   t.after(() => dom.window.close());
   const { window } = dom;
@@ -28,6 +28,9 @@ function open(t, { time = '2026-11-18T23:59:59', saved, oldSaved } = {}) {
   window.clearTimeout = id => timers.delete(id);
   if (saved) localStorage.setItem(storageKey, JSON.stringify(saved));
   if (oldSaved) localStorage.setItem(oldStorageKey, JSON.stringify(oldSaved));
+  if (theme) localStorage.setItem('citizen-connect-theme', theme);
+  if (unavailableStorage) window.Storage.prototype.setItem = () => { throw new Error('Unavailable'); };
+  window.eval(source('theme.js'));
   window.eval(source('app.js'));
 
   function click(selector) {
@@ -222,4 +225,104 @@ test('new preview starts at zero despite earlier demo selections and retains new
   const reloaded = open(t, { saved:ui.saved() });
   assert.equal(reloaded.saved().daily.done.read, true);
   assert.equal(reloaded.saved().daily.done.share, false);
+});
+
+test('Today recommendation advances in order without losing saved work on reload', t => {
+  const ui = open(t);
+  function recommended(key, step) {
+    ui.tab('today');
+    const next = ui.document.querySelector('.rhythm-nudge');
+    assert.equal(next.dataset.grow, key);
+    assert.match(next.textContent, new RegExp(step + ' OF 4'));
+    next.click();
+    assert.equal(ui.document.querySelector('nav [aria-current="page"]').dataset.tab, 'grow');
+  }
+  recommended('read', 1);
+  ui.action('finish');
+  recommended('share', 2);
+  ui.type('#reflection', 'A locally saved thought');
+  ui.action('save-share');
+  recommended('memorize', 3);
+  for (const word of ['know','good','love','called','purpose']) ui.click('[data-word="' + word + '"]');
+  ui.action('check-memory');
+  recommended('pray', 4);
+  ui.action('finish-pray');
+  const reloaded = open(t, { saved:ui.saved() });
+  assert.match(reloaded.document.querySelector('.rhythm-finished').textContent, /All four, complete/);
+  assert.equal(reloaded.saved().persistent.totalComplete, 1);
+  reloaded.click('.rhythm-finished [data-tab="groups"]');
+  assert.match(reloaded.text(), /A locally saved thought/);
+});
+
+test('Today previews and local encouragement preserve their disclosures and navigation', t => {
+  const ui = open(t);
+  ui.action('serve');
+  assert.match(ui.document.querySelector('[role="dialog"]').textContent, /Serve Together/);
+  assert.match(ui.document.querySelector('[role="dialog"]').textContent, /preview|fictional|sample/i);
+  ui.action('close-sheet');
+  ui.action('encourage');
+  assert.equal(ui.document.querySelector('.round-react').getAttribute('aria-pressed'), 'true');
+  assert.match(ui.document.querySelector('#toast').textContent, /No message was sent/);
+  ui.action('encourage');
+  assert.deepEqual(ui.saved().daily.encouraged, ['anna']);
+  const reloaded = open(t, { saved:ui.saved() });
+  assert.equal(reloaded.document.querySelector('.round-react').getAttribute('aria-pressed'), 'true');
+  // jsdom has no layout/scroll implementation; assert the existing destination and focus.
+  reloaded.window.HTMLElement.prototype.scrollIntoView = function() {};
+  reloaded.action('gathering');
+  assert.equal(reloaded.document.activeElement.id, 'group-gathering');
+  for (const id of ['today','grow','groups','you']) {
+    reloaded.tab(id);
+    assert.equal(reloaded.document.querySelectorAll('nav [aria-current="page"]').length, 1);
+    assert.equal(reloaded.document.querySelector('nav [aria-current="page"]').dataset.tab, id);
+    assert.equal(reloaded.document.querySelectorAll('nav button svg[aria-hidden="true"]').length, 4);
+  }
+});
+
+
+test('appearance switch defaults to light, persists separately, and leaves progress and drafts intact', t => {
+  const ui = open(t);
+  assert.equal(ui.document.documentElement.dataset.theme, 'light');
+  ui.grow('read'); ui.action('finish');
+  ui.tab('you');
+  const before = ui.saved();
+  const control = ui.document.querySelector('[role="switch"]');
+  control.focus(); control.click();
+  assert.equal(ui.document.activeElement, control);
+  assert.equal(control.getAttribute('aria-checked'), 'true');
+  assert.equal(ui.document.documentElement.dataset.theme, 'dark');
+  assert.deepEqual(ui.saved(), before);
+  const reloaded = open(t, {saved:ui.saved(),theme:ui.window.localStorage.getItem('citizen-connect-theme')});
+  assert.equal(reloaded.document.documentElement.dataset.theme, 'dark');
+  reloaded.tab('you'); reloaded.action('toggle-theme');
+  assert.equal(reloaded.document.documentElement.dataset.theme, 'light');
+  assert.equal(reloaded.document.querySelector('[role="switch"]').getAttribute('aria-checked'), 'false');
+});
+
+test('invalid appearance values fall back to light and unavailable storage allows session toggling', t => {
+  const ui = open(t, {theme:'invalid',unavailableStorage:true});
+  assert.equal(ui.document.documentElement.dataset.theme,'light');
+  ui.tab('you'); ui.action('toggle-theme');
+  assert.equal(ui.document.documentElement.dataset.theme,'dark');
+  ui.tab('today'); ui.tab('you');
+  assert.equal(ui.document.querySelector('[role="switch"]').getAttribute('aria-checked'),'true');
+});
+
+test('You keeps appearance in bottom controls and preserves the live Memorizer award state', t => {
+  const ui = open(t);
+  ui.tab('you');
+  for (const section of ['awards','history','stats']) {
+    ui.click('[data-profile="' + section + '"]');
+    assert.ok(ui.document.querySelector('.demo-controls [role="switch"]'));
+    assert.equal(ui.document.querySelector('.you-hero [role="switch"]'), null);
+  }
+  ui.click('[data-profile="awards"]');
+  assert.equal(ui.document.querySelectorAll('.award').length,8);
+  assert.match(ui.document.querySelectorAll('.award')[2].textContent,/Next to unlock/);
+  ui.tab('grow'); ui.grow('memorize');
+  for (const word of ['know','good','love','called','purpose']) ui.click('[data-word="' + word + '"]');
+  ui.action('check-memory'); ui.tab('you');
+  const memory = ui.document.querySelectorAll('.award')[2];
+  assert.equal(memory.classList.contains('locked'), false);
+  assert.match(memory.textContent,/Earned today/);
 });
