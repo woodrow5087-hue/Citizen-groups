@@ -3,37 +3,30 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#09090c">
+  <meta name="theme-color" content="#dc001f">
   <meta name="application-name" content="Citizen Connect">
   <meta name="apple-mobile-web-app-title" content="Citizen Connect">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="description" content="An unofficial Citizen Connect concept demonstrating a BuddyCheck-inspired daily Bible habit experience.">
+  <meta name="description" content="An unofficial, device-local Citizen Connect leadership demo. All members and opportunities are fictional.">
   <title>Citizen Connect · Daily Rhythm Demo</title>
   <link rel="icon" href="assets/favicon.png" sizes="48x48" type="image/png">
   <link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png">
-  <link rel="stylesheet" href="styles.css">
-  <script defer src="app.js"></script>
+  <link rel="stylesheet" href="styles.css?v=reference-red-1">
+  <script defer src="app.js?v=reference-red-1"></script>
 </head>
 <body>
   <div class="stage">
-    <aside class="desktop-pitch" aria-hidden="true">
-      <div class="desktop-kicker"><span></span> A CITIZEN CONNECT CONCEPT</div>
-      <h1>Grow in faith.<br><em>Together.</em></h1>
-      <p>A daily rhythm of Scripture, sharing, memorization and prayer—with a few people who notice when you show up.</p>
-      <div class="desktop-tags"><span>Read</span><span>Share</span><span>Memorize</span><span>Pray</span></div>
-      <div class="desktop-disclaimer">UNOFFICIAL INTERACTIVE PROTOTYPE · Sample data only</div>
-    </aside>
     <div class="phone-shell">
       <div class="phone-camera" aria-hidden="true"></div>
       <div class="app-frame">
         <header class="app-header" id="header">
           <div class="brand">
-            <img src="assets/citizen-connect.png" width="134" height="42" alt="Citizen Connect">
+            <img class="logo-base" src="assets/citizen-connect.png" width="160" height="52" alt="Citizen Connect"><img class="logo-connect" src="assets/citizen-connect.png" width="160" height="52" alt="" aria-hidden="true">
           </div>
           <div class="header-buttons">
-            <button class="circle-icon" type="button" data-action="activity" aria-label="View activity"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 11.5a7.8 7.8 0 0 1-8 8 9.3 9.3 0 0 1-3-.5l-5 2 1.8-4.5A7.8 7.8 0 0 1 4 11.5a8 8 0 0 1 16 0z"/></svg></button>
-            <button class="circle-icon user-icon" type="button" data-tab="you" aria-label="Your profile">JW</button>
+            <button class="circle-icon" type="button" data-action="activity" aria-label="View activity"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 6-3 6-3 9h18c0-3-3-3-3-9M10 21h4"/></svg></button>
+            <button class="circle-icon" type="button" data-action="profile" aria-label="Your profile"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="9" r="3"/><path d="M5 19a7 7 0 0 1 14 0"/></svg></button>
           </div>
         </header>
         <main class="content-scroll" id="content" tabindex="-1"></main>
