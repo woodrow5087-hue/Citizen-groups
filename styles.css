@@ -134,3 +134,5 @@ body,.app-frame,.content-scroll { background:var(--charcoal); }
 .weekly-progress { padding-top:10px; }
 .weekly-progress h2 { font-size:25px; margin-bottom:4px; }
 .encouragement { font-size:18px; line-height:1.2; margin-top:12px; }
+/* Isolate header compositing from the scrollable content and logo filters. */
+.app-header { position:relative; z-index:2; isolation:isolate; }

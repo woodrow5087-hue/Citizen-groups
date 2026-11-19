@@ -42,7 +42,14 @@ try {
   for(const tab of ['today','groups','grow','serve','you']) {
    await page.locator(`nav [data-tab="${tab}"]`).click();assert.equal(await page.locator('nav [aria-current="page"]').count(),1);
    await layout(tab);await audit(tab);
-   if(width===390&&!safe)await page.locator('.app-frame').screenshot({path:root+`docs/reference-review/${tab}.png`});
+   if(width===390&&!safe){
+    // Keep review captures independent of accessibility contrast-probe paint state.
+    const capture=await context.newPage();
+    await capture.goto(target.href);await capture.evaluate(()=>document.fonts.ready);
+    await capture.locator(`nav [data-tab="${tab}"]`).click();
+    await capture.locator('.app-frame').screenshot({path:root+`docs/reference-review/${tab}.png`});
+    await capture.close();
+   }
   }
   await page.locator('nav [data-tab="today"]').click();
   assert.equal(await page.locator('.daily-actions button.next').getAttribute('data-grow'),'read');
