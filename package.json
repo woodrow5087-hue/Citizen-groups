@@ -2,12 +2,15 @@
   "name": "citizen-groups",
   "private": true,
   "scripts": {
-    "test": "node --test"
+    "test": "node --test",
+    "test:browser": "node scripts/check-mobile.mjs"
   },
   "engines": {
     "node": ">=22.12"
   },
   "devDependencies": {
-    "jsdom": "^26.1.0"
+    "@axe-core/playwright": "^4.14.0",
+    "jsdom": "^26.1.0",
+    "playwright": "^1.65.1"
   }
 }

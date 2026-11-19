@@ -30,3 +30,36 @@ clock. Test dependencies are never loaded by the web app.
 ## Production roadmap
 
 A real implementation will need authentication, member/group roles, private-by-default prayer permissions, backend database and APIs, user-controlled invitations, content management, real streak logic and time zones, push notifications with frequency/consent settings, and church-approved branding/assets.
+
+## v0.3.10 visual review and browser checks
+
+[Before/after Today and navigation comparisons](docs/review-v0310/README.md)
+document the refinement from hybrid commit `8eea23f`. The branded header,
+Sandia image, four-across habits, daily calculations, storage namespace and
+existing interactions are preserved. Next Step uses the current recommended
+activity's icon; Serve, the gathering and circle now have distinct treatments.
+
+Run the browser regression suite after `npm ci`:
+
+```sh
+npx playwright install chromium
+npm run test:browser
+```
+
+The suite starts its own local Python 3 server. If Chromium is already installed,
+use `CHROMIUM_PATH=/path/to/chromium npm run test:browser`. It covers 320, 375,
+390 and 430px widths, short Safari toolbar-sized viewports, simulated safe areas,
+a desktop viewport, all five daily progress states, actual completion flows,
+reload persistence, previews, RSVP, encouragement, keyboard navigation,
+reduced motion and automated axe WCAG A/AA checks. Screenshots and measurements
+are written to the ignored `.browser-artifacts/` directory. `BASE_URL` can point
+at a deploy preview to run the same checks there; use only fictional test input.
+
+Safe-area checks substitute the stylesheet's `env()` values in a desktop browser;
+they do not replace a physical iPhone/Safari review. The app still uses native
+`env(safe-area-inset-*)` and `100dvh` in normal use. Automated accessibility checks
+also complement, rather than replace, assistive technology testing.
+
+This branch remains a static prototype: there is no bundling/build step or
+runtime dependency. Netlify's existing root publish configuration is unchanged.
+Browser-testing packages are development-only and are not imported by the app.
