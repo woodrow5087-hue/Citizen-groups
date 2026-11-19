@@ -9,7 +9,10 @@ const source = name => readFileSync(join(__dirname, '..', name), 'utf8');
 const storageKey = 'citizen-buddycheck-concept-v1';
 
 function open(t, { time = '2026-11-18T23:59:59', saved } = {}) {
-  const dom = new JSDOM(source('index.html'), { url: 'https://demo.test', runScripts: 'outside-only' });
+  // These archived app.js regressions require its original shell IDs. The live
+  // Premium Hybrid page is self-contained and covered by premium-hybrid.test.cjs.
+  const legacyShell = '<!doctype html><html lang="en"><body><div class="phone-shell"><main id="content"></main><nav id="bottom-nav"></nav><div id="sheet-root"></div><div id="toast" hidden></div></div></body></html>';
+  const dom = new JSDOM(legacyShell, { url: 'https://demo.test', runScripts: 'outside-only' });
   t.after(() => dom.window.close());
   const { window } = dom;
   const { document, localStorage } = window;
