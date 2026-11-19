@@ -18,7 +18,6 @@ No ESV, NIV, Crossroads pastor notes, sermons, recordings or artwork are include
 Explore contains original demo readings, labeled as such. This preview makes no
 claim that its editorial content is official Citizen Church teaching.
 
-The historical prototype used a KJV memory exercise. Existing saved completion
-and partial answers are retained; its five-word exercise remains compatible and
-uses a clearly attributed KJV excerpt (public domain in the United States).
-New Scripture reading and verse selection use WEB exclusively.
+The historical prototype’s five missing-word answers also fit WEB Romans 8:28.
+The exercise now reproduces WEB wording while retaining saved partial answers
+and completion. No copyrighted translation is introduced.

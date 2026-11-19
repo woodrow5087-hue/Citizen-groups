@@ -11,7 +11,7 @@
   const dayKey = (date = new Date()) => `${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,'0')}-${String(date.getDate()).padStart(2,'0')}`;
   const emptyDone = () => Object.fromEntries(practices.map(k => [k, false]));
   const initial = (now = new Date()) => ({day:dayKey(now),done:emptyDone(),reflection:'',prayerNote:'',prayed:[],encouraged:[],reactions:[],rsvp:'',joined:[],memoryWords:[],memoryFeedback:'',emailReminders:false});
-  const extension = () => ({version:1,profile:{name:'Alex',largerText:false},history:{},reflections:[],bookmarks:[],highlights:[],comments:{},prayers:[],encouragements:[],readItems:[],savedContent:[],reader:{book:'Romans',chapter:8,font:20},notificationReads:[]});
+  const extension = () => ({version:1,profile:{name:'Alex'},history:{},reflections:[],bookmarks:[],highlights:[],comments:{},prayers:[],encouragements:[],readItems:[],savedContent:[],reader:{book:'Romans',chapter:8,font:20},notificationReads:[],commitmentDates:{},rsvpDate:'',rsvpHistory:{}});
   const array = value => Array.isArray(value) ? value : [];
   const object = value => value && typeof value === 'object' && !Array.isArray(value) ? value : {};
   function nextOccurrence(weekday, hour, minute = 0, now = new Date()) {
@@ -38,18 +38,25 @@
     let state={...defaults,...old,done:{...defaults.done,...object(old.done)}};
     for(const key of ['prayed','encouraged','reactions','joined','memoryWords']) state[key]=array(state[key]);
     for(const key of ['reflection','prayerNote','rsvp','memoryFeedback']) state[key]=typeof state[key]==='string'?state[key]:'';
-    let extra={...fresh,...loaded,profile:{...fresh.profile,...object(loaded.profile)},reader:{...fresh.reader,...object(loaded.reader)},history:object(loaded.history),comments:object(loaded.comments)};
+    let extra={...fresh,...loaded,profile:{...fresh.profile,...object(loaded.profile)},reader:{...fresh.reader,...object(loaded.reader)},history:object(loaded.history),comments:object(loaded.comments),commitmentDates:object(loaded.commitmentDates),rsvpHistory:object(loaded.rsvpHistory)};
     for(const key of ['reflections','bookmarks','highlights','prayers','encouragements','readItems','savedContent','notificationReads']) extra[key]=array(extra[key]);
     extra.reader.font=[18,20,23,26].includes(extra.reader.font)?extra.reader.font:20;
+    // Bind responses to an actual occurrence, rather than carrying them into every future week.
+    if(!extra.rsvpDate)extra.rsvpDate=dayKey(eventDate('gathering',clock()));
+    for(const joined of state.joined)if(!extra.commitmentDates[joined])extra.commitmentDates[joined]=eventDate(joined,clock()).toISOString();
     // Legacy notes are preserved as private. They never become a shared feed item implicitly.
     if(state.reflection && !extra.reflections.some(r=>r.text===state.reflection)) extra.reflections.unshift({id:'legacy-reflection',text:state.reflection,reference:'Romans 8:26–28',book:'Romans',chapter:8,verses:[26,27,28],createdAt:`${state.day}T12:00:00`,shared:false});
+    if(state.prayerNote && !extra.prayers.some(p=>p.text===state.prayerNote)) extra.prayers.unshift({id:'legacy-prayer',text:state.prayerNote,createdAt:`${state.day}T12:00:00`,shared:false});
     function persist() {
       try {storage.setItem(LEGACY,JSON.stringify(state));storage.setItem(EXTRA,JSON.stringify(extra));warning='';return true;}
       catch {warning='This browser could not save your changes. Keep this tab open; changes may be lost on refresh.';return false;}
     }
     function rollover() {
       const day=dayKey(clock());
-      if(state.day===day) return false;
+      const gathering=dayKey(eventDate('gathering',clock()));
+      const eventChanged=extra.rsvpDate!==gathering;
+      if(eventChanged){if(state.rsvp)extra.rsvpHistory[extra.rsvpDate]=state.rsvp;state.rsvp='';extra.rsvpDate=gathering;}
+      if(state.day===day) return eventChanged;
       extra.history[state.day]={...emptyDone(),...state.done};
       state.day=day;state.done=emptyDone();state.prayed=[];state.encouraged=[];state.memoryWords=[];state.memoryFeedback='';
       return true;
@@ -57,7 +64,7 @@
     rollover();
     const id = prefix => `${prefix}-${clock().getTime()}-${++sequence}`;
     const change = fn => {rollover();const result=fn();extra.history[state.day]={...state.done};persist();return result;};
-    const toggle=(key,value)=>change(()=>{state[key]=state[key].includes(value)?state[key].filter(v=>v!==value):[...state[key],value];return state[key].includes(value);});
+    const toggle=(key,value)=>change(()=>{state[key]=state[key].includes(value)?state[key].filter(v=>v!==value):[...state[key],value];if(key==='joined'){if(state[key].includes(value))extra.commitmentDates[value]=eventDate(value,clock()).toISOString();else delete extra.commitmentDates[value];}return state[key].includes(value);});
     const toggleExtra=(key,value)=>change(()=>{extra[key]=extra[key].includes(value)?extra[key].filter(v=>v!==value):[...extra[key],value];return extra[key].includes(value);});
     return {
       get state(){return state;},get extra(){return extra;},get warning(){return warning;},clock,rollover,
