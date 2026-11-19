@@ -83,6 +83,11 @@
   ];
   const names=['Read','Share','Memorize','Pray'], keys=['read','share','memorize','pray'];
   const icons={
+    navToday:'<rect x="3" y="4.5" width="18" height="17" rx="4"/><path d="M7.5 2.5v4M16.5 2.5v4M3 10h18m-13 5 3 3 5-5"/>',
+    navGrow:'<path d="M12 6v15M3 4.5c3.5-1 6.5-.5 9 1.5 2.5-2 5.5-2.5 9-1.5v15c-3.5-1-6.5-.5-9 1.5-2.5-2-5.5-2.5-9-1.5v-15Z"/><path d="m6.5 9 2 .5m-2 3.5 2 .5m7-4 2-.5"/>',
+    navGroups:'<circle cx="12" cy="8.5" r="3.5"/><path d="M6 21v-1.5a6 6 0 0 1 12 0V21M4.5 5.5a3 3 0 0 0 0 6M19.5 5.5a3 3 0 0 1 0 6M3 15a4 4 0 0 0-1 3v1m19-4a4 4 0 0 1 1 3v1"/>',
+    navYou:'<rect x="3" y="2.5" width="18" height="19" rx="5"/><circle cx="12" cy="9" r="3"/><path d="M7 18a5.2 5.2 0 0 1 10 0"/>',
+    serveHands:'<path d="m3 16 4-2h4a2 2 0 0 1 0 4H8m5-1 5-3a2 2 0 0 1 2 3l-7 4H8l-5-2M2 14v7"/><path d="m14 11-3.5-3.5a2.5 2.5 0 0 1 3.5-3.6 2.5 2.5 0 0 1 3.5 3.6L14 11Z"/>',
     home:'<path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1z"/>',
     book:'<path d="M12 7v14"/><path d="M3 18V4a2 2 0 0 1 2-2h3a6 6 0 0 1 4 2 6 6 0 0 1 4-2h3a2 2 0 0 1 2 2v14a2 2 0 0 0-2-2h-3a6 6 0 0 0-4 2 6 6 0 0 0-4-2H5a2 2 0 0 0-2 2z"/>',
     users:'<path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><path d="M20 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/>',
@@ -152,7 +157,7 @@
 
   function nextStepView() {
     const next = keys.find(key => !state.daily.done[key]);
-    if (!next) return `<div class="rhythm-nudge rhythm-finished" role="status">${icon('check')}<span><small>YOUR DAILY RHYTHM</small><strong>All four, complete.</strong><em>Beautiful work making space for what matters.</em></span><button type="button" data-tab="groups">Visit your circle ${icon('right')}</button></div>`;
+    if (!next) return `<div class="rhythm-nudge rhythm-finished" role="status" aria-label="Your daily rhythm">${icon('check')}<span><strong>All four, complete.</strong><em>Beautiful work making space for what matters.</em></span><button type="button" data-tab="groups">Visit your circle ${icon('right')}</button></div>`;
     const prompts = {
       read:['Begin with Scripture','A few minutes in Romans 8.'],
       share:['Share what stood out','Your reflection might encourage someone.'],
@@ -160,7 +165,8 @@
       pray:['Take a prayer moment','Remember someone in your circle today.']
     };
     const [label,description] = prompts[next];
-    return `<button class="rhythm-nudge" type="button" data-grow="${next}" aria-label="Your next step: ${label}">${icon('sparkle')}<span><small>YOUR NEXT STEP</small><strong>${label}</strong><em>${description}</em></span>${icon('right')}</button>`;
+    const activityIcon = {read:'book',share:'chat',memorize:'layers',pray:'prayer'}[next];
+    return `<button class="rhythm-nudge" type="button" data-grow="${next}" aria-label="Your next step: ${label}">${icon(activityIcon)}<span><small>YOUR NEXT STEP <span aria-hidden="true">· ${keys.indexOf(next)+1} OF 4</span></small><strong>${label}</strong><em>${description}</em></span>${icon('right')}</button>`;
   }
   function todayView() {
     return `<div class="today-view">
@@ -169,13 +175,12 @@
       ${groupCard()}
       ${nextStepView()}
       <div class="quick-cards">
-        <button type="button" data-action="serve">${icon('heart')}<b>Serve Together</b><small>Food Drive · Preview</small></button>
-        <button type="button" data-action="gathering">${icon('calendar')}<b>What’s Next</b><small>This week’s gathering</small></button>
+        <button class="serve-card" type="button" data-action="serve">${icon('serveHands')}<span><b>Serve Together</b><small>Food Drive · Preview</small></span>${icon('right')}</button>
+        <button class="event-card" type="button" data-action="gathering"><span class="event-calendar" aria-hidden="true"><small>WED</small>${icon('calendar')}</span><span><b>What’s Next</b><small>Wed · 6:30 PM</small></span></button>
       </div>
       <section class="today-circle" aria-label="Fictional group activity">
-        <div class="section-heading"><h2>From your circle</h2><button type="button" data-tab="groups">See all →</button></div>
-        <small class="example-caption">Fictional group activity · Preview</small>
-        ${people.slice(0,1).map(p => `<div class="buddy-row">${avatar(p)}<div class="buddy-copy"><b>${p.name}</b><p>${p.activity}</p></div><button type="button" class="round-react ${state.daily.encouraged.includes(p.id) ? 'selected' : ''}" data-action="encourage" data-id="${p.id}" aria-pressed="${state.daily.encouraged.includes(p.id)}" aria-label="${p.progress===4 ? 'Celebrate' : 'Nudge'} ${p.name}">${icon('heart')}</button></div>`).join('')}
+        <div class="section-heading"><div><h2>From your circle</h2><small class="example-caption">Fictional group activity · Preview</small></div><button type="button" data-tab="groups">See all →</button></div>
+        ${people.slice(0,1).map(p => `<div class="buddy-row">${avatar(p)}<div class="buddy-copy"><b>${p.name} <small>${p.time}</small></b><p>${p.activity}</p></div><button type="button" class="round-react ${state.daily.encouraged.includes(p.id) ? 'selected' : ''}" data-action="encourage" data-id="${p.id}" aria-pressed="${state.daily.encouraged.includes(p.id)}" aria-label="${p.progress===4 ? 'Celebrate' : 'Nudge'} ${p.name}">${icon('heart')}</button></div>`).join('')}
       </section>
       <p class="today-demo-note">UNOFFICIAL DEMO · Fictional group information</p>
     </div>`;
@@ -194,7 +199,7 @@
   function history(){return `${heading('Look how far you’ve come')}<h1 class="section-large">History<span class="dot">.</span></h1><p class="section-sub">The previous days are illustrative. Today's completion is real to this demo.</p><div class="panel"><h3>This week</h3>${weekGrid()}</div><div class="panel">${[['Today',`${count()} of 4 completed`],['Yesterday','4 of 4 · sample'],['Two days ago','4 of 4 · sample'],['Three days ago','2 of 4 · sample'],['Four days ago','4 of 4 · sample']].map(([a,b])=>`<div class="history-row"><b>${a}</b><small>${b}</small></div>`).join('')}</div>`}
   function stats(){return `${heading('Steady progress')}<h1 class="section-large">Your stats<span class="dot">.</span></h1><p class="section-sub">One step at a time adds up. Historical statistics below are illustrative.</p><div class="panel"><div class="history-row"><b>Current daily progress</b><span>${count()}/4</span></div><div class="history-row"><b>Sample 5-day streak</b><span>5 days</span></div><div class="history-row"><b>Sample active days</b><span>26</span></div><div class="history-row"><b>Today’s prayers acknowledged</b><span>${state.daily.prayed.length}</span></div><div class="history-row"><b>Buddies encouraged</b><span>${state.daily.encouraged.length}</span></div></div>`}
   function youView(){return `${banner("Your Journey","You")}<div class="journey-card">${progressRing()}<div class="journey-habits">${keys.map((k,i)=>`<span>${names[i]}<b>${state.daily.done[k]?"✓":"○"}</b></span>`).join("")}</div></div><div class="you-profile"><div class="large-avatar">JW</div><div><h2>Jonathan W.</h2><p>Wednesday Group · Demo profile</p></div><button class="mini-button" data-action="settings">${icon('info','inline-icon')} Demo</button></div><div class="profile-stats"><div>${icon('flame')}<b>5</b><small>Day streak*</small></div><div>${icon('check')}<b>26</b><small>Days active*</small></div><div>${icon('bars')}<b>${Math.round(count()/4*100)}%</b><small>Today</small></div></div><div class="profile-tabs">${['awards','history','stats'].map(p=>`<button class="${profileTab===p?'active':''}" data-profile="${p}">${p[0].toUpperCase()+p.slice(1)}</button>`).join('')}</div>${profileTab==='awards'?awards():profileTab==='history'?history():stats()}<div class="section-heading"><h2>Demo controls</h2></div><button class="settings-row" data-action="reset"><span>Reset today’s sample progress</span>${icon('reset')}</button><button class="settings-row" data-action="settings"><span>About this prototype</span>${icon('info')}</button><p class="footer-note">*Historical streak and activity totals are fictional examples, not real tracked data. This is an independent, unofficial concept—not an official Citizen Church app.</p>`}
-  function render(preserve=false){const main=$('content');let y=preserve?main.scrollTop:0;main.innerHTML=tab==='today'?todayView():tab==='grow'?growView():tab==='groups'?groupsView():youView();$('bottom-nav').innerHTML=[['today','home','Today'],['grow','book','Grow'],['groups','users','My Group'],['you','profile','You']].map(([id,ic,label])=>`<button class="nav-item ${tab===id?'active':''}" data-tab="${id}" aria-current="${tab===id?'page':'false'}">${icon(ic)}<span>${label}</span></button>`).join('');main.scrollTop=y;renderSheet()}
+  function render(preserve=false){const main=$('content');let y=preserve?main.scrollTop:0;main.innerHTML=tab==='today'?todayView():tab==='grow'?growView():tab==='groups'?groupsView():youView();$('bottom-nav').innerHTML=[['today','navToday','Today'],['grow','navGrow','Grow'],['groups','navGroups','My Group'],['you','navYou','You']].map(([id,ic,label])=>`<button class="nav-item ${tab===id?'active':''}" data-tab="${id}" aria-current="${tab===id?'page':'false'}">${icon(ic)}<span>${label}</span></button>`).join('');main.scrollTop=y;renderSheet()}
   function goto(t,sub){tab=t;if(sub)growTab=sub;else if(t==='grow')growTab='read';render();}
   function grow(sub){tab='grow';growTab=sub;render()}
   function notify(msg){const box=$('toast');box.textContent=msg;box.hidden=false;clearTimeout(toastTimeout);toastTimeout=setTimeout(()=>box.hidden=true,2950)}

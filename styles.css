@@ -492,3 +492,102 @@ button,.opportunity summary { touch-action:manipulation; }
 @media (max-width:359px) {
   .brand img { width:min(132px,39vw); }
 }
+
+/* v0.3.10 — Distinct actions, a human circle, and a purpose-built navigation.
+   Scoped to Today and navigation: storage, activity logic and other views stay intact. */
+.today-view .rhythm-nudge:not(.rhythm-finished) {
+  background:var(--accent); color:#fff; border-color:var(--accent);
+  box-shadow:0 3px 8px #29242c12; min-height:62px; padding:10px 12px; gap:11px;
+}
+.today-view .rhythm-nudge:not(.rhythm-finished)>.ico:first-child {
+  width:36px; height:38px; padding:7px; border-radius:10px;
+  color:#fff; background:#ffffff18; border:1px solid #ffffff55; stroke-width:2;
+}
+.today-view .rhythm-nudge:not(.rhythm-finished) small,
+.today-view .rhythm-nudge:not(.rhythm-finished) em,
+.today-view .rhythm-nudge:not(.rhythm-finished)>.ico:last-child { color:#fff; }
+.today-view .rhythm-nudge small { font-size:8px; letter-spacing:.13em; }
+.today-view .rhythm-nudge small span { letter-spacing:.04em; }
+.today-view .rhythm-nudge strong { font-size:15px; font-weight:850; line-height:1.15; }
+.today-view .rhythm-nudge em { font-size:10.5px; line-height:1.25; }
+.today-view .rhythm-nudge>.ico:last-child { width:18px; height:18px; }
+.today-view .rhythm-finished { border-left:3px solid var(--accent); }
+.today-view .rhythm-finished button { min-height:44px; }
+
+.today-view .quick-cards { gap:8px; }
+.today-view .quick-cards button {
+  min-height:65px; padding:10px; grid-template-columns:28px minmax(0,1fr);
+  align-items:center; column-gap:8px; border-radius:14px;
+}
+.today-view .quick-cards button>span { min-width:0; }
+.today-view .quick-cards b { display:block; font-size:12px; font-weight:800; line-height:1.2; letter-spacing:-.025em; }
+.today-view .quick-cards small { font-size:10px; line-height:1.2; margin-top:4px; }
+.today-view .quick-cards .serve-card {
+  position:relative; background:#29282f; color:#fff; border-color:#29282f; box-shadow:none;
+}
+.today-view .serve-card>.ico:first-child { width:28px; height:28px; color:#fff; stroke-width:1.9; grid-row:auto; }
+.today-view .serve-card small { color:#e0dce1; }
+.today-view .serve-card>.ico:last-child { position:absolute; width:12px; height:12px; right:5px; top:8px; color:#ff728e; }
+.today-view .quick-cards .event-card { background:#fff; border-color:#e3dfe0; box-shadow:0 2px 5px #29242c08; grid-template-columns:32px minmax(0,1fr); }
+.today-view .event-calendar { align-self:stretch; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:4px; border-right:1px solid #e9e3e5; padding-right:8px; color:var(--accent); }
+.today-view .event-calendar small { color:var(--accent); margin:0; font-weight:850; font-size:8px; letter-spacing:.04em; }
+.today-view .event-calendar .ico { width:20px; height:20px; grid-row:auto; stroke-width:2; }
+.today-view .event-card>span:last-child small { color:#59555e; font-weight:650; font-variant-numeric:tabular-nums; }
+
+.today-view .today-circle { background:#fff; border:0; border-radius:15px; padding:1px 12px 5px; box-shadow:0 2px 8px #29242c08; }
+.today-view .today-circle .section-heading { align-items:center; min-height:36px; }
+.today-view .today-circle .section-heading h2 { font-size:15px; letter-spacing:-.035em; }
+.today-view .today-circle .section-heading button { min-height:44px; min-width:54px; padding:0 2px; font-size:10px; font-weight:800; }
+.today-view .example-caption { display:block; margin-top:3px; font-size:9px; color:#635d67; line-height:1.25; }
+.today-view .today-circle .buddy-row { background:transparent; border:0; min-height:50px; padding:4px 0 0; gap:10px; }
+.today-view .today-circle .buddy-avatar { width:44px; height:44px; border:2px solid #fff; box-shadow:0 0 0 1px #e4dce0; }
+.today-view .buddy-copy b { display:flex; align-items:baseline; flex-wrap:wrap; gap:2px 7px; font-size:12px; line-height:1.2; }
+.today-view .buddy-copy b small { font-size:9px; font-weight:500; color:#635d67; white-space:nowrap; }
+.today-view .buddy-copy p { font-size:11px; line-height:1.25; margin-top:3px; display:block; overflow:visible; color:#59535f; }
+.today-view .today-circle .round-react { width:44px; height:44px; border-radius:14px; border-color:#eadfe3; background:#faf5f6; color:#a8072d; }
+.today-view .round-react .ico { width:21px; height:21px; stroke-width:2; }
+.today-view .round-react.selected { background:#ffedf1; border-color:#ed0033; color:#c9002b; }
+.today-view .round-react.selected .ico { fill:currentColor; }
+
+.bottom-nav { gap:4px; background:#fff; box-shadow:0 -2px 8px #29242c06; }
+.bottom-nav .nav-item { position:relative; isolation:isolate; min-height:57px; padding:8px 2px 5px; gap:5px; border-radius:11px; font-size:11px; font-weight:700; color:#625e68; }
+.bottom-nav .nav-item .ico { width:24px; height:24px; stroke-width:2; }
+.bottom-nav .nav-item::before { content:""; position:absolute; top:0; width:19px; height:3px; border-radius:0 0 3px 3px; background:transparent; }
+.bottom-nav .nav-item.active { background:#fff1f4; color:#c9002b; font-weight:850; box-shadow:none; }
+.bottom-nav .nav-item.active::before { background:var(--accent); }
+.bottom-nav .nav-item.active .ico { stroke-width:2.15; }
+
+@media (max-width:700px) {
+  .today-view { gap:7px; }
+  .today-view .quick-cards { margin:0; }
+  .today-view .rhythm-nudge { margin:0; }
+}
+@media (max-width:700px) and (max-height:740px) {
+  .today-view { gap:3px; }
+  .today-view .rhythm-nudge:not(.rhythm-finished) { min-height:54px; padding:6px 10px; }
+  .today-view .rhythm-finished { padding-block:5px; }
+  .today-view .quick-cards button { min-height:57px; padding:7px 8px; }
+  .today-view .today-circle { padding-top:0; padding-bottom:5px; }
+}
+@media (max-width:359px) {
+  .today-view .quick-cards { gap:6px; }
+  .today-view .quick-cards button { column-gap:5px; padding:8px 7px; grid-template-columns:25px minmax(0,1fr); }
+  .today-view .quick-cards b { font-size:11px; }
+  .today-view .quick-cards small { font-size:9px; }
+  .today-view .serve-card>.ico:first-child { width:25px; height:25px; }
+  .today-view .quick-cards .event-card { grid-template-columns:28px minmax(0,1fr); }
+  .today-view .rhythm-nudge strong { font-size:14px; }
+  .today-view .rhythm-nudge em { font-size:10px; }
+  .today-view .buddy-copy b { gap:2px 5px; }
+}
+@media (prefers-reduced-motion:no-preference) {
+  .bottom-nav .nav-item,.today-view .rhythm-nudge,.today-view .quick-cards button,.today-view .round-react {
+    transition:transform 130ms ease,background-color 160ms ease,color 160ms ease,border-color 160ms ease;
+  }
+  .bottom-nav .nav-item::before { transition:background-color 160ms ease; }
+  .bottom-nav .nav-item:active,.today-view .rhythm-nudge:active,.today-view .quick-cards button:active,.today-view .round-react:active { transform:scale(.975); }
+}
+@media (hover:hover) {
+  .today-view .round-react:hover { background:#ffedf1; border-color:#ed0033; }
+  .bottom-nav .nav-item:not(.active):hover { background:#f6f4f5; }
+}
