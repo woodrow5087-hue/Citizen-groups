@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#242329">
+  <meta name="description" content="An interactive, fictional Citizen Connect concept exploring how people move from attending to belonging and serving.">
+  <title>Citizen Connect · The Connection Journey</title>
+  <link rel="icon" href="assets/favicon.png" type="image/png">
+  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+  <link rel="stylesheet" href="journey.css?v=1.0.0">
+  <script src="journey.js?v=1.0.0" defer></script>
+</head>
+<body>
+<div class="experience">
+  <header class="topbar">
+    <a class="back-link" href="index.html" aria-label="Back to the Citizen Connect Today screen">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m14 18-6-6 6-6"/></svg><span>Today</span>
+    </a>
+    <img class="brand-logo" src="assets/citizen-connect.png" alt="Citizen Connect">
+    <button class="restart" id="restart" type="button" title="Reset this interactive journey" aria-label="Reset the journey demo">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11a9 9 0 1 1 3 7M3 4v7h7"/></svg>
+    </button>
+  </header>
+  <main class="scroll-area">
+    <section class="vision-intro">
+      <div class="kicker"><span class="kicker-dot"></span> THE CONNECTION JOURNEY <span class="concept-chip">INTERACTIVE CONCEPT</span></div>
+      <h1>From showing up<br><em>to belonging.</em></h1>
+      <p>Discover how one meaningful connection can lead to a group, real friendships, and serving together.</p>
+      <div class="persona-section">
+        <span class="persona-label">EXPERIENCE IT AS</span>
+        <div class="persona-switch" role="group" aria-label="Demo perspective">
+          <button type="button" data-persona="new" aria-pressed="true">I'm new here</button>
+          <button type="button" data-persona="member" aria-pressed="false">I'm in a group</button>
+        </div>
+      </div>
+    </section>
+    <nav class="stage-nav" role="tablist" aria-label="Journey stages">
+      <button id="stage-attract" type="button" role="tab" aria-controls="journey-view" data-stage="attract" aria-selected="true"><span>01</span><strong>ATTRACT</strong></button>
+      <button id="stage-connect" type="button" role="tab" aria-controls="journey-view" data-stage="connect" aria-selected="false"><span>02</span><strong>CONNECT</strong></button>
+      <button id="stage-activate" type="button" role="tab" aria-controls="journey-view" data-stage="activate" aria-selected="false"><span>03</span><strong>ACTIVATE</strong></button>
+    </nav>
+    <div id="journey-view" role="tabpanel" aria-labelledby="stage-attract"></div>
+    <section class="vision-note">
+      <span class="note-mark">✳</span>
+      <div><strong>The goal is belonging, not screen time.</strong><p>Digital touchpoints should lead to real conversations, group relationships, and opportunities to serve.</p></div>
+    </section>
+    <p class="legal-note">UNOFFICIAL CITIZEN CONNECT CONCEPT · All people, groups, activity, responses, and opportunities here are fictional. Interactions are stored only in this browser. No messages, registrations, or sign-ups are transmitted.</p>
+  </main>
+  <footer class="bottom-action">
+    <div><span class="footer-kicker">THE NEXT CHAPTER</span><strong id="footer-descriptor">Meet your people</strong></div>
+    <button type="button" id="next-stage">Continue <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></button>
+  </footer>
+  <div class="feedback" id="feedback" role="status" aria-live="polite" hidden></div>
+</div>
+</body>
+</html>
