@@ -5,9 +5,9 @@
   const STORAGE = "citizen-connect-journey-v1";
   const keys = ["read", "share", "memorize", "pray"];
   const groups = [
-    {id:"wednesday",name:"Wednesday Group",tag:"ALL AGES",time:"Wednesday · 6:30 PM",place:"North Commons",image:"assets/sandia-sunset.webp",description:"Relaxed conversation, Scripture, and genuine friendships."},
-    {id:"young",name:"Young Adults",tag:"YOUNG ADULTS",time:"Tuesday · 7:00 PM",place:"Northeast Heights",image:"assets/mountain.webp",description:"Find your people and build community in your season of life."},
-    {id:"family",name:"Family Circle",tag:"FAMILIES",time:"Sunday · 5:00 PM",place:"Community Room",image:"assets/sandia-sunset.webp",description:"A welcoming space to grow and connect as families."}
+    {id:"wednesday",name:"Wednesday Group",tag:"ALL AGES",time:"Wednesday · 6:30 PM",day:"WED",hour:"6:30",place:"North Commons",image:"assets/sandia-sunset.webp",description:"Relaxed conversation, Scripture, and genuine friendships."},
+    {id:"young",name:"Young Adults",tag:"YOUNG ADULTS",time:"Tuesday · 7:00 PM",day:"TUE",hour:"7:00",place:"Northeast Heights",image:"assets/mountain.webp",description:"Find your people and build community in your season of life."},
+    {id:"family",name:"Family Circle",tag:"FAMILIES",time:"Sunday · 5:00 PM",day:"SUN",hour:"5:00",place:"Community Room",image:"assets/sandia-sunset.webp",description:"A welcoming space to grow and connect as families."}
   ];
   const opportunities = [
     {id:"food-drive",name:"Community Food Drive",tag:"CARE FOR OUR CITY",when:"Saturday · 9:00 AM",desc:"Pack food boxes and encourage neighbors alongside your group.",who:"Anna and James are interested",img:"assets/food-drive.webp"},
@@ -94,7 +94,7 @@
         '<button type="button" data-toggle="encouraged" aria-pressed="' + state.encouraged + '">' +
           svg("heart") + (state.encouraged?"✓ Encouraged":"Send encouragement") + '</button>' +
       '</div></section>' +
-      '<div class="gather-card"><div class="date-tile"><b>6:30</b><small>WED</small></div>' +
+      '<div class="gather-card"><div class="date-tile"><b>' + esc(g.hour) + '</b><small>' + esc(g.day) + '</small></div>' +
       '<div class="gather-copy"><b>Next ' + esc(g.name) + ' gathering</b><p>' + esc(g.place) + ' · Sample RSVP</p>' +
       '<div class="rsvp-actions"><button type="button" class="' + (state.rsvp==="going"?"selected":"") + '" data-rsvp="going" aria-pressed="' + (state.rsvp==="going") + '">I’m going</button>' +
       '<button type="button" class="' + (state.rsvp==="maybe"?"selected":"") + '" data-rsvp="maybe" aria-pressed="' + (state.rsvp==="maybe") + '">Maybe</button></div></div></div>' +
