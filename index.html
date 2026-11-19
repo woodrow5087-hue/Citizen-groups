@@ -191,6 +191,135 @@ html, body { background: var(--canvas); }
   .phone-screen { background: var(--canvas); }
 }
 
+
+/* Citizen Connect · Warm Parchment Edition
+   Color-only refinement of Premium Hybrid Cream Edition.
+   Existing markup, sizing, application code and storage remain unchanged. */
+:root {
+  --cream: #FFFCF5;
+  --cream-2: #FFF6E2;
+  --white: #FFFCF5;
+  --ink: #242329;
+  --ink-2: #38343B;
+  --muted: #686157;
+  --line: #EADDBF;
+  --canvas: #FFF4D6;
+  --canvas-edge: #FFEDC5;
+  --parchment: radial-gradient(ellipse at 50% 35%, #FFF4D6 0%, #FFEDC5 100%);
+  --card-shadow: 0 4px 18px rgba(69, 51, 22, .045);
+  /* The approved --red (#e6002f) is inherited without modification. */
+}
+html, body, .phone-wrap, .phone-bezel { background: var(--canvas); }
+.desktop-stage, .phone-screen { background: var(--parchment); }
+.desktop-stage:before { background: none; }
+.content-scroll { background: transparent; color: var(--ink); }
+.brand-story-top { box-shadow: var(--card-shadow); }
+.brand-story, .story-bottom h1, .hero-heading { color: var(--ink); }
+.story-bottom p, .phone-caption { color: var(--muted); }
+.experience-item { background: var(--cream); border-color: var(--line); box-shadow: var(--card-shadow); }
+.story-chip { background: var(--cream-2); border-color: var(--line); color: var(--muted); }
+.eyebrow, .hero-sub, .section-description { color: var(--muted); }
+.date-pip { background: var(--cream); color: var(--muted); border-color: var(--line); box-shadow: var(--card-shadow); }
+.cream-card, .scripture-card, .stat-strip, .read-tabs, .inline-group-card {
+  background: var(--cream); color: var(--ink); border-color: var(--line);
+  box-shadow: var(--card-shadow);
+}
+.dark-card, .progress-view .progress-panel {
+  background: var(--cream); color: var(--ink);
+  box-shadow: inset 0 0 0 1px var(--line), var(--card-shadow);
+}
+.dark-card p, .feed-author span, .mini-copy small, .group-meta,
+.inline-group-card small, .serve-quote, .progress-encourage,
+.progress-header span, .progress-count, .fine-print, .sheet .subtle {
+  color: var(--muted);
+}
+.group-meta[style], .read-view p[style*="color:"] { color: var(--muted) !important; }
+.dark-divider, .rhythm-item:not(:last-child):after { background: var(--line); }
+.mini-entry, .group-view .mini-list .mini-entry, .sheet-section { border-color: var(--line); }
+.passage-card { background: var(--cream); }
+.passage-ref, .scripture-card sup { color: var(--red); }
+.outline-cta { background: var(--cream); color: var(--red); border-color: var(--line); box-shadow: var(--card-shadow); }
+.outline-cta:hover { background: var(--cream-2); color: var(--ink); }
+.primary-red, .read-tab.active { background: var(--red); color: var(--cream); }
+.secondary-dark { background: var(--ink); color: var(--cream); }
+.secondary-cream { background: var(--cream); color: var(--ink); border-color: var(--line); }
+.secondary-cream.chosen { background: var(--cream-2); color: var(--ink); border-color: var(--red); }
+
+/* Today: a light rhythm surface, with red restricted to state and actions. */
+.today-view>.dark-card { background: var(--cream-2); }
+.rhythm-item { background: var(--cream); color: var(--ink); box-shadow: inset 0 0 0 1px var(--line); }
+.rhythm-item.active { background: var(--cream); color: var(--ink); box-shadow: inset 0 0 0 1.5px var(--red); }
+.rhythm-item.active svg, .rhythm-item.done svg, .rhythm-item.active.done svg, .tiny-check { color: var(--red); }
+.encourage-card { background: var(--cream-2); border-color: var(--line); box-shadow: none; }
+.encourage-card h3, .card-title, .feed-author b { color: var(--ink); }
+.encourage-card p { color: var(--muted); }
+.circle-arrow, .inline-group-card button { background: var(--cream-2); color: var(--red); box-shadow: inset 0 0 0 1px var(--line); }
+.all-done { background: var(--cream); color: var(--ink); }
+
+/* My Group: people, conversations and gathering details sit on ivory layers. */
+.group-view .event-time { color: var(--ink); }
+.group-view .event-time svg { color: var(--red); }
+.group-view .avatar { border-color: var(--cream); box-shadow: 0 3px 11px rgba(69,51,22,.08); }
+.group-view .primary-cream { background: var(--cream); color: var(--ink); box-shadow: inset 0 0 0 1px var(--line), var(--card-shadow); }
+.group-view .primary-cream svg { color: var(--red); }
+.subtle-button { background: var(--cream-2); color: var(--ink); border-color: var(--line); }
+.group-view .group-dark { background: var(--cream); }
+
+/* Read: warm-white Scripture and private input surfaces, charcoal text. */
+.read-tab:not(.active), .scripture-card .verse, .prompt-text { color: var(--ink); }
+.read-tab.done:not(.active) { color: var(--red); }
+.note-box { background: var(--cream); color: var(--ink); border-color: var(--line); }
+.note-box::placeholder { color: var(--muted); }
+.word-chip { background: var(--cream); color: var(--ink); border-color: var(--line); }
+.word-slot { background: var(--cream); color: var(--ink); border-color: #9A8B6F; }
+.word-slot.filled { background: var(--cream-2); color: var(--ink); border-color: var(--red); }
+.feedback { background: var(--cream-2); color: var(--ink); }
+.prayer-request+.prayer-request { border-color: var(--line); }
+.prayer-request button { background: var(--cream); color: var(--ink); border-color: var(--line); }
+.prayer-request button.selected { background: var(--red); color: var(--cream); border-color: var(--red); }
+
+/* Serve: the original photograph stays; opportunity information is warm white. */
+.service-photo { background-color: var(--cream-2); box-shadow: var(--card-shadow); }
+.service-overlay { background: var(--cream); color: var(--ink); box-shadow: inset 0 1px var(--line); }
+.service-overlay h3 { color: var(--ink); }
+.service-overlay h3 svg { color: var(--red); }
+.service-overlay p { color: var(--muted); }
+.service-overlay .primary-cream { background: var(--red); color: var(--cream); }
+.serve-view>.dark-card { background: var(--cream-2); }
+
+/* Progress: red fills and checks, ivory statistics, clearly outlined open states. */
+.progress-view .stat { border-right-color: var(--line); }
+.stat-num { color: var(--red); }
+.progress-track { background: var(--line); }
+.progress-fill { background: var(--red); }
+.progress-check { border-color: #8B7C64; color: var(--ink); }
+.progress-check.done { background: var(--red); color: var(--cream); border-color: var(--red); }
+.quote-panel { color: var(--ink); }
+.quote-panel:before { background: var(--red); }
+.quote-cite { color: var(--muted); }
+
+/* The header keeps its approved red; the navigation and sheets use warm ivory. */
+.app-header { background: var(--red); color: var(--cream); }
+.bottom-nav { background: var(--cream); border-color: var(--line); box-shadow: 0 -4px 18px rgba(69,51,22,.04); }
+.nav-button { color: var(--ink); }
+.nav-button.active { color: var(--red); }
+.sheet { background: var(--cream); color: var(--ink); box-shadow: 0 -8px 32px rgba(36,35,41,.18); }
+.sheet .cream-card { background: var(--cream-2); border-color: var(--line); }
+.sheet-top button { background: var(--cream-2); color: var(--ink); }
+.toast { background: var(--ink); color: var(--cream); box-shadow: var(--card-shadow); }
+@media(max-width:750px) {
+  html, body, .phone-wrap, .phone-bezel { background: var(--canvas); }
+  .desktop-stage, .phone-screen { background: var(--parchment); }
+  .content-scroll { background: transparent; }
+}
+.progress-view .cream-card button[style*="background:#eee2db"] { background: var(--cream-2) !important; color: var(--ink) !important; }
+
+.mini-entry svg, .encourage-card>.lead-icon { color: var(--red); }
+.story-kicker { color: var(--muted); }
+button:focus-visible, input:focus-visible, textarea:focus-visible { outline-color: var(--red); }
+.app-header button:focus-visible { outline-color: var(--cream); }
+/* End Warm Parchment Edition. */
+
 </style>
   
 </head>
@@ -323,7 +452,7 @@ return `<section class="view read-view">${tabs}${body}<div class="fine-print">Da
 }
 function serveView(){const joined=(id)=>state.joined.includes(id);return `<section class="view serve-view">
 ${hero('SERVE','Serve','together.')}
-<div class="service-photo" role="img" aria-label="Two people working together at a food drive"><div class="service-overlay"><h3>${icon('calendar')}Food drive</h3><p>Saturday, Nov 21 · 9:00 AM · Sample event</p><button class="primary-cream" type="button" data-join="food">${joined('food')?'✓ You’re on the team':'Join the team'} ${icon(joined('food')?'check':'arrow')}</button></div></div>
+<div class="service-photo" role="group" aria-label="Two people working together at a food drive"><div class="service-overlay"><h3>${icon('calendar')}Food drive</h3><p>Saturday, Nov 21 · 9:00 AM · Sample event</p><button class="primary-cream" type="button" data-join="food">${joined('food')?'✓ You’re on the team':'Join the team'} ${icon(joined('food')?'check':'arrow')}</button></div></div>
 <div class="cream-card serve-list"><h3>More ways to serve</h3><div class="mini-list"><div class="mini-entry">${icon('heart')}<div class="mini-copy"><strong>Community Meals</strong><small>Sat, Dec 5 · 10:00 AM · Sample</small></div><button type="button" data-join="meals" aria-label="Join Community Meals">${icon(joined('meals')?'check':'arrow')}</button></div><div class="mini-entry">${icon('people')}<div class="mini-copy"><strong>Neighborhood Outreach</strong><small>Sun, Dec 13 · 2:00 PM · Sample</small></div><button type="button" data-join="outreach" aria-label="Join Neighborhood Outreach">${icon(joined('outreach')?'check':'arrow')}</button></div></div></div>
 <div class="dark-card"><h2 class="card-title">Faith in motion.</h2><p style="margin-top:7px">Meaningful service starts with showing up. Find an opportunity to make a difference with your people.</p></div>
 ${state.joined.length?`<div class="cream-card"><h3>Your commitments</h3><p>${state.joined.length} sample ${state.joined.length===1?'opportunity':'opportunities'} joined. You can change these anytime.</p><button class="secondary-dark" style="margin-top:12px" data-action="my-serving" type="button">Manage commitments</button></div>`:''}
