@@ -1,3 +1,53 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#e6002f"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="RallyPoint"><meta name="description" content="RallyPoint Phase 1 interactive church community concept"><title>RallyPoint — Phase 1 Preview</title><link rel="icon" href="assets/favicon.png"><link rel="stylesheet" href="rallypoint.css"></head>
-<body><div class="stage"><aside class="pitch"><div class="brand">RallyPoint<i>.</i></div><div class="eyebrow">CITIZEN CHURCH · WORKING NAME</div><h2>More than an app.<br>A place to belong.</h2><p>One place to grow in faith, build real community, and look after the people around you.</p><div class="steps"><div><b>↗</b> Find your people.</div><div><b>♡</b> Stay connected.</div><div><b>✓</b> Show up for each other.</div></div><small>PHASE 1 · INTERACTIVE CONCEPT · SAMPLE DATA</small></aside><div><div class="phone"><div class="phone-inner"><header class="header"><div class="logo">RallyPoint<i>.</i><small>Citizen Church · Concept</small></div><button type="button" class="role" id="role" aria-label="Toggle member or leader preview">Member demo ▾</button></header><main id="view" aria-live="polite"></main><nav id="nav" class="bottom" aria-label="Main navigation"></nav></div><div class="toast" role="status" aria-live="polite" id="toast" hidden></div></div><p class="phone-caption">RallyPoint · All content and activity are fictional</p></div></div><script src="rallypoint.js" defer></script></body></html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#F3E5D6">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Rally Point">
+  <meta name="description" content="Rally Point — a Warm Editorial Today prototype by Citizen Church. Fictional, local demo.">
+  <title>Rally Point — Today · Phase 1 Preview</title>
+  <link rel="icon" href="assets/citizen-flag.svg" type="image/svg+xml">
+  <link rel="preload" href="assets/fonts/Manrope.ttf" as="font" type="font/ttf" crossorigin>
+  <link rel="stylesheet" href="rallypoint.css">
+  <link rel="stylesheet" href="rallypoint-phase1.css">
+</head>
+<body>
+  <div class="stage">
+    <aside class="pitch">
+      <img class="pitch-flag" src="assets/citizen-flag.svg" alt="Citizen Church">
+      <div class="brand">RALLY<br>POINT</div>
+      <p class="pitch-byline">THE CHURCH APP<br>BY CITIZEN CHURCH</p>
+      <span class="brand-rule"></span>
+      <p class="pitch-note">Your people.<br>Your purpose.<br>Your next step.</p>
+      <small>PHASE 1 · LOCAL FIXTURES<br>PROVISIONAL NAME & BRANDING</small>
+    </aside>
+    <div class="phone-wrap">
+      <div class="phone">
+        <div class="phone-inner">
+          <header class="header">
+            <button type="button" class="brand-home" data-go="today" aria-label="Rally Point, Today">
+              <img src="assets/citizen-flag.svg" alt="">
+              <span>RALLY<br>POINT</span>
+            </button>
+            <div class="header-controls">
+              <button type="button" class="header-button" data-action="notifications" aria-label="Demo activity"><svg viewBox="0 0 24 24" class="icon" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 6-3 6-3 9h18c0-3-3-3-3-9m-11 13h4"/></svg><i id="activity-dot" aria-hidden="true"></i></button>
+              <button type="button" class="profile-avatar" data-action="demo-controls" aria-label="Profile and demo controls"><span id="profile-initials">JD</span></button>
+            </div>
+          </header>
+          <main id="view" tabindex="-1"></main>
+          <nav id="nav" class="bottom" aria-label="Main navigation"></nav>
+        </div>
+        <div id="dialog-root"></div>
+        <div class="toast" role="status" aria-live="polite" id="toast" hidden></div>
+      </div>
+      <p class="phone-caption">Rally Point · Fictional activity · Private to this browser</p>
+    </div>
+  </div>
+  <noscript><p class="noscript">Enable JavaScript to explore this interactive local prototype.</p></noscript>
+  <script src="rallypoint-today.js" defer></script>
+  <script src="rallypoint-ui.js" defer></script>
+  <script src="rallypoint.js" defer></script>
+</body>
+</html>

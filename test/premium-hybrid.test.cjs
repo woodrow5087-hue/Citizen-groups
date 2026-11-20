@@ -1,10 +1,11 @@
+// Preserved Citizen Connect archive: Rally Point now owns index.html.
 // The current preview runs the inline Premium Hybrid app, not legacy app.js.
 const {test}=require('node:test');
 const assert=require('node:assert/strict');
 const {readFileSync}=require('node:fs');
 const {join}=require('node:path');
 const {JSDOM}=require('jsdom');
-const html=readFileSync(join(__dirname,'..','index.html'),'utf8');
+const html=readFileSync(join(__dirname,'..','premium-hybrid-archive.html'),'utf8');
 const script=html.match(/<script>([\s\S]*?)<\/script>/)[1];
 const key='citizen-premium-hybrid-demo-v1';
 function open(t,saved){
