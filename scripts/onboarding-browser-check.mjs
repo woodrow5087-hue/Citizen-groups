@@ -90,6 +90,8 @@ try{
       await p.locator('.profile-avatar').click();await p.locator('[data-campus-settings]').click();await chooseCampus(p,'maui');await button(p,'next').click();
       await p.waitForFunction(()=>document.querySelector('#rp-gateway').hidden);await p.waitForLoadState('networkidle');
       assert.deepEqual((await stored(p,APP)).groupMessages,saved.groupMessages);assert.equal((await stored(p,UI)).campus,'maui');assert.deepEqual((await stored(p,UI)).memberships,{group:true,team:true});
+      // Campus re-selection correctly preserves the previous Groups tab. Visit Today to verify its campus marker.
+      await p.locator('#nav [data-go="today"]').click();
       assert.match(await p.locator('.dashboard-campus-marker').textContent(),/YOUR CAMPUS · MAUI/);
       // The real app's profile link replays the original splash/welcome/login,
       // then returns to the newest dashboard without resetting stored fixtures.
