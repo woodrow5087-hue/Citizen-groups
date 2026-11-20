@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <meta name="theme-color" content="#F3E5D6">
+  <meta name="theme-color" content="#E3002B">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-title" content="Rally Point">
   <meta name="description" content="Rally Point — a Warm Editorial Today prototype by Citizen Church. Fictional, local demo.">
@@ -12,6 +12,7 @@
   <link rel="preload" href="assets/fonts/Manrope.ttf" as="font" type="font/ttf" crossorigin>
   <link rel="stylesheet" href="rallypoint.css">
   <link rel="stylesheet" href="rallypoint-phase1.css">
+  <link rel="stylesheet" href="rallypoint-welcome.css">
 </head>
 <body>
   <div class="stage">
@@ -38,6 +39,25 @@
           </header>
           <main id="view" tabindex="-1"></main>
           <nav id="nav" class="bottom" aria-label="Main navigation"></nav>
+          <div id="rp-gateway" class="rp-gateway" role="dialog" aria-modal="true" aria-label="Welcome to Rally Point">
+            <section id="rp-entry" class="rp-entry" aria-label="Opening welcome">
+              <div class="rp-entry-brand">
+                <img src="assets/citizen-flag.svg" alt="Citizen Church flag logo" class="rp-entry-logo">
+                <h1 class="rp-entry-title">RALLY POINT</h1>
+                <span class="rp-entry-rule" aria-hidden="true"></span>
+                <p class="rp-entry-church">CITIZEN CHURCH</p>
+              </div>
+              <div id="rp-entry-actions" class="rp-entry-actions" inert>
+                <button type="button" class="rp-entry-button rp-entry-button--create" data-welcome="create">
+                  Create Account <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg>
+                </button>
+                <button type="button" class="rp-entry-button rp-entry-button--login" data-welcome="login">Log In</button>
+                <p class="rp-entry-note">INTERACTIVE PREVIEW · NO REAL SIGN-IN YET</p>
+              </div>
+            </section>
+            <section id="rp-onboard" class="rp-onboard" aria-label="Personalize your preview" hidden></section>
+          </div>
+
         </div>
         <div id="dialog-root"></div>
         <div class="toast" role="status" aria-live="polite" id="toast" hidden></div>
@@ -49,5 +69,6 @@
   <script src="rallypoint-today.js" defer></script>
   <script src="rallypoint-ui.js" defer></script>
   <script src="rallypoint.js" defer></script>
+  <script src="rallypoint-welcome.js" defer></script>
 </body>
 </html>
