@@ -142,7 +142,8 @@ test('existing messages, prayer posts, RSVP, team coverage and reading remain fu
 test('Read v0.9 pathway changes the Scripture and question without claiming shared publishing',t=>{
  const app=open(t);app.go('read');
  assert.ok(app.d.querySelector('.read-screen-v09'));
- assert.match(app.d.querySelector('.read-scripture-card h2').textContent,/John 15:9–12/);
+ assert.match(app.d.querySelector('.read-scripture-card h2').textContent,/John 15:12/);
+ assert.match(app.d.querySelector('.read-section-label').textContent,/BSB/);
  assert.equal(app.d.querySelector('[data-action="plan"]'),null);
  app.action('demo-controls');app.click('#role');app.action('close-dialog');
  app.click('[data-action="plan"][data-value="study"]');
@@ -152,14 +153,28 @@ test('Read v0.9 pathway changes the Scripture and question without claiming shar
  app.type('question','A thoughtful book study question.');app.action('question');
  assert.equal(app.saved().question,'A thoughtful book study question.');
  app.click('[data-action="plan"][data-value="year"]');
- assert.match(app.d.querySelector('.read-scripture-card h2').textContent,/Psalm 23:1/);
- assert.match(app.d.querySelector('.verseplay .vp-board-title h3').textContent,/Psalm 23:1/);
+ assert.match(app.d.querySelector('.read-scripture-card h2').textContent,/Psalm 23:1–2/);
+ assert.match(app.d.querySelector('.verseplay .vp-board-title h3').textContent,/Psalm 23:1–2/);
  assert.equal(app.d.querySelectorAll('.verseplay .vp-blank').length,5);
  assert.equal(app.d.querySelectorAll('.verseplay .vp-tile').length,7);
  app.click('[data-action="plan"][data-value="study"]');
  assert.equal(app.saved().question,'A thoughtful book study question.');
  app.go('today');
  assert.match(app.d.querySelector('.today-reading h2').textContent,/James 1:22/);
+});
+test('BSB update resets old KJV game slots while preserving group messages and reading selections',t=>{
+ const oldGame={slots:['a0','a1','a2','a3','a4'],misses:0,hints:0,solved:true,best:100,round:1};
+ const app=open(t,{saved:{memoryTextRevision:'KJV-legacy',memoryMode:'solo',memoryActive:'study',
+   memoryGames:{'study:solo':oldGame},plan:'study',read:true,
+   groupMessages:[{name:'Anna L.',text:'Saved conversation remains.',time:'Yesterday'}]}});
+ assert.equal(app.saved().memoryTextRevision,'BSB-2026-1');
+ assert.equal(app.saved().memoryGames['study:solo'],undefined);
+ assert.equal(app.saved().read,true);
+ assert.equal(app.saved().plan,'study');
+ assert.equal(app.saved().groupMessages[0].text,'Saved conversation remains.');
+ app.go('read');
+ assert.match(app.d.querySelector('.vp-board-title h3').textContent,/James 1:22/);
+ assert.match(app.d.querySelector('.vp-board-title h3').textContent,/BSB/);
 });
 test('VersePlay completes a scripture puzzle using five word tiles and saves local progress',t=>{
  const app=open(t);app.go('read');
