@@ -200,6 +200,43 @@ test('Team v0.8 coverage and leader access remain contextual to its fixture role
  assert.match(app.text(),/One sample coverage request/);
  assert.match(app.text(),/not proof of attendance/);
 });
+test('Unjoined Groups uses the new designed discovery shell without replacing the existing group workflow',t=>{
+ const app=open(t);
+ app.action('demo-controls');app.click('[data-action="scenario"][data-value="no-memberships"]');
+ app.go('group');
+ assert.ok(app.d.querySelector('.group-screen-v07.group-discovery-v07'));
+ assert.ok(app.d.querySelector('.group-discovery-hero h1'));
+ assert.equal(app.d.querySelectorAll('.group-discovery-card').length,3);
+ assert.match(app.d.querySelector('.group-discovery-hero').textContent,/Find your/);
+ app.click('.group-discovery-card [data-action="interest"][data-value="0"]');
+ assert.ok(app.d.querySelector('.group-discovery-interest.is-selected'));
+ assert.equal(app.ui().memberships.group,false,'Interest must not grant membership');
+ app.click('.group-discovery-preview [data-action="scenario"][data-value="connected"]');
+ assert.ok(app.ui().memberships.group);
+ app.go('group');
+ assert.ok(app.d.querySelector('.group-community-hero:not(.group-discovery-hero)'));
+ assert.ok(app.d.querySelector('.group-conversation'));
+ app.click('[data-action="browse"]');
+ assert.ok(app.d.querySelector('.group-discovery-v07'));
+ app.click('.group-discovery-back');
+ assert.ok(app.d.querySelector('.group-conversation'));
+});
+test('Unjoined Team uses the new full-layout invitation and retains its honest preview',t=>{
+ const app=open(t);
+ app.action('demo-controls');app.click('[data-action="scenario"][data-value="no-memberships"]');
+ app.go('team');
+ assert.ok(app.d.querySelector('.team-screen-v08.team-empty-v08'));
+ assert.match(app.d.querySelector('.team-empty-hero h1').textContent,/room/);
+ assert.match(app.d.querySelector('.team-empty-discover').textContent,/No team or assignment/);
+ app.action('team-preview');
+ assert.match(app.d.querySelector('#dialog-root').textContent,/later-phase work/);
+ app.action('close-dialog');
+ assert.equal(app.ui().memberships.team,false);
+ app.click('.team-empty-try');
+ assert.equal(app.ui().memberships.team,true);
+ app.go('team');
+ assert.ok(app.d.querySelector('.team-schedule-card'));
+});
 test('Groups People directory opens scoped one-to-one local messaging and persists it',t=>{
  const app=open(t);app.go('group');
  app.click('[data-action="pane"][data-area="group"][data-value="people"]');
