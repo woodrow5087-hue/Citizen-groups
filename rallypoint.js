@@ -143,7 +143,36 @@ function today(){
     </div>
   </section>`;
 }
-function groupBrowse(){return `<div class="eyebrow">FIND COMMUNITY</div><h1>Find your<br><em>people.</em></h1><p class="intro">Browse a few sample group options.</p>${todayUI.memberships.group?'<button class="text-button" data-action="browse">← Back to my group</button>':'<p class="demo-notice">Sample discovery only. Interest does not join a group or contact anyone.</p>'}${[['The Table','Community · Wednesday','Albuquerque'],['Weekend Hikers','Activity · Saturday','Northeast Heights'],['Young Families','Community · Sunday','North Campus']].map(([name,type,place],i)=>`<div class="card browse">${pill(type)}<h3>${name}</h3><p>${place}</p><button class="btn outline" data-action="interest" data-value="${i}">${s.interest.includes(String(i))?'✓ Interested':"I'm interested"}</button></div>`).join('')}${footer()}`}
+function groupBrowse(){
+ const sampleGroups=[['The Table','Community · Wednesday','Albuquerque'],['Weekend Hikers','Activity · Saturday','Northeast Heights'],['Young Families','Community · Sunday','North Campus']];
+ return `<section class="group-screen-v07 group-discovery-v07" aria-label="Discover community">
+  <div class="group-community-hero group-discovery-hero">
+    <div class="group-hero-overline">FIND COMMUNITY · LOCAL DEMO</div>
+    <h1>Find your<br>people<span>.</span></h1>
+    <p class="group-discovery-intro">Browse a few sample group options.</p>
+    <div class="group-discovery-hero-strip">${icon('group')}<span>Connection starts with showing up.</span>${icon('arrow')}</div>
+  </div>
+  <div class="group-discovery-body">
+    <div class="group-discovery-head"><span>EXPLORE GROUPS</span><strong>Find your kind of community.</strong></div>
+    ${todayUI.memberships.group?`<button type="button" class="group-discovery-back" data-action="browse">${icon('arrow')} Back to my group</button>`:`<p class="group-discovery-notice">Sample discovery only. Interest does not join a group or contact anyone.</p>`}
+    <div class="group-discovery-grid">
+      ${sampleGroups.map(([name,type,place],i)=>`<article class="card group-discovery-card group-discovery-card--${i+1}">
+        <div class="group-discovery-card-head"><span class="group-discovery-category">${e(type)}</span><span class="group-discovery-card-index">0${i+1}</span></div>
+        <h2>${e(name)}</h2>
+        <p>${icon('pin')} ${e(place)}</p>
+        <button type="button" class="group-discovery-interest ${s.interest.includes(String(i))?'is-selected':''}" data-action="interest" data-value="${i}" aria-pressed="${s.interest.includes(String(i))}">${s.interest.includes(String(i))?'✓ Interested':"I'm interested"} ${icon('arrow')}</button>
+      </article>`).join('')}
+    </div>
+    ${!todayUI.memberships.group?`<div class="group-discovery-preview">
+      <span>EXPLORE THE PROTOTYPE</span>
+      <strong>See what being connected looks like.</strong>
+      <p>Switch to fictional member data to explore conversations, people, and upcoming gatherings. This is not a real group sign-up.</p>
+      <button type="button" data-action="scenario" data-value="connected">Try the connected demo ${icon('arrow')}</button>
+    </div>`:''}
+  </div>
+  ${footer()}
+</section>`;
+}
 function group(){
 if(!todayUI.memberships.group)return groupBrowse();
 if(s.discover)return groupBrowse();
@@ -196,7 +225,28 @@ return `<section class="group-screen-v07">
 </section>`;
 }
 function team(){
- if(!todayUI.memberships.team)return `<div class="eyebrow">TEAM · DEMO EMPTY STATE</div><h1>A place to<br><em>serve.</em></h1><div class="empty-tab"><h2>Your next step starts here.</h2><p>No team or assignment belongs to this fixture. Team discovery and joining will be defined in a later phase.</p><button type="button" class="btn red" data-action="team-preview">About this preview</button></div>${footer()}`;
+ if(!todayUI.memberships.team)return `<section class="team-screen-v08 team-empty-v08" aria-label="Discover serving">
+  <div class="team-v08-hero team-empty-hero">
+    <div class="team-v08-kicker">SERVE · CONNECT · BELONG</div>
+    <h1>There's room<br>to serve<span>.</span></h1>
+    <p class="team-empty-intro">Find a place to make a difference together.</p>
+    <div class="team-empty-hero-strip">${icon('team')}<span>Your next step starts here.</span>${icon('arrow')}</div>
+  </div>
+  <div class="card team-empty-discover">
+    <div class="kicker">FIND YOUR TEAM · LOCAL DEMO</div>
+    <h2>Make room for connection.</h2>
+    <p>No team or assignment belongs to this fixture. Team discovery and joining will be defined in a later phase.</p>
+    <div class="team-empty-sample">
+      <span>${icon('team')}</span>
+      <span><strong>Welcome Team</strong><small>Example of a serving-team experience</small></span>
+      ${icon('arrow')}
+    </div>
+    <button type="button" class="team-empty-try" data-action="scenario" data-value="connected">Try the connected demo ${icon('arrow')}</button>
+    <button type="button" class="team-empty-about" data-action="team-preview">About this preview</button>
+    <p class="fine-note">This activates fictional data on this device. It does not request a real serving assignment.</p>
+  </div>
+  ${footer()}
+</section>`;
  const opts=[['schedule','My Schedule'],['chat','Team chat'],...(canLead('team')?[['leader','Leader tools']]:[])];let body='';
  const stateLabel=s.teamStatus==='confirmed'?'Confirmed':s.teamStatus==='declined'?'Unable to serve':'Awaiting response';
  const message=s.teamMessages.length?s.teamMessages[s.teamMessages.length-1]:null;
