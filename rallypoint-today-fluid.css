@@ -325,7 +325,7 @@
 .is-fluid-today .demo-controls-link{color:#F3E5D6;font-size:10px}
 .is-fluid-today .bottom{
   background:#252426;border:1.5px solid #D8C2B3;
-  margin:-4px 11px calc(11px + var(--safe-bottom));
+  margin:0 11px calc(11px + var(--safe-bottom));
   padding:6px 7px;
   display:grid;grid-template-columns:repeat(2,minmax(0,1fr)) 62px repeat(2,minmax(0,1fr));
   align-items:center;gap:1px;
