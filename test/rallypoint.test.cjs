@@ -45,7 +45,7 @@ test('four tabs retain source destinations and Today links directly to conversat
 });
 test('Today settles into a real caught-up state after opening the source and confirming serving',t=>{
  const app=open(t);app.click('.attention-tile[data-go="group"]');app.go('today');app.click('.availability-action');app.click('[data-action="shift"][data-value="confirmed"]');app.go('today');assert.match(app.text(),/You’re all caught up/);assert.equal(app.d.querySelector('.attention-tile'),null);
- app.action('notifications');assert.match(app.d.querySelector('[role="dialog"]').textContent,/You’re all caught up/);app.action('close-dialog');
+ app.action('notifications');assert.match(app.d.querySelector('#dialog-root [role="dialog"]').textContent,/You’re all caught up/);app.action('close-dialog');
  const again=open(t,{saved:app.saved(),ui:app.ui()});assert.match(again.text(),/You’re all caught up/);
 });
 test('existing messages, prayer posts, RSVP, team coverage and reading remain functional after reload',t=>{
@@ -67,15 +67,15 @@ test('leader attendance, review and reading configuration persist without a new 
 test('empty and caught-up fixture controls keep messages, RSVP and reading choices',t=>{
  const app=open(t);app.go('group');app.type('group-input','Keep this note.');app.click('[data-action="send"][data-value="group"]');const messages=app.saved().groupMessages;
  app.action('demo-controls');app.click('[data-action="scenario"][data-value="no-memberships"]');assert.match(app.text(),/There’s room/);assert.match(app.text(),/TODAY’S READING/);assert.equal(app.d.querySelector('.leader-entry'),null);assert.equal(app.d.querySelector('.up-next'),null);
- app.go('group');assert.match(app.text(),/Browse a few sample group options/);app.go('team');assert.match(app.text(),/No team or assignment/);app.action('team-preview');assert.match(app.d.querySelector('[role="dialog"]').textContent,/later-phase work/);app.action('close-dialog');
+ app.go('group');assert.match(app.text(),/Browse a few sample group options/);app.go('team');assert.match(app.text(),/No team or assignment/);app.action('team-preview');assert.match(app.d.querySelector('#dialog-root [role="dialog"]').textContent,/later-phase work/);app.action('close-dialog');
  app.action('demo-controls');app.click('[data-action="scenario"][data-value="caught-up"]');assert.match(app.text(),/You’re all caught up/);assert.deepEqual(app.saved().groupMessages,messages);
 });
 test('Memorize is an honest phase preview, not a fake completion action',t=>{
- const app=open(t),before=app.saved();app.action('memorize-preview');assert.match(app.d.querySelector('[role="dialog"]').textContent,/not part of this Today-screen phase/);assert.deepEqual(app.saved(),before);app.action('close-dialog');
+ const app=open(t),before=app.saved();app.action('memorize-preview');assert.match(app.d.querySelector('#dialog-root [role="dialog"]').textContent,/not part of this Today-screen phase/);assert.deepEqual(app.saved(),before);app.action('close-dialog');
 });
 test('demo name is escaped, saved independently and modal keyboard dismissal restores focus',t=>{
  const app=open(t);app.click('.profile-avatar');assert.equal(app.d.querySelector('.phone-inner').inert,true);app.type('demo-name','<img src=x>');app.click('form button[type="submit"]');assert.equal(app.d.querySelector('img[src="x"]'),null);assert.match(app.text(),/<img src=x>/);assert.equal(app.ui().name,'<img src=x>');
- app.click('.profile-avatar');app.d.dispatchEvent(new app.w.KeyboardEvent('keydown',{key:'Escape',bubbles:true}));assert.equal(app.d.querySelector('[role="dialog"]'),null);assert.equal(app.d.activeElement.className,'profile-avatar');
+ app.click('.profile-avatar');app.d.dispatchEvent(new app.w.KeyboardEvent('keydown',{key:'Escape',bubbles:true}));assert.equal(app.d.querySelector('#dialog-root [role="dialog"]'),null);assert.equal(app.d.activeElement.className,'profile-avatar');
 });
 test('storage failure is disclosed while the demo stays usable',t=>{
  const app=open(t,{blocked:true});assert.match(app.text(),/could not save/);app.go('group');app.type('group-input','An in-memory sample');app.click('[data-action="send"][data-value="group"]');assert.match(app.text(),/An in-memory sample/);
