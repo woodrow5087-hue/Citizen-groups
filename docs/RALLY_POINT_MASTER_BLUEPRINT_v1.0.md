@@ -6,7 +6,7 @@
 **Status:** Working product + design baseline for prototype development; not a final implementation contract  
 **Working name:** Rally Point (subject to church approval)  
 **Primary platform:** Mobile-first app experience  
-**Source of truth:** This file plus the two image references in `docs/assets/`
+**Source of truth:** This file, the image references in `docs/assets/`, and the subsequent companion-architecture decision in `docs/COMPANION_ARCHITECTURE_DECISION.md` (D-10, November 20, 2026)
 
 > **North star:** Opening Rally Point should feel like walking into a place where people are genuinely glad you're there. The interface helps people know what matters today, connect with their community, serve, and grow.
 
@@ -259,11 +259,11 @@ The Scripture experience should be more editorial and calm than the action-orien
 
 Each action should have a clear **source of record**. Today is a presentation/aggregation layer, not a second canonical store for schedule, messages, or reading.
 
-### 7.2 Integration assumptions: none are approved yet
+### 7.2 Companion architecture decision (D-10, November 20, 2026)
 
-Existing church tools may already provide groups, volunteer scheduling, accounts, giving, or messaging. **Do not assume** API availability, sync direction, authentication compatibility, or migration permissions. Inventory systems with Citizen Church leadership before building production infrastructure.
+**Locked product direction:** Rally Point is a distinct member-experience companion to existing church systems, **not** a replacement church-management system. Preserve the four-tab Warm Editorial design. Planning Center / Church Center is the primary candidate system of record for existing groups, schedules, and attendance **only where the church confirms product usage, grants authorization, and an official integration path has been verified**. Rally Point owns the personalized Today presentation layer and its differentiated Read experience. Prefer verified link-outs when supported API functionality is unavailable; do not replicate operational databases by default.
 
-Potential existing tools mentioned in the broader project context (e.g., Church Center) are **discovery candidates**, not commitments.
+**Integration feasibility and governance:** See `docs/COMPANION_ARCHITECTURE_DECISION.md` for the reuse/enhance/build matrix, data ownership, authentication, privacy/minor safeguarding, proposed integration discovery, and explicit non-goals. **No live access or integration is yet authorized.** No claim is made that Church Center chats, 1:1 messages, scheduling responses, or notification data can be read/written via the public API.
 
 ### 7.3 Security and trust requirements before real users
 
@@ -310,6 +310,10 @@ Potential existing tools mentioned in the broader project context (e.g., Church 
 ### Phase 3 — Leader workflows and role logic
 
 Add context-specific attendance, follow-up flags, reading defaults, role-aware Today alerts, and audit-aware state management *after* policy definitions are agreed.
+
+### Integration discovery gate — after visual review, before production connector development
+
+Validate Planning Center module usage, authorized access, endpoint-level feasibility, and exact workflows with church leadership. Inventory opportunities for safe deep links and determine the smallest read-only pilot. Do not request or store credentials until approval. See `docs/COMPANION_ARCHITECTURE_DECISION.md`.
 
 ### Phase 4 — Production integration and pilot
 
@@ -371,6 +375,7 @@ Preview only; do not merge or deploy production without approval.
 | D-07 | Today first; fixture-based high-fidelity build before real integrations | Approved plan |
 | D-08 | Flagging, attendance definitions, reading-control scope | Open requirements |
 | D-09 | Giving and broader ministry functions deferred | Deferred |
+| D-10 | Build Rally Point as a distinct companion to existing church systems; selective, authorized Planning Center integration rather than duplicated records | Locked direction; details in `docs/COMPANION_ARCHITECTURE_DECISION.md` |
 
 ## 12. Codex handoff — Phase 1 implementation brief
 
