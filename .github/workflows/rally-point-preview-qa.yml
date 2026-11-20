@@ -31,10 +31,10 @@ jobs:
         run: npm run build
       - name: Install Playwright Chromium
         run: npx playwright install --with-deps chromium
+      - name: Run mobile, accessibility, source navigation and VersePlay regression
+        run: npm run test:browser
       - name: Run animated onboarding → dashboard integration regression
         run: npm run test:onboarding
-      - name: Run mobile, accessibility, and source navigation regression
-        run: npm run test:browser
       - name: Save visual QA screenshots and results
         if: always()
         uses: actions/upload-artifact@v4
