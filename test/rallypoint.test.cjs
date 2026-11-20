@@ -61,6 +61,49 @@ test('fluid Today uses connected visual modules and keeps quick actions function
  app.go('today');
  assert.ok(app.d.querySelector('.phone-inner').classList.contains('is-fluid-today'));
 });
+test('Your People shows the actual latest local group conversation and routes to its source',t=>{
+ const app=open(t);
+ const panel=app.d.querySelector('.today-people');
+ assert.ok(panel);
+ assert.equal(panel.querySelectorAll('.today-people-avatar').length,4);
+ assert.equal(panel.querySelector('.today-people-message-author').textContent,'Anna L.');
+ assert.match(panel.querySelector('.today-people-message-text').textContent,/Looking forward to seeing everyone Wednesday/);
+ app.click('.today-people-message');
+ assert.equal(app.saved().view,'group');
+ assert.equal(app.saved().groupPane,'chat');
+ app.type('group-input','An updated thought from our group.');
+ app.click('[data-action="send"][data-value="group"]');
+ app.go('today');
+ assert.equal(app.d.querySelector('.today-people-message-author').textContent,'You');
+ assert.match(app.d.querySelector('.today-people-message-text').textContent,/An updated thought from our group/);
+ assert.equal(app.d.querySelector('.today-people-avatars [aria-label="Jess W."]').textContent,'JW');
+});
+test('Your People adapts to authorized leaders and group discovery without inventing membership',t=>{
+ const app=open(t);
+ assert.equal(app.d.querySelector('.today-people-leader'),null);
+ app.action('demo-controls');app.click('#role');app.action('close-dialog');
+ assert.ok(app.d.querySelector('.today-people-leader'));
+ assert.match(app.d.querySelector('.today-people-kicker').textContent,/LEADER VIEW/);
+ app.click('.today-people-leader');
+ assert.equal(app.saved().view,'group');
+ assert.equal(app.saved().groupPane,'leader');
+ app.action('demo-controls');
+ app.click('[data-action="scenario"][data-value="no-memberships"]');
+ assert.ok(app.d.querySelector('.today-people--discover'));
+ assert.equal(app.d.querySelector('.today-people-avatar'),null);
+ assert.equal(app.d.querySelector('.today-people-message'),null);
+ assert.equal(app.d.querySelector('.today-people-leader'),null);
+ app.click('.today-people-discover-link');
+ assert.equal(app.saved().view,'group');
+ assert.match(app.text(),/Browse a few sample group options/);
+});
+test('Your People safely escapes local conversation preview content',t=>{
+ const app=open(t,{saved:{groupMessages:[{name:'<img src=x>',time:'Today',text:'<script>not markup</script>'}]}});
+ const preview=app.d.querySelector('.today-people-message');
+ assert.match(preview.textContent,/<script>not markup<\\/script>/);
+ assert.equal(preview.querySelector('script'),null);
+ assert.equal(preview.querySelector('img'),null);
+});
 test('Today settles into a real caught-up state after opening the source and confirming serving',t=>{
  const app=open(t);app.click('.attention-tile[data-go="group"]');app.go('today');app.click('.availability-action');app.click('[data-action="shift"][data-value="confirmed"]');app.go('today');assert.match(app.text(),/You’re all caught up/);assert.equal(app.d.querySelector('.attention-tile'),null);
  app.action('notifications');assert.match(app.d.querySelector('#dialog-root [role="dialog"]').textContent,/You’re all caught up/);app.action('close-dialog');
