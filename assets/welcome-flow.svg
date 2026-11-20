@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 390 844" preserveAspectRatio="none">
+  <defs>
+    <linearGradient id="top" x1=".2" y1="0" x2=".7" y2="1" gradientUnits="objectBoundingBox"><stop stop-color="#EB0A31"/><stop offset=".74" stop-color="#EA0C35"/><stop offset="1" stop-color="#E3002B"/></linearGradient>
+    <linearGradient id="ribbon" x1=".25" y1="0" x2=".5" y2="1"><stop stop-color="#EB0A31"/><stop offset=".42" stop-color="#EA0C35"/><stop offset="1" stop-color="#DB0029"/></linearGradient>
+    <linearGradient id="lower" x1=".2" y1="0" x2=".6" y2="1"><stop stop-color="#EB0A31"/><stop offset="1" stop-color="#E3002B"/></linearGradient>
+  </defs>
+  <path fill="#E3002B" d="M0 0h390v844H0z"/>
+  <path fill="#CE0027" d="M0 301C115 159 269 135 390 49v795H0Z"/>
+  <path fill="url(#top)" d="M0 0h390v58C277 125 119 147 0 301Z"/>
+  <path fill="#E8002C" d="M0 316C128 228 267 217 390 161v683H0Z"/>
+  <path fill="url(#ribbon)" d="M0 632C87 544 159 562 234 523s107-93 156-121v167c-76 81-155 82-236 119S45 753 0 789Z"/>
+  <path fill="url(#lower)" d="M0 789c113-81 211-67 304-127 36-23 62-51 86-75v151c-124 67-248 64-390 130Z"/>
+</svg>
