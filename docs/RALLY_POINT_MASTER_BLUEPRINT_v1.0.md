@@ -6,7 +6,7 @@
 **Status:** Working product + design baseline for prototype development; not a final implementation contract  
 **Working name:** Rally Point (subject to church approval)  
 **Primary platform:** Mobile-first app experience  
-**Source of truth:** This file plus the two image references in `docs/assets/`
+**Source of truth:** This file, the image references in `docs/assets/`, `docs/COMPANION_ARCHITECTURE_DECISION.md` (D-10), and `docs/PALETTE_V2_COLOR_ONLY.md` (D-11, November 20, 2026)
 
 > **North star:** Opening Rally Point should feel like walking into a place where people are genuinely glad you're there. The interface helps people know what matters today, connect with their community, serve, and grow.
 
@@ -173,7 +173,9 @@ RALLY POINT
 - **Purposeful third:** next actions are instantly recognizable.
 - **Warm Editorial:** premium, tactile, designed, highly legible; a distinctive product rather than a template.
 
-### 5.2 Starter color tokens — provisional implementation values
+### 5.2 Palette v2 — color-only refinement (D-11, November 20, 2026)
+
+**Approved correction:** Remove orange/terracotta/rust *accents* only. Retain the approved current app composition, warm textured nonwhite cream background, dark charcoal navigation, vivid Citizen red, defined borders, shadows, typography, imagery geometry, icons and layout. **Absolutely no whitewashing or generic redesign.** `docs/PALETTE_V2_COLOR_ONLY.md` is the binding detailed change specification, selector audit and acceptance test. Existing warm parchment/beige neutrals are not orange accents and should remain.
 
 These values serve as a usable starting system. **Only the Citizen red is sampled from the uploaded logo image; verify against original official brand assets before production.** Supporting colors are proposals informed by the approved visual direction, not official Citizen Church brand colors.
 
@@ -184,12 +186,12 @@ These values serve as a usable starting system. **Only the Citizen red is sample
 | `surface.cream` | `#F3E5D6` | Main warm canvas; avoid flat pure white everywhere |
 | `surface.parchment` | `#E9D5C1` | Secondary cards/surfaces |
 | `surface.pale` | `#FCF7F0` | Limited light surfaces where clarity is needed |
-| `accent.terracotta` | `#BF5B45` | Editorial accents, decorative blocks, supporting emphasis |
+| `accent.terracotta` | **Retired / prohibited for accent use** | Replace only orange/rust/terracotta accent colors with existing Citizen red or charcoal, depending on surface size and contrast. Keep original graphic and component geometry. |
 | `accent.sage` | `#5E7065` | Selective counterbalance, especially reading/community treatments |
 | `line.defined` | `#C5AA94` | Noticeable borders against cream surfaces |
 | `text.muted` | `#665E56` | Secondary metadata with accessible contrast checks |
 
-**Color usage:** Cream as the broad canvas, charcoal as the structural counterweight, real Citizen red as selective emphasis, terracotta/sage as supporting accents. Resist both “all white cards” and “red everywhere.” Dark cards should have a clear purpose.
+**Color usage (D-11):** Keep cream as the broad **nonwhite textured canvas**, charcoal as the structural counterweight, real Citizen red as selective emphasis, and the existing sparing sage where currently used. **Orange/terracotta/rust accents are removed.** Large former orange panels usually become charcoal; small orange highlights may use Citizen red. Do not desaturate the entire UI, replace warm neutrals with white/gray, change borders/texture, or flatten existing cards. Resist both “all white cards” and “red everywhere.” Dark cards should have a clear purpose.
 
 ### 5.3 Component language
 
@@ -259,11 +261,11 @@ The Scripture experience should be more editorial and calm than the action-orien
 
 Each action should have a clear **source of record**. Today is a presentation/aggregation layer, not a second canonical store for schedule, messages, or reading.
 
-### 7.2 Integration assumptions: none are approved yet
+### 7.2 Companion architecture decision (D-10, November 20, 2026)
 
-Existing church tools may already provide groups, volunteer scheduling, accounts, giving, or messaging. **Do not assume** API availability, sync direction, authentication compatibility, or migration permissions. Inventory systems with Citizen Church leadership before building production infrastructure.
+**Locked product direction:** Rally Point is a distinct member-experience companion to existing church systems, **not** a replacement church-management system. Preserve the four-tab Warm Editorial design. Planning Center / Church Center is the primary candidate system of record for existing groups, schedules, and attendance **only where the church confirms product usage, grants authorization, and an official integration path has been verified**. Rally Point owns the personalized Today presentation layer and its differentiated Read experience. Prefer verified link-outs when supported API functionality is unavailable; do not replicate operational databases by default.
 
-Potential existing tools mentioned in the broader project context (e.g., Church Center) are **discovery candidates**, not commitments.
+**Integration feasibility and governance:** See `docs/COMPANION_ARCHITECTURE_DECISION.md` for the reuse/enhance/build matrix, data ownership, authentication, privacy/minor safeguarding, proposed integration discovery, and explicit non-goals. **No live access or integration is yet authorized.** No claim is made that Church Center chats, 1:1 messages, scheduling responses, or notification data can be read/written via the public API.
 
 ### 7.3 Security and trust requirements before real users
 
@@ -310,6 +312,10 @@ Potential existing tools mentioned in the broader project context (e.g., Church 
 ### Phase 3 — Leader workflows and role logic
 
 Add context-specific attendance, follow-up flags, reading defaults, role-aware Today alerts, and audit-aware state management *after* policy definitions are agreed.
+
+### Integration discovery gate — after visual review, before production connector development
+
+Validate Planning Center module usage, authorized access, endpoint-level feasibility, and exact workflows with church leadership. Inventory opportunities for safe deep links and determine the smallest read-only pilot. Do not request or store credentials until approval. See `docs/COMPANION_ARCHITECTURE_DECISION.md`.
 
 ### Phase 4 — Production integration and pilot
 
@@ -371,6 +377,8 @@ Preview only; do not merge or deploy production without approval.
 | D-07 | Today first; fixture-based high-fidelity build before real integrations | Approved plan |
 | D-08 | Flagging, attendance definitions, reading-control scope | Open requirements |
 | D-09 | Giving and broader ministry functions deferred | Deferred |
+| D-10 | Build Rally Point as a distinct companion to existing church systems; selective, authorized Planning Center integration rather than duplicated records | Locked direction; details in `docs/COMPANION_ARCHITECTURE_DECISION.md` |
+| D-11 | Palette v2: remove orange/rust/terracotta accents only; retain approved Warm Editorial composition, nonwhite cream, charcoal, exact Citizen red, high-contrast borders, textures and UI behavior | Locked direction; details in `docs/PALETTE_V2_COLOR_ONLY.md` |
 
 ## 12. Codex handoff — Phase 1 implementation brief
 
