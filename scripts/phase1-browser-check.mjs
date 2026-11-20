@@ -29,7 +29,18 @@ async function journey(page){
  await page.locator('.profile-avatar').click();await audit(page,'Demo controls');await page.keyboard.press('Shift+Tab');assert.equal(await page.locator('#dialog-root [role="dialog"]').evaluate(el=>el.contains(document.activeElement)),true);await page.locator('#role').click();await page.locator('[data-action="close-dialog"]').click();await page.locator('.leader-entry').click();
  await page.locator('[data-action="attendance"][data-person="marcus"][data-value="here"]').click();for(const id of ['marcus','taylor'])await page.locator(`[data-action="reached"][data-person="${id}"]`).click();await nav('read');await page.locator('[data-action="plan"][data-value="study"]').click();await page.locator('#question').fill('A fictional leader-selected discussion question.');await page.locator('[data-action="question"]').click();await nav('today');assert.equal(await page.locator('.leader-entry').count(),0);
  const before=await page.evaluate(()=>JSON.parse(localStorage.getItem('rallypoint-phase1-2026')));await page.reload();const after=await page.evaluate(()=>JSON.parse(localStorage.getItem('rallypoint-phase1-2026')));assert.deepEqual(after,before);assert.equal(after.rsvp,'going');assert.equal(after.teamStatus,'confirmed');assert.equal(after.read,true);assert.equal(after.prayed,true);assert.equal(after.attendance.marcus,'here');assert.equal(after.plan,'study');assert.ok(after.groupMessages.some(m=>m.text==='A fictional note for the local group.'));
- await demo(page,'no-memberships');assert.ok((await main.textContent()).includes('There’s room'));assert.equal(await page.locator('.leader-entry').count(),0);await audit(page,'No-membership Today');
+ await nav('read');await page.locator('[data-action="memory-mode"][data-value="solo"]').click();
+ for(let i=0;i<5;i++)await page.locator('[data-action="memory-pick"][data-value="a'+i+'"]').click();
+ await page.locator('[data-action="memory-check"]').click();
+ assert.ok(await page.locator('.vp-victory').isVisible(),'five correct word tiles complete a real game');
+ await page.locator('[data-action="memory-mode"][data-value="pass"]').click();
+ assert.ok((await page.locator('.vp-turn').textContent()).includes('PLAYER 1'));
+ await page.locator('[data-action="memory-challenge"][data-value="romans"]').click();
+ assert.ok((await page.locator('.vp-board-title h3').textContent()).includes('Romans 8:28'));
+ await nav('today');
+ await page.locator('.read-play-cta').click();
+ assert.equal(await page.locator('#reading-memorize').count(),1,'Today Play opens the actual game');
+  await demo(page,'no-memberships');assert.ok((await main.textContent()).includes('There’s room'));assert.equal(await page.locator('.leader-entry').count(),0);await audit(page,'No-membership Today');
  await nav('group');assert.ok((await main.textContent()).includes('sample group options'));assert.equal(await page.locator('.group-discovery-hero').count(),1);assert.equal(await page.locator('.group-discovery-card').count(),3);await geometry(page,'group discovery');await audit(page,'Redesigned group discovery');
  if(page.viewportSize().width===390)await page.screenshot({path:path.join(out,'groups-discovery-390.png')});
  await page.locator('.group-discovery-interest').first().click();assert.equal(await page.locator('.group-discovery-interest.is-selected').count(),1);
@@ -41,7 +52,16 @@ try{
  for(const [width,height,top,bottom] of cases){const ctx=await browser.newContext({viewport:{width,height},isMobile:width<930,hasTouch:width<930,reducedMotion:width===320?'reduce':'no-preference'}),p=await ctx.newPage(),errors=[];p.on('pageerror',e=>errors.push(e.message));p.on('response',r=>{if(r.status()>=400&&new URL(r.url()).origin===new URL(base).origin)errors.push(`${r.status()} ${r.url()}`);});await p.goto(todayUrl,{waitUntil:'networkidle'});await p.evaluate(()=>document.fonts.ready);if(top)await p.addStyleTag({content:`:root{--safe-top:${top}px;--safe-bottom:${bottom}px}`});
   await geometry(p,'Today '+width);await audit(p,'Today '+width);assert.equal(await p.locator('.today-people').count(),1,'Your People panel exists');assert.equal(await p.locator('.today-people-avatar').count(),4,'Sample roster is visible');assert.ok((await p.locator('.today-people-message-text').textContent()).includes('Looking forward to seeing everyone Wednesday'),'Latest fixture message is on Today');assert.ok((await p.locator('.today-screen').boundingBox()).y<height/3);const targets=await p.locator('.today-screen button').evaluateAll(nodes=>nodes.map(n=>({w:n.getBoundingClientRect().width,h:n.getBoundingClientRect().height,name:n.textContent.trim()})));assert.ok(targets.every(t=>t.w>=44&&t.h>=44),'Today touch targets '+JSON.stringify(targets));
   if(width===390&&!top){await p.screenshot({path:path.join(out,'today-390.png')});await p.locator('.today-people').scrollIntoViewIfNeeded();await p.screenshot({path:path.join(out,'today-your-people-390.png')});await p.locator('#view').evaluate(el=>el.scrollTop=0);}
-  for(const tab of ['group','team','read','today']){await p.locator(`#nav [data-go="${tab}"]`).click();await geometry(p,tab+' '+width);await audit(p,tab+' '+width);}
+  for(const tab of ['group','team','read','today']){
+    await p.locator(`#nav [data-go="${tab}"]`).click();
+    await geometry(p,tab+' '+width);await audit(p,tab+' '+width);
+    if(tab==='read'){
+      assert.equal(await p.locator('.verseplay').count(),1,'Read has a prominent playable memory game');
+      assert.equal(await p.locator('.vp-blank').count(),5,'VersePlay has five fillable words');
+      assert.equal(await p.locator('.vp-tile').count(),7,'VersePlay has seven tactile word tiles');
+      if(width===390&&!top)await p.screenshot({path:path.join(out,'verseplay-read-390.png')});
+    }
+  }
   if((width===390&&!top)||width===320)await journey(p);
   assert.deepEqual(errors,[]);results.push({width,height,top,bottom,result:'passed'});console.log(`Passed ${width}×${height}, safe areas ${top}/${bottom}`);await ctx.close();
  }
