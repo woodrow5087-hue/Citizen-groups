@@ -22,3 +22,7 @@ main{padding:11px 18px 20px;min-height:0;scrollbar-width:none;overscroll-behavio
 .spotify-link{display:inline-grid;place-items:center;flex:none;width:44px;height:44px;min-width:44px;border-radius:50%;text-decoration:none;transition:background .14s ease,transform .12s ease}
 .spotify-link img{display:block;width:24px;height:24px;filter:brightness(0)}
 .spotify-link:hover{background:#2423220c}.spotify-link:active{transform:scale(.96)}
+
+/* A deliberate on-ramp from the working dashboard back to approved animation. */
+.rp-replay-welcome{color:var(--ink);text-decoration:none;min-height:72px;border-color:#BCA89D;background:#F3E5D6}
+.rp-replay-welcome:focus-visible{outline:3px solid #E3002B;outline-offset:3px}
