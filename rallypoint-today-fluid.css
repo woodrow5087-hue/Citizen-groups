@@ -611,3 +611,80 @@
   .is-fluid-today .today-people-message{padding:15px 13px}
   .is-fluid-today .today-people-message-head{letter-spacing:.10em}
 }
+
+
+/* v0.5.1 — PEOPLE FIRST
+   Community overlaps the red greeting and precedes the event card both
+   visually AND in DOM/tab order. Preserve the full card when scrolling,
+   but show the group roster and message within the first phone viewport. */
+.is-fluid-today .today-people{
+  margin:-58px 15px 0;
+  padding:17px 18px 15px;
+  border-color:#FFE2DE;
+  z-index:4;
+  box-shadow:0 4px 0 #82001F,0 9px 20px #10090A70,inset 0 1px 0 #FFFFFF60;
+}
+.is-fluid-today .today-people-heading{margin:12px 0 14px}
+.is-fluid-today .today-people-heading h2{
+  font-size:clamp(29px,8.5vw,36px);
+  line-height:1.04;
+  letter-spacing:-.065em;
+}
+.is-fluid-today .today-people-constellation{
+  right:-5px;top:-34px;height:113px;width:125px;
+}
+.is-fluid-today .today-people-roster{
+  min-height:61px;
+  padding:9px 10px;
+}
+.is-fluid-today .today-people-message{
+  min-height:112px;
+  margin-top:10px;
+  padding:12px 15px 11px;
+}
+.is-fluid-today .today-people-message-author{margin-top:8px}
+.is-fluid-today .today-people-message-text{
+  display:block;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  max-width:100%;
+}
+.is-fluid-today .today-people-message-action{margin-top:9px}
+.is-fluid-today .today-people .today-people-leader{min-height:72px;margin-top:10px}
+.is-fluid-today .today-people--discover{min-height:210px}
+.is-fluid-today .today-people--discover h2{
+  margin:13px 0 10px;
+  font-size:clamp(30px,8.5vw,36px);
+}
+.is-fluid-today .today-people-subtitle{margin-bottom:13px}
+.is-fluid-today .today-people-discover-link{min-height:67px}
+.is-fluid-today .up-next{
+  margin:19px 15px 0;
+  min-height:204px;
+  padding:19px 21px 16px;
+  z-index:2;
+}
+.is-fluid-today .up-next h2{
+  font-size:clamp(30px,8.5vw,37px);
+  margin:11px 0 15px;
+}
+.is-fluid-today .today-empty.discovery{
+  margin:18px 15px 0;
+  border:1px solid #FFE5D67A;
+}
+@media(max-width:350px){
+  .is-fluid-today .today-people{
+    margin:-53px 11px 0;
+    padding:15px 13px 13px;
+  }
+  .is-fluid-today .today-people-heading h2{font-size:29px}
+  .is-fluid-today .today-people-heading{margin:10px 0 12px}
+  .is-fluid-today .today-people-message{padding:11px 12px;min-height:108px}
+  .is-fluid-today .up-next{
+    margin:16px 11px 0;
+    min-height:194px;
+    padding:17px 18px;
+  }
+  .is-fluid-today .up-next h2{font-size:30px}
+}
