@@ -1,9 +1,10 @@
+// Preserved Citizen Connect archive: Rally Point now owns index.html.
 const {test}=require('node:test');
 const assert=require('node:assert/strict');
 const {readFileSync}=require('node:fs');
 const {join}=require('node:path');
 const {JSDOM}=require('jsdom');
-const html=readFileSync(join(__dirname,'..','index.html'),'utf8');
+const html=readFileSync(join(__dirname,'..','premium-hybrid-archive.html'),'utf8');
 const introSource=html.match(/<script id="intro-bootstrap">([\s\S]*?)<\/script>/)[1];
 const key='citizen-connect-intro-seen-v1';
 function open(t,{seen,reduced=false,blocked=false}={}){
