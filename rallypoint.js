@@ -188,12 +188,49 @@ return `<section class="group-screen-v07">
 </section>`;
 }
 function team(){
-if(!todayUI.memberships.team)return `<div class="eyebrow">TEAM · DEMO EMPTY STATE</div><h1>A place to<br><em>serve.</em></h1><div class="empty-tab"><h2>Your next step starts here.</h2><p>No team or assignment belongs to this fixture. Team discovery and joining will be defined in a later phase.</p><button type="button" class="btn red" data-action="team-preview">About this preview</button></div>${footer()}`;
-const opts=[['schedule','Schedule'],['chat','Team chat'],...(canLead('team')?[['leader','Leader tools']]:[])];let body='';
-if(s.teamPane==='schedule')body=`<div class="card"><div class="kicker">NEXT SERVING · SAMPLE</div><h3>Sunday Welcome Team</h3><p>${sun()} · 9:00 AM · North Campus</p>${pill(s.teamStatus==='confirmed'?'Confirmed':s.teamStatus==='declined'?'Unable to serve':'Awaiting response')}${s.coverage?pill('Coverage requested'):''}<div class="actions"><button class="btn red" data-action="shift" data-value="confirmed">✓ Confirm serving</button><button class="btn outline" data-action="shift" data-value="declined">Can't make it</button></div>${s.teamStatus==='declined'?`<div class="tinted"><p>Need someone to take your shift?</p><button class="btn dark-btn" data-action="cover">${s.coverage?'Withdraw request':'Request coverage ↗'}</button></div>`:''}</div><div class="card"><h3>Team huddle</h3><p>Arrive at 8:40 AM; huddle begins at 8:45 AM.</p><button class="text-button" data-action="pane" data-area="team" data-value="chat">Open team conversation ↗</button></div>`;
-if(s.teamPane==='chat')body=`<div class="card"><div class="kicker">WELCOME TEAM CHAT · SAMPLE</div>${teamList()}${compose('team','Send a team update','Share an update with your team…')}</div>`;
-if(s.teamPane==='leader')body=`<div class="card"><div class="kicker">LEADER TOOLS · PRIVATE DEMO</div><h3>Sunday coverage</h3><p>${s.coverage?'There is one sample coverage request for the 9 AM shift.':'No active sample coverage requests.'}</p><button class="btn outline" data-action="pane" data-area="team" data-value="chat">Open team chat ↗</button></div><div class="card"><h3>Look after the people serving.</h3><p>Future Planning Center integration can help spot gaps and overscheduling using actual schedules and attendance, with safeguards for privacy.</p></div>`;
-return `<div class="eyebrow">MY TEAM ${canLead('team')?pill('LEADER VIEW'):''}</div><h1>Serve<br><em>together.</em></h1><p class="intro">Your team, your schedule, your conversations.</p><div class="team-banner">${pill('WELCOME TEAM',true)}<h2>Make every<br>person feel seen.</h2><small>North Campus · Sample</small><span>♡</span></div>${tabs('team',opts,s.teamPane)}${body}${footer()}`}
+ if(!todayUI.memberships.team)return `<div class="eyebrow">TEAM · DEMO EMPTY STATE</div><h1>A place to<br><em>serve.</em></h1><div class="empty-tab"><h2>Your next step starts here.</h2><p>No team or assignment belongs to this fixture. Team discovery and joining will be defined in a later phase.</p><button type="button" class="btn red" data-action="team-preview">About this preview</button></div>${footer()}`;
+ const opts=[['schedule','My Schedule'],['chat','Team chat'],...(canLead('team')?[['leader','Leader tools']]:[])];let body='';
+ const stateLabel=s.teamStatus==='confirmed'?'Confirmed':s.teamStatus==='declined'?'Unable to serve':'Awaiting response';
+ const message=s.teamMessages.length?s.teamMessages[s.teamMessages.length-1]:null;
+ if(s.teamPane==='schedule')body=`
+  <div class="card team-schedule-card">
+   <div class="team-card-overline"><span>MY SCHEDULE · SAMPLE</span>${pill(stateLabel)}</div>
+   <h2>Your next serve.</h2>
+   <div class="team-shift">
+     <div class="team-shift-date"><strong>${sun().split(' ')[0]}</strong><small>SUNDAY</small></div>
+     <div class="team-shift-info"><strong>Welcome Team</strong><span>${sun()} · 9:00 AM</span><small>North Campus · demo shift</small></div>
+   </div>
+   <div class="team-shift-response">
+     <span class="team-response-caption">YOUR RESPONSE</span>
+     <strong>${stateLabel}</strong>
+     <p>This represents a planned sample shift, not recorded attendance.</p>
+     ${s.coverage?pill('Coverage requested'):''}
+   </div>
+   <div class="actions team-shift-actions">
+     <button class="btn ${s.teamStatus==='confirmed'?'chosen':'red'}" data-action="shift" data-value="confirmed">${s.teamStatus==='confirmed'?'✓ Serving confirmed':'✓ Confirm serving'}</button>
+     <button class="btn outline" data-action="shift" data-value="declined">Can't make it</button>
+   </div>
+   ${s.teamStatus==='declined'?`<div class="tinted"><p>Need someone to cover your scheduled shift?</p><button type="button" class="btn dark-btn" data-action="cover">${s.coverage?'Withdraw request':'Request coverage ↗'}</button></div>`:''}
+  </div>
+  <button type="button" class="team-message-preview" data-action="pane" data-area="team" data-value="chat" aria-label="Open Welcome Team conversation">
+   <span class="team-message-preview-top">${icon('message')}<span>TEAM CONVERSATION</span>${icon('arrow')}</span>
+   <strong>${message?e(message.name):'Your team'}</strong>
+   <span class="team-message-preview-text">${message?e(message.text):'Start a conversation with your team.'}</span>
+   <span class="team-message-preview-action">OPEN TEAM CHAT ${icon('arrow')}</span>
+  </button>
+  <div class="card team-huddle"><div class="kicker">THIS SUNDAY</div><h3>Team huddle</h3><p>Arrive at 8:40 AM; huddle begins at 8:45 AM. These are fictional example times.</p><button type="button" class="text-button" data-action="pane" data-area="team" data-value="chat">Coordinate with your team ↗</button></div>`;
+ if(s.teamPane==='chat')body=`<div class="card team-chat-card"><div class="kicker">WELCOME TEAM · LOCAL DEMO</div><h2>Stay in the loop.</h2><p>Share relevant updates with the people serving alongside you. Messages stay in this browser.</p>${teamList()}${compose('team','Send a team update','Share an update with your team…')}</div>`;
+ if(s.teamPane==='leader')body=`<div class="card team-leader-card"><div class="kicker">AUTHORIZED TEAM LEADER · FIXTURE</div><h2>Care for your team.</h2><p>Review the sample schedule and communication. A confirmed shift is not proof of attendance.</p><div class="team-leader-status"><strong>Coverage requests</strong><span>${s.coverage?'One sample coverage request':'No active sample requests'}</span></div><button type="button" class="btn red" data-action="pane" data-area="team" data-value="chat">Open team conversation ${icon('arrow')}</button></div><div class="card"><h3>Follow-up needs human judgment.</h3><p>The proposed future leader system requires approved definitions, actual participation records, restricted access, and a clear pastoral follow-up process before real alerts can be enabled.</p></div>`;
+ return `<section class="team-screen-v08">
+  <div class="team-v08-hero">
+   <div class="team-v08-kicker">YOUR PEOPLE · YOUR PURPOSE</div>
+   <h1>Serve<br>together<span>.</span></h1>
+   <div class="team-v08-hero-row"><span>${icon('team')}</span><strong>Welcome Team</strong><small>North Campus · fictional team</small></div>
+   <span class="team-v08-wave" aria-hidden="true"></span>
+  </div>
+  ${tabs('team',opts,s.teamPane)}${body}${footer()}
+ </section>`;
+}
 function read(){
 const plans={sermon:['Jesus Series','The words of Jesus'],study:['Approved book study','The Gospel of John'],year:['Bible in a year','Daily Bible reading']};const plan=plans[s.plan];
 return `<div class="eyebrow">GROW TOGETHER</div><h1>In the<br><em>Word.</em></h1><p class="intro">Read, reflect, and bring something meaningful to your group.</p><div class="card"><div class="kicker">${todayUI.memberships.group?"YOUR GROUP’S READING":"TODAY’S READING"} · SAMPLE</div><h3>${plan[1]}</h3><p>${plan[0]} · John 15:9–12</p><div class="quote" id="reading-questions" tabindex="-1"><small>DISCUSSION QUESTION</small><strong>${e(s.question)}</strong></div>${canLead('group')?`<div class="edit-plan"><label>Choose a reading plan</label><div class="actions">${[['sermon','Sermon'],['study','Book study'],['year','Bible/year']].map(([id,label])=>`<button class="btn mini ${s.plan===id?'chosen':'outline'}" data-action="plan" data-value="${id}">${label}</button>`).join('')}</div><label for="question">Group discussion question</label><textarea id="question" rows="2" maxlength="400">${e(s.question)}</textarea><button class="btn dark-btn" data-action="question">Save question</button></div>`:''}</div><div class="card" id="reading-scripture" tabindex="-1"><div class="kicker">SCRIPTURE · KJV</div><h3>John 15:12</h3><p class="verse">“This is my commandment, That ye love one another, as I have loved you.”</p><button class="btn ${s.read?'chosen':'red'}" data-action="read">${s.read?'✓ Read today':'Mark as read'}</button></div><div class="card compact"><div><h3>A moment to pray.</h3><p>Take a minute to pray for someone in your group.</p></div><button class="round ${s.prayed?'done':''}" aria-label="Mark prayer time" data-action="pray">${s.prayed?'✓':'↗'}</button></div>${footer()}`}
@@ -207,6 +244,7 @@ if(s.role!=='leader'){if(s.groupPane==='leader')s.groupPane='chat';if(s.teamPane
 save();
 document.querySelector('.phone-inner').classList.toggle('is-fluid-today',s.view==='today');
  document.querySelector('.phone-inner').classList.toggle('is-groups-v07',s.view==='group');
+ document.querySelector('.phone-inner').classList.toggle('is-team-v08',s.view==='team');
  view.innerHTML=(storageWarning?`<p class="storage-notice" role="status">${e(storageWarning)}</p>`:'')+(s.view==='today'?today():s.view==='group'?group():s.view==='team'?team():read());
 view.querySelectorAll('textarea').forEach(field=>{if(drafts[field.id]!==undefined)field.value=drafts[field.id]});
 $('nav').innerHTML=[['today','Today','home'],['group','Groups','group'],['team','Team','team'],['read','Read','read']].map(([id,label,glyph])=>`<button type="button" class="${s.view===id?'active':''}" data-go="${id}" ${s.view===id?'aria-current="page"':''}>${icon(glyph)}<small>${label}</small></button>`).join('');
