@@ -1,5 +1,5 @@
 /* VersePlay: a tactile, browser-local Scripture word game.
- * All passages are short KJV (public domain in the US), not copyrighted NLT content.
+ * Passages use the modern Berean Standard Bible (BSB), dedicated to the public domain.
  * Pure logic is shared by the browser and Node tests. No network, real member identity,
  * spiritual engagement score, streak, or fabricated real-world competition.
  */
@@ -9,29 +9,31 @@
   if(root)root.RallyMemory=game;
 })(typeof window!=='undefined'?window:null,function(){
  'use strict';
+ const translation='BSB';
+ const textRevision='BSB-2026-1';
  const library=Object.freeze({
    sermon:{
      title:'Love one another',reference:'John 15:12',path:'sermon',
-     text:'This is my commandment, That ye love one another, as I have loved you.',
-     targets:['my','commandment','love','another','loved'],
+     text:'This is My commandment, that you love one another as I have loved you.',
+     targets:['My','commandment','love','another','loved'],
      decoys:['always','honor']
    },
    study:{
      title:'Put it into practice',reference:'James 1:22',path:'study',
-     text:'But be ye doers of the word, and not hearers only, deceiving your own selves.',
-     targets:['doers','word','hearers','deceiving','selves'],
+     text:'Be doers of the word, and not hearers only. Otherwise, you are deceiving yourselves.',
+     targets:['doers','word','hearers','deceiving','yourselves'],
      decoys:['easy','listen']
    },
    year:{
-     title:'My shepherd',reference:'Psalm 23:1',path:'year',
-     text:'The LORD is my shepherd; I shall not want.',
-     targets:['LORD','my','shepherd','shall','want'],
+     title:'My shepherd',reference:'Psalm 23:1–2',path:'year',
+     text:'The LORD is my shepherd; I shall not want. He makes me lie down in green pastures; He leads me beside quiet waters.',
+     targets:['LORD','shepherd','pastures','quiet','waters'],
      decoys:['alone','stray']
    },
    romans:{
      title:'All things together',reference:'Romans 8:28',path:'bonus',
-     text:'And we know that all things work together for good to them that love God, to them who are the called according to his purpose.',
-     targets:['know','good','love','called','purpose'],
+     text:'And we know that God works all things together for the good of those who love Him, who are called according to His purpose.',
+     targets:['know','works','good','love','purpose'],
      decoys:['faith','always']
    }
  });
@@ -113,5 +115,5 @@
    const g=normalize(raw,id);
    return {...initial(),best:g.best,round:g.round+1};
  }
- return {library,challenge,initial,normalize,bank,split,score,filled,pick,clear,hint,check,reset};
+ return {translation,textRevision,library,challenge,initial,normalize,bank,split,score,filled,pick,clear,hint,check,reset};
 });
