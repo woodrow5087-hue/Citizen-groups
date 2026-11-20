@@ -34,7 +34,7 @@ Rally Point's approved architecture (D-10, `docs/COMPANION_ARCHITECTURE_DECISION
 | Schedule responses / coverage | Services or other approved source | **Write support not verified for exact workflow** | No double writes or phantom confirmations |
 | Group/team messages | Existing approved chat/deep link OR separate secure messaging backend | **Unknown; chat read/write not established** | Minors policy, consent, deletion, abuse controls and role checks |
 | Pastor/leader follow-up | Church-approved workflow, not inferred from inactivity alone | **Definitions and owner unresolved** | Human review, appeals/correction, restricted audit logs |
-| Scripture & content | Rally Point curated material | Feasible as product content after rights/review | Approved KJV excerpts or licensed text; editorial approval |
+| Scripture & content | Rally Point curated material | Feasible as product content after rights/review | Verified public-domain BSB excerpts or appropriately licensed alternatives; editorial approval |
 | Notifications | Approved app notification service | Unscoped | Opt-in, quiet hours, sensitive-content redaction |
 
 ## Phase gates (see machine-readable config)
