@@ -1,10 +1,11 @@
 (function rallyApp(){
 'use strict';
 const key='rallypoint-phase1-2026';
-const defaults=()=>({role:'member',groupPane:'chat',directPerson:'anna',directMessages:{},teamPane:'schedule',view:'today',discover:false,groupMessages:[{name:'Jess W.',time:'Yesterday',text:'What stood out to you in John 15 this week?'},{name:'Anna L.',time:'Today',text:'Looking forward to seeing everyone Wednesday.'}],teamMessages:[{name:'Sam R.',time:'Yesterday',text:'Welcome team — thank you for helping people feel at home!'}],prayers:[{name:'Marcus C.',time:'Yesterday',text:'Praying for wisdom with an upcoming decision.'}],rsvp:'',teamStatus:'pending',coverage:false,attendance:{anna:'here',jess:'here',marcus:'unknown',taylor:'unknown'},reached:[],interest:[],plan:'sermon',question:'How can we love one another as Jesus has loved us?',read:false,prayed:false});
+const defaults=()=>({role:'member',groupPane:'chat',directPerson:'anna',directMessages:{},teamPane:'schedule',view:'today',discover:false,groupMessages:[{name:'Jess W.',time:'Yesterday',text:'What stood out to you in John 15 this week?'},{name:'Anna L.',time:'Today',text:'Looking forward to seeing everyone Wednesday.'}],teamMessages:[{name:'Sam R.',time:'Yesterday',text:'Welcome team — thank you for helping people feel at home!'}],prayers:[{name:'Marcus C.',time:'Yesterday',text:'Praying for wisdom with an upcoming decision.'}],rsvp:'',teamStatus:'pending',coverage:false,attendance:{anna:'here',jess:'here',marcus:'unknown',taylor:'unknown'},reached:[],interest:[],plan:'sermon',planQuestions:{},question:'How can we love one another as Jesus has loved us?',read:false,prayed:false});
 let s;try{s={...defaults(),...JSON.parse(localStorage.getItem(key)||'null')}}catch(_){s=defaults()}
 if(!s||!s.groupMessages||!Array.isArray(s.groupMessages))s=defaults();
  if(!s.directMessages||typeof s.directMessages!=='object'||Array.isArray(s.directMessages))s.directMessages={};
+ if(!s.planQuestions||typeof s.planQuestions!=='object'||Array.isArray(s.planQuestions))s.planQuestions={};
 const T=window.RallyToday,U=window.RallyUI,icon=U.icon;
 let todayUI=T.load({getItem:k=>localStorage.getItem(k)}),dialog=null,dialogTrigger=null,storageWarning='',drafts={};
 const $=x=>document.getElementById(x), e=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -14,6 +15,12 @@ const pill=(t,light=false)=>`<span class="pill ${light?'light':''}">${e(t)}</spa
 const icons={home:'⌂',group:'♙',team:'♡',read:'▤',arrow:'↗'};
 const sampleGroupPeople=[{id:'anna',name:'Anna L.',initials:'AL'},{id:'jess',name:'Jess W.',initials:'JW'},{id:'marcus',name:'Marcus C.',initials:'MC'},{id:'taylor',name:'Taylor D.',initials:'TD'}];
  if(!sampleGroupPeople.some(p=>p.id===s.directPerson))s.directPerson='anna';
+const readingLibrary={
+ sermon:{name:'Sermon Series',title:'Words of Jesus',passage:'John 15:12',excerpt:'This is my commandment, That ye love one another, as I have loved you.',question:'How can we love one another as Jesus has loved us?',description:'A sample series-linked reading from John'},
+ study:{name:'Approved Book Study',title:'The Book of James',passage:'James 1:22',excerpt:'But be ye doers of the word, and not hearers only, deceiving your own selves.',question:'What is one way to put what you read into practice this week?',description:'A sample Scripture focus from James'},
+ year:{name:'Bible in One Year',title:'Daily Bible Reading',passage:'Psalm 23:1',excerpt:'The LORD is my shepherd; I shall not want.',question:'How does this passage speak to the care and guidance you need?',description:'Illustrative daily passage, not a licensed Bible reading calendar'}
+};
+const currentReading=()=>readingLibrary[s.plan]||readingLibrary.sermon;
 const next=d=>T.nextEvent(d,d===3?18:9,d===3?30:0).toLocaleDateString('en-US',{weekday:'long',month:'short',day:'numeric'});
 const wed=()=>next(3),sun=()=>next(0);
 const groupList=()=>s.groupMessages.map(m=>`<div class="message"><div class="avatar">${e(m.name.split(' ').map(x=>x[0]).join('').slice(0,2))}</div><div><div class="message-meta"><strong>${e(m.name)}</strong><small>${e(m.time)}</small></div><p>${e(m.text)}</p></div></div>`).join('');
@@ -112,7 +119,7 @@ function today(){
       <span class="fluid-read-curve" aria-hidden="true"></span>
       <span class="today-reading-flag" aria-hidden="true"></span>
       <span class="today-label">${icon('read')} TODAY’S READ <i></i></span>
-      <h2>John 15:9–12</h2>
+      <h2>${e(currentReading().passage)}</h2>
       <div class="reading-actions">
         <button type="button" class="read-primary" data-go="read" data-reading="scripture">${icon('read')} Read</button>
         <button type="button" data-go="read" data-reading="questions">${icon('message')} Reflect</button>
@@ -169,7 +176,7 @@ if(s.groupPane==='direct'){
     <button type="button" class="text-button group-back" data-action="pane" data-area="group" data-value="people">← Back to people</button>
   </div>`;
 }
-if(s.groupPane==='gather')body=`<div class="card"><div class="kicker">NEXT GROUP GATHERING</div><h3>${wed()} · 6:30 PM</h3><p>John 15:9–12 · ${e(s.question)}</p><div class="actions"><button class="btn ${s.rsvp==='going'?'chosen':'outline'}" data-action="rsvp" data-value="going">I'm going</button><button class="btn ${s.rsvp==='maybe'?'chosen':'outline'}" data-action="rsvp" data-value="maybe">Maybe</button></div></div><div class="card"><h3>Connected beyond the semester.</h3><p>Continuity is a proposed model, not an approved policy. Groups may continue through breaks, subject to church leadership decisions.</p></div>`;
+if(s.groupPane==='gather')body=`<div class="card"><div class="kicker">NEXT GROUP GATHERING</div><h3>${wed()} · 6:30 PM</h3><p>${e(currentReading().passage)} · ${e(s.question)}</p><div class="actions"><button class="btn ${s.rsvp==='going'?'chosen':'outline'}" data-action="rsvp" data-value="going">I'm going</button><button class="btn ${s.rsvp==='maybe'?'chosen':'outline'}" data-action="rsvp" data-value="maybe">Maybe</button></div></div><div class="card"><h3>Connected beyond the semester.</h3><p>Continuity is a proposed model, not an approved policy. Groups may continue through breaks, subject to church leadership decisions.</p></div>`;
 if(s.groupPane==='prayer')body=`<div class="card"><h3>Pray for one another.</h3><p>Use fictional examples here—do not enter private real requests into this demo.</p>${prayerList()}${compose('prayer','Add a sample prayer request','What can your group pray about?')}</div>`;
 if(s.groupPane==='leader')body=lead();
 return `<section class="group-screen-v07">
@@ -232,8 +239,43 @@ function team(){
  </section>`;
 }
 function read(){
-const plans={sermon:['Jesus Series','The words of Jesus'],study:['Approved book study','The Gospel of John'],year:['Bible in a year','Daily Bible reading']};const plan=plans[s.plan];
-return `<div class="eyebrow">GROW TOGETHER</div><h1>In the<br><em>Word.</em></h1><p class="intro">Read, reflect, and bring something meaningful to your group.</p><div class="card"><div class="kicker">${todayUI.memberships.group?"YOUR GROUP’S READING":"TODAY’S READING"} · SAMPLE</div><h3>${plan[1]}</h3><p>${plan[0]} · John 15:9–12</p><div class="quote" id="reading-questions" tabindex="-1"><small>DISCUSSION QUESTION</small><strong>${e(s.question)}</strong></div>${canLead('group')?`<div class="edit-plan"><label>Choose a reading plan</label><div class="actions">${[['sermon','Sermon'],['study','Book study'],['year','Bible/year']].map(([id,label])=>`<button class="btn mini ${s.plan===id?'chosen':'outline'}" data-action="plan" data-value="${id}">${label}</button>`).join('')}</div><label for="question">Group discussion question</label><textarea id="question" rows="2" maxlength="400">${e(s.question)}</textarea><button class="btn dark-btn" data-action="question">Save question</button></div>`:''}</div><div class="card" id="reading-scripture" tabindex="-1"><div class="kicker">SCRIPTURE · KJV</div><h3>John 15:12</h3><p class="verse">“This is my commandment, That ye love one another, as I have loved you.”</p><button class="btn ${s.read?'chosen':'red'}" data-action="read">${s.read?'✓ Read today':'Mark as read'}</button></div><div class="card compact"><div><h3>A moment to pray.</h3><p>Take a minute to pray for someone in your group.</p></div><button class="round ${s.prayed?'done':''}" aria-label="Mark prayer time" data-action="pray">${s.prayed?'✓':'↗'}</button></div>${footer()}`}
+ const plan=currentReading();
+ return `<section class="read-screen-v09">
+   <div class="read-v09-hero"><div class="read-v09-overline">READ · REFLECT · REMEMBER</div><h1>In the<br>Word<span>.</span></h1><p>Your daily rhythm in Scripture, connected to your community.</p></div>
+   <div class="read-focus-card">
+     <div class="read-focus-head"><span>YOUR READING PATH · SAMPLE</span>${icon('read')}</div>
+     <h2>${e(plan.name)}</h2><p>${e(plan.title)}</p><div class="read-focus-detail"><strong>${e(plan.passage)}</strong><small>${e(plan.description)}</small></div>
+   </div>
+   <section class="card read-scripture-card" id="reading-scripture" tabindex="-1">
+     <div class="read-section-label">${icon('read')} <span>SCRIPTURE · KJV</span><i></i></div>
+     <h2>${e(plan.passage)}</h2><blockquote>“${e(plan.excerpt)}”</blockquote>
+     <button type="button" class="btn ${s.read?'chosen':'red'}" data-action="read">${s.read?'✓ Read today':'Mark as read'}</button>
+     <p class="fine-note">Public-domain KJV excerpt · Illustrative passage, not an assigned reading calendar.</p>
+   </section>
+   <section class="card read-question-card" id="reading-questions" tabindex="-1">
+     <div class="read-section-label">${icon('message')} <span>REFLECT TOGETHER</span><i></i></div>
+     <h2>A question worth sharing.</h2><p>${e(s.question)}</p>
+     <button type="button" class="read-discuss-action" data-go="group" data-pane="chat">${icon('group')} Open group conversation ${icon('arrow')}</button>
+   </section>
+   <div class="read-memory-card">
+     <div class="read-memory-copy"><div class="read-memory-label">${icon('check')} MEMORIZE</div><h2>Carry it with you.</h2><p>Preview a future verse practice experience.</p></div>
+     <button type="button" data-action="memorize-preview" aria-label="Preview memorization for ${e(plan.passage)}">${icon('arrow')}</button>
+   </div>
+   ${canLead('group')?`<section class="card read-leader-card">
+     <div class="read-section-label">${icon('leader')} <span>GROUP LEADER · LOCAL DEMO</span></div>
+     <h2>Shape the conversation.</h2><p>Choose a sample pathway. Changes stay on your device; nothing is published to a real group or church.</p>
+     <div class="read-plan-choices" role="group" aria-label="Reading pathway">
+       ${[['sermon','Sermon Series'],['study','Book Study'],['year','Bible in One Year']].map(([id,label])=>`<button type="button" class="read-plan-button ${s.plan===id?'selected':''}" data-action="plan" data-value="${id}" aria-pressed="${s.plan===id}">${label}</button>`).join('')}
+     </div>
+     <label for="question">Sample group discussion question</label><textarea id="question" rows="3" maxlength="400">${e(s.question)}</textarea>
+     <button type="button" class="btn dark-btn" data-action="question">Save local question</button>
+     <p class="fine-note">Real publishing permissions, content review, group overrides, and licensing remain undecided.</p>
+   </section>`:''}
+   <div class="card read-prayer-card"><div>${icon('heart')}<h3>A moment to pray.</h3><p>Take a minute to pray for someone in your group.</p></div>
+     <button type="button" class="round ${s.prayed?'done':''}" aria-label="Mark prayer time" data-action="pray">${s.prayed?'✓':'↗'}</button>
+   </div>${footer()}
+ </section>`;
+}
 function footer(){return `<p class="disclaimer">RallyPoint Phase 1 · Interactive sample data only. Nothing is sent to other people, church systems, or notifications.</p>`}
 function render(){
 const view=$('view'),position=view.scrollTop;
@@ -245,6 +287,7 @@ save();
 document.querySelector('.phone-inner').classList.toggle('is-fluid-today',s.view==='today');
  document.querySelector('.phone-inner').classList.toggle('is-groups-v07',s.view==='group');
  document.querySelector('.phone-inner').classList.toggle('is-team-v08',s.view==='team');
+ document.querySelector('.phone-inner').classList.toggle('is-read-v09',s.view==='read');
  view.innerHTML=(storageWarning?`<p class="storage-notice" role="status">${e(storageWarning)}</p>`:'')+(s.view==='today'?today():s.view==='group'?group():s.view==='team'?team():read());
 view.querySelectorAll('textarea').forEach(field=>{if(drafts[field.id]!==undefined)field.value=drafts[field.id]});
 $('nav').innerHTML=[['today','Today','home'],['group','Groups','group'],['team','Team','team'],['read','Read','read']].map(([id,label,glyph])=>`<button type="button" class="${s.view===id?'active':''}" data-go="${id}" ${s.view===id?'aria-current="page"':''}>${icon(glyph)}<small>${label}</small></button>`).join('');
@@ -283,7 +326,7 @@ if(dialog==='quick-actions'){
 title='What needs your attention';body=`<p>Activity from the same local group and schedule fixtures shown on Today. No real notifications are sent.</p><div class="rp-stack">${snapshot.unread?`<button type="button" class="activity-item" data-go="group" data-pane="chat">${icon('message')}<span><strong>A group update</strong><small>Open Wednesday Group’s conversation.</small></span>${icon('arrow')}</button>`:''}${snapshot.pending?`<button type="button" class="activity-item" data-go="team" data-pane="schedule">${icon('confirm')}<span><strong>Your serving response</strong><small>Let the Welcome Team know your availability.</small></span>${icon('arrow')}</button>`:''}${snapshot.leader?`<button type="button" class="activity-item" data-go="group" data-pane="leader">${icon('leader')}<span><strong>Group leader check-ins</strong><small>${snapshot.leader.remaining.length} sample entries are awaiting review.</small></span>${icon('arrow')}</button>`:''}${!snapshot.attention&&!snapshot.leader?`<div class="today-empty">${icon('check')}<div><h3>You’re all caught up.</h3><p>Nothing needs your response in this fixture.</p></div></div>`:''}</div>`;
 }
 if(dialog==='memorize-preview'){
-title='Memorize · Phase 2 preview';body=`<p>The memorization exercise is not part of this Today-screen phase. This is a labeled preview, not a completed practice or progress record.</p><div class="phase-placeholder"><strong>John 15:12 · KJV excerpt</strong><blockquote>“This is my commandment, That ye love one another, as I have loved you.”</blockquote></div><button type="button" class="btn red" data-go="read" data-reading="scripture">Open the existing reading</button><p class="fine-note">KJV text is public domain in the United States. Translation choice and full reading-plan scope remain later-phase decisions.</p>`;
+title='Memorize · Phase 2 preview';body=`<p>The memorization exercise is not part of this Today-screen phase. This is a labeled preview, not a completed practice or progress record.</p><div class="phase-placeholder"><strong>${e(currentReading().passage)} · KJV excerpt</strong><blockquote>“${e(currentReading().excerpt)}”</blockquote></div><button type="button" class="btn red" data-go="read" data-reading="scripture">Open the existing reading</button><p class="fine-note">KJV text is public domain in the United States. Translation choice and full reading-plan scope remain later-phase decisions.</p>`;
 }
 if(dialog==='team-preview'){
 title='A place on a team';body=`<p>This fixture has no team membership or serving assignments. Team discovery and joining are later-phase work; no sign-up or request is sent here.</p><button type="button" class="btn red" data-go="today">Back to Today</button><p class="fine-note">Switch to the Connected fixture in Demo controls to try the existing schedule and team conversation.</p>`;
@@ -316,8 +359,8 @@ if(a==='attendance'&&canLead('group')){s.attendance[person]=v;render();notify('S
 if(a==='reached'&&canLead('group')){s.reached=s.reached.includes(person)?s.reached.filter(x=>x!==person):[...s.reached,person];render();return}
 if(a==='shift'){s.teamStatus=v;if(v==='confirmed'){s.coverage=false;s.teamMessages=s.teamMessages.filter(x=>!x.coverage)}render();notify('Sample serving response saved');return}
 if(a==='cover'){s.coverage=!s.coverage;s.teamMessages=s.teamMessages.filter(x=>!x.coverage);if(s.coverage)s.teamMessages.push({name:'You',time:'Just now',text:'Could someone cover my Sunday 9:00 AM shift?',coverage:true});render();notify(s.coverage?'Sample coverage request posted':'Sample request withdrawn');return}
-if(a==='plan'&&canLead('group')){s.plan=v;render();return}
-if(a==='question'&&canLead('group')){const txt=$('question')?.value.trim();if(!txt){notify('Enter a question first');return}s.question=txt;render();notify('Sample group question updated');return}
+if(a==='plan'&&canLead('group')&&readingLibrary[v]){s.planQuestions[s.plan]=s.question;s.plan=v;s.question=s.planQuestions[v]||readingLibrary[v].question;render();notify('Sample reading pathway selected locally');return}
+if(a==='question'&&canLead('group')){const txt=$('question')?.value.trim();if(!txt){notify('Enter a question first');return}s.question=txt;s.planQuestions[s.plan]=txt;render();notify('Sample group question updated locally');return}
 if(a==='read'){s.read=!s.read;render();return}
 if(a==='pray'){s.prayed=!s.prayed;render();return}
 });
