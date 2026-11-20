@@ -53,3 +53,11 @@ npm run dev
 Open `http://localhost:8000/?welcome=1`. Browser checks use `/usr/bin/chromium` by default; set `BROWSER_PATH` if needed. Set `PREVIEW_URL` to run the same checks against a deployed preview. Reports and actual 390×844 screenshots are written to `test-results/onboarding-v2/` (not committed automatically).
 
 The static Netlify configuration remains `npm run build` → `dist`. Pushing this branch updates the existing PR #19 Deploy Preview; do not merge or deploy production. Review the [implementation report and screenshot comparison](onboarding-v2/README.md) before approval.
+
+## Spotify playlist shortcut
+
+A small, monochrome Spotify mark in the top-right header opens the supplied playlist: `https://open.spotify.com/playlist/5ngORzvZN0m5cfegSfzAH2`. It is available on Today, Groups, Team, Read, Welcome, and the subsequent onboarding screens. The brief splash retains its opening animation; the shortcut appears with Welcome.
+
+The visible glyph is 24px with a 44px touch target and an accessible label announcing the new tab. A standard HTTPS link lets the device handle Spotify or browser opening. No embedded player, autoplay, Spotify account connection, or change to saved app data. The glyph is bundled locally from Simple Icons (`https://cdn.simpleicons.org/spotify/FFFFFF`), and onboarding reuses the main header link so its destination has one source of truth.
+
+The v2 screenshots in `docs/onboarding-v2/` document the approved onboarding implementation before this small header addition.
