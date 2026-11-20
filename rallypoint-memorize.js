@@ -70,10 +70,11 @@
    const c=challenge(id);
    return c.bank.slice().sort((a,b)=>hash(id+':'+String(round)+':'+a.id)-hash(id+':'+String(round)+':'+b.id));
  }
- function pick(raw,id,token){
+ function pick(raw,id,token,target){
    const g=normalize(raw,id),c=challenge(id);
    if(g.solved||!c.bank.some(b=>b.id===token)||g.slots.includes(token))return g;
-   const slot=g.slots.indexOf(null);if(slot<0)return g;
+   const slot=Number.isInteger(target)&&target>=0&&target<g.slots.length&&g.slots[target]===null?target:g.slots.indexOf(null);
+   if(slot<0)return g;
    g.slots[slot]=token;g.feedback='';
    return g;
  }
