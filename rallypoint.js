@@ -7,13 +7,13 @@ if(!s||!s.groupMessages||!Array.isArray(s.groupMessages))s=defaults();
  if(!s.directMessages||typeof s.directMessages!=='object'||Array.isArray(s.directMessages))s.directMessages={};
  if(!s.planQuestions||typeof s.planQuestions!=='object'||Array.isArray(s.planQuestions))s.planQuestions={};
 if(!s.memoryGames||typeof s.memoryGames!=='object'||Array.isArray(s.memoryGames))s.memoryGames={};
-// Old KJV rounds cannot be carried into a new translation: preserve all other demo data.
-if(s.memoryTextRevision!==M.textRevision){s.memoryGames={};s.memoryTextRevision=M.textRevision;s.memoryTarget=null;}
 if(!['solo','pass'].includes(s.memoryMode))s.memoryMode='solo';
 if(!['sermon','study','year','romans'].includes(s.memoryActive))s.memoryActive=null;
 if(![1,2].includes(s.memoryPassTurn))s.memoryPassTurn=1;
 if(!Number.isInteger(s.memoryTarget)||s.memoryTarget<0||s.memoryTarget>4)s.memoryTarget=null;
 const T=window.RallyToday,U=window.RallyUI,M=window.RallyMemory,VP=window.RallyVersePlay,icon=U.icon;
+// Old KJV rounds cannot be carried into a new translation: preserve all other demo data.
+if(s.memoryTextRevision!==M.textRevision){s.memoryGames={};s.memoryTextRevision=M.textRevision;s.memoryTarget=null;}
 let todayUI=T.load({getItem:k=>localStorage.getItem(k)}),dialog=null,dialogTrigger=null,storageWarning='',drafts={};
 const $=x=>document.getElementById(x), e=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const save=()=>{try{localStorage.setItem(key,JSON.stringify(s));localStorage.setItem(T.UI_KEY,JSON.stringify(todayUI));storageWarning='';}catch(_){storageWarning='This browser could not save your demo changes. They may be lost on refresh.';}};
