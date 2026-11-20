@@ -6,7 +6,7 @@
 **Status:** Working product + design baseline for prototype development; not a final implementation contract  
 **Working name:** Rally Point (subject to church approval)  
 **Primary platform:** Mobile-first app experience  
-**Source of truth:** This file, the image references in `docs/assets/`, and the subsequent companion-architecture decision in `docs/COMPANION_ARCHITECTURE_DECISION.md` (D-10, November 20, 2026)
+**Source of truth:** This file, the image references in `docs/assets/`, `docs/COMPANION_ARCHITECTURE_DECISION.md` (D-10), and `docs/PALETTE_V2_COLOR_ONLY.md` (D-11, November 20, 2026)
 
 > **North star:** Opening Rally Point should feel like walking into a place where people are genuinely glad you're there. The interface helps people know what matters today, connect with their community, serve, and grow.
 
@@ -173,7 +173,9 @@ RALLY POINT
 - **Purposeful third:** next actions are instantly recognizable.
 - **Warm Editorial:** premium, tactile, designed, highly legible; a distinctive product rather than a template.
 
-### 5.2 Starter color tokens — provisional implementation values
+### 5.2 Palette v2 — color-only refinement (D-11, November 20, 2026)
+
+**Approved correction:** Remove orange/terracotta/rust *accents* only. Retain the approved current app composition, warm textured nonwhite cream background, dark charcoal navigation, vivid Citizen red, defined borders, shadows, typography, imagery geometry, icons and layout. **Absolutely no whitewashing or generic redesign.** `docs/PALETTE_V2_COLOR_ONLY.md` is the binding detailed change specification, selector audit and acceptance test. Existing warm parchment/beige neutrals are not orange accents and should remain.
 
 These values serve as a usable starting system. **Only the Citizen red is sampled from the uploaded logo image; verify against original official brand assets before production.** Supporting colors are proposals informed by the approved visual direction, not official Citizen Church brand colors.
 
@@ -184,12 +186,12 @@ These values serve as a usable starting system. **Only the Citizen red is sample
 | `surface.cream` | `#F3E5D6` | Main warm canvas; avoid flat pure white everywhere |
 | `surface.parchment` | `#E9D5C1` | Secondary cards/surfaces |
 | `surface.pale` | `#FCF7F0` | Limited light surfaces where clarity is needed |
-| `accent.terracotta` | `#BF5B45` | Editorial accents, decorative blocks, supporting emphasis |
+| `accent.terracotta` | **Retired / prohibited for accent use** | Replace only orange/rust/terracotta accent colors with existing Citizen red or charcoal, depending on surface size and contrast. Keep original graphic and component geometry. |
 | `accent.sage` | `#5E7065` | Selective counterbalance, especially reading/community treatments |
 | `line.defined` | `#C5AA94` | Noticeable borders against cream surfaces |
 | `text.muted` | `#665E56` | Secondary metadata with accessible contrast checks |
 
-**Color usage:** Cream as the broad canvas, charcoal as the structural counterweight, real Citizen red as selective emphasis, terracotta/sage as supporting accents. Resist both “all white cards” and “red everywhere.” Dark cards should have a clear purpose.
+**Color usage (D-11):** Keep cream as the broad **nonwhite textured canvas**, charcoal as the structural counterweight, real Citizen red as selective emphasis, and the existing sparing sage where currently used. **Orange/terracotta/rust accents are removed.** Large former orange panels usually become charcoal; small orange highlights may use Citizen red. Do not desaturate the entire UI, replace warm neutrals with white/gray, change borders/texture, or flatten existing cards. Resist both “all white cards” and “red everywhere.” Dark cards should have a clear purpose.
 
 ### 5.3 Component language
 
@@ -376,6 +378,7 @@ Preview only; do not merge or deploy production without approval.
 | D-08 | Flagging, attendance definitions, reading-control scope | Open requirements |
 | D-09 | Giving and broader ministry functions deferred | Deferred |
 | D-10 | Build Rally Point as a distinct companion to existing church systems; selective, authorized Planning Center integration rather than duplicated records | Locked direction; details in `docs/COMPANION_ARCHITECTURE_DECISION.md` |
+| D-11 | Palette v2: remove orange/rust/terracotta accents only; retain approved Warm Editorial composition, nonwhite cream, charcoal, exact Citizen red, high-contrast borders, textures and UI behavior | Locked direction; details in `docs/PALETTE_V2_COLOR_ONLY.md` |
 
 ## 12. Codex handoff — Phase 1 implementation brief
 
