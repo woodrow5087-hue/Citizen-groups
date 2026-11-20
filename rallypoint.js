@@ -16,7 +16,7 @@ const icons={home:'⌂',group:'♙',team:'♡',read:'▤',arrow:'↗'};
 const sampleGroupPeople=[{id:'anna',name:'Anna L.',initials:'AL'},{id:'jess',name:'Jess W.',initials:'JW'},{id:'marcus',name:'Marcus C.',initials:'MC'},{id:'taylor',name:'Taylor D.',initials:'TD'}];
  if(!sampleGroupPeople.some(p=>p.id===s.directPerson))s.directPerson='anna';
 const readingLibrary={
- sermon:{name:'Sermon Series',title:'Words of Jesus',passage:'John 15:12',excerpt:'This is my commandment, That ye love one another, as I have loved you.',question:'How can we love one another as Jesus has loved us?',description:'A sample series-linked reading from John'},
+ sermon:{name:'Sermon Series',title:'Words of Jesus',passage:'John 15:9–12',excerpt:'This is my commandment, That ye love one another, as I have loved you.',question:'How can we love one another as Jesus has loved us?',description:'A sample series-linked reading from John'},
  study:{name:'Approved Book Study',title:'The Book of James',passage:'James 1:22',excerpt:'But be ye doers of the word, and not hearers only, deceiving your own selves.',question:'What is one way to put what you read into practice this week?',description:'A sample Scripture focus from James'},
  year:{name:'Bible in One Year',title:'Daily Bible Reading',passage:'Psalm 23:1',excerpt:'The LORD is my shepherd; I shall not want.',question:'How does this passage speak to the care and guidance you need?',description:'Illustrative daily passage, not a licensed Bible reading calendar'}
 };
