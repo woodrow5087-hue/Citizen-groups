@@ -1,32 +1,86 @@
-# Citizen Connect — Daily Rhythm (unofficial concept)
+# Citizen Connect — Premium Hybrid, Warm Parchment Edition
 
-A clickable mobile-first front-end prototype inspired by BuddyCheck's daily Scripture/accountability workflow, styled using the earlier Citizen Groups visual design reference. This is **not an official app** or an endorsed project from Citizen Church or BuddyCheck.
+The current preview is the self-contained `index.html` on
+`feature/premium-hybrid-v1-demo`. Its five screens, embedded branding/photography,
+inline application logic, and localStorage behavior remain the Premium Hybrid
+demo. This refinement adds a color skin, with no layout or interaction redesign.
+No mountain imagery has been added.
 
-## Deploy to Netlify
+## Palette
 
-The GitHub-connected Netlify site serves the project root. Include the `assets/` directory alongside `index.html`, `styles.css`, and `app.js`. No build command is needed.
+| Element | Color |
+| --- | --- |
+| Parchment center | `#FFF4D6` |
+| Parchment edges | `#FFEDC5` |
+| Primary ivory cards and navigation | `#FFFCF5` |
+| Secondary cards | `#FFF6E2` |
+| Card borders | `#EADDBF` |
+| Main text | `#242329` |
+| Muted text | `#686157` |
+| Approved red, unchanged | `#e6002f` |
 
-## Try the interactions
+A broad two-stop radial gradient sits behind every screen. Cards use matte ivory
+surfaces and restrained warm shadows. Red remains in the header, selected states,
+Scripture references, progress fills and meaningful actions. Conversations and
+weekly progress use ivory cards; serving information is warm white over the
+existing photo. Charcoal is used for text and small contrast elements.
 
-- Today: tap Read, Share, Memorize, and Pray. Completed activities update Today's progress.
-- Grow / Read: scroll the KJV reading and tap Mark reading complete.
-- Grow / Share: enter a reflection and save it; see it in the local Group feed.
-- Grow / Memorize: select five word chips in the right order, remove an incorrect choice by tapping the blank, and Check Answer.
-- Grow / Pray: acknowledge prayers, optionally write a request, and finish prayer time.
-- Groups: try Celebrate/Nudge, feed reactions, and the sample meeting RSVP.
-- You: explore sample achievements, history, stats and Reset.
+Red text is placed on primary ivory (4.65:1), rather than the darker secondary
+paper (4.43:1). Active rhythm labels stay charcoal, with red icons/borders. Main
+and muted text meet normal-text contrast against both parchment stops and cards.
+Focus outlines use red on paper and ivory in the red header.
 
-## Technical details
+## Run and verify
 
-Plain HTML, CSS and JavaScript, with no external libraries or API requests. Your own inputs and completion state are persisted in **localStorage**, scoped to the browser/device. Daily habits, memory practice, prayer acknowledgments and encouragement reset at local midnight. Returning to the app also checks the date. Saved reflections stay in the local group feed by date. The current prayer request, unfinished prayer draft, feed reactions and meeting RSVP persist across days. Finishing prayer saves the draft as the current request. Confirming the demo reset clears all local demo data. Existing v1 data is migrated when the app opens. Historical metrics and buddies are illustrative sample content. No other users can access what you enter. The prototype does not send notifications or connect to Church Center.
+No build command, backend, credentials or environment variables are required.
+Netlify continues to publish the project root with the existing settings.
 
-## Run and test
+```sh
+python3 -m http.server 8000
+npm ci
+npm test
+```
 
-Serve this directory with `python3 -m http.server 8000`, then open `http://localhost:8000`.
-For development tests, use Node 22.12 or later and run `npm ci` followed by
-`npm test`. The tests drive the app's controls in jsdom with a simulated local
-clock. Test dependencies are never loaded by the web app.
+Open http://localhost:8000. The test suite includes current inline Premium Hybrid
+flows and the retained legacy `app.js` regressions. The legacy test fixture is
+isolated because its DOM IDs differ from the standalone preview. No legacy
+application code was changed or substituted into the current demo.
 
-## Production roadmap
+The only non-color application edit corrects the existing Serve photo wrapper
+from `role="img"` to `role="group"`, so its nested Join button remains available
+to assistive technology. Markup structure, image data, sizing, text and event
+handlers are otherwise preserved.
 
-A real implementation will need authentication, member/group roles, private-by-default prayer permissions, backend database and APIs, user-controlled invitations, content management, real streak logic and time zones, push notifications with frequency/consent settings, and church-approved branding/assets.
+## Demo privacy
+
+People, group posts, stats and opportunities are fictional. Reading completion,
+reflections, memory practice, prayer acknowledgments/notes, RSVP, encouragement,
+reactions and serving commitments save locally under the existing
+`citizen-premium-hybrid-demo-v1` key. Nothing is sent to another person or server.
+No data migration, reset, real authentication or database has been introduced.
+
+A preview URL is a separate browser storage origin; use the same preview URL to
+retain existing activity. This change leaves stored data intact.
+
+[Warm Parchment verification](PARCHMENT-VALIDATION.md).
+
+Citizen branding remains provisional pending church approval. This branch is
+for review only; no merge into main or production publish is authorized.
+
+## Branded intro
+
+A short Citizen-red intro appears once per tab session, with the existing flag
+and wordmark arranged vertically. It automatically reveals Today after one
+second with a 180ms fade. Tap anywhere, press Enter/Space, or Escape to skip.
+Reduced-motion preference removes the fade and the underlying view entrance
+animation. The intro scales to the existing phone frame and mobile safe areas.
+
+Only `sessionStorage['citizen-connect-intro-seen-v1']` records dismissal. Demo
+localStorage, completion state and all existing navigation stay independent.
+Reloading the same tab skips the intro; a fresh tab session shows it again. If
+session storage is blocked, dismissal still works for the current visit.
+
+The intro is a separate bootstrap; the existing inline app script is unchanged.
+While visible, the covered app is hidden and inert. Keyboard skipping moves focus
+to the main content, and the browser theme color is restored after dismissal.
+There is no simulated loading progress, account check or backend request.
