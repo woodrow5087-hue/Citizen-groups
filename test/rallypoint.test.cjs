@@ -139,6 +139,37 @@ test('existing messages, prayer posts, RSVP, team coverage and reading remain fu
  app.go('team');app.click('[data-action="shift"][data-value="declined"]');app.action('cover');assert.equal(app.saved().coverage,true);app.click('[data-area="team"][data-value="chat"]');app.type('team-input','A local team note.');app.click('[data-action="send"][data-value="team"]');
  app.go('read');app.action('read');app.action('pray');const saved=app.saved();const again=open(t,{saved,ui:app.ui()});assert.deepEqual(again.saved(),saved);assert.ok(saved.groupMessages.some(m=>m.text==='A local group thought.'));assert.ok(saved.prayers.some(m=>m.text==='A fictional prayer.'));assert.ok(saved.teamMessages.some(m=>m.text==='A local team note.'));assert.equal(saved.rsvp,'going');assert.equal(saved.read,true);assert.equal(saved.prayed,true);
 });
+test('Groups People directory opens scoped one-to-one local messaging and persists it',t=>{
+ const app=open(t);app.go('group');
+ app.click('[data-action="pane"][data-area="group"][data-value="people"]');
+ assert.equal(app.d.querySelectorAll('.group-member-row').length,4);
+ assert.match(app.d.querySelector('.group-people-card').textContent,/No messages leave your device/);
+ app.click('[data-action="message-person"][data-person="anna"]');
+ assert.equal(app.saved().groupPane,'direct');
+ assert.match(app.text(),/Anna L\./);
+ app.type('direct-input','I appreciate your encouragement this week.');
+ app.click('[data-action="send"][data-value="direct"]');
+ assert.deepEqual(app.saved().directMessages.anna.map(x=>x.text),['I appreciate your encouragement this week.']);
+ assert.match(app.d.querySelector('.group-direct-bubble').textContent,/I appreciate your encouragement/);
+ app.go('today');app.go('group');
+ assert.match(app.text(),/I appreciate your encouragement/);
+ const reloaded=open(t,{saved:app.saved(),ui:app.ui()});
+ assert.match(reloaded.text(),/I appreciate your encouragement/);
+ assert.equal(reloaded.saved().directMessages.anna.length,1);
+});
+test('Groups direct messaging escapes text and offers no real delivery without membership',t=>{
+ const app=open(t);app.go('group');
+ app.click('[data-action="pane"][data-area="group"][data-value="people"]');
+ app.click('[data-action="message-person"][data-person="jess"]');
+ app.type('direct-input','<img src=x onerror=alert(1)>');
+ app.click('[data-action="send"][data-value="direct"]');
+ assert.equal(app.d.querySelector('.group-direct-bubble img'),null);
+ assert.equal(app.d.querySelector('.group-direct-bubble').textContent.includes('<img src=x onerror=alert(1)>'),true);
+ app.action('demo-controls');app.click('[data-action="scenario"][data-value="no-memberships"]');
+ app.go('group');
+ assert.equal(app.d.querySelector('[data-action="message-person"]'),null);
+ assert.equal(app.d.querySelector('.group-direct'),null);
+});
 test('leader tools remain contextual, are denied to members and disappear when check-ins are reviewed',t=>{
  const app=open(t);app.action('demo-controls');app.click('#role');app.action('close-dialog');assert.ok(app.d.querySelector('.leader-entry'));app.click('.leader-entry');assert.equal(app.saved().groupPane,'leader');
  for(const id of ['marcus','taylor'])app.click('[data-action="reached"][data-person="'+id+'"]');app.go('today');assert.equal(app.d.querySelector('.leader-entry'),null);
