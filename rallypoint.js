@@ -1,12 +1,14 @@
 (function rallyApp(){
 'use strict';
 const key='rallypoint-phase1-2026';
-const defaults=()=>({role:'member',groupPane:'chat',directPerson:'anna',directMessages:{},teamPane:'schedule',view:'today',discover:false,groupMessages:[{name:'Jess W.',time:'Yesterday',text:'What stood out to you in John 15 this week?'},{name:'Anna L.',time:'Today',text:'Looking forward to seeing everyone Wednesday.'}],teamMessages:[{name:'Sam R.',time:'Yesterday',text:'Welcome team — thank you for helping people feel at home!'}],prayers:[{name:'Marcus C.',time:'Yesterday',text:'Praying for wisdom with an upcoming decision.'}],rsvp:'',teamStatus:'pending',coverage:false,attendance:{anna:'here',jess:'here',marcus:'unknown',taylor:'unknown'},reached:[],interest:[],plan:'sermon',planQuestions:{},memoryGames:{},memoryMode:'solo',memoryActive:null,memoryPassTurn:1,memoryTarget:null,question:'How can we love one another as Jesus has loved us?',read:false,prayed:false});
+const defaults=()=>({role:'member',groupPane:'chat',directPerson:'anna',directMessages:{},teamPane:'schedule',view:'today',discover:false,groupMessages:[{name:'Jess W.',time:'Yesterday',text:'What stood out to you in John 15 this week?'},{name:'Anna L.',time:'Today',text:'Looking forward to seeing everyone Wednesday.'}],teamMessages:[{name:'Sam R.',time:'Yesterday',text:'Welcome team — thank you for helping people feel at home!'}],prayers:[{name:'Marcus C.',time:'Yesterday',text:'Praying for wisdom with an upcoming decision.'}],rsvp:'',teamStatus:'pending',coverage:false,attendance:{anna:'here',jess:'here',marcus:'unknown',taylor:'unknown'},reached:[],interest:[],plan:'sermon',planQuestions:{},memoryTextRevision:'BSB-2026-1',memoryGames:{},memoryMode:'solo',memoryActive:null,memoryPassTurn:1,memoryTarget:null,question:'How can we love one another as Jesus has loved us?',read:false,prayed:false});
 let s;try{s={...defaults(),...JSON.parse(localStorage.getItem(key)||'null')}}catch(_){s=defaults()}
 if(!s||!s.groupMessages||!Array.isArray(s.groupMessages))s=defaults();
  if(!s.directMessages||typeof s.directMessages!=='object'||Array.isArray(s.directMessages))s.directMessages={};
  if(!s.planQuestions||typeof s.planQuestions!=='object'||Array.isArray(s.planQuestions))s.planQuestions={};
 if(!s.memoryGames||typeof s.memoryGames!=='object'||Array.isArray(s.memoryGames))s.memoryGames={};
+// Old KJV rounds cannot be carried into a new translation: preserve all other demo data.
+if(s.memoryTextRevision!==M.textRevision){s.memoryGames={};s.memoryTextRevision=M.textRevision;s.memoryTarget=null;}
 if(!['solo','pass'].includes(s.memoryMode))s.memoryMode='solo';
 if(!['sermon','study','year','romans'].includes(s.memoryActive))s.memoryActive=null;
 if(![1,2].includes(s.memoryPassTurn))s.memoryPassTurn=1;
@@ -21,9 +23,9 @@ const icons={home:'⌂',group:'♙',team:'♡',read:'▤',arrow:'↗'};
 const sampleGroupPeople=[{id:'anna',name:'Anna L.',initials:'AL'},{id:'jess',name:'Jess W.',initials:'JW'},{id:'marcus',name:'Marcus C.',initials:'MC'},{id:'taylor',name:'Taylor D.',initials:'TD'}];
  if(!sampleGroupPeople.some(p=>p.id===s.directPerson))s.directPerson='anna';
 const readingLibrary={
- sermon:{name:'Sermon Series',title:'Words of Jesus',passage:'John 15:9–12',excerpt:'This is my commandment, That ye love one another, as I have loved you.',question:'How can we love one another as Jesus has loved us?',description:'A sample series-linked reading from John'},
- study:{name:'Approved Book Study',title:'The Book of James',passage:'James 1:22',excerpt:'But be ye doers of the word, and not hearers only, deceiving your own selves.',question:'What is one way to put what you read into practice this week?',description:'A sample Scripture focus from James'},
- year:{name:'Bible in One Year',title:'Daily Bible Reading',passage:'Psalm 23:1',excerpt:'The LORD is my shepherd; I shall not want.',question:'How does this passage speak to the care and guidance you need?',description:'Illustrative daily passage, not a licensed Bible reading calendar'}
+ sermon:{name:'Sermon Series',title:'Words of Jesus',passage:'John 15:12',excerpt:'This is My commandment, that you love one another as I have loved you.',question:'How can we love one another as Jesus has loved us?',description:'A sample series-linked reading from John'},
+ study:{name:'Approved Book Study',title:'The Book of James',passage:'James 1:22',excerpt:'Be doers of the word, and not hearers only. Otherwise, you are deceiving yourselves.',question:'What is one way to put what you read into practice this week?',description:'A sample Scripture focus from James'},
+ year:{name:'Bible in One Year',title:'Daily Bible Reading',passage:'Psalm 23:1–2',excerpt:'The LORD is my shepherd; I shall not want. He makes me lie down in green pastures; He leads me beside quiet waters.',question:'How does this passage speak to the care and guidance you need?',description:'Illustrative daily passage, not a licensed Bible reading calendar'}
 };
 const currentReading=()=>readingLibrary[s.plan]||readingLibrary.sermon;
 const next=d=>T.nextEvent(d,d===3?18:9,d===3?30:0).toLocaleDateString('en-US',{weekday:'long',month:'short',day:'numeric'});
@@ -304,10 +306,10 @@ function read(){
      <h2>${e(plan.name)}</h2><p>${e(plan.title)}</p><div class="read-focus-detail"><strong>${e(plan.passage)}</strong><small>${e(plan.description)}</small></div>
    </div>
    <section class="card read-scripture-card" id="reading-scripture" tabindex="-1">
-     <div class="read-section-label">${icon('read')} <span>SCRIPTURE · KJV</span><i></i></div>
+     <div class="read-section-label">${icon('read')} <span>SCRIPTURE · BSB</span><i></i></div>
      <h2>${e(plan.passage)}</h2><blockquote>“${e(plan.excerpt)}”</blockquote>
      <button type="button" class="btn ${s.read?'chosen':'red'}" data-action="read">${s.read?'✓ Read today':'Mark as read'}</button>
-     <p class="fine-note">Public-domain KJV excerpt · Illustrative passage, not an assigned reading calendar.</p>
+     <p class="fine-note">Public-domain Berean Standard Bible excerpt · Illustrative passage, not an assigned reading calendar.</p>
    </section>
    <section class="card read-question-card" id="reading-questions" tabindex="-1">
      <div class="read-section-label">${icon('message')} <span>REFLECT TOGETHER</span><i></i></div>
@@ -379,7 +381,7 @@ if(dialog==='quick-actions'){
 title='What needs your attention';body=`<p>Activity from the same local group and schedule fixtures shown on Today. No real notifications are sent.</p><div class="rp-stack">${snapshot.unread?`<button type="button" class="activity-item" data-go="group" data-pane="chat">${icon('message')}<span><strong>A group update</strong><small>Open Wednesday Group’s conversation.</small></span>${icon('arrow')}</button>`:''}${snapshot.pending?`<button type="button" class="activity-item" data-go="team" data-pane="schedule">${icon('confirm')}<span><strong>Your serving response</strong><small>Let the Welcome Team know your availability.</small></span>${icon('arrow')}</button>`:''}${snapshot.leader?`<button type="button" class="activity-item" data-go="group" data-pane="leader">${icon('leader')}<span><strong>Group leader check-ins</strong><small>${snapshot.leader.remaining.length} sample entries are awaiting review.</small></span>${icon('arrow')}</button>`:''}${!snapshot.attention&&!snapshot.leader?`<div class="today-empty">${icon('check')}<div><h3>You’re all caught up.</h3><p>Nothing needs your response in this fixture.</p></div></div>`:''}</div>`;
 }
 if(dialog==='memorize-preview'){
-title='Memorize · Phase 2 preview';body=`<p>The memorization exercise is not part of this Today-screen phase. This is a labeled preview, not a completed practice or progress record.</p><div class="phase-placeholder"><strong>${e(currentReading().passage)} · KJV excerpt</strong><blockquote>“${e(currentReading().excerpt)}”</blockquote></div><button type="button" class="btn red" data-go="read" data-reading="scripture">Open the existing reading</button><p class="fine-note">KJV text is public domain in the United States. Translation choice and full reading-plan scope remain later-phase decisions.</p>`;
+title='Memorize · Phase 2 preview';body=`<p>The memorization exercise is not part of this Today-screen phase. This is a labeled preview, not a completed practice or progress record.</p><div class="phase-placeholder"><strong>${e(currentReading().passage)} · BSB excerpt</strong><blockquote>“${e(currentReading().excerpt)}”</blockquote></div><button type="button" class="btn red" data-go="read" data-reading="scripture">Open the existing reading</button><p class="fine-note">KJV text is public domain in the United States. Translation choice and full reading-plan scope remain later-phase decisions.</p>`;
 }
 if(dialog==='team-preview'){
 title='A place on a team';body=`<p>This fixture has no team membership or serving assignments. Team discovery and joining are later-phase work; no sign-up or request is sent here.</p><button type="button" class="btn red" data-go="today">Back to Today</button><p class="fine-note">Switch to the Connected fixture in Demo controls to try the existing schedule and team conversation.</p>`;
