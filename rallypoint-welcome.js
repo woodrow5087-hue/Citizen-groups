@@ -25,11 +25,11 @@
     try{sessionStorage.setItem(SESSION_KEY,'entered');}catch{}
     const next=new URL(location.href);next.searchParams.delete('welcome');history.replaceState(null,'',next.pathname+next.search+next.hash);
     gateway.classList.add('rp-gateway--exiting');
-    setTimeout(()=>{gateway.hidden=true;setAppInert(false);document.body.classList.remove('rp-welcome-active');if(theme)theme.content='#F3E5D6';document.title='Rally Point — Today · Demo';document.querySelector('.brand-home')?.click();document.getElementById('view')?.focus({preventScroll:true});},reduced?0:240);
+    setTimeout(()=>{gateway.hidden=true;setAppInert(false);document.body.classList.remove('rp-welcome-active');if(theme)theme.content='#E3002B';document.title='Rally Point — Today · Demo';document.querySelector('.brand-home')?.click();document.getElementById('view')?.focus({preventScroll:true});},reduced?0:240);
   }
   function begin(){
     let entered=false;try{entered=sessionStorage.getItem(SESSION_KEY)==='entered';}catch{}
-    if(params.get('skipWelcome')==='1'||(entered&&params.get('welcome')!=='1')){gateway.hidden=true;if(theme)theme.content='#F3E5D6';return;}
+    if(params.get('skipWelcome')==='1'||(entered&&params.get('welcome')!=='1')){gateway.hidden=true;if(theme)theme.content='#E3002B';return;}
     themeEntry();document.title='Rally Point — Welcome · Demo';actions.inert=true;gateway.dataset.screen='splash';
     const ready=()=>{gateway.classList.add('rp-gateway--ready');gateway.dataset.screen='welcome';actions.inert=false;};
     if(reduced){gateway.classList.add('rp-gateway--reveal');ready();return;}
