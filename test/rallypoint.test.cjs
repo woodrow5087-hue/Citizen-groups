@@ -100,7 +100,7 @@ test('Your People adapts to authorized leaders and group discovery without inven
 test('Your People safely escapes local conversation preview content',t=>{
  const app=open(t,{saved:{groupMessages:[{name:'<img src=x>',time:'Today',text:'<script>not markup</script>'}]}});
  const preview=app.d.querySelector('.today-people-message');
- assert.match(preview.textContent,/<script>not markup<\\/script>/);
+ assert.equal(preview.textContent.includes('<script>not markup</script>'),true);
  assert.equal(preview.querySelector('script'),null);
  assert.equal(preview.querySelector('img'),null);
 });
