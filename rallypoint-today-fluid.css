@@ -380,3 +380,234 @@
 @media(prefers-reduced-motion:reduce){
   .is-fluid-today *,.is-fluid-today *::before,.is-fluid-today *::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
 }
+
+/* v0.5: Your People — relational layer grounded in existing sample fixtures.
+   No stock portraits: initials represent the exact fictional group roster. */
+.is-fluid-today .today-people{
+  position:relative;
+  isolation:isolate;
+  margin:22px 15px 0;
+  padding:21px 18px 18px;
+  overflow:hidden;
+  border-radius:33px 45px 29px 37px;
+  border:1.5px solid #FF8FA5;
+  color:#FFFFFF;
+  background:#E3002B;
+  box-shadow:0 6px 0 #171316,0 10px 20px #08060755;
+}
+.is-fluid-today .today-people::before{
+  content:"";
+  position:absolute;
+  width:300px;height:230px;right:-132px;top:-93px;
+  border-radius:43% 58% 65% 43%;
+  transform:rotate(-19deg);
+  background:#F51D48;
+  z-index:-2;
+  pointer-events:none;
+}
+.is-fluid-today .today-people::after{
+  content:"";
+  position:absolute;
+  width:420px;height:180px;left:-165px;bottom:-110px;
+  border-radius:70% 80% 0 0;
+  transform:rotate(13deg);
+  background:#CC0028;
+  opacity:.75;
+  z-index:-2;
+  pointer-events:none;
+}
+.is-fluid-today .today-people-content{position:relative;z-index:1;min-width:0}
+.is-fluid-today .today-people-kicker{
+  display:flex;align-items:center;justify-content:space-between;gap:10px;
+  color:#FFF2EB;font-size:9px;font-weight:850;letter-spacing:.19em;
+  line-height:1.4;
+}
+.is-fluid-today .today-people-kicker span:last-child{
+  color:#FFE0E2;font-size:8px;letter-spacing:.13em;text-align:right;
+}
+.is-fluid-today .today-people-heading{position:relative;margin:16px 0 20px;isolation:isolate}
+.is-fluid-today .today-people-heading h2,
+.is-fluid-today .today-people--discover h2{
+  color:#FFF9F4;
+  font-size:clamp(34px,10.3vw,43px);
+  letter-spacing:-.07em;
+  font-weight:850;
+  line-height:.98;
+  margin:0;
+  position:relative;z-index:2;
+}
+.is-fluid-today .today-people-period{color:#F3E5D6}
+.is-fluid-today .today-people-constellation{
+  position:absolute;
+  right:3px;top:-15px;
+  height:132px;width:141px;
+  border:1.2px solid #FFC9D36C;border-radius:55% 45% 48% 58%;
+  transform:rotate(-21deg);
+  box-shadow:0 0 0 14px #FFF6F70C,0 0 0 29px #FFF6F709;
+  z-index:0;pointer-events:none;
+}
+.is-fluid-today .today-people-constellation::after{
+  content:"";position:absolute;
+  left:30px;bottom:4px;width:110px;height:60px;
+  border:1px solid #FFC4D080;border-radius:100% 0 0 0;
+}
+.is-fluid-today .today-people-constellation i{
+  position:absolute;display:block;border-radius:50%;
+  width:12px;height:12px;border:2px solid #F3E5D6;
+  background:#E3002B;
+}
+.is-fluid-today .today-people-constellation i:first-child{top:7px;right:44px;width:17px;height:17px}
+.is-fluid-today .today-people-constellation i:nth-child(2){top:83px;right:10px;width:9px;height:9px}
+.is-fluid-today .today-people-constellation i:last-child{bottom:2px;left:13px;width:8px;height:8px}
+.is-fluid-today .today-people-roster{
+  display:flex;align-items:center;gap:10px;position:relative;
+  background:#B90028;
+  border:1px solid #FFB3C18C;
+  padding:11px 10px;
+  border-radius:22px 18px 27px 16px;
+  min-height:68px;
+}
+.is-fluid-today .today-people-avatars{
+  display:flex;align-items:center;flex:none;
+  padding-left:2px;max-width:128px;
+}
+.is-fluid-today .today-people-avatar{
+  width:34px;height:34px;flex:none;display:grid;place-items:center;
+  margin-left:-7px;
+  border:2px solid #F3E5D6;border-radius:50%;
+  box-shadow:0 3px 0 #6B00182B;
+  font-size:9px;font-weight:850;letter-spacing:-.035em;
+  color:#242322;background:#F3E5D6;
+}
+.is-fluid-today .today-people-avatar:first-child{margin-left:0;background:#F3E5D6}
+.is-fluid-today .today-people-avatar--2{background:#F2B4BA}
+.is-fluid-today .today-people-avatar--3{background:#DDC2A7}
+.is-fluid-today .today-people-avatar--4{background:#F6CDD4}
+.is-fluid-today .today-people-group-name{
+  display:flex;flex-direction:column;justify-content:center;
+  flex:1;min-width:0;gap:3px;
+}
+.is-fluid-today .today-people-group-name strong{
+  font-weight:850;font-size:11px;line-height:1.25;
+  white-space:normal;overflow-wrap:anywhere;
+}
+.is-fluid-today .today-people-group-name small{
+  color:#FFDBE2;font-size:8px;line-height:1.35;
+}
+.is-fluid-today .today-people-group-link{
+  width:44px;height:44px;flex:none;
+  display:grid;place-items:center;
+  background:#F3E5D6;border:1px solid #FFEFE4;
+  border-radius:15px;color:#242322;box-shadow:0 2px 0 #1A141830;
+}
+.is-fluid-today .today-people-group-link .icon{width:20px;height:20px;stroke-width:2.5}
+.is-fluid-today .today-people-message{
+  display:block;width:100%;
+  position:relative;
+  text-align:left;
+  padding:17px 18px 15px;
+  margin:13px 0 0;
+  overflow:hidden;
+  border:1.3px solid #FFEFE055;
+  border-radius:20px 28px 23px 30px;
+  background:#242322;
+  color:#F7EBDF;
+  min-height:147px;
+  box-shadow:inset 0 1px 0 #FFFFFF25,0 3px 0 #65001444;
+}
+.is-fluid-today .today-people-message::after{
+  content:"";
+  position:absolute;right:-65px;bottom:-100px;width:220px;height:140px;
+  border-radius:70% 0 0 0;
+  transform:rotate(-16deg);
+  background:#373335;
+  z-index:0;pointer-events:none;
+}
+.is-fluid-today .today-people-message>*{position:relative;z-index:1}
+.is-fluid-today .today-people-message-head{
+  display:flex;align-items:center;gap:8px;
+  font-size:8px;letter-spacing:.16em;color:#F6C8CB;
+  font-weight:850;
+}
+.is-fluid-today .today-people-message-head .icon{
+  width:17px;height:17px;stroke-width:2;color:#FFC2CC;
+}
+.is-fluid-today .today-people-message-head small{
+  margin-left:auto;color:#CDB9AE;font-size:9px;
+  letter-spacing:0;font-weight:650;
+  white-space:nowrap;
+}
+.is-fluid-today .today-people-message-author{
+  display:block;font-size:13px;line-height:1.2;
+  font-weight:850;letter-spacing:-.02em;
+  margin-top:12px;color:#FFFFFF;
+}
+.is-fluid-today .today-people-message-text{
+  display:block;
+  color:#F0DBCF;font-size:12px;line-height:1.45;
+  margin-top:4px;max-width:97%;
+  overflow-wrap:anywhere;
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
+}
+.is-fluid-today .today-people-message-action{
+  display:flex;align-items:center;gap:5px;
+  margin-top:14px;
+  font-size:9px;letter-spacing:.16em;font-weight:850;color:#F9D3D6;
+}
+.is-fluid-today .today-people-message-action .icon{width:16px;height:16px;stroke-width:2.3}
+.is-fluid-today .today-people .today-people-leader{
+  margin:12px 0 0;
+  padding:12px 14px;
+  min-height:78px;
+  background:#F3E5D6;color:#242322;
+  border:1.5px solid #FFECDD;
+  box-shadow:0 4px 0 #7B002042;
+  border-radius:18px 22px 18px 22px;
+}
+.is-fluid-today .today-people .today-people-leader>.icon{color:#E3002B}
+.is-fluid-today .today-people .today-people-leader .today-label{color:#B30027}
+.is-fluid-today .today-people .today-people-leader small{color:#65544B}
+.is-fluid-today .today-people--discover{min-height:230px}
+.is-fluid-today .today-people--discover h2{margin:20px 0 11px}
+.is-fluid-today .today-people-subtitle{
+  color:#FFF1E8;font-size:12px;line-height:1.5;
+  margin:0 0 19px;
+}
+.is-fluid-today .today-people-discover-link{
+  display:flex;align-items:center;gap:12px;width:100%;min-height:78px;
+  padding:13px;
+  border:1.5px solid #F9E5D4;
+  border-radius:23px 18px 26px 18px;
+  background:#F3E5D6;color:#242322;
+  text-align:left;
+}
+.is-fluid-today .today-people-discover-icon{
+  display:grid;place-items:center;flex:none;
+  width:40px;height:40px;background:#E3002B;border-radius:12px;color:#FFFFFF;
+}
+.is-fluid-today .today-people-discover-link>span:nth-child(2){
+  display:grid;gap:5px;flex:1;min-width:0;
+}
+.is-fluid-today .today-people-discover-link strong{
+  font-size:15px;letter-spacing:-.025em;font-weight:850;
+}
+.is-fluid-today .today-people-discover-link small{font-size:10px;color:#55473F;line-height:1.4}
+.is-fluid-today .today-people-go{
+  display:grid;place-items:center;width:38px;height:38px;
+  background:#242322;color:#FFFFFF;border-radius:50%;flex:none;
+}
+.is-fluid-today .today-people-go .icon{width:18px;height:18px}
+.is-fluid-today .today-people button:focus-visible{
+  outline:3px solid #FFFFFF;
+  outline-offset:3px;
+}
+@media(max-width:350px){
+  .is-fluid-today .today-people{margin-left:11px;margin-right:11px;padding:18px 13px 15px}
+  .is-fluid-today .today-people-avatars{max-width:104px}
+  .is-fluid-today .today-people-avatar{width:29px;height:29px;font-size:8px;margin-left:-6px}
+  .is-fluid-today .today-people-roster{gap:7px;padding:9px 8px}
+  .is-fluid-today .today-people-group-name strong{font-size:10px}
+  .is-fluid-today .today-people-group-name small{font-size:8px}
+  .is-fluid-today .today-people-message{padding:15px 13px}
+  .is-fluid-today .today-people-message-head{letter-spacing:.10em}
+}
