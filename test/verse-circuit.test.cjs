@@ -3,10 +3,11 @@ const assert = require('node:assert/strict');
 const versePlay = require('../rallypoint-memorize.js');
 const engine = require('../verse-circuit-lab/engine.js');
 
-const { PASSAGE, PHRASES, STORAGE_KEY, RECALL_LIMIT, fresh, linkOrder, reduce, load, save } = engine;
+const { PASSAGE, PHRASES, ECHO_TASKS, STORAGE_KEY, RECALL_LIMIT, fresh, linkOrder, reduce, load, save } = engine;
 const path = [0, 1, 2];
 const act = (state, type, value) => reduce(state, { type, value });
 const solve = (state, type) => path.reduce((current, id) => act(current, type, id), state);
+const recallAnswer = (state, text) => act(act(state, 'input', text), 'check');
 
 function startLink(seed) {
   return act(solve(fresh(seed), 'trace'), 'continue');
@@ -33,25 +34,32 @@ test('the circuit derives its three exact BSB phrases from the shared VersePlay 
     'This is My commandment,', 'that you love one another', 'as I have loved you.'
   ]);
   assert.equal(PHRASES.map(phrase => phrase.text).join(' '), PASSAGE.text);
+  const gaps = ['commandment', 'loved'];
+  assert.deepEqual(ECHO_TASKS[0].parts.filter(part => typeof part === 'number'), [0, 1]);
+  assert.equal(ECHO_TASKS[0].parts.map(part => typeof part === 'number' ? gaps[part] : part).join(''), PASSAGE.text);
+  assert.equal(ECHO_TASKS[1].phraseId, PHRASES.at(-1).id);
+  assert.equal(ECHO_TASKS[2].optional, true);
 });
 
 test('TRACE energizes in order and keeps study time under the player’s control', () => {
   const initial = fresh(19);
+  assert.deepEqual(initial.trace, [0]);
   assert.equal(act(initial, 'continue'), initial);
-  assert.equal(act(initial, 'trace', '0'), initial);
+  assert.equal(act(initial, 'trace', '1'), initial);
+  assert.equal(act(initial, 'trace', 0), initial);
   assert.equal(act(initial, 'link', 0), initial);
 
   const misplaced = act(initial, 'trace', 2);
-  assert.deepEqual(misplaced.trace, []);
+  assert.deepEqual(misplaced.trace, [0]);
   assert.equal(misplaced.feedback, 'trace-next');
   assert.equal(misplaced.mistake, 2);
-  const first = act(misplaced, 'trace', 0);
-  assert.deepEqual(first.trace, [0]);
-  assert.equal(first.feedback, '');
-  assert.equal(act(first, 'trace', 0), first);
-  assert.deepEqual(initial.trace, []);
+  const next = act(misplaced, 'trace', 1);
+  assert.deepEqual(next.trace, [0, 1]);
+  assert.equal(next.feedback, '');
+  assert.equal(act(next, 'trace', 1), next);
+  assert.deepEqual(initial.trace, [0]);
 
-  const traced = solve(first, 'trace');
+  const traced = act(next, 'trace', 2);
   assert.deepEqual(traced.trace, path);
   assert.equal(traced.stage, 'trace');
   assert.equal(act(traced, 'continue').stage, 'link');
@@ -68,7 +76,7 @@ test('LINK keeps correct connections on retry and describes the next relation wi
   const hinted = act(wrong, 'hint');
   assert.deepEqual(hinted.links, [0]);
   assert.equal(hinted.linkHint, true);
-  assert.equal(hinted.hints, 1);
+  assert.equal(hinted.linkHints, 1);
   assert.equal(hinted.mistake, null);
   assert.equal(act(hinted, 'hint'), hinted);
   assert.equal(act(hinted, 'link', 2).linkHint, true);
@@ -78,53 +86,98 @@ test('LINK keeps correct connections on retry and describes the next relation wi
   assert.equal(second.linkHint, false);
   const done = act(act(second, 'hint'), 'link', 2);
   assert.equal(done.stage, 'link');
-  assert.equal(done.hints, 2);
+  assert.equal(done.linkHints, 2);
   assert.equal(act(done, 'hint'), done);
-  assert.equal(act(done, 'continue').stage, 'echo');
+  const echo = act(done, 'continue');
+  assert.equal(echo.stage, 'echo');
+  assert.equal(recallAnswer(echo, 'commandment loved').echoResults.word, 'independent');
 });
 
-test('ECHO validates the concluding phrase fairly and awards independent recall only after a match', () => {
-  const study = startEcho();
-  assert.equal(study.echo, 'reveal');
-  assert.equal(act(study, 'check'), study);
-  assert.equal(act(study, 'input', 'incorrect'), study);
-  const recall = act(study, 'hide');
-  assert.equal(recall.echo, 'recall');
-  assert.equal(act(act(recall, 'input', '...'), 'check').feedback, 'recall-empty');
-  const retry = act(act(recall, 'input', 'As I have loved'), 'check');
+test('ECHO moves from typed words to the closing phrase, validating only the current answer', () => {
+  const words = startEcho();
+  assert.equal(words.echo, 'recall');
+  assert.equal(words.echoLevel, 0);
+  assert.equal(act(words, 'continue'), words);
+  assert.equal(recallAnswer(words, '...').feedback, 'recall-empty');
+  assert.equal(recallAnswer(words, 'loved commandment').feedback, 'recall-retry');
+  const wordSolved = recallAnswer(words, '  COMMANDMENT,\n loved! ');
+  assert.equal(wordSolved.echo, 'solved');
+  assert.deepEqual(wordSolved.echoResults, { word: 'independent' });
+  assert.equal(act(wordSolved, 'finish'), wordSolved);
+
+  const phrase = act(wordSolved, 'continue');
+  assert.equal(phrase.echo, 'recall');
+  assert.equal(phrase.echoLevel, 1);
+  const retry = recallAnswer(phrase, 'As I have loved');
   assert.equal(retry.stage, 'echo');
   assert.equal(retry.feedback, 'recall-retry');
   assert.equal(retry.draft, 'As I have loved');
-  const unrelated = act(act(retry, 'input', 'Love one another'), 'check');
-  assert.equal(unrelated.outcome, null);
+  assert.equal(recallAnswer(retry, 'Love one another').echoResults.phrase, undefined);
 
-  const done = act(act(retry, 'input', '  AS, I\n have  loved—YOU! '), 'check');
+  const phraseSolved = recallAnswer(retry, '  AS, I\n have  loved—YOU! ');
+  assert.deepEqual(phraseSolved.echoResults, { word: 'independent', phrase: 'independent' });
+  const done = act(phraseSolved, 'finish');
   assert.equal(done.stage, 'complete');
   assert.equal(done.outcome, 'independent');
+  assert.equal(done.echoResults.verse, undefined);
   assert.equal(done.draft, '');
   assert.equal(act(done, 'check'), done);
 });
 
-test('re-study preserves an ECHO draft, and assisted recall and skip remain distinct', () => {
-  const recall = act(startEcho(), 'hide');
-  const draft = act(recall, 'input', 'As I have');
+test('ECHO tracks hints and re-study by level, preserving the draft and separating Link hints', () => {
+  const halfway = act(act(startLink(), 'link', 0), 'hint');
+  const words = act(solve(halfway, 'link'), 'continue');
+  const hinted = act(words, 'hint');
+  assert.equal(hinted.echoHints, 1);
+  assert.equal(hinted.echoHint, true);
+  assert.equal(hinted.linkHints, 1);
+  assert.equal(act(hinted, 'hint'), hinted);
+  const wordSolved = recallAnswer(hinted, 'commandment loved');
+  assert.equal(wordSolved.echoResults.word, 'assisted');
+
+  const phrase = act(wordSolved, 'continue');
+  assert.equal(phrase.echoHint, false);
+  assert.equal(phrase.echoStudied, false);
+  const draft = act(phrase, 'input', 'As I have');
   const study = act(draft, 'reveal');
   assert.equal(study.echo, 'reveal');
   assert.equal(study.draft, 'As I have');
-  assert.equal(study.showedEcho, true);
-  assert.equal(study.hints, 1);
+  assert.equal(study.echoStudied, true);
+  assert.equal(study.echoStudies, 1);
   assert.equal(act(study, 'reveal'), study);
+  assert.equal(act(study, 'check'), study);
 
   const retry = act(study, 'hide');
   assert.equal(retry.draft, draft.draft);
-  const helped = act(act(retry, 'input', PHRASES[2].text), 'check');
-  assert.equal(helped.outcome, 'assisted');
-  assert.equal(helped.hints, 1);
+  const phraseSolved = recallAnswer(retry, PHRASES[2].text);
+  assert.equal(phraseSolved.echoResults.phrase, 'assisted');
+  const fullRecall = act(phraseSolved, 'continue');
+  assert.equal(fullRecall.echoLevel, 2);
+  assert.equal(fullRecall.echoStudied, false);
+  assert.equal(recallAnswer(fullRecall, PHRASES[2].text).feedback, 'recall-retry');
+  const final = act(recallAnswer(fullRecall, PASSAGE.text.toLowerCase()), 'continue');
+  assert.equal(final.stage, 'complete');
+  assert.equal(final.outcome, 'assisted');
+  assert.deepEqual(final.echoResults, { word: 'assisted', phrase: 'assisted', verse: 'independent' });
+});
 
-  const skipped = act(recall, 'skip');
+test('studying the ending never claims credit for a skipped task', () => {
+  const words = startEcho();
+  const wordSolved = recallAnswer(words, 'commandment loved');
+  const phrase = act(wordSolved, 'continue');
+  const skipped = act(act(phrase, 'reveal'), 'skip');
   assert.equal(skipped.stage, 'complete');
   assert.equal(skipped.outcome, 'skipped');
-  assert.equal(skipped.showedEcho, false);
+  assert.deepEqual(skipped.echoResults, { word: 'independent' });
+
+  const phraseSolved = recallAnswer(phrase, PHRASES[2].text);
+  const optional = act(phraseSolved, 'continue');
+  const bonusSkipped = act(act(act(optional, 'hint'), 'reveal'), 'finish');
+  assert.equal(bonusSkipped.stage, 'complete');
+  assert.equal(bonusSkipped.outcome, 'independent');
+  assert.equal(bonusSkipped.echoHints, 1);
+  assert.equal(bonusSkipped.echoStudies, 1);
+  assert.deepEqual(bonusSkipped.echoResults, { word: 'independent', phrase: 'independent' });
 });
 
 test('replay changes the seeded arrangement and restart clears only the current round', () => {
@@ -133,6 +186,14 @@ test('replay changes the seeded arrangement and restart clears only the current 
   const orders = new Set(path.concat(3, 4).map(seed => linkOrder(seed).join(',')));
   assert.equal(orders.size, 5);
   assert.ok(!orders.has(path.join(',')));
+  assert.deepEqual([0, 1, 2, 3, 4].map(seed => linkOrder(seed)), [[2, 0, 1], [1, 2, 0], [0, 2, 1], [2, 1, 0], [1, 0, 2]]);
+  for (const count of [2, 4, 5]) {
+    const reference = Array.from({ length: count }, (_, index) => index);
+    const shuffled = linkOrder(43, count);
+    assert.deepEqual(shuffled, linkOrder(43, count));
+    assert.notDeepEqual(shuffled, reference);
+    assert.deepEqual([...shuffled].sort((a, b) => a - b), reference);
+  }
 
   const inProgress = act(act(startLink(2), 'link', 0), 'hint');
   assert.deepEqual(act(inProgress, 'restart'), fresh(2));
@@ -151,16 +212,70 @@ test('the private key resumes progress in every stage and leaves app and archive
   const storage = makeStorage([[activeKey, '{"current":true}'], [archiveKey, '{"archived":true}']]);
   const trace = act(act(fresh(22), 'trace', 0), 'trace', 2);
   const link = act(act(startLink(22), 'link', 0), 'hint');
-  const echo = act(startEcho(22), 'hide');
-  const retry = act(act(echo, 'input', 'As I'), 'check');
+  const echo = startEcho(22);
+  const retry = recallAnswer(echo, 'command');
   const studyAgain = act(retry, 'reveal');
-  const done = act(studyAgain, 'skip');
-  for (const state of [trace, link, echo, retry, studyAgain, done]) {
+  const wordSolved = recallAnswer(act(studyAgain, 'hide'), 'commandment loved');
+  const phrase = act(wordSolved, 'continue');
+  const done = act(phrase, 'skip');
+  for (const state of [trace, link, echo, retry, studyAgain, wordSolved, phrase, done]) {
     assert.equal(save(storage, state), true);
     assert.deepEqual(load(storage, 10), state);
   }
   assert.equal(storage.getItem(activeKey), '{"current":true}');
   assert.equal(storage.getItem(archiveKey), '{"archived":true}');
+});
+
+test('v1 progress preserves its board, Echo draft, help and honest completion without awarding new tasks', () => {
+  const storage = makeStorage();
+  const v1 = {
+    reference: PASSAGE.reference, textRevision: PASSAGE.textRevision, text: PASSAGE.text,
+    seed: 22, stage: 'echo', trace: path, links: path, echo: 'recall', draft: 'as I have', hints: 3,
+    linkHint: false, showedEcho: true, outcome: null, feedback: 'recall-retry', mistake: null
+  };
+  storage.setItem(STORAGE_KEY, JSON.stringify({ ...v1, stage: 'trace', trace: [] }));
+  assert.deepEqual(load(storage).trace, [0]);
+  storage.setItem(STORAGE_KEY, JSON.stringify({ ...v1, stage: 'trace', trace: [0, 1] }));
+  assert.deepEqual(load(storage).trace, [0, 1]);
+  storage.setItem(STORAGE_KEY, JSON.stringify({ ...v1, stage: 'link', links: [0], hints: 2, linkHint: true, showedEcho: false }));
+  const oldLink = load(storage);
+  assert.equal(oldLink.stage, 'link');
+  assert.deepEqual(oldLink.links, [0]);
+  assert.equal(oldLink.linkHint, true);
+  assert.equal(oldLink.linkHints, 2);
+  storage.setItem(STORAGE_KEY, JSON.stringify(v1));
+  const migrated = load(storage);
+  assert.equal(migrated.echoLevel, 1);
+  assert.equal(migrated.echo, 'recall');
+  assert.equal(migrated.draft, v1.draft);
+  assert.equal(migrated.feedback, v1.feedback);
+  assert.equal(migrated.echoStudied, true);
+  assert.equal(migrated.echoStudies, 1);
+  assert.equal(migrated.legacyHelp, 2);
+  assert.equal(migrated.seed, v1.seed);
+  assert.deepEqual(linkOrder(migrated.seed), [0, 2, 1]);
+  assert.deepEqual(migrated.echoResults, {});
+  save(storage, migrated);
+  assert.equal(JSON.parse(storage.getItem(STORAGE_KEY)).version, 2);
+  assert.deepEqual(load(storage), migrated);
+
+  storage.setItem(STORAGE_KEY, JSON.stringify({ ...v1, echo: 'reveal', showedEcho: false }));
+  const oldStudy = load(storage);
+  assert.equal(oldStudy.echo, 'reveal');
+  assert.equal(oldStudy.echoLevel, 1);
+  assert.equal(oldStudy.linkHints, 3);
+  assert.equal(oldStudy.echoStudies, 0);
+
+  for (const outcome of ['independent', 'assisted', 'skipped']) {
+    storage.setItem(STORAGE_KEY, JSON.stringify({ ...v1, stage: 'complete', showedEcho: outcome === 'assisted', outcome }));
+    const done = load(storage);
+    assert.equal(done.stage, 'complete');
+    assert.equal(done.outcome, outcome);
+    assert.deepEqual(done.echoResults, outcome === 'skipped' ? {} : { phrase: outcome });
+    assert.equal(done.draft, '');
+    save(storage, done);
+    assert.deepEqual(load(storage), done);
+  }
 });
 
 test('storage handles unavailable, malformed, stale and impossible progress safely', () => {
