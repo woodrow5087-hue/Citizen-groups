@@ -90,8 +90,21 @@ try{
       await p.locator('.profile-avatar').click();await p.locator('[data-campus-settings]').click();await chooseCampus(p,'maui');await button(p,'next').click();
       await p.waitForFunction(()=>document.querySelector('#rp-gateway').hidden);await p.waitForLoadState('networkidle');
       assert.deepEqual((await stored(p,APP)).groupMessages,saved.groupMessages);assert.equal((await stored(p,UI)).campus,'maui');assert.deepEqual((await stored(p,UI)).memberships,{group:true,team:true});
-      const fresh=await stored(p,APP);await p.goto(welcomeUrl.toString());await p.locator('#rp-entry [data-welcome="login"]').click();await button(p,'demo').click();
-      await p.waitForFunction(()=>document.querySelector('#rp-gateway').hidden);assert.deepEqual(await stored(p,APP),{...fresh,view:'today'});
+      assert.match(await p.locator('.dashboard-campus-marker').textContent(),/YOUR CAMPUS · MAUI/);
+      // The real app's profile link replays the original splash/welcome/login,
+      // then returns to the newest dashboard without resetting stored fixtures.
+      const fresh=await stored(p,APP);
+      await p.locator('.profile-avatar').click();
+      assert.equal(await p.locator('.rp-replay-welcome').getAttribute('href'),'?welcome=1');
+      await p.locator('.rp-replay-welcome').click();
+      await p.waitForFunction(()=>document.querySelector('#rp-gateway').dataset.screen==='welcome');
+      assert.equal(await p.locator('#rp-gateway').isVisible(),true);
+      assert.match(new URL(p.url()).search,/welcome=1/);
+      await p.locator('#rp-entry [data-welcome="login"]').click();await button(p,'demo').click();
+      await p.waitForFunction(()=>document.querySelector('#rp-gateway').hidden);
+      assert.ok(await p.locator('.dashboard-v06').isVisible(),'Animated entry reaches the latest dashboard');
+      assert.match(await p.locator('.dashboard-campus-marker').textContent(),/YOUR CAMPUS · MAUI/);
+      assert.deepEqual(await stored(p,APP),{...fresh,view:'today'});
       await p.locator('.profile-avatar').click();await p.locator('[data-campus-settings]').click();assert.equal(await p.locator('#rp-gateway').isVisible(),true);await chooseCampus(p,'online');await button(p,'next').click();await p.waitForFunction(()=>document.querySelector('#rp-gateway').hidden);assert.equal((await stored(p,UI)).campus,'online');
       assert.equal(requests.filter(r=>!['GET','HEAD'].includes(r.method())).length,0,'Demo submitted credentials/data');
     }
@@ -101,6 +114,6 @@ try{
   await blocked.addInitScript(()=>Object.defineProperty(window,'localStorage',{get(){throw Error('Blocked');}}));const bp=await blocked.newPage();
   await bp.goto(welcomeUrl.toString());await enterCreate(bp);await chooseCampus(bp,'online');assert.match(await bp.locator('[role="alert"]').textContent(),/could not save/);
   await button(bp,'unsaved').click();await bp.waitForFunction(()=>document.querySelector('#rp-gateway').hidden);await blocked.close();
-  fs.writeFileSync(path.join(out,'results.json'),JSON.stringify({cases:results,checks:['Real-time splash/reveal/brand lift screenshots','Reduced motion bypasses timed reveal','WCAG A/AA axe scans on welcome, login, campus, connection, preferences','44px touch targets and no horizontal overflow','Campus selection preserves card geometry','Leader selection remains member','Both memberships, name, campus survive reload','Campus editing preserves messages and memberships','Login sample values locked; no POST or credential storage','Existing four-tab navigation','Blocked-storage fallback'],screenshots:'390×844 actual browser captures. iPhone dimensions and safe areas emulated in Chromium; physical iOS device not tested.'},null,2));
+  fs.writeFileSync(path.join(out,'results.json'),JSON.stringify({cases:results,checks:['Real-time splash/reveal/brand lift screenshots','Reduced motion bypasses timed reveal','WCAG A/AA axe scans on welcome, login, campus, connection, preferences','44px touch targets and no horizontal overflow','Campus selection preserves card geometry','Leader selection remains member','Both memberships, name, campus survive reload','Campus editing preserves messages and memberships','Login sample values locked; no POST or credential storage','Existing four-tab navigation','Replay button opens animated entry and returns to current v0.9 dashboard','Selected campus appears in Today without losing group messages','Blocked-storage fallback'],screenshots:'390×844 actual browser captures. iPhone dimensions and safe areas emulated in Chromium; physical iOS device not tested.'},null,2));
   console.log('All onboarding browser checks passed.');
 }finally{await browser.close();if(server)await new Promise(r=>server.close(r));}
