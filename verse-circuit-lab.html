@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#242322">
+  <meta name="description" content="Follow a verse from first reading to memory in this standalone Rally Point Scripture game.">
+  <title>Verse Circuit · Rally Point</title>
+  <link rel="icon" href="assets/citizen-flag.svg" type="image/svg+xml">
+  <link rel="preload" href="assets/fonts/Manrope.ttf" as="font" type="font/ttf" crossorigin>
+  <link rel="stylesheet" href="verse-circuit-lab/style.css">
+  <script src="rallypoint-memorize.js" defer></script>
+  <script src="verse-circuit-lab/engine.js" defer></script>
+  <script src="verse-circuit-lab/ui.js" defer></script>
+</head>
+<body class="vc-app">
+  <div class="vc-shell">
+    <header class="vc-header">
+      <a class="vc-brand" href="./" aria-label="Rally Point home">
+        <img src="assets/citizen-flag.svg" alt="" width="46" height="37">
+        <span>RALLY<br>POINT</span>
+      </a>
+      <div class="vc-lab">Verse Circuit<small>BY HEART LAB</small></div>
+    </header>
+    <main id="vc-game" class="vc-game">
+      <div class="vc-topline">
+        <p id="vc-reference"></p>
+        <button class="vc-reset" type="button" data-vc-action="restart">Restart round</button>
+      </div>
+      <ol class="vc-steps" id="vc-steps" role="list" aria-label="Practice stages"></ol>
+      <div data-vc-content></div>
+      <p id="vc-feedback" class="vc-feedback" role="status" aria-atomic="true"></p>
+      <div class="vc-actions" data-vc-controls></div>
+      <p id="vc-storage-notice" class="vc-storage" role="status"></p>
+      <noscript><p>Enable JavaScript to play Verse Circuit.</p></noscript>
+    </main>
+  </div>
+</body>
+</html>

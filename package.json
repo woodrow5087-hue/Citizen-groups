@@ -5,6 +5,7 @@
     "test": "node --test test/*.test.cjs",
     "build": "node scripts/build.cjs",
     "dev": "python3 -m http.server 8000",
+    "test:verse-circuit": "npm run build && node scripts/verse-circuit-browser-check.mjs",
     "test:browser": "npm run build && node scripts/phase1-browser-check.mjs",
     "test:onboarding": "npm run build && node scripts/onboarding-browser-check.mjs",
     "pilot:check": "node scripts/check-pilot-readiness.cjs"

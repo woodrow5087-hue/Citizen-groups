@@ -35,6 +35,8 @@ jobs:
         run: npm run test:browser
       - name: Run animated onboarding → dashboard integration regression
         run: npm run test:onboarding
+      - name: Run standalone Verse Circuit gameplay and accessibility checks
+        run: npm run test:verse-circuit
       - name: Save visual QA screenshots and results
         if: always()
         uses: actions/upload-artifact@v4
