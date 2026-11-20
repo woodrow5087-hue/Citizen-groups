@@ -42,9 +42,9 @@ function renderPeople(snapshot){
   const preview=lastMessage?e(lastMessage.text):'No sample messages yet. Say hello to your group.';
   return `<section class="today-people" aria-label="Your people">
     <div class="today-people-content">
-      <div class="today-people-kicker"><span>BETTER TOGETHER</span><span>${canLead('group')?'LEADER VIEW · DEMO':'YOUR COMMUNITY'}</span></div>
+      <div class="today-people-kicker"><span>YOUR PEOPLE</span><span>${canLead('group')?'LEADER VIEW · DEMO':'YOUR COMMUNITY'}</span></div>
       <div class="today-people-heading">
-        <h2>Your people<span class="today-people-period">.</span></h2>
+        <h2>Your community<span class="today-people-period">.</span></h2>
         <span class="today-people-constellation" aria-hidden="true"><i></i><i></i><i></i></span>
       </div>
       <div class="today-people-roster">
@@ -52,7 +52,7 @@ function renderPeople(snapshot){
         <div class="today-people-group-name"><strong>Wednesday Group</strong><small>8 members · Fictional community</small></div>
         <button type="button" class="today-people-group-link" data-go="group" data-pane="chat" aria-label="Open Wednesday Group">${icon('arrow')}</button>
       </div>
-      <button type="button" class="today-people-message" data-go="group" data-pane="chat" aria-label="Open Wednesday Group conversation">
+      <button type="button" class="today-people-message ${snapshot.unread?'attention-tile':''}" data-go="group" data-pane="chat" aria-label="Open Wednesday Group conversation">
         <span class="today-people-message-head">${icon('message')} <span>LATEST CONVERSATION</span><small>${timestamp}</small></span>
         <span class="today-people-message-author">${author}</span>
         <span class="today-people-message-text">${preview}</span>
@@ -63,17 +63,75 @@ function renderPeople(snapshot){
   </section>`;
 }
 function today(){
-const snapshot=T.snapshot(s,todayUI),event=snapshot.upNext;
-const title=event?.id==='group'?'Wednesday<br>Group':'Sunday<br>Welcome Team';
-const upNext=event?`<button type="button" class="up-next" data-go="${event.id}" data-pane="${event.pane}" aria-label="Up next: ${event.title}, ${T.dateLabel(event.date)}. Open ${event.id==='group'?'Groups':'My Schedule'}"><span class="today-label">UP NEXT</span><h2>${title}</h2><span class="up-next-meta"><span>${icon('calendar')}${T.dateLabel(event.date)}</span><span>${icon('pin')}${event.location}</span></span><span class="source-note">${event.kind} · DEMO</span><span class="fluid-orbit" aria-hidden="true"><b></b><i></i></span><span class="up-next-arrow">${icon('arrow')}</span></button>`:`<div class="today-empty discovery"><span class="today-label">A PLACE TO BEGIN</span><h2>There’s room<br>for you here.</h2><p>No group or team is assigned in this sample. Explore where you could connect.</p><div class="discovery-actions"><button type="button" class="btn" data-go="group">Explore Groups ${icon('arrow')}</button><button type="button" class="btn" data-go="team">Find a Team ${icon('arrow')}</button></div></div>`;
-const attention=[];
-if(snapshot.unread)attention.push(`<button type="button" class="attention-tile ${snapshot.attention===1?'full':''}" data-go="group" data-pane="chat" aria-label="Open group update and conversation">${icon('group')}<h3>Group<br>Update</h3><p>${s.prayers.length?'New notes & a prayer request':'A note from your group'}</p><span class="tile-arrow">${icon('arrow')}</span>${U.contours()}</button>`);
-if(snapshot.pending)attention.push(`<button type="button" class="attention-tile availability-action ${snapshot.attention===1?'full':''}" data-go="team" data-pane="schedule" aria-label="Confirm availability in My Schedule">${icon('confirm')}<h3>Confirm<br>Availability</h3><p>Let your team know you’re in this week</p><span class="tile-arrow">${icon('arrow')}</span>${U.contours()}</button>`);
-return `<section class="today-screen" aria-label="Today"><div class="today-welcome"><div class="fluid-hero-overline">CITIZEN CHURCH <span class="fluid-hero-rule"></span> YOUR DAY</div><h1>Good morning,<br><span>${e(todayUI.name||'Jonathan')}.</span></h1><p class="welcome-line">CONNECT <i>·</i> GROW <i>·</i> SERVE</p><span class="today-date">${new Date().toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'})}</span><span class="today-watermark" aria-hidden="true"></span><span class="welcome-graphic">${U.contours()}</span></div>${renderPeople(snapshot)}${upNext}
-${attention.length?`<div class="fluid-activity-head"><span>IN YOUR CIRCLE</span><small>YOUR NEXT STEPS</small></div><div class="attention-grid" aria-label="Needs your attention">${attention.join('')}</div>`:`<div class="today-empty">${icon('check')}<div><h3>${snapshot.leader?'Your member updates are clear.':'You’re all caught up.'}</h3><p>${todayUI.memberships.group||todayUI.memberships.team?'No group updates or serving responses need your attention.':'Your daily reading is ready whenever you are.'}</p></div></div>`}
-<div class="today-reading"><span class="fluid-read-curve" aria-hidden="true"></span><span class="today-label">TODAY’S READING</span><h2>John 15:9–12</h2><div class="reading-actions"><button type="button" class="read-primary" data-go="read" data-reading="scripture">${s.read?icon('check'):''}${s.read?'Read today':'Abide'}</button><button type="button" data-go="read" data-reading="questions">Reflect</button><button type="button" data-action="memorize-preview">Memorize</button></div>${U.leaves()}<p class="reading-caption">${todayUI.memberships.group?'Your group’s selection':'Daily Scripture'} · Fictional reading fixture</p></div>
-
-<div class="fluid-week"><div class="fluid-week-heading"><span>THIS WEEK</span><small>YOUR RHYTHM</small></div><div class="fluid-week-events">${todayUI.memberships.group?`<button type="button" data-go="group" data-pane="gather"><span class="fluid-event-dot"></span><strong>GROUP</strong><small>${wed()}</small>${icon('arrow')}</button>`:'' }${todayUI.memberships.team?`<button type="button" data-go="team" data-pane="schedule"><span class="fluid-event-dot"></span><strong>SERVE</strong><small>${sun()}</small>${icon('arrow')}</button>`:'' }${!todayUI.memberships.group&&!todayUI.memberships.team?`<button type="button" data-go="group"><strong>FIND YOUR PEOPLE</strong><small>Explore groups</small>${icon('arrow')}</button>`:''}</div></div><div class="today-demo-footer"><span><i class="demo-dot"></i>FICTIONAL LOCAL DEMO · PHASE 1</span><button type="button" class="demo-controls-link" data-action="demo-controls">Demo controls</button></div></section>`;
+  const snapshot=T.snapshot(s,todayUI),event=snapshot.upNext;
+  const day=event?.date.toLocaleDateString('en-US',{weekday:'short'})||'';
+  const hour=event?.date.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'})||'';
+  const target=event?.id==='group'?'Groups':'My Schedule';
+  const nextWidget=event
+  ? `<button type="button" class="up-next dashboard-next" data-go="${event.id}" data-pane="${event.pane}" aria-label="Up next: ${event.title}, ${T.dateLabel(event.date)}. Open ${target}">
+      <span class="dashboard-tile-head">${icon('calendar')}<span>UP NEXT</span><span class="dashboard-tile-arrow">${icon('arrow')}</span></span>
+      <span class="dashboard-event-when">${day} <strong>${hour}</strong></span>
+      <span class="dashboard-event-desc">${event.title}</span>
+      <span class="dashboard-event-detail">${icon('pin')}${e(event.location)}</span>
+      <span class="dashboard-curve" aria-hidden="true"></span>
+    </button>`
+  : `<button type="button" class="dashboard-next dashboard-next--empty" data-go="group" aria-label="Explore sample groups">
+      <span class="dashboard-tile-head">${icon('group')}<span>UP NEXT</span><span class="dashboard-tile-arrow">${icon('arrow')}</span></span>
+      <span class="dashboard-event-when">There’s room</span>
+      <span class="dashboard-event-desc">for you here.</span>
+      <span class="dashboard-event-detail">Explore Groups</span>
+    </button>`;
+  const teamWidget=todayUI.memberships.team
+  ? `<button type="button" class="dashboard-team ${snapshot.pending?'attention-tile availability-action':''}" data-go="team" data-pane="schedule" aria-label="${snapshot.pending?'Confirm your Sunday serving availability':s.teamStatus==='confirmed'?'View your confirmed serving schedule':'View your serving schedule'}">
+      <span class="dashboard-tile-head">${icon(s.teamStatus==='confirmed'?'check':'confirm')}<span>YOUR TEAM</span><span class="dashboard-tile-arrow">${icon('arrow')}</span></span>
+      <span class="dashboard-team-title">${snapshot.pending?'Confirm':s.teamStatus==='confirmed'?'You’re in':'Schedule'}</span>
+      <span class="dashboard-team-desc">${snapshot.pending?'Sunday availability':s.teamStatus==='confirmed'?'Sunday Welcome Team':s.teamStatus==='declined'?'No upcoming shift':'Your team schedule'}</span>
+      <span class="dashboard-team-status"><i></i>${snapshot.pending?'RESPONSE NEEDED':s.teamStatus==='confirmed'?'CONFIRMED':'VIEW SCHEDULE'}</span>
+      <span class="dashboard-team-curve" aria-hidden="true"></span>
+    </button>`
+  : `<button type="button" class="dashboard-team dashboard-team--discover" data-go="team" aria-label="Find a serving team">
+      <span class="dashboard-tile-head">${icon('team')}<span>YOUR TEAM</span><span class="dashboard-tile-arrow">${icon('arrow')}</span></span>
+      <span class="dashboard-team-title">Get involved</span>
+      <span class="dashboard-team-desc">Find a place to serve.</span>
+      <span class="dashboard-team-status"><i></i>EXPLORE TEAMS</span>
+    </button>`;
+  return `<section class="today-screen dashboard-v06" aria-label="Today">
+    <div class="today-welcome">
+      <div class="dashboard-identity">
+        <h1>Good morning, <span>${e(todayUI.name||'Jonathan')}</span>.</h1>
+        <span class="dashboard-today-date">${new Date().toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'})}</span>
+      </div>
+      <span class="dashboard-welcome-wave" aria-hidden="true"></span>
+      <span class="today-watermark" aria-hidden="true"></span>
+    </div>
+    ${renderPeople(snapshot)}
+    <div class="dashboard-twins" role="group" aria-label="Upcoming gathering and serving">${nextWidget}${teamWidget}</div>
+    <div class="today-reading">
+      <span class="fluid-read-curve" aria-hidden="true"></span>
+      <span class="today-reading-flag" aria-hidden="true"></span>
+      <span class="today-label">${icon('read')} TODAY’S READ <i></i></span>
+      <h2>John 15:9–12</h2>
+      <div class="reading-actions">
+        <button type="button" class="read-primary" data-go="read" data-reading="scripture">${icon('read')} Read</button>
+        <button type="button" data-go="read" data-reading="questions">${icon('message')} Reflect</button>
+        <button type="button" data-action="memorize-preview">${icon('check')} Memorize</button>
+      </div>
+      <p class="reading-caption">${todayUI.memberships.group?'Your group’s selection':'Daily Scripture'} · Fictional reading fixture${s.read?' · Read today':''}</p>
+    </div>
+    ${!snapshot.attention&&!snapshot.leader?`<div class="today-empty dashboard-clear">${icon('check')}<div><h3>You’re all caught up.</h3><p>No group messages or serving responses need your attention.</p></div></div>`:''}
+    <div class="fluid-week">
+      <div class="fluid-week-heading"><span>THIS WEEK</span><small>YOUR RHYTHM</small></div>
+      <div class="fluid-week-events">
+        ${todayUI.memberships.group?`<button type="button" data-go="group" data-pane="gather"><span class="fluid-event-dot"></span><strong>GROUP</strong><small>${wed()}</small>${icon('arrow')}</button>`:''}
+        ${todayUI.memberships.team?`<button type="button" data-go="team" data-pane="schedule"><span class="fluid-event-dot"></span><strong>SERVE</strong><small>${sun()}</small>${icon('arrow')}</button>`:''}
+        ${!todayUI.memberships.group&&!todayUI.memberships.team?`<button type="button" data-go="group"><span class="fluid-event-dot"></span><strong>FIND YOUR PEOPLE</strong><small>Explore groups</small>${icon('arrow')}</button>`:''}
+      </div>
+    </div>
+    <div class="today-demo-footer">
+      <span><i class="demo-dot"></i>FICTIONAL LOCAL DEMO · v0.6</span>
+      <button type="button" class="demo-controls-link" data-action="demo-controls">Demo controls</button>
+    </div>
+  </section>`;
 }
 function groupBrowse(){return `<div class="eyebrow">FIND COMMUNITY</div><h1>Find your<br><em>people.</em></h1><p class="intro">Browse a few sample group options.</p>${todayUI.memberships.group?'<button class="text-button" data-action="browse">← Back to my group</button>':'<p class="demo-notice">Sample discovery only. Interest does not join a group or contact anyone.</p>'}${[['The Table','Community · Wednesday','Albuquerque'],['Weekend Hikers','Activity · Saturday','Northeast Heights'],['Young Families','Community · Sunday','North Campus']].map(([name,type,place],i)=>`<div class="card browse">${pill(type)}<h3>${name}</h3><p>${place}</p><button class="btn outline" data-action="interest" data-value="${i}">${s.interest.includes(String(i))?'✓ Interested':"I'm interested"}</button></div>`).join('')}${footer()}`}
 function group(){
