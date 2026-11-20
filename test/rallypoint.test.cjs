@@ -65,6 +65,10 @@ test('Your People shows the actual latest local group conversation and routes to
  const app=open(t);
  const panel=app.d.querySelector('.today-people');
  assert.ok(panel);
+ const sections=[...app.d.querySelector('.today-screen').children];
+ assert.equal(sections[0].classList.contains('today-welcome'),true);
+ assert.equal(sections[1],panel,'Your People must appear immediately after the greeting');
+ assert.equal(sections[2].classList.contains('up-next'),true,'Up Next remains the second feature');
  assert.equal(panel.querySelectorAll('.today-people-avatar').length,4);
  assert.equal(panel.querySelector('.today-people-message-author').textContent,'Anna L.');
  assert.match(panel.querySelector('.today-people-message-text').textContent,/Looking forward to seeing everyone Wednesday/);
@@ -90,6 +94,7 @@ test('Your People adapts to authorized leaders and group discovery without inven
  app.action('demo-controls');
  app.click('[data-action="scenario"][data-value="no-memberships"]');
  assert.ok(app.d.querySelector('.today-people--discover'));
+ assert.equal(app.d.querySelector('.today-screen').children[1].classList.contains('today-people--discover'),true);
  assert.equal(app.d.querySelector('.today-people-avatar'),null);
  assert.equal(app.d.querySelector('.today-people-message'),null);
  assert.equal(app.d.querySelector('.today-people-leader'),null);
