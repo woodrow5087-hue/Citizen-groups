@@ -12,7 +12,7 @@ function open(t,{saved,ui,blocked=false,now='2026-11-23T12:00:00'}={}){
  if(saved)w.localStorage.setItem(key,JSON.stringify(saved));if(ui)w.localStorage.setItem(T.UI_KEY,JSON.stringify(ui));
  const other='{"reflection":"An existing Citizen Connect note"}';w.localStorage.setItem('citizen-premium-hybrid-demo-v1',other);
  if(blocked)Object.defineProperty(w,'localStorage',{get(){throw Error('Blocked storage');}});
- for(const name of ['rallypoint-today.js','rallypoint-ui.js','rallypoint.js'])w.eval(fs.readFileSync(path.join(root,name),'utf8'));
+ for(const name of ['rallypoint-today.js','rallypoint-ui.js','rallypoint-memorize.js','rallypoint-verseplay-ui.js','rallypoint.js'])w.eval(fs.readFileSync(path.join(root,name),'utf8'));
  const click=selector=>{const el=d.querySelector(selector);assert.ok(el,selector);el.click();};
  const type=(id,value)=>{const el=d.getElementById(id);assert.ok(el,id);el.value=value;el.dispatchEvent(new w.Event('input',{bubbles:true}));};
  return {w,d,click,type,action:a=>click('[data-action="'+a+'"]'),go:v=>click('#nav [data-go="'+v+'"]'),saved:()=>JSON.parse(w.localStorage.getItem(key)),ui:()=>JSON.parse(w.localStorage.getItem(T.UI_KEY)),text:()=>d.getElementById('view').textContent,other};
@@ -34,7 +34,9 @@ test('attention and leader entry come from source state and contextual fixture p
  ui.memberships.team=false;assert.equal(T.snapshot(state,ui).upNext,null);
 });
 test('four tabs retain source destinations and Today links directly to conversation, schedule and reading',t=>{
- const app=open(t);assert.deepEqual([...app.d.querySelectorAll('#nav button')].map(b=>b.textContent.trim()),['Today','Groups','Team','Read']);
+ const app=open(t);assert.deepEqual([...app.d.querySelectorAll('#nav [data-go]')].map(b=>b.textContent.trim()),['Today','Groups','Team','Read']);
+ assert.equal(app.d.querySelectorAll('#nav button').length,5);
+ assert.ok(app.d.querySelector('#nav .fluid-quick'));
  for(const tab of ['group','team','read','today']){app.go(tab);assert.equal(app.d.querySelector('#nav [aria-current="page"]').dataset.go,tab);}
  app.action('demo-controls');app.click('[data-action="scenario"][data-value="connected"]');
  app.click('.up-next');assert.equal(app.saved().view,'group');assert.equal(app.saved().groupPane,'gather');assert.ok(app.d.querySelector('[data-action="rsvp"]'));
@@ -43,9 +45,91 @@ test('four tabs retain source destinations and Today links directly to conversat
  app.go('today');app.click('[data-reading="scripture"]');assert.equal(app.d.activeElement.id,'reading-scripture');app.go('today');app.click('[data-reading="questions"]');assert.equal(app.d.activeElement.id,'reading-questions');
  assert.equal(app.w.localStorage.getItem('citizen-premium-hybrid-demo-v1'),app.other);
 });
+test('fluid Today uses connected visual modules and keeps quick actions functional',t=>{
+ const app=open(t);
+ assert.ok(app.d.querySelector('.phone-inner').classList.contains('is-fluid-today'));
+ assert.ok(app.d.querySelector('.today-welcome .today-watermark'));
+ assert.ok(app.d.querySelector('.fluid-week-events [data-go="group"]'));
+ assert.ok(app.d.querySelector('.fluid-week-events [data-go="team"]'));
+ app.action('quick-actions');
+ const menu=app.d.querySelector('#dialog-root [role="dialog"]');
+ assert.ok(menu);
+ assert.match(menu.textContent,/Make your next move/);
+ app.click('#dialog-root [data-go="read"]');
+ assert.equal(app.saved().view,'read');
+ assert.ok(!app.d.querySelector('.phone-inner').classList.contains('is-fluid-today'));
+ app.go('today');
+ assert.ok(app.d.querySelector('.phone-inner').classList.contains('is-fluid-today'));
+});
+test('Connected Dashboard uses source state for side-by-side schedule and team widgets',t=>{
+ const app=open(t);
+ const row=app.d.querySelector('.dashboard-twins');
+ assert.ok(row);
+ assert.equal(row.querySelectorAll('button').length,2);
+ assert.match(row.querySelector('.dashboard-next').textContent,/Wed/);
+ assert.match(row.querySelector('.dashboard-team').textContent,/Confirm/);
+ assert.ok(row.querySelector('.availability-action'));
+ app.click('.availability-action');
+ app.click('[data-action="shift"][data-value="confirmed"]');
+ app.go('today');
+ assert.match(app.d.querySelector('.dashboard-team-title').textContent,/You’re in/);
+ assert.equal(app.d.querySelector('.availability-action'),null);
+ assert.ok(app.d.querySelector('.today-people-message'));
+ assert.equal(app.d.querySelector('.reading-actions [data-reading="questions"]').textContent.includes('Reflect'),true);
+});
+test('Your People shows the actual latest local group conversation and routes to its source',t=>{
+ const app=open(t);
+ const panel=app.d.querySelector('.today-people');
+ assert.ok(panel);
+ const sections=[...app.d.querySelector('.today-screen').children];
+ assert.equal(sections[0].classList.contains('today-welcome'),true);
+ assert.equal(sections[1],panel,'Your People must appear immediately after the greeting');
+ assert.equal(sections[2].classList.contains('dashboard-twins'),true,'Up Next and Team share the second dashboard row');
+ assert.ok(sections[2].querySelector('.up-next'));
+ assert.ok(sections[2].querySelector('.dashboard-team'));
+ assert.equal(panel.querySelectorAll('.today-people-avatar').length,4);
+ assert.equal(panel.querySelector('.today-people-message-author').textContent,'Anna L.');
+ assert.match(panel.querySelector('.today-people-message-text').textContent,/Looking forward to seeing everyone Wednesday/);
+ app.click('.today-people-message');
+ assert.equal(app.saved().view,'group');
+ assert.equal(app.saved().groupPane,'chat');
+ app.type('group-input','An updated thought from our group.');
+ app.click('[data-action="send"][data-value="group"]');
+ app.go('today');
+ assert.equal(app.d.querySelector('.today-people-message-author').textContent,'You');
+ assert.match(app.d.querySelector('.today-people-message-text').textContent,/An updated thought from our group/);
+ assert.equal(app.d.querySelector('.today-people-avatars [aria-label="Jess W."]').textContent,'JW');
+});
+test('Your People adapts to authorized leaders and group discovery without inventing membership',t=>{
+ const app=open(t);
+ assert.equal(app.d.querySelector('.today-people-leader'),null);
+ app.action('demo-controls');app.click('#role');app.action('close-dialog');
+ assert.ok(app.d.querySelector('.today-people-leader'));
+ assert.match(app.d.querySelector('.today-people-kicker').textContent,/LEADER VIEW/);
+ app.click('.today-people-leader');
+ assert.equal(app.saved().view,'group');
+ assert.equal(app.saved().groupPane,'leader');
+ app.action('demo-controls');
+ app.click('[data-action="scenario"][data-value="no-memberships"]');
+ assert.ok(app.d.querySelector('.today-people--discover'));
+ assert.equal(app.d.querySelector('.today-screen').children[1].classList.contains('today-people--discover'),true);
+ assert.equal(app.d.querySelector('.today-people-avatar'),null);
+ assert.equal(app.d.querySelector('.today-people-message'),null);
+ assert.equal(app.d.querySelector('.today-people-leader'),null);
+ app.click('.today-people-discover-link');
+ assert.equal(app.saved().view,'group');
+ assert.match(app.text(),/Browse a few sample group options/);
+});
+test('Your People safely escapes local conversation preview content',t=>{
+ const app=open(t,{saved:{groupMessages:[{name:'<img src=x>',time:'Today',text:'<script>not markup</script>'}]}});
+ const preview=app.d.querySelector('.today-people-message');
+ assert.equal(preview.textContent.includes('<script>not markup</script>'),true);
+ assert.equal(preview.querySelector('script'),null);
+ assert.equal(preview.querySelector('img'),null);
+});
 test('Today settles into a real caught-up state after opening the source and confirming serving',t=>{
  const app=open(t);app.click('.attention-tile[data-go="group"]');app.go('today');app.click('.availability-action');app.click('[data-action="shift"][data-value="confirmed"]');app.go('today');assert.match(app.text(),/You’re all caught up/);assert.equal(app.d.querySelector('.attention-tile'),null);
- app.action('notifications');assert.match(app.d.querySelector('[role="dialog"]').textContent,/You’re all caught up/);app.action('close-dialog');
+ app.action('notifications');assert.match(app.d.querySelector('#dialog-root [role="dialog"]').textContent,/You’re all caught up/);app.action('close-dialog');
  const again=open(t,{saved:app.saved(),ui:app.ui()});assert.match(again.text(),/You’re all caught up/);
 });
 test('existing messages, prayer posts, RSVP, team coverage and reading remain functional after reload',t=>{
@@ -54,6 +138,181 @@ test('existing messages, prayer posts, RSVP, team coverage and reading remain fu
  app.click('[data-area="group"][data-value="gather"]');app.click('[data-action="rsvp"][data-value="going"]');
  app.go('team');app.click('[data-action="shift"][data-value="declined"]');app.action('cover');assert.equal(app.saved().coverage,true);app.click('[data-area="team"][data-value="chat"]');app.type('team-input','A local team note.');app.click('[data-action="send"][data-value="team"]');
  app.go('read');app.action('read');app.action('pray');const saved=app.saved();const again=open(t,{saved,ui:app.ui()});assert.deepEqual(again.saved(),saved);assert.ok(saved.groupMessages.some(m=>m.text==='A local group thought.'));assert.ok(saved.prayers.some(m=>m.text==='A fictional prayer.'));assert.ok(saved.teamMessages.some(m=>m.text==='A local team note.'));assert.equal(saved.rsvp,'going');assert.equal(saved.read,true);assert.equal(saved.prayed,true);
+});
+test('Read v0.9 pathway changes the Scripture and question without claiming shared publishing',t=>{
+ const app=open(t);app.go('read');
+ assert.ok(app.d.querySelector('.read-screen-v09'));
+ assert.match(app.d.querySelector('.read-scripture-card h2').textContent,/John 15:12/);
+ assert.match(app.d.querySelector('.read-section-label').textContent,/BSB/);
+ assert.equal(app.d.querySelector('[data-action="plan"]'),null);
+ app.action('demo-controls');app.click('#role');app.action('close-dialog');
+ app.click('[data-action="plan"][data-value="study"]');
+ assert.equal(app.saved().plan,'study');
+ assert.match(app.d.querySelector('.read-scripture-card h2').textContent,/James 1:22/);
+ assert.match(app.d.querySelector('.read-question-card p').textContent,/put what you read into practice/);
+ app.type('question','A thoughtful book study question.');app.action('question');
+ assert.equal(app.saved().question,'A thoughtful book study question.');
+ app.click('[data-action="plan"][data-value="year"]');
+ assert.match(app.d.querySelector('.read-scripture-card h2').textContent,/Psalm 23:1–2/);
+ assert.match(app.d.querySelector('.verseplay .vp-board-title h3').textContent,/Psalm 23:1–2/);
+ assert.equal(app.d.querySelectorAll('.verseplay .vp-blank').length,5);
+ assert.equal(app.d.querySelectorAll('.verseplay .vp-tile').length,7);
+ app.click('[data-action="plan"][data-value="study"]');
+ assert.equal(app.saved().question,'A thoughtful book study question.');
+ app.go('today');
+ assert.match(app.d.querySelector('.today-reading h2').textContent,/James 1:22/);
+});
+test('BSB update resets old KJV game slots while preserving group messages and reading selections',t=>{
+ const oldGame={slots:['a0','a1','a2','a3','a4'],misses:0,hints:0,solved:true,best:100,round:1};
+ const app=open(t,{saved:{memoryTextRevision:'KJV-legacy',memoryMode:'solo',memoryActive:'study',
+   memoryGames:{'study:solo':oldGame},plan:'study',read:true,
+   groupMessages:[{name:'Anna L.',text:'Saved conversation remains.',time:'Yesterday'}]}});
+ assert.equal(app.saved().memoryTextRevision,'BSB-2026-1');
+ assert.equal(app.saved().memoryGames['study:solo'],undefined);
+ assert.equal(app.saved().read,true);
+ assert.equal(app.saved().plan,'study');
+ assert.equal(app.saved().groupMessages[0].text,'Saved conversation remains.');
+ app.go('read');
+ assert.match(app.d.querySelector('.vp-board-title h3').textContent,/James 1:22/);
+ assert.match(app.d.querySelector('.vp-board-title h3').textContent,/BSB/);
+});
+test('VersePlay completes a scripture puzzle using five word tiles and saves local progress',t=>{
+ const app=open(t);app.go('read');
+ const c=app.w.RallyMemory.challenge('sermon');
+ for(let i=0;i<5;i++)app.click('[data-action="memory-pick"][data-value="a'+i+'"]');
+ assert.equal(app.d.querySelector('.vp-count strong').textContent,'5');
+ app.click('[data-action="memory-check"]');
+ assert.match(app.d.querySelector('.vp-victory').textContent,/QUEST COMPLETE/);
+ assert.equal(app.saved().memoryGames['sermon:solo'].solved,true);
+ assert.equal(app.saved().memoryGames['sermon:solo'].best,100);
+ const next=open(t,{saved:app.saved(),ui:app.ui()});next.go('read');
+ assert.match(next.d.querySelector('.vp-victory').textContent,/QUEST COMPLETE/);
+ next.click('[data-action="memory-reset"]');
+ assert.equal(next.saved().memoryGames['sermon:solo'].solved,false);
+ assert.equal(next.d.querySelectorAll('.vp-tile').length,7);
+});
+test('VersePlay pass-and-play lets both players finish on one device, without real member accounts',t=>{
+ const app=open(t);app.go('read');app.click('[data-action="memory-mode"][data-value="pass"]');
+ assert.match(app.d.querySelector('.vp-turn').textContent,/PLAYER 1/);
+ for(let i=0;i<5;i++)app.click('[data-action="memory-pick"][data-value="a'+i+'"]');
+ app.click('[data-action="memory-check"]');
+ app.click('[data-action="memory-next-player"]');
+ assert.equal(app.saved().memoryPassTurn,2);
+ assert.match(app.d.querySelector('.vp-turn').textContent,/PLAYER 2/);
+ for(let i=0;i<5;i++)app.click('[data-action="memory-pick"][data-value="a'+i+'"]');
+ app.click('[data-action="memory-check"]');
+ assert.match(app.d.querySelector('.vp-duel-result').textContent,/FRIENDLY MATCH/);
+ assert.match(app.d.querySelector('.vp-duel-result').textContent,/tie/);
+ app.click('[data-action="memory-new-duel"]');
+ assert.equal(app.saved().memoryPassTurn,1);
+ assert.equal(app.saved().memoryGames['sermon:p1'].solved,false);
+ assert.equal(app.saved().memoryGames['sermon:p2'].solved,false);
+});
+test('Read v0.9 retains the original read, prayer and group discussion destinations',t=>{
+ const app=open(t);app.go('read');
+ app.action('read');app.action('pray');
+ assert.equal(app.saved().read,true);
+ assert.equal(app.saved().prayed,true);
+ app.click('.read-discuss-action');
+ assert.equal(app.saved().view,'group');
+ assert.equal(app.saved().groupPane,'chat');
+});
+test('Team v0.8 keeps a source-driven schedule and conversation preview with honest statuses',t=>{
+ const app=open(t);app.go('team');
+ assert.ok(app.d.querySelector('.team-screen-v08'));
+ assert.match(app.d.querySelector('.team-shift-response').textContent,/Awaiting response/);
+ assert.match(app.d.querySelector('.team-shift-response').textContent,/not recorded attendance/);
+ assert.match(app.d.querySelector('.team-message-preview').textContent,/Sam R\./);
+ app.click('.team-message-preview');
+ assert.equal(app.saved().teamPane,'chat');
+ app.type('team-input','Thanks for serving this weekend!');
+ app.click('[data-action="send"][data-value="team"]');
+ app.click('[data-action="pane"][data-area="team"][data-value="schedule"]');
+ assert.match(app.d.querySelector('.team-message-preview').textContent,/Thanks for serving/);
+ app.click('[data-action="shift"][data-value="confirmed"]');
+ assert.equal(app.saved().teamStatus,'confirmed');
+ assert.match(app.d.querySelector('.team-shift-response').textContent,/Confirmed/);
+ app.go('today');
+ assert.match(app.d.querySelector('.dashboard-team').textContent,/You’re in/);
+});
+test('Team v0.8 coverage and leader access remain contextual to its fixture role',t=>{
+ const app=open(t);app.go('team');
+ assert.equal(app.d.querySelector('[data-area="team"][data-value="leader"]'),null);
+ app.click('[data-action="shift"][data-value="declined"]');
+ app.click('[data-action="cover"]');
+ assert.equal(app.saved().coverage,true);
+ app.action('demo-controls');app.click('#role');app.action('close-dialog');
+ app.click('[data-action="pane"][data-area="team"][data-value="leader"]');
+ assert.match(app.text(),/One sample coverage request/);
+ assert.match(app.text(),/not proof of attendance/);
+});
+test('Unjoined Groups uses the new designed discovery shell without replacing the existing group workflow',t=>{
+ const app=open(t);
+ app.action('demo-controls');app.click('[data-action="scenario"][data-value="no-memberships"]');
+ app.go('group');
+ assert.ok(app.d.querySelector('.group-screen-v07.group-discovery-v07'));
+ assert.ok(app.d.querySelector('.group-discovery-hero h1'));
+ assert.equal(app.d.querySelectorAll('.group-discovery-card').length,3);
+ assert.match(app.d.querySelector('.group-discovery-hero').textContent,/Find your/);
+ app.click('.group-discovery-card [data-action="interest"][data-value="0"]');
+ assert.ok(app.d.querySelector('.group-discovery-interest.is-selected'));
+ assert.equal(app.ui().memberships.group,false,'Interest must not grant membership');
+ app.click('.group-discovery-preview [data-action="scenario"][data-value="connected"]');
+ assert.ok(app.ui().memberships.group);
+ app.go('group');
+ assert.ok(app.d.querySelector('.group-community-hero:not(.group-discovery-hero)'));
+ assert.ok(app.d.querySelector('.group-conversation'));
+ app.click('[data-action="browse"]');
+ assert.ok(app.d.querySelector('.group-discovery-v07'));
+ app.click('.group-discovery-back');
+ assert.ok(app.d.querySelector('.group-conversation'));
+});
+test('Unjoined Team uses the new full-layout invitation and retains its honest preview',t=>{
+ const app=open(t);
+ app.action('demo-controls');app.click('[data-action="scenario"][data-value="no-memberships"]');
+ app.go('team');
+ assert.ok(app.d.querySelector('.team-screen-v08.team-empty-v08'));
+ assert.match(app.d.querySelector('.team-empty-hero h1').textContent,/room/);
+ assert.match(app.d.querySelector('.team-empty-discover').textContent,/No team or assignment/);
+ app.action('team-preview');
+ assert.match(app.d.querySelector('#dialog-root').textContent,/later-phase work/);
+ app.action('close-dialog');
+ assert.equal(app.ui().memberships.team,false);
+ app.click('.team-empty-try');
+ assert.equal(app.ui().memberships.team,true);
+ app.go('team');
+ assert.ok(app.d.querySelector('.team-schedule-card'));
+});
+test('Groups People directory opens scoped one-to-one local messaging and persists it',t=>{
+ const app=open(t);app.go('group');
+ app.click('[data-action="pane"][data-area="group"][data-value="people"]');
+ assert.equal(app.d.querySelectorAll('.group-member-row').length,4);
+ assert.match(app.d.querySelector('.group-people-card').textContent,/No messages leave your device/);
+ app.click('[data-action="message-person"][data-person="anna"]');
+ assert.equal(app.saved().groupPane,'direct');
+ assert.match(app.text(),/Anna L\./);
+ app.type('direct-input','I appreciate your encouragement this week.');
+ app.click('[data-action="send"][data-value="direct"]');
+ assert.deepEqual(app.saved().directMessages.anna.map(x=>x.text),['I appreciate your encouragement this week.']);
+ assert.match(app.d.querySelector('.group-direct-bubble').textContent,/I appreciate your encouragement/);
+ app.go('today');app.go('group');
+ assert.match(app.text(),/I appreciate your encouragement/);
+ const reloaded=open(t,{saved:app.saved(),ui:app.ui()});
+ assert.match(reloaded.text(),/I appreciate your encouragement/);
+ assert.equal(reloaded.saved().directMessages.anna.length,1);
+});
+test('Groups direct messaging escapes text and offers no real delivery without membership',t=>{
+ const app=open(t);app.go('group');
+ app.click('[data-action="pane"][data-area="group"][data-value="people"]');
+ app.click('[data-action="message-person"][data-person="jess"]');
+ app.type('direct-input','<img src=x onerror=alert(1)>');
+ app.click('[data-action="send"][data-value="direct"]');
+ assert.equal(app.d.querySelector('.group-direct-bubble img'),null);
+ assert.equal(app.d.querySelector('.group-direct-bubble').textContent.includes('<img src=x onerror=alert(1)>'),true);
+ app.action('demo-controls');app.click('[data-action="scenario"][data-value="no-memberships"]');
+ app.go('group');
+ assert.equal(app.d.querySelector('[data-action="message-person"]'),null);
+ assert.equal(app.d.querySelector('.group-direct'),null);
 });
 test('leader tools remain contextual, are denied to members and disappear when check-ins are reviewed',t=>{
  const app=open(t);app.action('demo-controls');app.click('#role');app.action('close-dialog');assert.ok(app.d.querySelector('.leader-entry'));app.click('.leader-entry');assert.equal(app.saved().groupPane,'leader');
@@ -66,16 +325,26 @@ test('leader attendance, review and reading configuration persist without a new 
 });
 test('empty and caught-up fixture controls keep messages, RSVP and reading choices',t=>{
  const app=open(t);app.go('group');app.type('group-input','Keep this note.');app.click('[data-action="send"][data-value="group"]');const messages=app.saved().groupMessages;
- app.action('demo-controls');app.click('[data-action="scenario"][data-value="no-memberships"]');assert.match(app.text(),/There’s room/);assert.match(app.text(),/TODAY’S READING/);assert.equal(app.d.querySelector('.leader-entry'),null);assert.equal(app.d.querySelector('.up-next'),null);
- app.go('group');assert.match(app.text(),/Browse a few sample group options/);app.go('team');assert.match(app.text(),/No team or assignment/);app.action('team-preview');assert.match(app.d.querySelector('[role="dialog"]').textContent,/later-phase work/);app.action('close-dialog');
+ app.action('demo-controls');app.click('[data-action="scenario"][data-value="no-memberships"]');assert.match(app.text(),/There’s room/);assert.match(app.text(),/TODAY’S READ/);assert.equal(app.d.querySelector('.leader-entry'),null);assert.equal(app.d.querySelector('.up-next'),null);
+ app.go('group');assert.match(app.text(),/Browse a few sample group options/);app.go('team');assert.match(app.text(),/No team or assignment/);app.action('team-preview');assert.match(app.d.querySelector('#dialog-root [role="dialog"]').textContent,/later-phase work/);app.action('close-dialog');
  app.action('demo-controls');app.click('[data-action="scenario"][data-value="caught-up"]');assert.match(app.text(),/You’re all caught up/);assert.deepEqual(app.saved().groupMessages,messages);
 });
-test('Memorize is an honest phase preview, not a fake completion action',t=>{
- const app=open(t),before=app.saved();app.action('memorize-preview');assert.match(app.d.querySelector('[role="dialog"]').textContent,/not part of this Today-screen phase/);assert.deepEqual(app.saved(),before);app.action('close-dialog');
+test('Memorize is a real accessible word game reached from Today',t=>{
+ const app=open(t);app.click('.read-play-cta');
+ assert.equal(app.saved().view,'read');
+ assert.equal(app.d.activeElement.id,'reading-memorize');
+ assert.ok(app.d.querySelector('.verseplay'));
+ assert.equal(app.d.querySelectorAll('.vp-blank').length,5);
+ assert.equal(app.d.querySelectorAll('.vp-tile').length,7);
+ app.click('[data-action="memory-check"]');
+ assert.match(app.d.querySelector('.vp-feedback').textContent,/Fill all five/);
+ app.click('[data-action="memory-hint"]');
+ assert.equal(app.saved().memoryGames['sermon:solo'].hints,1);
+ assert.match(app.d.querySelector('.vp-count').textContent,/1/);
 });
 test('demo name is escaped, saved independently and modal keyboard dismissal restores focus',t=>{
  const app=open(t);app.click('.profile-avatar');assert.equal(app.d.querySelector('.phone-inner').inert,true);app.type('demo-name','<img src=x>');app.click('form button[type="submit"]');assert.equal(app.d.querySelector('img[src="x"]'),null);assert.match(app.text(),/<img src=x>/);assert.equal(app.ui().name,'<img src=x>');
- app.click('.profile-avatar');app.d.dispatchEvent(new app.w.KeyboardEvent('keydown',{key:'Escape',bubbles:true}));assert.equal(app.d.querySelector('[role="dialog"]'),null);assert.equal(app.d.activeElement.className,'profile-avatar');
+ app.click('.profile-avatar');app.d.dispatchEvent(new app.w.KeyboardEvent('keydown',{key:'Escape',bubbles:true}));assert.equal(app.d.querySelector('#dialog-root [role="dialog"]'),null);assert.equal(app.d.activeElement.className,'profile-avatar');
 });
 test('storage failure is disclosed while the demo stays usable',t=>{
  const app=open(t,{blocked:true});assert.match(app.text(),/could not save/);app.go('group');app.type('group-input','An in-memory sample');app.click('[data-action="send"][data-value="group"]');assert.match(app.text(),/An in-memory sample/);
