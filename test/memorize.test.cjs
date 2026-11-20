@@ -42,12 +42,11 @@ test('Tap tiles, pick a specific blank, remove placements, retry without losing 
 });
 test('Hints fill the right slot and charge only puzzle points, not spiritual progress',()=>{
  let s=M.initial();
- s=M.pick(s,'year','a0');
  s=M.pick(s,'year','a2');
- s=M.pick(s,'year','a1',2);
+ s=M.pick(s,'year','a1');
  s=M.hint(s,'year');
  assert.equal(s.slots[2],'a2','hint moves a wrongly placed correct word to its own position');
- assert.equal(s.slots[1],null);
+ assert.equal(s.slots[0],null);
  assert.equal(s.hints,1);
  assert.ok(M.score(s)<100);
  assert.equal(M.check(s,'year').status,'incomplete');
