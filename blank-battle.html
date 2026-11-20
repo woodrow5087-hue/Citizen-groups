@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#111219">
+  <meta name="description" content="VersePlay Blank Battle: a quick, tactile Scripture word game from Rally Point.">
+  <title>Blank Battle · VersePlay · Rally Point</title>
+  <link rel="icon" href="assets/citizen-flag.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="blank-battle.css">
+  <script src="rallypoint-memorize.js" defer></script>
+  <script src="blank-battle.js" defer></script>
+</head>
+<body>
+  <main class="bb-app" id="bb-app">
+    <header class="bb-topbar">
+      <a class="bb-brand" href="./" aria-label="Back to Rally Point"><img src="assets/citizen-flag.svg" alt="" width="28" height="28"><span>RALLY POINT <b> / VERSEPLAY</b></span></a>
+      <span class="bb-pill">SOLO PLAY</span>
+    </header>
+    <div class="bb-heading">
+      <div><div class="bb-eyebrow"><span class="bb-live"></span> THE MEMORY ARCADE</div><h1>Memorize<span>.</span></h1></div>
+      <button type="button" class="bb-reset" data-action="reset" aria-label="Restart this round"><span aria-hidden="true">↺</span> Reset</button>
+    </div>
+    <section class="bb-game" aria-label="Fill in the Scripture">
+      <div id="bb-screen"></div>
+    </section>
+    <p class="bb-footer">LOCAL DEMO · BEREAN STANDARD BIBLE · NO ONLINE OPPONENTS</p>
+    <noscript><p>Enable JavaScript to play Blank Battle.</p></noscript>
+  </main>
+</body>
+</html>
