@@ -2,7 +2,7 @@ const {test}=require('node:test');
 const assert=require('node:assert/strict');
 const M=require('../rallypoint-memorize.js');
 
-test('Each challenge is real KJV content with exactly five uniquely addressable words',()=>{
+test('Each challenge uses exact public-domain BSB content with exactly five uniquely addressable words',()=>{
  for(const key of ['sermon','study','year','romans']){
   const c=M.challenge(key);
   assert.equal(c.indexes.length,5);
@@ -11,7 +11,13 @@ test('Each challenge is real KJV content with exactly five uniquely addressable 
   assert.equal(c.bank.length,7,'five answers plus two decoys');
   assert.equal(M.normalize(null,key).slots.length,5);
  }
- assert.match(M.challenge('romans').text,/we know that all things work together/);
+ assert.match(M.challenge('romans').text,/we know that God works all things together/);
+ assert.equal(M.translation,'BSB');
+ assert.match(M.textRevision,/^BSB-/);
+ assert.equal(M.challenge('sermon').text,'This is My commandment, that you love one another as I have loved you.');
+ assert.equal(M.challenge('study').text,'Be doers of the word, and not hearers only. Otherwise, you are deceiving yourselves.');
+ assert.equal(M.challenge('year').reference,'Psalm 23:1–2');
+ assert.match(M.challenge('year').text,/green pastures; He leads me beside quiet waters/);
 });
 test('Tap tiles, pick a specific blank, remove placements, retry without losing correct answers',()=>{
  let state=M.initial();
