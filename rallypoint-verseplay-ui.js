@@ -49,7 +49,7 @@ window.RallyVersePlay={render:function render(s,e,icon){
     </div>
     ${mode==='pass'?`<div class="vp-turn"><strong>PLAYER ${turn} OF 2</strong><span>${bothDone?'Round complete':turn===1?'First up!':'Your turn!'} · Same phone, no online opponent</span></div>`:''}
     <div class="vp-board">
-      <div class="vp-board-title"><div><small>WORD QUEST · ${e(c.title)}</small><h3>${e(c.reference)} <span>KJV</span></h3></div><div class="vp-count"><strong>${progress}</strong><span>OF 5</span></div></div>
+      <div class="vp-board-title"><div><small>WORD QUEST · ${e(c.title)}</small><h3>${e(c.reference)} <span>BSB</span></h3></div><div class="vp-count"><strong>${progress}</strong><span>OF 5</span></div></div>
       <div class="vp-progress" role="progressbar" aria-label="Words filled" aria-valuemin="0" aria-valuemax="5" aria-valuenow="${progress}"><span style="width:${progress*20}%"></span></div>
       <div class="vp-scripture">${words}</div>
       ${g.solved?results:`<div class="vp-word-bank"><div class="vp-bank-caption"><strong>WORD TILES</strong><span>Tap to place · Tap a blank to edit</span></div><div class="vp-tiles" role="group" aria-label="Available word tiles">${tiles}</div></div>
@@ -61,6 +61,6 @@ window.RallyVersePlay={render:function render(s,e,icon){
       <p class="vp-feedback" role="status" aria-live="polite">${e(feedback)}</p>
     </div>
     <div class="vp-together"><span class="vp-people-icon">${icon('group')}</span><div><strong>Better together.</strong><p>Try a friendly Pass & Play match. Online challenges with church members are a future opt-in feature, not connected yet.</p></div></div>
-    <p class="vp-disclaimer">Local fictional game · Public-domain KJV · Puzzle points describe game accuracy, not spiritual growth.</p>
+    <p class="vp-disclaimer">Local fictional game · Public-domain BSB · Puzzle points describe game accuracy, not spiritual growth.</p>
   </section>`;
 }};
