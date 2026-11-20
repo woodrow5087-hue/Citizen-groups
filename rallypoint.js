@@ -108,8 +108,8 @@ function today(){
   return `<section class="today-screen dashboard-v06" aria-label="Today">
     <div class="today-welcome">
       <div class="dashboard-identity">
-        <h1>Good morning, <span>${e(todayUI.name||'Jonathan')}</span>.</h1>
-        <span class="dashboard-today-date">${campusLabel?`${e(campusLabel)} CAMPUS · `:''}${new Date().toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'})}</span>
+        <h1>Good morning, <span>${e(todayUI.name||'Jonathan')}</span>.${campusLabel?`<small class="dashboard-campus-marker">YOUR CAMPUS · ${e(campusLabel.toUpperCase())}</small>`:''}</h1>
+        <span class="dashboard-today-date">${new Date().toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'})}</span>
       </div>
       <span class="dashboard-welcome-wave" aria-hidden="true"></span>
       <span class="today-watermark" aria-hidden="true"></span>
