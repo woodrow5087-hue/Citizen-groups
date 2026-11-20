@@ -8,13 +8,14 @@
   scrollbar-width:none;
 }
 .rp-gateway::-webkit-scrollbar{display:none}
+.rp-gateway--exiting{opacity:0;transition:opacity .24s ease;pointer-events:none}
 .rp-gateway[hidden], .rp-gateway [hidden]{display:none!important}
 .rp-gateway *{box-sizing:border-box}
 .rp-gateway button,.rp-gateway input{font:inherit}
 .rp-gateway button{cursor:pointer}
 .rp-gateway button:focus-visible,.rp-gateway input:focus-visible{outline:3px solid #fff;outline-offset:4px}
 .rp-entry {
-  min-height:100%; min-height:100dvh; position:relative; isolation:isolate;
+  min-height:100%; position:relative; isolation:isolate;
   display:flex; flex-direction:column; align-items:center; justify-content:center;
   padding:calc(30px + var(--safe-top,0px)) 24px calc(36px + var(--safe-bottom,0px));
 }
@@ -56,7 +57,7 @@
 .rp-entry-button svg{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
 .rp-entry-note{margin:5px 0 0;text-align:center;font-size:9px;font-weight:750;line-height:1.5;letter-spacing:.17em;color:#ffe4e6}
 .rp-onboard {
-  min-height:100%;min-height:100dvh;display:flex;flex-direction:column;
+  min-height:100%;display:flex;flex-direction:column;
   padding:calc(22px + var(--safe-top,0px)) 24px calc(32px + var(--safe-bottom,0px));
   background:#E3002B;position:relative;isolation:isolate;
 }
