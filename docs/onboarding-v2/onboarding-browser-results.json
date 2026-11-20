@@ -1,0 +1,60 @@
+{
+  "cases": [
+    {
+      "width": 320,
+      "height": 568,
+      "safeTop": 0,
+      "safeBottom": 0,
+      "result": "passed"
+    },
+    {
+      "width": 375,
+      "height": 667,
+      "safeTop": 0,
+      "safeBottom": 0,
+      "result": "passed"
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "safeTop": 0,
+      "safeBottom": 0,
+      "result": "passed"
+    },
+    {
+      "width": 430,
+      "height": 932,
+      "safeTop": 0,
+      "safeBottom": 0,
+      "result": "passed"
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "safeTop": 47,
+      "safeBottom": 34,
+      "result": "passed"
+    },
+    {
+      "width": 1280,
+      "height": 1020,
+      "safeTop": 0,
+      "safeBottom": 0,
+      "result": "passed"
+    }
+  ],
+  "checks": [
+    "Real-time splash/reveal/brand lift screenshots",
+    "Reduced motion bypasses timed reveal",
+    "WCAG A/AA axe scans on welcome, login, campus, connection, preferences",
+    "44px touch targets and no horizontal overflow",
+    "Campus selection preserves card geometry",
+    "Leader selection remains member",
+    "Both memberships, name, campus survive reload",
+    "Campus editing preserves messages and memberships",
+    "Login sample values locked; no POST or credential storage",
+    "Existing four-tab navigation",
+    "Blocked-storage fallback"
+  ],
+  "screenshots": "390×844 actual browser captures. iPhone dimensions and safe areas emulated in Chromium; physical iOS device not tested."
+}
