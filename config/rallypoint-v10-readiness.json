@@ -1,0 +1,78 @@
+{
+  "version": "1.0",
+  "status": "blocked",
+  "description": "Release gate for a church-authorized live pilot. Netlify build success and fixture demos do not satisfy these requirements.",
+  "approved_pilot": false,
+  "gates": [
+    {
+      "id": "leadership_scope",
+      "label": "Leadership approves pilot use, cohort, campus, age bounds and accountable owner",
+      "status": "pending",
+      "owner": null,
+      "evidence": []
+    },
+    {
+      "id": "identity_roles",
+      "label": "Real sign-in, server-side session and context-scoped leader permissions tested",
+      "status": "pending",
+      "owner": null,
+      "evidence": []
+    },
+    {
+      "id": "data_owner_consent",
+      "label": "Church approves sources, scopes, consent, data retention, privacy and tenant isolation",
+      "status": "pending",
+      "owner": null,
+      "evidence": []
+    },
+    {
+      "id": "read_only_integration",
+      "label": "Verify least-privilege group membership and personal schedule source with authorized test users",
+      "status": "pending",
+      "owner": null,
+      "evidence": []
+    },
+    {
+      "id": "messaging_safeguards",
+      "label": "Choose approved chat link-out or secure real messaging; minor safeguarding and abuse controls validated",
+      "status": "pending",
+      "owner": null,
+      "evidence": []
+    },
+    {
+      "id": "attendance_followup",
+      "label": "Attendance data entry and human pastoral follow-up policy signed off; no inferred risk scoring",
+      "status": "pending",
+      "owner": null,
+      "evidence": []
+    },
+    {
+      "id": "scripture_rights",
+      "label": "Reading permissions, Bible text rights, review and publishing hierarchy approved",
+      "status": "pending",
+      "owner": null,
+      "evidence": []
+    },
+    {
+      "id": "support_security",
+      "label": "Security review, incident/support owner, audit logs, backups, retention and rollback approved",
+      "status": "pending",
+      "owner": null,
+      "evidence": []
+    },
+    {
+      "id": "qa_accessibility",
+      "label": "Cross-device, performance, accessibility, mobile UI and automated regression suite passed",
+      "status": "pending",
+      "owner": null,
+      "evidence": []
+    },
+    {
+      "id": "cohort_acceptance",
+      "label": "Authorized real-user dry run and go/no-go approval completed",
+      "status": "pending",
+      "owner": null,
+      "evidence": []
+    }
+  ]
+}
