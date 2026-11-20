@@ -28,3 +28,6 @@
 - Device screenshots and browser verification should precede merge. No CI test success or deploy should be assumed unless actually reported by the host.
 
 **Review gate:** Human approval of actual iPhone view before merging; authentication and church-system integrations are separate future milestones.
+## Netlify Deploy Preview request
+
+The preview pull request (#19) targets `main` but remains **unmerged**. Netlify is expected to build the PR branch as a Deploy Preview if the site's Git integration and deploy-preview settings are enabled. This section adds a new branch commit to trigger Git synchronization; no production code or site config is changed.
