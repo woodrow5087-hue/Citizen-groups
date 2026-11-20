@@ -472,3 +472,17 @@
     scroll-behavior:auto!important;
   }
 }
+/* Animate-to-app continuity: campus selected during the onboarding demo
+   is acknowledged on Today without suggesting real campus-filtered records. */
+.is-fluid-today .dashboard-v06 .dashboard-identity h1 .dashboard-campus-marker{
+  display:block;
+  color:#FFFFFF;
+  font-size:9px;
+  line-height:1.5;
+  letter-spacing:.12em;
+  font-weight:850;
+  margin-top:4px;
+}
+.is-fluid-today .dashboard-v06 .dashboard-team-status{
+  color:#FFFFFF;
+}
