@@ -139,6 +139,38 @@ test('existing messages, prayer posts, RSVP, team coverage and reading remain fu
  app.go('team');app.click('[data-action="shift"][data-value="declined"]');app.action('cover');assert.equal(app.saved().coverage,true);app.click('[data-area="team"][data-value="chat"]');app.type('team-input','A local team note.');app.click('[data-action="send"][data-value="team"]');
  app.go('read');app.action('read');app.action('pray');const saved=app.saved();const again=open(t,{saved,ui:app.ui()});assert.deepEqual(again.saved(),saved);assert.ok(saved.groupMessages.some(m=>m.text==='A local group thought.'));assert.ok(saved.prayers.some(m=>m.text==='A fictional prayer.'));assert.ok(saved.teamMessages.some(m=>m.text==='A local team note.'));assert.equal(saved.rsvp,'going');assert.equal(saved.read,true);assert.equal(saved.prayed,true);
 });
+test('Read v0.9 pathway changes the Scripture and question without claiming shared publishing',t=>{
+ const app=open(t);app.go('read');
+ assert.ok(app.d.querySelector('.read-screen-v09'));
+ assert.match(app.d.querySelector('.read-scripture-card h2').textContent,/John 15:9–12/);
+ assert.equal(app.d.querySelector('[data-action="plan"]'),null);
+ app.action('demo-controls');app.click('#role');app.action('close-dialog');
+ app.click('[data-action="plan"][data-value="study"]');
+ assert.equal(app.saved().plan,'study');
+ assert.match(app.d.querySelector('.read-scripture-card h2').textContent,/James 1:22/);
+ assert.match(app.d.querySelector('.read-question-card p').textContent,/put what you read into practice/);
+ app.type('question','A thoughtful book study question.');app.action('question');
+ assert.equal(app.saved().question,'A thoughtful book study question.');
+ app.click('[data-action="plan"][data-value="year"]');
+ assert.match(app.d.querySelector('.read-scripture-card h2').textContent,/Psalm 23:1/);
+ app.action('memorize-preview');
+ assert.match(app.d.querySelector('#dialog-root').textContent,/Psalm 23:1/);
+ assert.match(app.d.querySelector('#dialog-root').textContent,/not a completed practice/);
+ app.action('close-dialog');
+ app.click('[data-action="plan"][data-value="study"]');
+ assert.equal(app.saved().question,'A thoughtful book study question.');
+ app.go('today');
+ assert.match(app.d.querySelector('.today-reading h2').textContent,/James 1:22/);
+});
+test('Read v0.9 retains the original read, prayer and group discussion destinations',t=>{
+ const app=open(t);app.go('read');
+ app.action('read');app.action('pray');
+ assert.equal(app.saved().read,true);
+ assert.equal(app.saved().prayed,true);
+ app.click('.read-discuss-action');
+ assert.equal(app.saved().view,'group');
+ assert.equal(app.saved().groupPane,'chat');
+});
 test('Team v0.8 keeps a source-driven schedule and conversation preview with honest statuses',t=>{
  const app=open(t);app.go('team');
  assert.ok(app.d.querySelector('.team-screen-v08'));
