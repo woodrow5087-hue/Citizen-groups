@@ -84,7 +84,7 @@ test('login preview cannot collect credentials; explicit demo entry preserves ex
   click(x,'[data-welcome="demo"]');await new Promise(r=>setTimeout(r,10));
   assert.equal(x.d.querySelector('#rp-gateway').hidden,true);assert.equal(x.d.querySelector('#view').inert,false);
   assert.deepEqual(data(x,APP),app);assert.deepEqual(data(x,UI),ui);
-  assert.equal(x.w.sessionStorage.getItem(SESSION),'entered');assert.equal(x.d.querySelector('meta[name="theme-color"]').content,'#F3E5D6');x.close();
+  assert.equal(x.w.sessionStorage.getItem(SESSION),'entered');assert.equal(x.d.querySelector('meta[name="theme-color"]').content,'#E3002B');x.close();
 });
 test('campus can be changed later without resetting app, role or membership preferences',async()=>{
   const app={role:'leader',view:'team',read:true},ui={name:'Alex',memberships:{group:true,team:true},campus:'central'};
