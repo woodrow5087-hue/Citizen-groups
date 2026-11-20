@@ -121,7 +121,7 @@ function today(){
       <span class="today-label">${icon('read')} TODAY’S READ <i></i></span>
       <h2>${e(currentReading().passage)}</h2>
       <div class="reading-actions">
-        <button type="button" class="read-primary" data-go="read" data-reading="scripture">${icon('read')} Read</button>
+        <button type="button" class="read-primary" data-go="read" data-reading="scripture">${s.read?icon('check'):icon('read')} ${s.read?'Read today':'Read'}</button>
         <button type="button" data-go="read" data-reading="questions">${icon('message')} Reflect</button>
         <button type="button" data-action="memorize-preview">${icon('check')} Memorize</button>
       </div>
