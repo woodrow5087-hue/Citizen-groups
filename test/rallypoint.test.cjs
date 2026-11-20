@@ -61,6 +61,22 @@ test('fluid Today uses connected visual modules and keeps quick actions function
  app.go('today');
  assert.ok(app.d.querySelector('.phone-inner').classList.contains('is-fluid-today'));
 });
+test('Connected Dashboard uses source state for side-by-side schedule and team widgets',t=>{
+ const app=open(t);
+ const row=app.d.querySelector('.dashboard-twins');
+ assert.ok(row);
+ assert.equal(row.querySelectorAll('button').length,2);
+ assert.match(row.querySelector('.dashboard-next').textContent,/Wed/);
+ assert.match(row.querySelector('.dashboard-team').textContent,/Confirm/);
+ assert.ok(row.querySelector('.availability-action'));
+ app.click('.availability-action');
+ app.click('[data-action="shift"][data-value="confirmed"]');
+ app.go('today');
+ assert.match(app.d.querySelector('.dashboard-team-title').textContent,/You’re in/);
+ assert.equal(app.d.querySelector('.availability-action'),null);
+ assert.ok(app.d.querySelector('.today-people-message'));
+ assert.equal(app.d.querySelector('.reading-actions [data-reading="questions"]').textContent.includes('Reflect'),true);
+});
 test('Your People shows the actual latest local group conversation and routes to its source',t=>{
  const app=open(t);
  const panel=app.d.querySelector('.today-people');
@@ -68,7 +84,9 @@ test('Your People shows the actual latest local group conversation and routes to
  const sections=[...app.d.querySelector('.today-screen').children];
  assert.equal(sections[0].classList.contains('today-welcome'),true);
  assert.equal(sections[1],panel,'Your People must appear immediately after the greeting');
- assert.equal(sections[2].classList.contains('up-next'),true,'Up Next remains the second feature');
+ assert.equal(sections[2].classList.contains('dashboard-twins'),true,'Up Next and Team share the second dashboard row');
+ assert.ok(sections[2].querySelector('.up-next'));
+ assert.ok(sections[2].querySelector('.dashboard-team'));
  assert.equal(panel.querySelectorAll('.today-people-avatar').length,4);
  assert.equal(panel.querySelector('.today-people-message-author').textContent,'Anna L.');
  assert.match(panel.querySelector('.today-people-message-text').textContent,/Looking forward to seeing everyone Wednesday/);
@@ -132,7 +150,7 @@ test('leader attendance, review and reading configuration persist without a new 
 });
 test('empty and caught-up fixture controls keep messages, RSVP and reading choices',t=>{
  const app=open(t);app.go('group');app.type('group-input','Keep this note.');app.click('[data-action="send"][data-value="group"]');const messages=app.saved().groupMessages;
- app.action('demo-controls');app.click('[data-action="scenario"][data-value="no-memberships"]');assert.match(app.text(),/There’s room/);assert.match(app.text(),/TODAY’S READING/);assert.equal(app.d.querySelector('.leader-entry'),null);assert.equal(app.d.querySelector('.up-next'),null);
+ app.action('demo-controls');app.click('[data-action="scenario"][data-value="no-memberships"]');assert.match(app.text(),/There’s room/);assert.match(app.text(),/TODAY’S READ/);assert.equal(app.d.querySelector('.leader-entry'),null);assert.equal(app.d.querySelector('.up-next'),null);
  app.go('group');assert.match(app.text(),/Browse a few sample group options/);app.go('team');assert.match(app.text(),/No team or assignment/);app.action('team-preview');assert.match(app.d.querySelector('#dialog-root [role="dialog"]').textContent,/later-phase work/);app.action('close-dialog');
  app.action('demo-controls');app.click('[data-action="scenario"][data-value="caught-up"]');assert.match(app.text(),/You’re all caught up/);assert.deepEqual(app.saved().groupMessages,messages);
 });
