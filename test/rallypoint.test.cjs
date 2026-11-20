@@ -12,7 +12,7 @@ function open(t,{saved,ui,blocked=false,now='2026-11-23T12:00:00'}={}){
  if(saved)w.localStorage.setItem(key,JSON.stringify(saved));if(ui)w.localStorage.setItem(T.UI_KEY,JSON.stringify(ui));
  const other='{"reflection":"An existing Citizen Connect note"}';w.localStorage.setItem('citizen-premium-hybrid-demo-v1',other);
  if(blocked)Object.defineProperty(w,'localStorage',{get(){throw Error('Blocked storage');}});
- for(const name of ['rallypoint-today.js','rallypoint-ui.js','rallypoint.js'])w.eval(fs.readFileSync(path.join(root,name),'utf8'));
+ for(const name of ['rallypoint-today.js','rallypoint-ui.js','rallypoint-memorize.js','rallypoint-verseplay-ui.js','rallypoint.js'])w.eval(fs.readFileSync(path.join(root,name),'utf8'));
  const click=selector=>{const el=d.querySelector(selector);assert.ok(el,selector);el.click();};
  const type=(id,value)=>{const el=d.getElementById(id);assert.ok(el,id);el.value=value;el.dispatchEvent(new w.Event('input',{bubbles:true}));};
  return {w,d,click,type,action:a=>click('[data-action="'+a+'"]'),go:v=>click('#nav [data-go="'+v+'"]'),saved:()=>JSON.parse(w.localStorage.getItem(key)),ui:()=>JSON.parse(w.localStorage.getItem(T.UI_KEY)),text:()=>d.getElementById('view').textContent,other};
@@ -153,14 +153,45 @@ test('Read v0.9 pathway changes the Scripture and question without claiming shar
  assert.equal(app.saved().question,'A thoughtful book study question.');
  app.click('[data-action="plan"][data-value="year"]');
  assert.match(app.d.querySelector('.read-scripture-card h2').textContent,/Psalm 23:1/);
- app.action('memorize-preview');
- assert.match(app.d.querySelector('#dialog-root').textContent,/Psalm 23:1/);
- assert.match(app.d.querySelector('#dialog-root').textContent,/not a completed practice/);
- app.action('close-dialog');
+ assert.match(app.d.querySelector('.verseplay .vp-board-title h3').textContent,/Psalm 23:1/);
+ assert.equal(app.d.querySelectorAll('.verseplay .vp-blank').length,5);
+ assert.equal(app.d.querySelectorAll('.verseplay .vp-tile').length,7);
  app.click('[data-action="plan"][data-value="study"]');
  assert.equal(app.saved().question,'A thoughtful book study question.');
  app.go('today');
  assert.match(app.d.querySelector('.today-reading h2').textContent,/James 1:22/);
+});
+test('VersePlay completes a scripture puzzle using five word tiles and saves local progress',t=>{
+ const app=open(t);app.go('read');
+ const c=app.w.RallyMemory.challenge('sermon');
+ for(let i=0;i<5;i++)app.click('[data-action="memory-pick"][data-value="a'+i+'"]');
+ assert.equal(app.d.querySelector('.vp-count strong').textContent,'5');
+ app.click('[data-action="memory-check"]');
+ assert.match(app.d.querySelector('.vp-victory').textContent,/QUEST COMPLETE/);
+ assert.equal(app.saved().memoryGames['sermon:solo'].solved,true);
+ assert.equal(app.saved().memoryGames['sermon:solo'].best,100);
+ const next=open(t,{saved:app.saved(),ui:app.ui()});next.go('read');
+ assert.match(next.d.querySelector('.vp-victory').textContent,/QUEST COMPLETE/);
+ next.click('[data-action="memory-reset"]');
+ assert.equal(next.saved().memoryGames['sermon:solo'].solved,false);
+ assert.equal(next.d.querySelectorAll('.vp-tile').length,7);
+});
+test('VersePlay pass-and-play lets both players finish on one device, without real member accounts',t=>{
+ const app=open(t);app.go('read');app.click('[data-action="memory-mode"][data-value="pass"]');
+ assert.match(app.d.querySelector('.vp-turn').textContent,/PLAYER 1/);
+ for(let i=0;i<5;i++)app.click('[data-action="memory-pick"][data-value="a'+i+'"]');
+ app.click('[data-action="memory-check"]');
+ app.click('[data-action="memory-next-player"]');
+ assert.equal(app.saved().memoryPassTurn,2);
+ assert.match(app.d.querySelector('.vp-turn').textContent,/PLAYER 2/);
+ for(let i=0;i<5;i++)app.click('[data-action="memory-pick"][data-value="a'+i+'"]');
+ app.click('[data-action="memory-check"]');
+ assert.match(app.d.querySelector('.vp-duel-result').textContent,/FRIENDLY MATCH/);
+ assert.match(app.d.querySelector('.vp-duel-result').textContent,/tie/);
+ app.click('[data-action="memory-new-duel"]');
+ assert.equal(app.saved().memoryPassTurn,1);
+ assert.equal(app.saved().memoryGames['sermon:p1'].solved,false);
+ assert.equal(app.saved().memoryGames['sermon:p2'].solved,false);
 });
 test('Read v0.9 retains the original read, prayer and group discussion destinations',t=>{
  const app=open(t);app.go('read');
@@ -283,8 +314,18 @@ test('empty and caught-up fixture controls keep messages, RSVP and reading choic
  app.go('group');assert.match(app.text(),/Browse a few sample group options/);app.go('team');assert.match(app.text(),/No team or assignment/);app.action('team-preview');assert.match(app.d.querySelector('#dialog-root [role="dialog"]').textContent,/later-phase work/);app.action('close-dialog');
  app.action('demo-controls');app.click('[data-action="scenario"][data-value="caught-up"]');assert.match(app.text(),/You’re all caught up/);assert.deepEqual(app.saved().groupMessages,messages);
 });
-test('Memorize is an honest phase preview, not a fake completion action',t=>{
- const app=open(t),before=app.saved();app.action('memorize-preview');assert.match(app.d.querySelector('#dialog-root [role="dialog"]').textContent,/not part of this Today-screen phase/);assert.deepEqual(app.saved(),before);app.action('close-dialog');
+test('Memorize is a real accessible word game reached from Today',t=>{
+ const app=open(t);app.click('.read-play-cta');
+ assert.equal(app.saved().view,'read');
+ assert.equal(app.d.activeElement.id,'reading-memorize');
+ assert.ok(app.d.querySelector('.verseplay'));
+ assert.equal(app.d.querySelectorAll('.vp-blank').length,5);
+ assert.equal(app.d.querySelectorAll('.vp-tile').length,7);
+ app.click('[data-action="memory-check"]');
+ assert.match(app.d.querySelector('.vp-feedback').textContent,/Fill all five/);
+ app.click('[data-action="memory-hint"]');
+ assert.equal(app.saved().memoryGames['sermon:solo'].hints,1);
+ assert.match(app.d.querySelector('.vp-count').textContent,/1/);
 });
 test('demo name is escaped, saved independently and modal keyboard dismissal restores focus',t=>{
  const app=open(t);app.click('.profile-avatar');assert.equal(app.d.querySelector('.phone-inner').inert,true);app.type('demo-name','<img src=x>');app.click('form button[type="submit"]');assert.equal(app.d.querySelector('img[src="x"]'),null);assert.match(app.text(),/<img src=x>/);assert.equal(app.ui().name,'<img src=x>');
