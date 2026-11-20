@@ -1,0 +1,203 @@
+/* Rally Point v0.8 — Connected team rhythm. Fictional local schedules and chat. */
+.is-team-v08{--team-red:#E3002B;--team-charcoal:#242322;--team-cream:#F3E5D6}
+.is-team-v08 .header{background:#E3002B;color:#fff;border:0}
+.is-team-v08 .brand-home{color:#FFFFFF}
+.is-team-v08 .brand-home img{filter:brightness(0) invert(1)}
+.is-team-v08 .brand-home span{color:#fff}
+.is-team-v08 .header-button,.is-team-v08 .profile-avatar{background:#A90028;color:#fff;border:1px solid #FFB9C7}
+.is-team-v08 .spotify-link{background:#A0002470}
+.is-team-v08 .spotify-link img{filter:brightness(0) invert(1)}
+.is-team-v08 main{padding:0;background:#242322}
+.is-team-v08 .team-screen-v08{background:#242322;color:#F3E5D6;min-height:100%;padding:0 15px 20px}
+.is-team-v08 .team-v08-hero{
+ position:relative;isolation:isolate;
+ margin:0 -15px 16px;padding:23px 24px 24px;
+ background:#E3002B;color:#fff;
+ border-radius:0 0 41px 15px;overflow:hidden;
+}
+.is-team-v08 .team-v08-hero:before{
+ content:"";position:absolute;right:-140px;top:-128px;
+ width:440px;height:255px;background:#F21B43;
+ transform:rotate(-12deg);border-radius:50%;
+ opacity:.8;z-index:-1;
+}
+.is-team-v08 .team-v08-hero:after{
+ content:"";position:absolute;left:-115px;bottom:-115px;width:395px;height:190px;
+ border-radius:70% 0 0 0;background:#B50028;transform:rotate(15deg);
+ z-index:-1;opacity:.6;
+}
+.is-team-v08 .team-v08-kicker{color:#FFE2E6;font-size:9px;letter-spacing:.18em;font-weight:850}
+.is-team-v08 .team-v08-hero h1{
+ color:#FFFFFF;font-size:clamp(39px,11vw,48px);line-height:.95;
+ letter-spacing:-.07em;margin:16px 0 22px;font-weight:900;
+}
+.is-team-v08 .team-v08-hero h1 span{color:#FFD6DD}
+.is-team-v08 .team-v08-hero-row{
+ display:flex;gap:10px;align-items:center;
+ padding:12px;background:#B1002880;
+ border:1px solid #FFD5DA75;border-radius:19px;
+ min-height:65px;
+}
+.is-team-v08 .team-v08-hero-row>span{
+ display:grid;place-items:center;width:38px;height:38px;flex:none;
+ background:#F3E5D6;color:#242322;border-radius:12px;
+}
+.is-team-v08 .team-v08-hero-row .icon{width:20px;height:20px}
+.is-team-v08 .team-v08-hero-row strong{color:#fff;font-size:12px;font-weight:850}
+.is-team-v08 .team-v08-hero-row small{color:#FFE3DF;font-size:9px;line-height:1.3;margin-left:auto;text-align:right}
+.is-team-v08 .team-screen-v08 .tabs{
+ display:flex;gap:7px;align-items:center;flex-wrap:nowrap;
+ overflow-x:auto;scroll-snap-type:x mandatory;margin:0;
+ padding:4px 1px 15px;
+}
+.is-team-v08 .team-screen-v08 .tabs button{
+ flex:1;min-width:90px;min-height:44px;
+ background:#3D3738;border:1px solid #786867;border-radius:999px;
+ color:#F3E5D6;scroll-snap-align:start;
+ font-size:11px;font-weight:800;padding:9px 12px;
+}
+.is-team-v08 .team-screen-v08 .tabs button.selected{background:#F3E5D6;color:#242322;border-color:#F3E5D6}
+.is-team-v08 .team-screen-v08 .card{
+ background:#F3E5D6;color:#242322;
+ border:1.5px solid #FFEEDE;border-radius:29px;
+ box-shadow:0 5px 0 #171414;
+ padding:19px 17px;margin:0 0 15px;
+}
+.is-team-v08 .team-screen-v08 .card .kicker{color:#B00026;font-size:10px;letter-spacing:.13em}
+.is-team-v08 .team-screen-v08 .card h2,.is-team-v08 .team-screen-v08 .card h3{color:#242322}
+.is-team-v08 .team-screen-v08 .card p{color:#66594E}
+.is-team-v08 .team-schedule-card .team-card-overline{
+ display:flex;align-items:center;gap:8px;justify-content:space-between;
+ color:#B00026;letter-spacing:.12em;font-size:9px;font-weight:850;
+}
+.is-team-v08 .team-card-overline .pill{
+ letter-spacing:0;
+ background:#252325;color:#fff;border:0;
+ padding:6px 9px;font-size:9px;
+}
+.is-team-v08 .team-schedule-card h2{
+ font-size:31px;line-height:1.05;letter-spacing:-.06em;
+ font-weight:900;margin:15px 0 17px;
+}
+.is-team-v08 .team-shift{
+ display:flex;gap:11px;align-items:center;
+ border-radius:20px;padding:11px;
+ background:#FFF7ED;border:1px solid #E2CBB9;
+ min-height:85px;
+}
+.is-team-v08 .team-shift-date{
+ flex:none;width:60px;height:61px;
+ border-radius:15px;background:#E3002B;color:#fff;
+ display:flex;align-items:center;justify-content:center;flex-direction:column;
+}
+.is-team-v08 .team-shift-date strong{
+ font-size:27px;line-height:1;font-weight:900;letter-spacing:-.05em;
+}
+.is-team-v08 .team-shift-date small{font-size:9px;letter-spacing:.12em;font-weight:850;color:#FFE6EA}
+.is-team-v08 .team-shift-info{
+ display:flex;flex:1;min-width:0;gap:4px;flex-direction:column;
+}
+.is-team-v08 .team-shift-info strong{font-weight:850;font-size:13px}
+.is-team-v08 .team-shift-info span{font-size:11px;color:#5C5148}
+.is-team-v08 .team-shift-info small{font-size:9px;color:#77675A}
+.is-team-v08 .team-shift-response{
+ margin:15px 0;padding:12px 14px;
+ background:#E9D6C7;border-radius:17px;
+ display:grid;gap:5px;
+}
+.is-team-v08 .team-response-caption{
+ font-size:9px;font-weight:800;letter-spacing:.14em;color:#8E0025;
+}
+.is-team-v08 .team-shift-response strong{font-size:18px;letter-spacing:-.035em}
+.is-team-v08 .team-shift-response p{margin:0;font-size:10px;line-height:1.4;color:#66584E}
+.is-team-v08 .team-shift-actions{
+ display:grid;grid-template-columns:1fr 1fr;gap:8px;
+}
+.is-team-v08 .team-shift-actions .btn{
+ min-height:46px;padding:9px 8px;
+ border-radius:15px;
+ font-size:11px;white-space:normal;line-height:1.2;
+}
+.is-team-v08 .team-shift-actions .btn.red{background:#E3002B;color:#fff;border-color:#E3002B}
+.is-team-v08 .team-shift-actions .btn.chosen{background:#252325;color:#fff;border-color:#252325}
+.is-team-v08 .team-shift-actions .btn.outline{border-color:#AB8D7A;color:#242322}
+.is-team-v08 .team-schedule-card .tinted{background:#FFF6EB;border:1px solid #DAC0AF;margin-top:14px;padding:12px}
+.is-team-v08 .team-schedule-card .tinted p{font-size:11px}
+.is-team-v08 .team-message-preview{
+ position:relative;isolation:isolate;
+ display:block;width:100%;min-height:158px;
+ border:1.5px solid #8A7976;
+ border-radius:27px 29px 26px 26px;
+ background:#393536;color:#fff;
+ padding:17px;text-align:left;margin:0 0 19px;
+ box-shadow:0 5px 0 #151314;
+ overflow:hidden;
+}
+.is-team-v08 .team-message-preview:before{
+ content:"";position:absolute;right:-100px;bottom:-107px;
+ width:295px;height:173px;
+ background:#E3002B;transform:rotate(-16deg);
+ border-radius:65% 0 0 0;
+ z-index:-1;pointer-events:none;
+}
+.is-team-v08 .team-message-preview-top{
+ display:flex;align-items:center;gap:7px;
+ font-size:9px;font-weight:850;letter-spacing:.13em;color:#FFE3E1;
+}
+.is-team-v08 .team-message-preview-top .icon{width:18px;height:18px;color:#FF8499}
+.is-team-v08 .team-message-preview-top .icon:last-child{margin-left:auto;color:#fff}
+.is-team-v08 .team-message-preview>strong{
+ display:block;margin:12px 0 5px;font-size:12px;font-weight:850;
+}
+.is-team-v08 .team-message-preview-text{
+ display:-webkit-box;-webkit-line-clamp:2;
+ -webkit-box-orient:vertical;overflow:hidden;
+ font-size:13px;line-height:1.4;color:#F3E5D6;
+}
+.is-team-v08 .team-message-preview-action{
+ display:flex;align-items:center;gap:5px;
+ margin-top:13px;font-size:9px;font-weight:850;letter-spacing:.12em;
+}
+.is-team-v08 .team-message-preview-action .icon{width:15px;height:15px}
+.is-team-v08 .team-chat-card h2,.is-team-v08 .team-leader-card h2{
+ margin:11px 0;
+ font-size:30px;letter-spacing:-.06em;line-height:1.05;font-weight:900;
+}
+.is-team-v08 .team-screen-v08 .message{padding:12px 0;border-bottom:1px solid #DAC5B7}
+.is-team-v08 .team-screen-v08 .message .avatar{background:#242322;color:#F3E5D6}
+.is-team-v08 .team-screen-v08 .composer{
+ margin-top:15px;padding-top:15px;border-top:1px solid #D8C0B1;
+}
+.is-team-v08 .team-screen-v08 .composer textarea{
+ background:#FFF9F3;color:#242322;border:1px solid #BDA797;
+}
+.is-team-v08 .team-screen-v08 .btn.red{background:#E3002B;color:#fff;border-color:#E3002B}
+.is-team-v08 .team-leader-status{
+ display:grid;gap:5px;padding:13px;
+ border-radius:17px;background:#FFF7ED;border:1px solid #DCC2AF;
+ margin:16px 0;
+}
+.is-team-v08 .team-leader-status strong{font-size:11px;font-weight:850;color:#242322}
+.is-team-v08 .team-leader-status span{font-size:11px;color:#67594F}
+.is-team-v08 .team-screen-v08 .card.team-huddle{background:#3A3536;color:#FFF7ED;border-color:#786C69}
+.is-team-v08 .team-screen-v08 .card.team-huddle h3{color:#FFFFFF}
+.is-team-v08 .team-screen-v08 .card.team-huddle p{color:#F3E5D6}
+.is-team-v08 .team-screen-v08 .card.team-huddle .kicker{color:#FF9DAD}
+.is-team-v08 .team-screen-v08 .card.team-huddle .text-button{color:#FFE5E8;min-height:44px}
+.is-team-v08 .bottom{background:#252426;border-top:1px solid #B7A69B;color:#F3E5D6}
+.is-team-v08 .bottom button{color:#E0CFC4}
+.is-team-v08 .bottom button.active{background:#E3002B;color:#fff}
+.is-team-v08 button:focus-visible{outline:3px solid #E3002B;outline-offset:2px}
+.is-team-v08 .team-v08-hero button:focus-visible{outline-color:#FFF}
+@media(max-width:350px){
+ .is-team-v08 .team-screen-v08{padding-left:11px;padding-right:11px}
+ .is-team-v08 .team-v08-hero{margin-left:-11px;margin-right:-11px;padding:19px 17px 20px}
+ .is-team-v08 .team-v08-hero-row{gap:6px;padding:9px}
+ .is-team-v08 .team-v08-hero-row small{font-size:8px}
+ .is-team-v08 .team-screen-v08 .card{padding:16px 12px}
+ .is-team-v08 .team-shift-info span{font-size:10px}
+ .is-team-v08 .team-shift-actions .btn{font-size:10px}
+}
+@media(prefers-reduced-motion:reduce){
+ .is-team-v08 *,.is-team-v08 *:before,.is-team-v08 *:after{transition:none!important;animation:none!important}
+}
