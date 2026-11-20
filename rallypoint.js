@@ -1,12 +1,17 @@
 (function rallyApp(){
 'use strict';
 const key='rallypoint-phase1-2026';
-const defaults=()=>({role:'member',groupPane:'chat',directPerson:'anna',directMessages:{},teamPane:'schedule',view:'today',discover:false,groupMessages:[{name:'Jess W.',time:'Yesterday',text:'What stood out to you in John 15 this week?'},{name:'Anna L.',time:'Today',text:'Looking forward to seeing everyone Wednesday.'}],teamMessages:[{name:'Sam R.',time:'Yesterday',text:'Welcome team — thank you for helping people feel at home!'}],prayers:[{name:'Marcus C.',time:'Yesterday',text:'Praying for wisdom with an upcoming decision.'}],rsvp:'',teamStatus:'pending',coverage:false,attendance:{anna:'here',jess:'here',marcus:'unknown',taylor:'unknown'},reached:[],interest:[],plan:'sermon',planQuestions:{},question:'How can we love one another as Jesus has loved us?',read:false,prayed:false});
+const defaults=()=>({role:'member',groupPane:'chat',directPerson:'anna',directMessages:{},teamPane:'schedule',view:'today',discover:false,groupMessages:[{name:'Jess W.',time:'Yesterday',text:'What stood out to you in John 15 this week?'},{name:'Anna L.',time:'Today',text:'Looking forward to seeing everyone Wednesday.'}],teamMessages:[{name:'Sam R.',time:'Yesterday',text:'Welcome team — thank you for helping people feel at home!'}],prayers:[{name:'Marcus C.',time:'Yesterday',text:'Praying for wisdom with an upcoming decision.'}],rsvp:'',teamStatus:'pending',coverage:false,attendance:{anna:'here',jess:'here',marcus:'unknown',taylor:'unknown'},reached:[],interest:[],plan:'sermon',planQuestions:{},memoryGames:{},memoryMode:'solo',memoryActive:null,memoryPassTurn:1,memoryTarget:null,question:'How can we love one another as Jesus has loved us?',read:false,prayed:false});
 let s;try{s={...defaults(),...JSON.parse(localStorage.getItem(key)||'null')}}catch(_){s=defaults()}
 if(!s||!s.groupMessages||!Array.isArray(s.groupMessages))s=defaults();
  if(!s.directMessages||typeof s.directMessages!=='object'||Array.isArray(s.directMessages))s.directMessages={};
  if(!s.planQuestions||typeof s.planQuestions!=='object'||Array.isArray(s.planQuestions))s.planQuestions={};
-const T=window.RallyToday,U=window.RallyUI,icon=U.icon;
+if(!s.memoryGames||typeof s.memoryGames!=='object'||Array.isArray(s.memoryGames))s.memoryGames={};
+if(!['solo','pass'].includes(s.memoryMode))s.memoryMode='solo';
+if(!['sermon','study','year','romans'].includes(s.memoryActive))s.memoryActive=null;
+if(![1,2].includes(s.memoryPassTurn))s.memoryPassTurn=1;
+if(!Number.isInteger(s.memoryTarget)||s.memoryTarget<0||s.memoryTarget>4)s.memoryTarget=null;
+const T=window.RallyToday,U=window.RallyUI,M=window.RallyMemory,VP=window.RallyVersePlay,icon=U.icon;
 let todayUI=T.load({getItem:k=>localStorage.getItem(k)}),dialog=null,dialogTrigger=null,storageWarning='',drafts={};
 const $=x=>document.getElementById(x), e=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const save=()=>{try{localStorage.setItem(key,JSON.stringify(s));localStorage.setItem(T.UI_KEY,JSON.stringify(todayUI));storageWarning='';}catch(_){storageWarning='This browser could not save your demo changes. They may be lost on refresh.';}};
@@ -124,7 +129,7 @@ function today(){
       <div class="reading-actions">
         <button type="button" class="read-primary" data-go="read" data-reading="scripture">${s.read?icon('check'):icon('read')} ${s.read?'Read today':'Read'}</button>
         <button type="button" data-go="read" data-reading="questions">${icon('message')} Reflect</button>
-        <button type="button" data-action="memorize-preview">${icon('check')} Memorize</button>
+        <button type="button" class="read-play-cta" data-go="read" data-reading="memorize">${icon('check')} Play</button>
       </div>
       <p class="reading-caption">${todayUI.memberships.group?'Your group’s selection':'Daily Scripture'} · Fictional reading fixture${s.read?' · Read today':''}</p>
     </div>
@@ -293,6 +298,7 @@ function read(){
  const plan=currentReading();
  return `<section class="read-screen-v09">
    <div class="read-v09-hero"><div class="read-v09-overline">READ · REFLECT · REMEMBER</div><h1>In the<br>Word<span>.</span></h1><p>Your daily rhythm in Scripture, connected to your community.</p></div>
+   ${VP.render(s,e,icon)}
    <div class="read-focus-card">
      <div class="read-focus-head"><span>YOUR READING PATH · SAMPLE</span>${icon('read')}</div>
      <h2>${e(plan.name)}</h2><p>${e(plan.title)}</p><div class="read-focus-detail"><strong>${e(plan.passage)}</strong><small>${e(plan.description)}</small></div>
@@ -308,10 +314,6 @@ function read(){
      <h2>A question worth sharing.</h2><p>${e(s.question)}</p>
      <button type="button" class="read-discuss-action" data-go="group" data-pane="chat">${icon('group')} Open group conversation ${icon('arrow')}</button>
    </section>
-   <div class="read-memory-card">
-     <div class="read-memory-copy"><div class="read-memory-label">${icon('check')} MEMORIZE</div><h2>Carry it with you.</h2><p>Preview a future verse practice experience.</p></div>
-     <button type="button" data-action="memorize-preview" aria-label="Preview memorization for ${e(plan.passage)}">${icon('arrow')}</button>
-   </div>
    ${canLead('group')?`<section class="card read-leader-card">
      <div class="read-section-label">${icon('leader')} <span>GROUP LEADER · LOCAL DEMO</span></div>
      <h2>Shape the conversation.</h2><p>Choose a sample pathway. Changes stay on your device; nothing is published to a real group or church.</p>
@@ -392,13 +394,57 @@ if(b.type==='submit'&&b.form)return;
 if(b.id==='role'){s.role=s.role==='leader'?'member':'leader';s.groupPane='chat';s.teamPane='schedule';render();renderDialog();notify(s.role==='leader'?'Scoped leader fixture enabled':'Member fixture enabled');return}
 if(b.dataset.go){navigate(b.dataset.go,b.dataset.pane||((b.dataset.leader)?'leader':''),b.dataset.reading);return}
 const a=b.dataset.action,v=b.dataset.value||'',person=b.dataset.person;
-if(['notifications','demo-controls','memorize-preview','team-preview','quick-actions'].includes(a)){showDialog(a,b);return}
+if(a==='memorize-preview'){navigate('read',null,'memorize');return}
+if(['notifications','demo-controls','team-preview','quick-actions'].includes(a)){showDialog(a,b);return}
 if(a==='close-dialog'){closeDialog();return}
 if(a==='scenario'){
 todayUI.memberships={group:v!=='no-memberships',team:v!=='no-memberships'};
 if(v==='connected'){s.teamStatus='pending';todayUI.seenGroupSignature='';}
 if(v==='caught-up'){s.teamStatus='confirmed';s.coverage=false;todayUI.seenGroupSignature=T.signature(s);s.teamMessages=s.teamMessages.filter(m=>!m.coverage);}
 s.view='today';closeDialog(false);render();$('view').scrollTop=0;notify('Local Today fixture updated. No data was sent.');return;
+}
+if(a==='memory-mode'){
+ if(!['solo','pass'].includes(v))return;
+ s.memoryMode=v;s.memoryPassTurn=1;s.memoryTarget=null;render();return;
+}
+if(a==='memory-challenge'){
+ s.memoryActive=v==='romans'?'romans':s.plan;
+ s.memoryTarget=null;s.memoryPassTurn=1;render();return;
+}
+if(a==='memory-slot'){
+ const key=['sermon','study','year','romans'].includes(s.memoryActive)?s.memoryActive:s.plan;
+ const scope=key+':'+(s.memoryMode==='pass'?'p'+s.memoryPassTurn:'solo'),slot=Number(v);
+ const g=M.normalize(s.memoryGames[scope],key);
+ if(g.solved)return;
+ if(Number.isInteger(slot)&&slot>=0&&slot<5){
+   if(g.slots[slot])s.memoryGames[scope]=M.clear(g,key,slot);
+   s.memoryTarget=slot;render();
+ }
+ return;
+}
+if(['memory-pick','memory-check','memory-hint','memory-reset','memory-next-player','memory-new-duel'].includes(a)){
+ const key=['sermon','study','year','romans'].includes(s.memoryActive)?s.memoryActive:s.plan;
+ const scope=key+':'+(s.memoryMode==='pass'?'p'+s.memoryPassTurn:'solo');
+ const g=M.normalize(s.memoryGames[scope],key);
+ if(a==='memory-next-player'){
+   if(s.memoryMode==='pass'&&s.memoryPassTurn===1&&g.solved){s.memoryPassTurn=2;s.memoryTarget=null;render();}
+   return;
+ }
+ if(a==='memory-new-duel'){
+   for(const who of [1,2]){const k=key+':p'+who;s.memoryGames[k]=M.reset(s.memoryGames[k],key)}
+   s.memoryPassTurn=1;s.memoryTarget=null;render();return;
+ }
+ if(a==='memory-reset'){s.memoryGames[scope]=M.reset(g,key);s.memoryTarget=null;render();return;}
+ if(a==='memory-hint'){s.memoryGames[scope]=M.hint(g,key);s.memoryTarget=null;render();return;}
+ if(a==='memory-pick'){
+   const target=Number.isInteger(s.memoryTarget)&&s.memoryTarget>=0&&s.memoryTarget<5?s.memoryTarget:undefined;
+   const next=M.pick(g,key,v,target);
+   s.memoryGames[scope]=next;s.memoryTarget=next.slots.indexOf(null);render();return;
+ }
+ if(a==='memory-check'){
+   const outcome=M.check(g,key);s.memoryGames[scope]=outcome.state;s.memoryTarget=outcome.state.slots.indexOf(null);
+   render();if(outcome.status==='complete')notify('Verse complete — nicely done!');return;
+ }
 }
 if(a==='message-person'){if(!todayUI.memberships.group)return;const member=sampleGroupPeople.find(p=>p.id===person);if(!member)return;s.directPerson=member.id;s.groupPane='direct';render();return}
  if(a==='pane'){if(v==='leader'&&!canLead(b.dataset.area))return;if(b.dataset.area==='group')s.groupPane=v;else s.teamPane=v;render();return}
@@ -410,7 +456,7 @@ if(a==='attendance'&&canLead('group')){s.attendance[person]=v;render();notify('S
 if(a==='reached'&&canLead('group')){s.reached=s.reached.includes(person)?s.reached.filter(x=>x!==person):[...s.reached,person];render();return}
 if(a==='shift'){s.teamStatus=v;if(v==='confirmed'){s.coverage=false;s.teamMessages=s.teamMessages.filter(x=>!x.coverage)}render();notify('Sample serving response saved');return}
 if(a==='cover'){s.coverage=!s.coverage;s.teamMessages=s.teamMessages.filter(x=>!x.coverage);if(s.coverage)s.teamMessages.push({name:'You',time:'Just now',text:'Could someone cover my Sunday 9:00 AM shift?',coverage:true});render();notify(s.coverage?'Sample coverage request posted':'Sample request withdrawn');return}
-if(a==='plan'&&canLead('group')&&readingLibrary[v]){s.planQuestions[s.plan]=s.question;s.plan=v;s.question=s.planQuestions[v]||readingLibrary[v].question;render();notify('Sample reading pathway selected locally');return}
+if(a==='plan'&&canLead('group')&&readingLibrary[v]){s.planQuestions[s.plan]=s.question;s.plan=v;s.memoryActive=v;s.memoryTarget=null;s.question=s.planQuestions[v]||readingLibrary[v].question;render();notify('Sample reading pathway selected locally');return}
 if(a==='question'&&canLead('group')){const txt=$('question')?.value.trim();if(!txt){notify('Enter a question first');return}s.question=txt;s.planQuestions[s.plan]=txt;render();notify('Sample group question updated locally');return}
 if(a==='read'){s.read=!s.read;render();return}
 if(a==='pray'){s.prayed=!s.prayed;render();return}
