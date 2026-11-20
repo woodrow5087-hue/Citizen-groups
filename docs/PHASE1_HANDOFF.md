@@ -21,3 +21,9 @@ implementation, automated verification and actual comparison captures are in
 `docs/phase1/`. Human iPhone review/approval remains open; no merge or production
 deployment is authorized. The original instructions above are retained as the
 handoff record.
+
+## Companion app direction — November 20, 2026
+
+**New decision D-10:** Read `docs/COMPANION_ARCHITECTURE_DECISION.md` before subsequent implementation. Rally Point is a separate Warm Editorial companion to existing church systems, not a replacement for Planning Center / Church Center. Keep existing Today, Groups, Team, Read structure and approved visual references. Treat scheduling, group membership, and attendance as potential integrations only after church approval and endpoint-by-endpoint verification; Read is the first-party experience. **No real church data, credentials, chat synchronization, member import, or live integration in Phase 1.**
+
+**Important current state:** Phase 1 application code and verification artifacts already exist on this branch. Do **not** restart the Today implementation or revert current changes due to D-10. The next required action is mobile review/approval of the current preview. After approval, conduct the integration discovery gate while continuing UI refinement on the approved baseline.
