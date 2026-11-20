@@ -197,7 +197,7 @@ function team(){
    <div class="team-card-overline"><span>MY SCHEDULE · SAMPLE</span>${pill(stateLabel)}</div>
    <h2>Your next serve.</h2>
    <div class="team-shift">
-     <div class="team-shift-date"><strong>${sun().split(' ')[0]}</strong><small>SUNDAY</small></div>
+     <div class="team-shift-date"><strong>${T.nextEvent(0,9,0).getDate()}</strong><small>SUNDAY</small></div>
      <div class="team-shift-info"><strong>Welcome Team</strong><span>${sun()} · 9:00 AM</span><small>North Campus · demo shift</small></div>
    </div>
    <div class="team-shift-response">
