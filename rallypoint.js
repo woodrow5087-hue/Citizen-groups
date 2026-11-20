@@ -1,9 +1,10 @@
 (function rallyApp(){
 'use strict';
 const key='rallypoint-phase1-2026';
-const defaults=()=>({role:'member',groupPane:'chat',teamPane:'schedule',view:'today',discover:false,groupMessages:[{name:'Jess W.',time:'Yesterday',text:'What stood out to you in John 15 this week?'},{name:'Anna L.',time:'Today',text:'Looking forward to seeing everyone Wednesday.'}],teamMessages:[{name:'Sam R.',time:'Yesterday',text:'Welcome team — thank you for helping people feel at home!'}],prayers:[{name:'Marcus C.',time:'Yesterday',text:'Praying for wisdom with an upcoming decision.'}],rsvp:'',teamStatus:'pending',coverage:false,attendance:{anna:'here',jess:'here',marcus:'unknown',taylor:'unknown'},reached:[],interest:[],plan:'sermon',question:'How can we love one another as Jesus has loved us?',read:false,prayed:false});
+const defaults=()=>({role:'member',groupPane:'chat',directPerson:'anna',directMessages:{},teamPane:'schedule',view:'today',discover:false,groupMessages:[{name:'Jess W.',time:'Yesterday',text:'What stood out to you in John 15 this week?'},{name:'Anna L.',time:'Today',text:'Looking forward to seeing everyone Wednesday.'}],teamMessages:[{name:'Sam R.',time:'Yesterday',text:'Welcome team — thank you for helping people feel at home!'}],prayers:[{name:'Marcus C.',time:'Yesterday',text:'Praying for wisdom with an upcoming decision.'}],rsvp:'',teamStatus:'pending',coverage:false,attendance:{anna:'here',jess:'here',marcus:'unknown',taylor:'unknown'},reached:[],interest:[],plan:'sermon',question:'How can we love one another as Jesus has loved us?',read:false,prayed:false});
 let s;try{s={...defaults(),...JSON.parse(localStorage.getItem(key)||'null')}}catch(_){s=defaults()}
 if(!s||!s.groupMessages||!Array.isArray(s.groupMessages))s=defaults();
+ if(!s.directMessages||typeof s.directMessages!=='object'||Array.isArray(s.directMessages))s.directMessages={};
 const T=window.RallyToday,U=window.RallyUI,icon=U.icon;
 let todayUI=T.load({getItem:k=>localStorage.getItem(k)}),dialog=null,dialogTrigger=null,storageWarning='',drafts={};
 const $=x=>document.getElementById(x), e=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -12,13 +13,14 @@ const canLead=area=>s.role==='leader'&&!!todayUI.memberships[area];
 const pill=(t,light=false)=>`<span class="pill ${light?'light':''}">${e(t)}</span>`;
 const icons={home:'⌂',group:'♙',team:'♡',read:'▤',arrow:'↗'};
 const sampleGroupPeople=[{id:'anna',name:'Anna L.',initials:'AL'},{id:'jess',name:'Jess W.',initials:'JW'},{id:'marcus',name:'Marcus C.',initials:'MC'},{id:'taylor',name:'Taylor D.',initials:'TD'}];
+ if(!sampleGroupPeople.some(p=>p.id===s.directPerson))s.directPerson='anna';
 const next=d=>T.nextEvent(d,d===3?18:9,d===3?30:0).toLocaleDateString('en-US',{weekday:'long',month:'short',day:'numeric'});
 const wed=()=>next(3),sun=()=>next(0);
 const groupList=()=>s.groupMessages.map(m=>`<div class="message"><div class="avatar">${e(m.name.split(' ').map(x=>x[0]).join('').slice(0,2))}</div><div><div class="message-meta"><strong>${e(m.name)}</strong><small>${e(m.time)}</small></div><p>${e(m.text)}</p></div></div>`).join('');
 const teamList=()=>s.teamMessages.map(m=>`<div class="message"><div class="avatar">${e(m.name.split(' ').map(x=>x[0]).join('').slice(0,2))}</div><div><div class="message-meta"><strong>${e(m.name)}</strong><small>${e(m.time)}</small></div><p>${e(m.text)}</p></div></div>`).join('');
 const prayerList=()=>s.prayers.map(m=>`<div class="message"><div class="avatar">${e(m.name[0])}</div><div><div class="message-meta"><strong>${e(m.name)}</strong><small>${e(m.time)}</small></div><p>${e(m.text)}</p></div></div>`).join('');
 const tabs=(area,values,active)=>`<div class="tabs" role="group" aria-label="${area} sections">${values.map(([id,label])=>`<button type="button" data-action="pane" data-area="${area}" data-value="${id}" class="${active===id?'selected':''}">${label}</button>`).join('')}</div>`;
-const compose=(type,title,placeholder)=>`<div class="composer"><label for="${type}-input">${title}</label><textarea id="${type}-input" rows="2" maxlength="700" placeholder="${placeholder}"></textarea><button type="button" class="btn red" data-action="send" data-value="${type}">Post to sample ${type==='group'?'group':type==='team'?'team':'prayer board'} <span>➤</span></button></div>`;
+const compose=(type,title,placeholder)=>`<div class="composer"><label for="${type}-input">${title}</label><textarea id="${type}-input" rows="2" maxlength="700" placeholder="${placeholder}"></textarea><button type="button" class="btn red" data-action="send" data-value="${type}">Post to sample ${type==='group'?'group':type==='team'?'team':type==='direct'?'private demo conversation':'prayer board'} <span>➤</span></button></div>`;
 const lead=()=>`<div class="card"><div class="kicker">LEADER TOOLS · PRIVATE DEMO</div><h3>Record attendance</h3><p>Track actual participation, not whether someone opened the app.</p>${[['anna','Anna L.'],['jess','Jess W.'],['marcus','Marcus C.'],['taylor','Taylor D.']].map(([id,name])=>`<div class="attendance"><strong>${name}</strong><div class="actions">${[['here','Here'],['excused','Excused'],['unknown','Not recorded']].map(([v,label])=>`<button type="button" class="mini ${s.attendance[id]===v?'selected':''}" data-action="attendance" data-person="${id}" data-value="${v}">${label}</button>`).join('')}</div></div>`).join('')}</div><div class="card"><div class="kicker">PEOPLE FIRST</div><h3>Thoughtful check-ins</h3><p>These are fictional scenarios, not judgments about someone's spiritual health.</p>${[['marcus','Marcus C.','Two recent sample gatherings missed'],['taylor','Taylor D.','Signed up but no sample gathering yet']].map(([id,name,reason])=>`<div class="followup"><div>${pill(s.reached.includes(id)?'Reviewed':'Suggested check-in')}<strong>${name}</strong><small>${reason}</small></div><button type="button" class="btn outline" data-action="reached" data-person="${id}">${s.reached.includes(id)?'Undo':'Mark reviewed'}</button></div>`).join('')}</div>`;
 function renderPeople(snapshot){
   if(!todayUI.memberships.group){
@@ -137,13 +139,54 @@ function groupBrowse(){return `<div class="eyebrow">FIND COMMUNITY</div><h1>Find
 function group(){
 if(!todayUI.memberships.group)return groupBrowse();
 if(s.discover)return groupBrowse();
-const opts=[['chat','Conversation'],['gather','Gathering'],['prayer','Prayer'],...(canLead('group')?[['leader','Leader tools']]:[])];
+const opts=[['chat','Conversation'],['people','People'],...(s.groupPane==='direct'?[['direct','Direct message']]:[]),['gather','Gathering'],['prayer','Prayer'],...(canLead('group')?[['leader','Leader tools']]:[])];
 let body='';
-if(s.groupPane==='chat')body=`<div class="card"><div class="kicker">CONVERSATION · SAMPLE</div>${groupList()}${compose('group','Say something to your group','Share a thought or encouragement…')}</div>`;
-if(s.groupPane==='gather')body=`<div class="card"><div class="kicker">NEXT GROUP GATHERING</div><h3>${wed()} · 6:30 PM</h3><p>John 15:9–12 · ${e(s.question)}</p><div class="actions"><button class="btn ${s.rsvp==='going'?'chosen':'outline'}" data-action="rsvp" data-value="going">I'm going</button><button class="btn ${s.rsvp==='maybe'?'chosen':'outline'}" data-action="rsvp" data-value="maybe">Maybe</button></div></div><div class="card"><h3>Connected beyond the semester.</h3><p>Groups can remain active through breaks. People can change or leave their group when needed.</p></div>`;
+if(s.groupPane==='chat')body=`<div class="card group-conversation"><div class="kicker">GROUP CONVERSATION · SAMPLE</div>${groupList()}${compose('group','Say something to your group','Share a thought or encouragement…')}</div>`;
+if(s.groupPane==='people')body=`<div class="card group-people-card">
+  <div class="kicker">YOUR PEOPLE · SAMPLE COMMUNITY</div>
+  <h2>Stay connected.</h2>
+  <p class="group-people-context">Find someone from your group, say hello, and keep the conversation going between gatherings.</p>
+  <div class="group-member-directory">
+    ${sampleGroupPeople.map((member,i)=>`<div class="group-member-row">
+      <span class="group-member-avatar group-member-avatar--${i+1}" aria-hidden="true">${e(member.initials)}</span>
+      <span class="group-member-info"><strong>${e(member.name)}</strong><small>Wednesday Group · fictional member</small></span>
+      <button type="button" class="group-member-message" data-action="message-person" data-person="${member.id}" aria-label="Open sample direct conversation with ${e(member.name)}">${icon('message')}<span>Message</span></button>
+    </div>`).join('')}
+  </div>
+  <p class="fine-note">Profiles and direct messages here are fictional browser-only data. No messages leave your device.</p>
+</div>`;
+if(s.groupPane==='direct'){
+  const person=sampleGroupPeople.find(p=>p.id===s.directPerson)||sampleGroupPeople[0];
+  const messages=Array.isArray(s.directMessages[person.id])?s.directMessages[person.id]:[];
+  body=`<div class="card group-direct">
+    <div class="kicker">ONE-TO-ONE · LOCAL DEMO ONLY</div>
+    <div class="group-direct-heading">
+      <span class="group-member-avatar" aria-hidden="true">${e(person.initials)}</span>
+      <span><h2>${e(person.name)}</h2><small>Sample direct conversation · never sent</small></span>
+    </div>
+    ${messages.length?`<div class="group-direct-messages">${messages.map(msg=>`<div class="group-direct-bubble"><strong>${e(msg.name)}</strong><p>${e(msg.text)}</p><small>${e(msg.time)}</small></div>`).join('')}</div>`:`<div class="group-direct-empty">${icon('message')}<strong>Start a conversation.</strong><p>Keep in touch with people in your group. This is a private local fixture; no real person will receive it.</p></div>`}
+    ${compose('direct','Your sample message','Write something encouraging…')}
+    <button type="button" class="text-button group-back" data-action="pane" data-area="group" data-value="people">← Back to people</button>
+  </div>`;
+}
+if(s.groupPane==='gather')body=`<div class="card"><div class="kicker">NEXT GROUP GATHERING</div><h3>${wed()} · 6:30 PM</h3><p>John 15:9–12 · ${e(s.question)}</p><div class="actions"><button class="btn ${s.rsvp==='going'?'chosen':'outline'}" data-action="rsvp" data-value="going">I'm going</button><button class="btn ${s.rsvp==='maybe'?'chosen':'outline'}" data-action="rsvp" data-value="maybe">Maybe</button></div></div><div class="card"><h3>Connected beyond the semester.</h3><p>Continuity is a proposed model, not an approved policy. Groups may continue through breaks, subject to church leadership decisions.</p></div>`;
 if(s.groupPane==='prayer')body=`<div class="card"><h3>Pray for one another.</h3><p>Use fictional examples here—do not enter private real requests into this demo.</p>${prayerList()}${compose('prayer','Add a sample prayer request','What can your group pray about?')}</div>`;
 if(s.groupPane==='leader')body=lead();
-return `<div class="eyebrow">MY GROUP ${canLead('group')?pill('LEADER VIEW'):''}</div><h1>Wednesday<br><em>Group.</em></h1><div class="face-row ink"><span class="faces">${sampleGroupPeople.map(person=>`<b title="${e(person.name)}">${e(person.initials)}</b>`).join('')}</span><small>8 members · Sample</small></div><div class="meta">▦ ${wed()} · 6:30 PM</div><button class="text-button" data-action="browse">♙ Explore groups ↗</button>${tabs('group',opts,s.groupPane)}${body}${footer()}`}
+return `<section class="group-screen-v07">
+  <div class="group-community-hero">
+    <div class="group-hero-overline">MY COMMUNITY ${canLead('group')?pill('LEADER VIEW'):''}</div>
+    <h1>Wednesday<br>Group<span>.</span></h1>
+    <div class="group-hero-people">
+      <span class="group-hero-faces">${sampleGroupPeople.map((member,i)=>`<span class="group-member-avatar group-member-avatar--${i+1}" aria-label="${e(member.name)}">${e(member.initials)}</span>`).join('')}</span>
+      <span class="group-hero-count">8 fictional members</span>
+      <button type="button" class="group-hero-people-button" data-action="pane" data-area="group" data-value="people" aria-label="See people in your group">${icon('arrow')}</button>
+    </div>
+    <div class="group-hero-next">${icon('calendar')} ${wed()} · 6:30 PM</div>
+    <button type="button" class="group-hero-find" data-action="browse">Explore more groups ${icon('arrow')}</button>
+  </div>
+  ${tabs('group',opts,s.groupPane)}${body}${footer()}
+</section>`;
+}
 function team(){
 if(!todayUI.memberships.team)return `<div class="eyebrow">TEAM · DEMO EMPTY STATE</div><h1>A place to<br><em>serve.</em></h1><div class="empty-tab"><h2>Your next step starts here.</h2><p>No team or assignment belongs to this fixture. Team discovery and joining will be defined in a later phase.</p><button type="button" class="btn red" data-action="team-preview">About this preview</button></div>${footer()}`;
 const opts=[['schedule','Schedule'],['chat','Team chat'],...(canLead('team')?[['leader','Leader tools']]:[])];let body='';
@@ -163,6 +206,7 @@ if(s.view==='group'&&todayUI.memberships.group&&['chat','prayer'].includes(s.gro
 if(s.role!=='leader'){if(s.groupPane==='leader')s.groupPane='chat';if(s.teamPane==='leader')s.teamPane='schedule';}
 save();
 document.querySelector('.phone-inner').classList.toggle('is-fluid-today',s.view==='today');
+ document.querySelector('.phone-inner').classList.toggle('is-groups-v07',s.view==='group');
  view.innerHTML=(storageWarning?`<p class="storage-notice" role="status">${e(storageWarning)}</p>`:'')+(s.view==='today'?today():s.view==='group'?group():s.view==='team'?team():read());
 view.querySelectorAll('textarea').forEach(field=>{if(drafts[field.id]!==undefined)field.value=drafts[field.id]});
 $('nav').innerHTML=[['today','Today','home'],['group','Groups','group'],['team','Team','team'],['read','Read','read']].map(([id,label,glyph])=>`<button type="button" class="${s.view===id?'active':''}" data-go="${id}" ${s.view===id?'aria-current="page"':''}>${icon(glyph)}<small>${label}</small></button>`).join('');
@@ -224,11 +268,12 @@ if(v==='connected'){s.teamStatus='pending';todayUI.seenGroupSignature='';}
 if(v==='caught-up'){s.teamStatus='confirmed';s.coverage=false;todayUI.seenGroupSignature=T.signature(s);s.teamMessages=s.teamMessages.filter(m=>!m.coverage);}
 s.view='today';closeDialog(false);render();$('view').scrollTop=0;notify('Local Today fixture updated. No data was sent.');return;
 }
-if(a==='pane'){if(v==='leader'&&!canLead(b.dataset.area))return;if(b.dataset.area==='group')s.groupPane=v;else s.teamPane=v;render();return}
+if(a==='message-person'){if(!todayUI.memberships.group)return;const member=sampleGroupPeople.find(p=>p.id===person);if(!member)return;s.directPerson=member.id;s.groupPane='direct';render();return}
+ if(a==='pane'){if(v==='leader'&&!canLead(b.dataset.area))return;if(b.dataset.area==='group')s.groupPane=v;else s.teamPane=v;render();return}
 if(a==='browse'){s.discover=!s.discover;render();return}
 if(a==='rsvp'){s.rsvp=s.rsvp===v?'':v;render();notify('Sample RSVP updated');return}
 if(a==='interest'){s.interest=s.interest.includes(v)?s.interest.filter(x=>x!==v):[...s.interest,v];render();notify('Interest saved locally, not submitted');return}
-if(a==='send'){const x=$(v+'-input'),txt=x?.value.trim();if(!txt){notify('Write a message first');return}const item={name:'You',time:'Just now',text:txt};if(v==='group')s.groupMessages.push(item);else if(v==='team')s.teamMessages.push(item);else s.prayers.push(item);x.value='';delete drafts[v+'-input'];render();notify('Saved to this device only');return}
+if(a==='send'){const x=$(v+'-input'),txt=x?.value.trim();if(!txt){notify('Write a message first');return}const item={name:'You',time:'Just now',text:txt};if(v==='group')s.groupMessages.push(item);else if(v==='team')s.teamMessages.push(item);else if(v==='direct'){if(!todayUI.memberships.group||!sampleGroupPeople.some(p=>p.id===s.directPerson))return;s.directMessages[s.directPerson]??=[];s.directMessages[s.directPerson].push(item);}else s.prayers.push(item);x.value='';delete drafts[v+'-input'];render();notify('Saved to this device only');return}
 if(a==='attendance'&&canLead('group')){s.attendance[person]=v;render();notify('Sample attendance updated');return}
 if(a==='reached'&&canLead('group')){s.reached=s.reached.includes(person)?s.reached.filter(x=>x!==person):[...s.reached,person];render();return}
 if(a==='shift'){s.teamStatus=v;if(v==='confirmed'){s.coverage=false;s.teamMessages=s.teamMessages.filter(x=>!x.coverage)}render();notify('Sample serving response saved');return}
