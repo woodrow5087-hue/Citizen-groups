@@ -26,3 +26,6 @@ main{padding:11px 18px 20px;min-height:0;scrollbar-width:none;overscroll-behavio
 /* A deliberate on-ramp from the working dashboard back to approved animation. */
 .rp-replay-welcome{color:var(--ink);text-decoration:none;min-height:72px;border-color:#BCA89D;background:#F3E5D6}
 .rp-replay-welcome:focus-visible{outline:3px solid #E3002B;outline-offset:3px}
+
+/* Dark-surface legal/demo text across connected tabs needs AA contrast. */
+.is-groups-v07 .disclaimer,.is-team-v08 .disclaimer,.is-read-v09 .disclaimer{color:#F3E5D6}
