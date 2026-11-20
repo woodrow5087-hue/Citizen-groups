@@ -11,6 +11,13 @@ The complete product/design baseline is in `docs/RALLY_POINT_MASTER_BLUEPRINT_v1
 **Checklist**
 - [x] Branch created from main
 - [x] Blueprint committed
-- [ ] Two visual reference images committed
-- [ ] Codex Today-screen work
+- [x] Two visual reference images committed
+- [x] Codex Today-screen work
 - [ ] Mobile review / approval
+
+**Implementation update — November 20, 2026:** Both exact images are now in
+`docs/assets/` (committed before application work in `3f473fc`). The Phase 1
+implementation, automated verification and actual comparison captures are in
+`docs/phase1/`. Human iPhone review/approval remains open; no merge or production
+deployment is authorized. The original instructions above are retained as the
+handoff record.

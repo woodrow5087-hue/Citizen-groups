@@ -45,4 +45,19 @@ attendance, flagging or reading-policy system.
 - Fixture role/scenario controls do not imply authentication or backend permission
   enforcement. No real accounts, member data or delivery is introduced.
 
-Validation and comparison screenshots will be recorded after implementation.
+## Delivery and verification
+
+[Verification report](phase1/VALIDATION.md) ·
+[Actual reference comparison](phase1/review.html) ·
+[Draft PR #17](https://github.com/woodrow5087-hue/Citizen-groups/pull/17).
+
+Twenty-three Node tests, the static production build, eight local browser cases
+and two deployed mobile journeys passed. Exact viewport details and remaining
+physical iPhone review are recorded in the report. No main merge or production
+deployment occurred.
+
+The new source modules are small and specific: `rallypoint-today.js` derives Today
+from the existing state; `rallypoint-ui.js` holds shared graphics/icons;
+`rallypoint-phase1.css` supplies the blueprint tokens and Today components. The
+existing app retains its original message, schedule, leader and reading actions.
+The old stylesheet/archive and master blueprint are unchanged.
