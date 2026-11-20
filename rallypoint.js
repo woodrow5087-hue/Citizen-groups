@@ -42,9 +42,9 @@ function renderPeople(snapshot){
   const preview=lastMessage?e(lastMessage.text):'No sample messages yet. Say hello to your group.';
   return `<section class="today-people" aria-label="Your people">
     <div class="today-people-content">
-      <div class="today-people-kicker"><span>YOUR PEOPLE</span><span>${canLead('group')?'LEADER VIEW · DEMO':'YOUR COMMUNITY'}</span></div>
+      <div class="today-people-kicker"><span>BETTER TOGETHER</span><span>${canLead('group')?'LEADER VIEW · DEMO':'YOUR COMMUNITY'}</span></div>
       <div class="today-people-heading">
-        <h2>Better,<br>together<span class="today-people-period">.</span></h2>
+        <h2>Your people<span class="today-people-period">.</span></h2>
         <span class="today-people-constellation" aria-hidden="true"><i></i><i></i><i></i></span>
       </div>
       <div class="today-people-roster">
@@ -69,7 +69,7 @@ const upNext=event?`<button type="button" class="up-next" data-go="${event.id}" 
 const attention=[];
 if(snapshot.unread)attention.push(`<button type="button" class="attention-tile ${snapshot.attention===1?'full':''}" data-go="group" data-pane="chat" aria-label="Open group update and conversation">${icon('group')}<h3>Group<br>Update</h3><p>${s.prayers.length?'New notes & a prayer request':'A note from your group'}</p><span class="tile-arrow">${icon('arrow')}</span>${U.contours()}</button>`);
 if(snapshot.pending)attention.push(`<button type="button" class="attention-tile availability-action ${snapshot.attention===1?'full':''}" data-go="team" data-pane="schedule" aria-label="Confirm availability in My Schedule">${icon('confirm')}<h3>Confirm<br>Availability</h3><p>Let your team know you’re in this week</p><span class="tile-arrow">${icon('arrow')}</span>${U.contours()}</button>`);
-return `<section class="today-screen" aria-label="Today"><div class="today-welcome"><div class="fluid-hero-overline">CITIZEN CHURCH <span class="fluid-hero-rule"></span> YOUR DAY</div><h1>Good morning,<br><span>${e(todayUI.name||'Jonathan')}.</span></h1><p class="welcome-line">CONNECT <i>·</i> GROW <i>·</i> SERVE</p><span class="today-date">${new Date().toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'})}</span><span class="today-watermark" aria-hidden="true"></span><span class="welcome-graphic">${U.contours()}</span></div>${upNext}${renderPeople(snapshot)}
+return `<section class="today-screen" aria-label="Today"><div class="today-welcome"><div class="fluid-hero-overline">CITIZEN CHURCH <span class="fluid-hero-rule"></span> YOUR DAY</div><h1>Good morning,<br><span>${e(todayUI.name||'Jonathan')}.</span></h1><p class="welcome-line">CONNECT <i>·</i> GROW <i>·</i> SERVE</p><span class="today-date">${new Date().toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'})}</span><span class="today-watermark" aria-hidden="true"></span><span class="welcome-graphic">${U.contours()}</span></div>${renderPeople(snapshot)}${upNext}
 ${attention.length?`<div class="fluid-activity-head"><span>IN YOUR CIRCLE</span><small>YOUR NEXT STEPS</small></div><div class="attention-grid" aria-label="Needs your attention">${attention.join('')}</div>`:`<div class="today-empty">${icon('check')}<div><h3>${snapshot.leader?'Your member updates are clear.':'You’re all caught up.'}</h3><p>${todayUI.memberships.group||todayUI.memberships.team?'No group updates or serving responses need your attention.':'Your daily reading is ready whenever you are.'}</p></div></div>`}
 <div class="today-reading"><span class="fluid-read-curve" aria-hidden="true"></span><span class="today-label">TODAY’S READING</span><h2>John 15:9–12</h2><div class="reading-actions"><button type="button" class="read-primary" data-go="read" data-reading="scripture">${s.read?icon('check'):''}${s.read?'Read today':'Abide'}</button><button type="button" data-go="read" data-reading="questions">Reflect</button><button type="button" data-action="memorize-preview">Memorize</button></div>${U.leaves()}<p class="reading-caption">${todayUI.memberships.group?'Your group’s selection':'Daily Scripture'} · Fictional reading fixture</p></div>
 
