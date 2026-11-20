@@ -139,6 +139,35 @@ test('existing messages, prayer posts, RSVP, team coverage and reading remain fu
  app.go('team');app.click('[data-action="shift"][data-value="declined"]');app.action('cover');assert.equal(app.saved().coverage,true);app.click('[data-area="team"][data-value="chat"]');app.type('team-input','A local team note.');app.click('[data-action="send"][data-value="team"]');
  app.go('read');app.action('read');app.action('pray');const saved=app.saved();const again=open(t,{saved,ui:app.ui()});assert.deepEqual(again.saved(),saved);assert.ok(saved.groupMessages.some(m=>m.text==='A local group thought.'));assert.ok(saved.prayers.some(m=>m.text==='A fictional prayer.'));assert.ok(saved.teamMessages.some(m=>m.text==='A local team note.'));assert.equal(saved.rsvp,'going');assert.equal(saved.read,true);assert.equal(saved.prayed,true);
 });
+test('Team v0.8 keeps a source-driven schedule and conversation preview with honest statuses',t=>{
+ const app=open(t);app.go('team');
+ assert.ok(app.d.querySelector('.team-screen-v08'));
+ assert.match(app.d.querySelector('.team-shift-response').textContent,/Awaiting response/);
+ assert.match(app.d.querySelector('.team-shift-response').textContent,/not recorded attendance/);
+ assert.match(app.d.querySelector('.team-message-preview').textContent,/Sam R\./);
+ app.click('.team-message-preview');
+ assert.equal(app.saved().teamPane,'chat');
+ app.type('team-input','Thanks for serving this weekend!');
+ app.click('[data-action="send"][data-value="team"]');
+ app.click('[data-action="pane"][data-area="team"][data-value="schedule"]');
+ assert.match(app.d.querySelector('.team-message-preview').textContent,/Thanks for serving/);
+ app.click('[data-action="shift"][data-value="confirmed"]');
+ assert.equal(app.saved().teamStatus,'confirmed');
+ assert.match(app.d.querySelector('.team-shift-response').textContent,/Confirmed/);
+ app.go('today');
+ assert.match(app.d.querySelector('.dashboard-team').textContent,/You’re in/);
+});
+test('Team v0.8 coverage and leader access remain contextual to its fixture role',t=>{
+ const app=open(t);app.go('team');
+ assert.equal(app.d.querySelector('[data-area="team"][data-value="leader"]'),null);
+ app.click('[data-action="shift"][data-value="declined"]');
+ app.click('[data-action="cover"]');
+ assert.equal(app.saved().coverage,true);
+ app.action('demo-controls');app.click('#role');app.action('close-dialog');
+ app.click('[data-action="pane"][data-area="team"][data-value="leader"]');
+ assert.match(app.text(),/One sample coverage request/);
+ assert.match(app.text(),/not proof of attendance/);
+});
 test('Groups People directory opens scoped one-to-one local messaging and persists it',t=>{
  const app=open(t);app.go('group');
  app.click('[data-action="pane"][data-area="group"][data-value="people"]');
