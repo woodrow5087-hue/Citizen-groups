@@ -1,0 +1,268 @@
+/* Rally Point — Premium ALIVE Hybrid v0.1
+ * Faithful four-screen red/charcoal/cream product chassis + selected ALIVE people rail.
+ * Scoped to .premium-alive; historical styles and reference branches unchanged. */
+.premium-alive{
+  --pa-red:#E3002B;--pa-ink:#242322;--pa-cream:#F3E5D6;
+  --pa-paper:#FCF7F0;--pa-muted:#715F55;
+}
+.premium-alive .header{
+  border:0;box-shadow:none;background:#E3002B;color:#fff;
+}
+.premium-alive .brand-home,.premium-alive .brand-home span{color:#fff}
+.premium-alive .brand-home img{filter:brightness(0) invert(1)}
+.premium-alive .header-button{background:#9D002A88;color:#fff;border:1px solid #FFB1C177;border-radius:50%}
+.premium-alive .profile-avatar{background:#242322;color:#fff;border:2px solid #F3E5D6;box-shadow:none}
+.premium-alive .spotify-link{background:#9D002A80}
+.premium-alive .spotify-link img{filter:brightness(0) invert(1)}
+.premium-alive .bottom{
+  background:#222222;color:#fff;border-color:#F3E5D64F;
+  box-shadow:0 -8px 24px #1716161C;
+}
+.premium-alive .bottom button.active{background:#E3002B;color:#fff}
+.premium-alive button:focus-visible{outline:3px solid #FFD8A1;outline-offset:3px}
+.premium-alive .header button:focus-visible,
+.premium-alive .bottom button:focus-visible{outline-color:#fff}
+
+/* Today: vivid greeting, strongly branded photograph, and contextual action modules. */
+.premium-alive.is-fluid-today .dashboard-v06 .today-welcome{
+  min-height:107px;padding:15px 19px 24px;
+  background:#E3002B;border-radius:0;overflow:hidden;
+}
+.premium-alive.is-fluid-today .dashboard-v06 .today-welcome:before{
+  top:-95px;right:-140px;bottom:auto;left:auto;
+  width:375px;height:235px;background:#F11945;
+  transform:rotate(-16deg);opacity:.55;
+}
+.premium-alive.is-fluid-today .dashboard-v06 .today-welcome:after{
+  width:230px;height:140px;left:-125px;bottom:-100px;opacity:.3;
+}
+.premium-alive.is-fluid-today .dashboard-v06 .dashboard-identity{
+  align-items:center;flex-wrap:wrap;gap:9px;
+}
+.premium-alive.is-fluid-today .dashboard-v06 .dashboard-identity h1{
+  font-size:clamp(17px,4.7vw,21px);font-weight:950;letter-spacing:-.05em;
+}
+.premium-alive.is-fluid-today .dashboard-v06 .dashboard-campus-marker{
+  font-size:8px;letter-spacing:.15em;margin-top:7px;color:#FFE3E8;
+}
+.premium-alive.is-fluid-today .dashboard-v06 .dashboard-today-date{
+  font-size:9px;padding:5px 8px;white-space:nowrap;
+}
+.premium-alive.is-fluid-today .dashboard-v06 .today-watermark{opacity:.09}
+.premium-alive .pa-today-hero{
+  position:relative;display:flex;flex-direction:column;justify-content:space-between;
+  min-height:246px;width:calc(100% - 28px);margin:13px 14px 10px;
+  border:1.5px solid #FFC0C2;border-radius:28px 28px 28px 12px;
+  color:#fff;background:#C5032F;text-align:left;padding:20px 19px 15px;
+  overflow:hidden;isolation:isolate;box-shadow:0 5px 0 #171313,0 13px 18px #0606063D;
+  cursor:pointer;
+}
+.premium-alive .pa-hero-photo{
+  position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
+  object-position:center 42%;z-index:-2;filter:saturate(1.05);
+}
+.premium-alive .pa-hero-scrim{
+  position:absolute;inset:0;z-index:-1;
+  background:linear-gradient(180deg,#D20035E8 0%,#D7003599 34%,#23151812 66%,#1B1716B8 100%);
+}
+.premium-alive .pa-hero-heading{display:grid;gap:11px;max-width:285px}
+.premium-alive .pa-hero-heading strong{
+  color:#fff;font:950 clamp(32px,9.1vw,43px)/.98 Manrope,sans-serif;
+  letter-spacing:-.075em;text-wrap:balance;
+}
+.premium-alive .pa-hero-heading small{
+  font-size:12px;line-height:1.4;font-weight:750;color:#FFF5EC;max-width:205px;
+}
+.premium-alive .pa-hero-bottom{
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+  border-top:1px solid #FFFFFF88;padding-top:12px;
+  font-size:9px;letter-spacing:.08em;font-weight:950;
+}
+.premium-alive .pa-hero-bottom span{font-size:22px;line-height:1}
+
+/* Signature ALIVE circle rail: photos lead to local conversations, never church data. */
+.premium-alive .pa-people-rail{
+  position:relative;min-width:0;background:#101A1C;color:#FFF8F0;
+  padding:16px 0 18px;overflow:hidden;
+}
+.premium-alive .pa-people-rail--today{
+  margin:13px 0 0;
+  border-top:1px solid #FFFFFF21;border-bottom:1px solid #FFFFFF21;
+}
+.premium-alive .pa-people-heading{
+  display:flex;align-items:baseline;justify-content:space-between;
+  gap:9px;padding:0 17px 15px;
+}
+.premium-alive .pa-people-heading h2{
+  margin:0;color:#FDF4EA;font-size:clamp(20px,6.2vw,26px);
+  font-weight:950;letter-spacing:-.075em;line-height:1;
+}
+.premium-alive .pa-star{display:inline-block;margin-left:5px;color:#FF3F6B;font-size:17px;transform:rotate(-9deg)}
+.premium-alive .pa-people-heading>span{
+  color:#AEC6BB;font-size:8px;letter-spacing:.12em;font-weight:850;text-align:right;
+}
+.premium-alive .pa-people-scroll{
+  display:flex;align-items:flex-start;gap:15px;list-style:none;
+  margin:0;padding:0 18px 8px;overflow-x:auto;overflow-y:hidden;
+  scrollbar-width:none;scroll-snap-type:x proximity;
+  -webkit-overflow-scrolling:touch;
+}
+.premium-alive .pa-people-scroll::-webkit-scrollbar{display:none}
+.premium-alive .pa-person{flex:0 0 72px;min-width:0;scroll-snap-align:start}
+.premium-alive .pa-person-trigger{
+  display:flex;align-items:center;flex-direction:column;gap:8px;
+  border:0;background:transparent;color:#F8F0E7;padding:0;
+  width:72px;min-height:101px;text-align:center;
+}
+.premium-alive .pa-story-ring{
+  width:72px;height:72px;position:relative;display:grid;place-items:center;
+  border:3px solid #9BE0CC;padding:4px;border-radius:50%;
+  background:#344648;box-shadow:0 0 0 1px #0F2021 inset;
+}
+.premium-alive .pa-ring-primary,.premium-alive .pa-ring-rose{border-color:#FF4D75}
+.premium-alive .pa-ring-mint{border-color:#9BE0CC}
+.premium-alive .pa-ring-blue{border-color:#89CDE7}
+.premium-alive .pa-ring-amber{border-color:#F3BB83}
+.premium-alive .pa-story-initials{
+  position:absolute;color:#fff;font-size:16px;font-weight:900;
+  letter-spacing:-.05em;
+}
+.premium-alive .pa-story-ring img{
+  position:relative;width:100%;height:100%;border-radius:50%;
+  object-fit:cover;background:#344648;
+}
+.premium-alive .pa-person-name{
+  display:block;max-width:79px;color:#F8ECE2;font-size:10px;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:800;
+}
+.premium-alive .pa-person-trigger:focus-visible .pa-story-ring{outline:3px solid #fff;outline-offset:3px}
+
+/* Compassionate and practical assistant: one prompt, not a generic feed. */
+.premium-alive .pa-companion{
+  margin:13px 14px 6px;background:#F3E5D6;color:#242322;
+  border:1.5px solid #FFEEDB;border-radius:23px 23px 25px 10px;
+  padding:17px 18px 16px;box-shadow:0 4px 0 #131414;
+}
+.premium-alive .pa-companion-top{
+  display:flex;align-items:center;gap:7px;color:#B00027;
+  font-size:9px;font-weight:950;letter-spacing:.1em;
+}
+.premium-alive .pa-pulse{width:8px;height:8px;border-radius:50%;background:#E3002B}
+.premium-alive .pa-companion-mark{margin-left:auto;font-size:22px;color:#E3002B}
+.premium-alive .pa-companion h2{
+  color:#242322;font-size:clamp(24px,6vw,30px);
+  line-height:1.06;letter-spacing:-.068em;margin:11px 0 7px;font-weight:950;
+}
+.premium-alive .pa-companion p{color:#63554C;font-size:12px;line-height:1.45;margin:0 0 12px}
+.premium-alive .pa-companion-link{
+  display:flex;gap:10px;align-items:center;justify-content:space-between;
+  width:100%;min-height:44px;padding:10px 14px;border:0;border-radius:15px;
+  background:#E3002B;color:#fff;font-size:12px;font-weight:900;text-align:left;
+}
+.premium-alive .pa-companion-link span{font-size:19px}
+
+/* Preserve the old sample conversation as a compact action below the new people rail. */
+.premium-alive.is-fluid-today .dashboard-v06 .today-people:not(.today-people--discover){
+  margin:11px 14px 0;padding:12px 14px;
+  min-height:0;background:#C6002E;border:1px solid #FF95A2;
+  border-radius:19px;box-shadow:0 3px 0 #161010;
+}
+.premium-alive.is-fluid-today .dashboard-v06 .today-people:not(.today-people--discover):before,
+.premium-alive.is-fluid-today .dashboard-v06 .today-people:not(.today-people--discover):after,
+.premium-alive.is-fluid-today .dashboard-v06 .today-people:not(.today-people--discover) .today-people-content:after{display:none}
+.premium-alive.is-fluid-today .dashboard-v06 .today-people:not(.today-people--discover) .today-people-kicker,
+.premium-alive.is-fluid-today .dashboard-v06 .today-people:not(.today-people--discover) .today-people-heading,
+.premium-alive.is-fluid-today .dashboard-v06 .today-people:not(.today-people--discover) .today-people-roster{display:none}
+.premium-alive.is-fluid-today .dashboard-v06 .today-people:not(.today-people--discover) .today-people-message{
+  margin:0;padding:11px 12px;background:#A9002A;border:1px solid #FFC2CA85;
+  border-radius:15px;box-shadow:none;
+}
+.premium-alive.is-fluid-today .dashboard-v06 .today-people:not(.today-people--discover) .today-people-leader{
+  margin:11px 0 0;
+}
+.premium-alive.is-fluid-today .dashboard-v06 .dashboard-twins{margin-top:16px}
+.premium-alive.is-fluid-today .dashboard-v06 .today-reading{margin-top:16px}
+.premium-alive.is-fluid-today .bottom button.fluid-quick{background:#E3002B}
+
+/* My People: dark editorial hero, genuine circle strip, purposeful group action. */
+.premium-alive.is-groups-v07 .header{background:#101A1C}
+.premium-alive.is-groups-v07 main{background:#101A1C}
+.premium-alive.is-groups-v07 .group-screen-v07{background:#101A1C}
+.premium-alive.is-groups-v07 .group-community-hero{
+  margin-bottom:0;background:#101A1C;border-radius:0;
+  padding:20px 20px 13px;
+}
+.premium-alive.is-groups-v07 .group-community-hero:before{
+  background:#E3002B;right:-125px;top:-90px;opacity:.58;
+}
+.premium-alive.is-groups-v07 .group-community-hero:after{
+  background:#AA002E;opacity:.33;
+}
+.premium-alive.is-groups-v07 .group-community-hero h1{
+  font-size:clamp(35px,10vw,44px);max-width:335px;
+  line-height:.97;margin:15px 0 11px;
+}
+.premium-alive.is-groups-v07 .group-hero-overline{color:#FFBCC8}
+.premium-alive.is-groups-v07 .group-hero-people{display:none}
+.premium-alive.is-groups-v07 .group-hero-next{font-size:10px;margin:12px 0}
+.premium-alive.is-groups-v07 .group-hero-find{min-height:44px}
+.premium-alive.is-groups-v07 .pa-people-rail--group{margin:0 -15px 0;padding-top:11px}
+.premium-alive .pa-group-summary{
+  display:flex;align-items:center;gap:12px;
+  width:calc(100% - 2px);margin:12px 1px 17px;
+  text-align:left;background:#F3E5D6;color:#242322;
+  padding:15px 12px;border:1.5px solid #FFF5EA;
+  border-radius:20px;box-shadow:0 4px 0 #070D0E;
+}
+.premium-alive .pa-summary-mark{
+  flex:none;width:36px;height:36px;display:grid;place-items:center;
+  border-radius:12px;background:#E3002B;color:#fff;font-size:25px;
+}
+.premium-alive .pa-summary-body{display:flex;flex-direction:column;gap:3px;min-width:0;flex:1}
+.premium-alive .pa-summary-body strong{font-size:14px;line-height:1.15;font-weight:950}
+.premium-alive .pa-summary-body small{font-size:9px;line-height:1.45;color:#66594E}
+.premium-alive .pa-summary-arrow{font-size:27px;color:#A70027}
+.premium-alive.is-groups-v07 .group-screen-v07>.tabs{
+  margin-bottom:13px;
+}
+.premium-alive.is-groups-v07 .group-screen-v07 .card{
+  background:#F3E5D6;color:#242322;border:1px solid #FFEDDA;
+}
+
+/* Leader mode restores the vibrant red hero, without a fifth public navigation tab. */
+.premium-alive.is-leader-hybrid .header{background:#E3002B}
+.premium-alive.is-leader-hybrid .group-community-hero{
+  background:#E3002B;color:#fff;border-radius:0 0 27px 8px;
+  margin-bottom:10px;
+}
+.premium-alive.is-leader-hybrid .group-community-hero:before{background:#F42147;opacity:.65}
+.premium-alive.is-leader-hybrid .group-community-hero:after{background:#A7002A;opacity:.45}
+.premium-alive.is-leader-hybrid .group-screen-v07 .followup{
+  background:#FFF6EC;border-color:#DDBBAF;border-radius:18px;
+}
+.premium-alive.is-leader-hybrid .group-screen-v07 .followup .btn{background:#E3002B;color:#fff}
+
+/* Serving: keep the reference's red / warm cream / dark update triad. */
+.premium-alive.is-team-v08 .team-v08-hero{border-radius:0 0 39px 11px}
+.premium-alive.is-team-v08 .team-v08-hero h1{font-size:clamp(39px,11vw,49px)}
+.premium-alive.is-team-v08 .team-message-preview{
+  position:relative;isolation:isolate;overflow:hidden;
+  background:linear-gradient(95deg,#15191AEE 0%,#15191AE0 58%,#17191A90),
+    url('assets/campuses/north.jpg') center / cover;
+  color:#FFF4E8;border:1px solid #FFE7D04A;
+}
+.premium-alive.is-team-v08 .team-shift-actions .btn.red{background:#E3002B}
+
+/* Universal mobile layout, focus visibility, and motion tolerance. */
+@media(max-width:350px){
+  .premium-alive .pa-today-hero{min-height:230px;margin-left:10px;margin-right:10px;width:calc(100% - 20px)}
+  .premium-alive .pa-hero-heading strong{font-size:31px}
+  .premium-alive .pa-people-heading{padding-left:11px;padding-right:11px}
+  .premium-alive .pa-people-scroll{padding-left:11px;padding-right:11px;gap:11px}
+  .premium-alive .pa-person,.premium-alive .pa-person-trigger{width:67px;flex-basis:67px}
+  .premium-alive .pa-story-ring{width:66px;height:66px}
+  .premium-alive .pa-companion{margin-left:10px;margin-right:10px}
+}
+@media(prefers-reduced-motion:reduce){
+  .premium-alive .pa-today-hero,.premium-alive .pa-person-trigger,.premium-alive .pa-companion-link{transition:none!important;animation:none!important}
+}
