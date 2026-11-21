@@ -165,7 +165,13 @@ test('Your People safely escapes the modern message body and preserves legacy HT
   assert.equal(app.d.querySelector('.rpx-legacy-records img'),null);
 });
 test('Today settles into a real caught-up state after opening the source and confirming serving',t=>{
- const app=open(t);app.click('.attention-tile[data-go="group"]');app.go('today');app.click('.availability-action');app.click('[data-action="shift"][data-value="confirmed"]');app.go('today');assert.match(app.text(),/You’re all caught up/);assert.equal(app.d.querySelector('.attention-tile'),null);
+ const app=open(t);app.click('.attention-tile[data-go="group"]');
+  const modernKey='rallypoint-wednesday-chat-lab-v1';
+  assert.ok(app.w.localStorage.getItem(modernKey),'modern chat must persist after opening');
+  assert.equal(app.w.RallyConversationRead.peek({
+    storage:app.w.localStorage,domain:app.w.RallyChatDomain
+  }).unreadCount,0,'reading the embedded thread must clear its cursor');
+  app.go('today');app.click('.availability-action');app.click('[data-action="shift"][data-value="confirmed"]');app.go('today');assert.match(app.text(),/You’re all caught up/);assert.equal(app.d.querySelector('.attention-tile'),null);
  app.action('notifications');assert.match(app.d.querySelector('#dialog-root [role="dialog"]').textContent,/You’re all caught up/);app.action('close-dialog');
  const again=open(t,{saved:app.saved(),ui:app.ui()});assert.match(again.text(),/You’re all caught up/);
 });
