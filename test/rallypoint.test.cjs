@@ -480,7 +480,7 @@ test('companion care does not show private group prompts when group membership i
  app.click('[data-action="scenario"][data-value="no-memberships"]');
  assert.equal(app.d.querySelector('[data-action="companion-encourage"]'),null);
  assert.equal(app.d.querySelector('.pa-care-memory'),null);
- assert.equal(app.d.querySelector('.pa-care-later'),null);
+ assert.equal(app.d.querySelector('[data-action="companion-snooze"]'),null,'guest never receives a private care snooze');
 });
 
 
