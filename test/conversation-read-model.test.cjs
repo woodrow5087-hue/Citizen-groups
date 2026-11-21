@@ -52,7 +52,7 @@ test('sent-only preview and read count ignore pending/failed and own messages, p
  assert.equal(R.markRead({storage,domain}),true);
  const saved=JSON.parse(storage.getItem(R.STORAGE_KEY));
  const repo=domain.createMockConversationRepository({
-   seed:saved.snapshot,clock:()=>new Date('2026-11-23T12:30:00.000Z')
+   seed:saved.snapshot,clock:(()=>{let tick=0;return ()=>new Date(Date.parse('2026-11-23T12:30:00.000Z')+tick++*1000);})()
  });
  const pending=repo.sendMessage({conversationId:R.CONVERSATION,userId:'u_anna',body:'Not delivered'});
  const failed=repo.sendMessage({conversationId:R.CONVERSATION,userId:'u_anna',body:'Failed delivery'});
