@@ -39,18 +39,19 @@
  const avatars=[
   ['AL',12],['JW',47],['MK',15],['SR',44],['CM',33],['JD',60]
  ];
- const avatar=(i,extra='')=>{const a=avatars[i%avatars.length];return '<span class="av '+extra+'"><img alt="" loading="lazy" src="https://i.pravatar.cc/96?img='+a[1]+'"><span style="display:none">'+a[0]+'</span></span>'};
+ const avatar=(i,extra='')=>{const a=avatars[i%avatars.length];return '<span class="av '+extra+'"><img alt="" loading="eager" decoding="async" src="https://i.pravatar.cc/96?img='+a[1]+'"><span style="display:none">'+a[0]+'</span></span>'};
  const avrow=(count=5)=>'<div class="avatars">'+Array.from({length:count},(_,i)=>avatar(i)).join('')+'<span class="av count">+'+(count===4?'12':'7')+'</span></div>';
  const shell=(content,view,index)=>{
    const dark=view==='people';
    const isCare=view==='care';
-   const info=(dark?'<button class="top-icon" data-action="notice" aria-label="Search groups">'+ico('search')+'</button>':
+   const info=(dark?'<button class="top-icon" data-action="notice" aria-label="Search groups">'+ico('search')+'</button><button class="top-icon simple-top-icon" data-action="notice" aria-label="Explore more groups">+</button>':
+      view==='team'?'<button class="top-icon simple-top-icon" data-action="notice" aria-label="Search teams">'+ico('search')+'</button>':
       '<button class="top-icon" data-action="notice" aria-label="Notifications">'+ico('bell')+'</button>');
    const logo='<div class="phone-logo"><img src="assets/citizen-flag.svg" alt=""><span><strong>RALLY POINT</strong><small>CITIZEN CHURCH</small></span></div>';
    return '<div class="phone-viewport"><div class="island" aria-hidden="true"></div><div class="phone-status"><span>9:41</span><span class="status-icons">▮▮▰ <i></i></span></div>'+
-   '<div class="phone-scroller"><div class="'+(dark?'dark-screen':view==='read'?'red-screen':'red-screen')+'">'+
-   '<div class="phone-top">'+logo+'<div class="phone-top-actions">'+(isCare?'<button class="top-icon" data-action="notice" aria-label="Leader controls">'+ico('people')+'</button>':info)+
-    (view==='today'?'<span class="top-avatar">JW</span>':'')+'</div></div>'+
+   '<div class="phone-scroller"><div class="'+(dark?'dark-screen':isCare?'care-screen':'red-screen')+'">'+
+   '<div class="phone-top">'+logo+'<div class="phone-top-actions">'+(isCare?'<button class="leader-view-pill" data-action="nav" data-view="today" aria-label="Return to member Today view">♙ Leader View⌄</button>':info)+
+    (view==='today'?'<button type="button" class="top-avatar" data-action="nav" data-view="care" aria-label="Open sample Leader Care view">JW</button>':'')+'</div></div>'+
    content+'</div></div>'+
    '<nav class="phone-bottom" aria-label="App navigation">'+
    [['today','home','Today'],['people','people','Groups'],['team','team','Team'],['read','book','Read']].map(([target,symbol,label])=>
@@ -58,10 +59,10 @@
    '</nav></div>';
  };
  function today(){
-  return '<div class="today-welcome"><strong>Good morning.</strong><div class="campus">YOUR CAMPUS · CENTRAL</div></div>'+
+  return '<div class="today-welcome"><strong>Good morning, Jonathan.</strong><div class="campus">YOUR CAMPUS · CENTRAL</div></div>'+
    '<section class="hero-card wave-hero"><h2>Your people.<br>Your place.</h2><p>A community to grow, serve, and follow Jesus.</p>'+avrow(4)+'</section>'+
    '<div class="today-stack">'+
-    '<button class="tile-button white-tile" data-action="nav" data-view="people">'+ico('chat')+'<span class="tile-body"><strong>Wednesday Group</strong><small>Anna: Looking forward to seeing everyone Wednesday!</small></span>'+ico('right')+'</button>'+
+    '<button class="tile-button white-tile" data-action="nav" data-view="people"><span class="tile-symbol">'+ico('chat')+'</span><span class="tile-body"><strong>Wednesday Group</strong><small>Anna: Looking forward to seeing everyone Wednesday!</small></span>'+ico('right')+'</button>'+
     '<div class="split-tiles"><button class="split-tile white-tile" data-action="nav" data-view="people"><span class="kicker">'+ico('calendar')+' NEXT GATHERING</span><strong>Wed 6:30</strong><small>Group gathering</small></button>'+
     '<button class="split-tile dark-tile" data-action="nav" data-view="team"><span class="kicker">'+ico('people')+' SERVING</span><strong>Sun 9:00</strong><small>Welcome Team</small></button></div>'+
     '<button class="tile-button white-tile today-read" data-action="nav" data-view="read">'+ico('book')+'<span class="tile-body"><small>TODAY’S READ</small><strong>John 15:9–12</strong></span>'+ico('right')+'</button>'+
@@ -70,7 +71,7 @@
  function people(){
   return '<div class="page-hero wave-hero"><h1>The people<br>who know you.</h1><p>Groups · Conversations · Prayer</p></div>'+
    '<div class="people-body"><div class="people-head">'+
-    '<div class="section-row"><div class="section-title">'+ico('people')+'<div><strong>Wednesday Group</strong><small style="display:block">12 members</small></div></div>'+ico('right')+'</div>'+
+    '<div class="section-row"><div class="section-title">'+ico('people')+'<div><strong>Wednesday Group</strong><small style="display:block">12 members</small></div></div><button class="section-chevron" type="button" data-action="notice" aria-label="Group information">'+ico('right')+'</button></div>'+
     avrow(5)+'<div class="divider"></div>'+
     '<div class="message-row">'+avatar(1)+'<div class="message"><strong>Anna</strong> <span class="message-time">· 1h</span><p>Looking forward to seeing everyone Wednesday!</p></div></div>'+
     '<div class="message-row">'+avatar(2)+'<div class="message"><strong>Mark</strong> <span class="message-time">· 3h</span><p>Can you pray for my dad’s procedure tomorrow?</p></div></div>'+
@@ -78,15 +79,15 @@
     '<div class="divider"></div><div class="mini-label">'+ico('prayer')+' PRAYER REQUESTS</div>'+
     '<button class="prayer-item" data-action="pray">'+avatar(1)+'<span>'+(state.prayed?'You’re praying for Mark’s family':'Pray for Mark’s dad and a smooth recovery')+'</span>'+ico('right')+'</button>'+
     '<button class="cta-red" data-action="checkin">'+ico('chat')+(state.checkIn?'✓ CHECKED IN':'CHECK IN')+'</button>'+
-    '<button class="cta-cream" data-action="message">'+ico('chat')+' '+(state.messagesSent?'SEND ANOTHER MESSAGE':'JOIN CONVERSATION')+'</button>'+
+    ''+
    '</div></div>';
  }
  function team(){
   return '<div class="page-hero wave-hero"><h1>Serve<br>together.</h1><p>Teams · Schedules · Updates</p></div>'+
    '<div class="team-body">'+
    '<section class="white-tile serve-card"><div class="eyebrow-row">'+ico('calendar')+' YOUR NEXT SERVE</div><h2>Sunday · 9:00 AM</h2><p>Welcome Team</p>'+
-   '<span class="confirmed">'+(state.teamConfirmed?ico('check')+' Confirmed':'Response needed')+'</span>'+
-   '<button class="cta-red" data-action="confirm">'+ico('check')+(state.teamConfirmed?'REQUEST A CHANGE':'CONFIRM ASSIGNMENT')+'</button></section>'+
+   '<button type="button" class="confirmed" data-action="confirm" aria-label="Change your demo serving response">'+(state.teamConfirmed?ico('check')+' Confirmed':'Response needed')+'</button>'+
+   '</section>'+
    '<section class="dark-tile update-card"><div class="eyebrow-row">'+ico('megaphone')+' TEAM UPDATE</div><h2>Welcome Team</h2><p>Need one person for 11:00.<br>If you’re available, reply below and we’ll coordinate.</p>'+
     '<button class="cta-cream" data-action="help">'+ico('chat')+(state.helpOffered?'✓ RESPONSE RECORDED':'REPLY TO TEAM')+'</button></section>'+
    '</div>';
@@ -97,7 +98,7 @@
   return '<div class="leader-head"><h1>Care for<br>your people.</h1><p>Stay connected · Notice needs · Follow up</p></div>'+
    '<div class="cream-screen"><div class="leader-body"><div class="leader-summary">'+ico('people')+' <span>'+num+' follow-up'+(num===1?'':'s')+' to review</span>'+ico('right')+'</div>'+
    people.map(p=>'<section class="leader-card"><div class="leader-person">'+avatar(p.avatar)+'<div><strong>'+p.name+'</strong><p>'+p.detail+'</p></div></div>'+
-    '<div class="leader-actions"><button type="button" class="primary" data-action="reach" data-person="'+p.name+'">'+ico('chat')+' Reach out</button><button type="button" class="'+(state.reviewed.includes(p.id)?'reviewed':'')+'" data-action="review" data-id="'+p.id+'">'+(state.reviewed.includes(p.id)?'✓ Reviewed':'✓ Mark reviewed')+'</button></div></section>').join('')+
+    '<div class="leader-actions"><button type="button" class="primary" data-action="reach" data-person="'+p.name+'">'+ico('chat')+' Reach out</button><button type="button" class="'+(state.reviewed.includes(p.id)?'reviewed':'')+'" data-action="review" data-id="'+p.id+'">'+ico('check')+' '+(state.reviewed.includes(p.id)?'Reviewed':'Mark reviewed')+'</button></div></section>').join('')+
    '<div style="font-size:9px;color:#75635a;line-height:1.6;padding:4px 4px 10px">Illustrative, permissioned leader view. Attendance context requires human review; it does not determine personal or spiritual well-being.</div></div></div>';
  }
  function read(){
