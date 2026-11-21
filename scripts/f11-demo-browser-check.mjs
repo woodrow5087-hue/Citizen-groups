@@ -59,7 +59,7 @@ try{
   await page.locator('.profile-avatar').click();
   await page.locator('[data-action="reset-demo"]').click();
   assert.match(await page.locator('#dialog-root').textContent(),/This cannot be undone/);
-  await page.locator('[data-action="demo-controls"]').click();
+  await page.locator('#dialog-root [data-action="demo-controls"]').click();
   assert.ok(await page.locator('[data-action="reset-demo"]').isVisible(),'cancel retains demo');
   await page.locator('[data-action="reset-demo"]').click();
   await page.locator('[data-action="confirm-demo-reset"]').click();
