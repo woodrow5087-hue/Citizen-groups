@@ -36,7 +36,7 @@ jobs:
           for attempt in $(seq 1 12); do
             status=$(curl --location --silent --output /tmp/alive-page --write-out '%{http_code}' --connect-timeout 5 --max-time 12 "$PREVIEW_URL" || true)
             echo "Attempt $attempt: HTTP $status"
-            if [ "$status" = "200" ] && grep -q 'ALIVE concept lab' /tmp/alive-page; then
+            if [ "$status" = "200" ] && grep -q 'ALIVE × Citizen concept 02' /tmp/alive-page; then
               echo "VERIFIED LIVE PREVIEW: $PREVIEW_URL"
               exit 0
             fi
