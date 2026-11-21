@@ -444,6 +444,7 @@ test('Sunday-to-week companion saves one private step and resurfaces it on a lat
  assert.match(app.d.querySelector('.pa-rhythm-followup').textContent,/A SMALL STEP FOR TOMORROW/);
  assert.equal(app.d.querySelector('[data-action="rhythm-complete"]'),null,'No completion control until a future visit');
  const later=open(t,{saved,ui:app.ui(),now:'2026-11-25T12:00:00'});
+ later.go('today'); // The saved fixture was captured while Read was active.
  assert.match(later.d.querySelector('.pa-rhythm-followup').textContent,/YOUR STEP FOR TODAY/);
  later.click('[data-action="rhythm-complete"]');
  assert.ok(later.saved().rhythm.completedAt);
