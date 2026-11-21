@@ -38,7 +38,7 @@ try{
    await page.locator('.phone-slot.is-mobile-active .phone-bottom [data-view="people"]').click();
    assert.equal(await page.locator('.phone-slot.is-mobile-active .people-head').count(),1);
    await page.locator('.phone-slot.is-mobile-active [data-action="checkin"]').click();
-   assert.match(await page.locator('.phone-slot.is-mobile-active').innerText(),/CHECKED IN/);
+   assert.match(await page.locator('.phone-slot.is-mobile-active').innerText(),/Checked in/);
    await page.screenshot({path:path.join(out,'studio-concept-people-mobile.png'),fullPage:true});
    const headChevron=await page.locator('.phone-slot.is-mobile-active .section-chevron svg').evaluate(e=>e.getBoundingClientRect().width);
    assert.ok(headChevron<=30,'group header arrow must not overwhelm card');
