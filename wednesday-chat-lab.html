@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#E3002B">
+  <meta name="description" content="Rally Point — isolated fictional Wednesday Group chat experience for design review.">
+  <title>Wednesday Group — Rally Point Conversation Lab</title>
+  <link rel="icon" href="assets/citizen-flag.svg" type="image/svg+xml">
+  <link rel="preload" href="assets/fonts/Manrope.ttf" as="font" type="font/ttf" crossorigin>
+  <link rel="stylesheet" href="wednesday-chat-lab.css">
+  <script src="rallypoint-chat-domain.browser.js" defer></script>
+  <script src="wednesday-chat-lab.js" defer></script>
+</head>
+<body>
+  <div class="experience">
+    <aside class="presentation" aria-label="Preview information">
+      <img class="pitch-flag" src="assets/citizen-flag.svg" alt="">
+      <span class="pitch-kicker">RALLY POINT / EXPERIENCE LAB 01</span>
+      <h1>Your people.<br><em>Your words.</em><br>One place.</h1>
+      <p>A living conversation concept for Wednesday Group, built on the actual versioned F-02 mock repository.</p>
+      <div class="pitch-bar"></div>
+      <div class="pitch-facts"><span>01 / Fictional members</span><span>02 / Browser-only messages</span><span>03 / No church integrations</span></div>
+      <a href="/" class="pitch-return">← Return to current app</a>
+    </aside>
+    <div class="device-wrap">
+      <section class="device" aria-label="Wednesday Group messaging prototype">
+        <header class="app-header">
+          <div class="brand-line">
+            <a href="/" class="brandmark" aria-label="Return to Rally Point app"><img src="assets/citizen-flag.svg" alt=""><span>RALLY<br>POINT</span></a>
+            <span class="demo-pill">EXPERIMENTAL / LOCAL</span>
+            <button id="reset-lab" type="button" class="header-icon" title="Reset fictional conversation" aria-label="Reset fictional conversation">↺</button>
+          </div>
+          <div class="headline">
+            <span class="eyebrow">MY PEOPLE <span aria-hidden="true">✳</span> WEDNESDAY GROUP</span>
+            <h2>Better<br><em>together.</em></h2>
+            <p>One place to show up, listen, and encourage each other.</p>
+          </div>
+          <div class="people-rail" role="region" tabindex="0" aria-label="Fictional Wednesday Group members">
+            <div class="person"><span class="person-ring"><span class="face face-anna">AL</span></span><small>Anna</small></div>
+            <div class="person"><span class="person-ring"><span class="face face-jess">JW</span></span><small>Jess</small></div>
+            <div class="person"><span class="person-ring"><span class="face face-marcus">MC</span></span><small>Marcus</small></div>
+            <div class="person"><span class="person-ring"><span class="face face-taylor">TD</span></span><small>Taylor</small></div>
+            <span class="rail-note">5 PEOPLE<br><strong>1 CONVERSATION</strong></span>
+          </div>
+        </header>
+        <div class="thread-context">
+          <div class="context-icon" aria-hidden="true">15</div>
+          <div class="context-text"><span>THIS WEEK · JOHN 15:12</span><strong>Love one another.</strong><small>What does that look like for us?</small></div>
+          <span class="context-arrow" aria-hidden="true">↗</span>
+        </div>
+        <div class="conversation-toolbar">
+          <div><span class="thread-label">THE CONVERSATION</span><span id="message-count" class="thread-count"></span></div>
+          <div id="save-indicator" class="saved-note" role="status" aria-live="polite">Saved on this device</div>
+        </div>
+        <main class="thread-scroll" id="thread-scroll" aria-label="Wednesday Group messages" tabindex="0">
+          <div id="conversation" class="conversation" aria-live="polite" aria-relevant="additions text"></div>
+        </main>
+        <section class="compose-dock" aria-label="Write a fictional group message">
+          <div id="reply-preview" class="reply-preview" hidden>
+            <div><span>REPLYING TO <strong id="reply-name"></strong></span><p id="reply-snippet"></p></div>
+            <button id="cancel-reply" type="button" aria-label="Cancel reply">×</button>
+          </div>
+          <div class="composer-inner">
+            <label class="visually-hidden" for="message-input">Write a message to Wednesday Group</label>
+            <textarea id="message-input" rows="1" maxlength="700" placeholder="Say something encouraging…" autocomplete="off"></textarea>
+            <button id="send-message" class="send-btn" type="button" aria-label="Send message" disabled><span aria-hidden="true">↗</span></button>
+          </div>
+          <div class="composer-foot">
+            <span><span class="live-dot" aria-hidden="true"></span> FICTIONAL GROUP · LOCAL-ONLY</span>
+            <label class="failure-label"><input id="fail-next" type="checkbox"> Fail next send</label>
+          </div>
+          <div id="lab-error" class="error-message" role="alert" hidden></div>
+        </section>
+        <nav class="lab-bottom" aria-label="Prototype navigation">
+          <a href="/"><span class="nav-icon" aria-hidden="true">⌂</span><span>Today</span></a>
+          <span class="active"><span class="nav-icon" aria-hidden="true">◎</span><span>Groups</span></span>
+          <span><span class="nav-icon" aria-hidden="true">♡</span><span>Team</span></span>
+          <span><span class="nav-icon" aria-hidden="true">▤</span><span>Read</span></span>
+        </nav>
+      </section>
+      <p class="device-caption">Rally Point · Fictional interaction lab · Never sends real messages</p>
+    </div>
+  </div>
+</body>
+</html>
