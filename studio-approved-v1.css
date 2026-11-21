@@ -233,3 +233,7 @@ main{max-width:1580px;padding:0 9px 22px;margin:0 auto}
  .care-screen{min-height:100%}
 }
 @media(prefers-reduced-motion:reduce){.phone *{scroll-behavior:auto;transition:none!important}}
+
+/* Center the short brand underline beneath each screen heading. */
+.concept-label{position:relative;justify-content:center}
+.concept-label:after{left:50%;top:100%;transform:translateX(-50%);margin-top:10px}
