@@ -83,12 +83,22 @@
 - **Acceptance evidence required:** Documented tokens and component boundaries; pixel/visual-reference and mobile regression comparisons; keyboard/focus, contrast, reduced-motion and accessibility checks; no loss of approved screen personality or functionality.
 
 ## F-10 — Automated QA, visual regression and real-device validation
+- **Decision:** APPROVED — Option B.
+- **Owner decision:** “Approve F-10, Option B. Record the decision and proceed to F-11 without implementing code yet.”
+- **Intended approach:** Adopt proportional three-layer QA: (1) automated unit/contract/integration and regression tests including failures and permission denials, (2) permanent, versioned, protected visual baselines with explicit review of significant differences, and (3) browser/WebKit and physical iPhone Safari/VoiceOver interaction review for meaningful mobile UI changes.
+- **Workflow integration:** Once F-01 is implemented, make GitHub Actions and review-only Netlify Deploy Previews run directly for feature PRs against `rally-point/develop`, eliminating main-targeted preview bridge PRs. Require feature handoffs to identify exact changes, test results, device coverage, screenshots, accessibility notes, known limits, and a working preview where applicable.
+- **Approval boundary:** Passing automated QA is **not** product-owner visual approval. Significant UI work requires both technical validation and an explicit product review. Apply checks proportionately: documentation-only modifications should not incur manual mobile UI gates.
+- **Guardrails:** Preserve approved Premium ALIVE visual references, all working app workflows and sample data. This decision does not authorize implementing workflows, code modifications, merges, production deployment, or real-member data access.
+- **Implementation status:** NOT STARTED. Planning approval only; no workflow, tests, browser automation, application files or deployments have been changed.
+- **Acceptance evidence required:** CI on canonical branch, protected screenshot goldens, deterministic conversation data/failure/retry tests, 320–430px responsive checks, meaningful accessibility and keyboard coverage, and recorded real-device signoff for significant mobile UI changes.
+
+## F-11 — Product identity, version labels and navigation coherence
 - **Decision:** PENDING REVIEW.
-- **Audit finding:** Existing GitHub Actions tests include fixture tests, builds, Chromium Playwright, axe, onboarding and Blank Battle checks, but the workflow targets PRs to `main` instead of the agreed future canonical development branch. Screenshot artifacts expire after 7 days, and real iPhone Safari/VoiceOver validation is not established as a release gate.
-- **Candidate approach:** Integrate CI and Deploy Previews directly with the F-01 canonical branch, maintain versioned protected visual baselines, add focused conversation/domain contract and failure/offline tests, validate phone sizes and WebKit behavior, and require a physical-device interaction/accessibility signoff before approving significant UI work.
+- **Audit finding:** The README still describes “Phase 1 Today” and an older branch/preview, the active UI displays legacy “Phase 1” and “v0.6” fixture labels, and a Spotify playlist shortcut occupies prime header space alongside notifications/profile controls. Inconsistent names and historical demo labels can obscure which product/build is under review.
+- **Candidate approach:** Establish one canonical source-of-truth product identity and build/version label, distinguish official screen names from development milestones, preserve clear demo/fictional disclaimers and four-tab routing, and review the relative priority of header actions. Do not silently finalize the Rally Point public name or remove a music link without a separate decision.
 - **Implementation status:** NOT STARTED.
 
-## F-11 through F-14
+## F-12 through F-14
 **Decision:** NOT YET REVIEWED. Preserve the original prioritized foundation backlog for the decision sequence.
 
 ## Decision protocol
