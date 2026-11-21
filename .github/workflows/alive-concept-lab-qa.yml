@@ -1,0 +1,45 @@
+name: Alive Concept Lab QA
+
+on:
+  pull_request:
+    branches:
+      - 'rally-point/development-v08'
+    paths:
+      - 'alive-lab.*'
+      - 'scripts/alive-lab-browser-check.mjs'
+      - 'scripts/build.cjs'
+      - 'test/alive-lab.test.cjs'
+      - 'package.json'
+      - '.github/workflows/alive-concept-lab-qa.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  alive-lab-preview:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Install dependencies
+        run: npm ci
+      - name: Run all unit/behavior tests
+        run: npm test
+      - name: Build the standalone lab alongside approved v0.8
+        run: npm run build
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+      - name: Exercise Today, Groups, interactions and accessibility
+        run: npm run test:alive
+      - name: Save lab screenshots and results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: rally-point-alive-lab-qa
+          path: test-results/alive-lab/
+          if-no-files-found: ignore
+          retention-days: 14
