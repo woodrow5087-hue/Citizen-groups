@@ -109,13 +109,19 @@
 - **Acceptance evidence required:** Church-approved scope and data owners; evidence-based feasibility matrix for Groups, Services, attendance, response/writeback and messaging; verified least privilege and denial/revocation tests; documented deletion/retention/support/incident and rollback; secure authentication; accessibility/QA and authorized dry run; explicit no-go/go decision before any real-member pilot.
 
 ## F-13 — Notification architecture and member preferences
-- **Decision:** PENDING REVIEW.
-- **Audit finding:** Current/future-state notifications are fictional browser-simulated activity, not a genuine push or synced notification inbox. The app has no production identity, delivery, opt-in/out preferences, quiet hours, sensitive-content redaction, token lifecycle, retries or deduplication.
-- **Candidate approach:** Define notification categories and preference/consent and privacy boundaries now; implement a safe mock preference/inbox model first; defer real push infrastructure until F-03 authorization and F-12 authenticated messaging and member-service decisions are actually implemented and approved.
-- **Implementation status:** NOT STARTED.
+- **Decision:** APPROVED — Option B.
+- **Owner decision:** “Approve F-13, Option B. Record the decision and proceed to F-14 without implementing code yet.”
+- **Intended approach:** Define the notification/event contract and member-preference policy now. Separate categories such as conversation replies/mentions, confirmed serving schedule changes, relevant group changes, optional user-chosen Scripture reminders and tightly scoped Leader Care tasks. Include explicit opt-in/opt-out behavior, quiet hours and exceptions, device/lock-screen privacy, redaction, authorization at delivery time, event de-duplication, token lifecycle and error/retry handling. Demonstrate preference and inbox states through labeled fictional fixtures only.
+- **Implementation sequence:** Ratify event categories, consent and privacy requirements in architecture documentation; use mock notification records where necessary to support design tests; **defer real push delivery** until F-03 identity/access, F-12 approved message/integration service, church policies and production readiness gates are fulfilled.
+- **Guardrails:** Minimize interruptions and manufactured urgency; never leak prayer/pastoral/private message contents in lock-screen alerts. A local demo notification is not a delivered push or synchronized inbox. No secrets, device tokens, real member data or production notifications.
+- **Implementation status:** NOT STARTED. Planning approval only; no code, notification service, member settings or deployment changed.
+- **Acceptance evidence required:** Reviewed event taxonomy and privacy/consent matrix, preference/quiet-hours and suppression rules, lock-screen redaction, revoked membership and duplicate-event tests, and separate authorization before real delivery.
 
-## F-14
-**Decision:** NOT YET REVIEWED. Preserve the original prioritized foundation backlog for the decision sequence.
+## F-14 — Citizen-first validation and future expansion
+- **Decision:** PENDING REVIEW.
+- **Audit finding:** Multi-church expansion, monetization/commercialization and broad parity with other church apps are potential future avenues but distract from validating a safe, exceptional experience for one Citizen Church cohort if pursued too early.
+- **Candidate approach:** Prioritize product-market/mission fit within an authorized Citizen pilot first; keep tenant/church boundaries possible in data contracts without implementing multi-organization settings, marketplace, billing or distribution infrastructure now. Revisit broader rollout after reliable participation, communication and serving outcomes are demonstrated.
+- **Implementation status:** NOT STARTED. 
 
 ## Decision protocol
 Each item is discussed and explicitly decided before any resulting implementation is undertaken. The user can revise a recorded decision. Do not infer that approval of one finding authorizes changes for another. Protect the agreed Premium ALIVE Hybrid design identity.
