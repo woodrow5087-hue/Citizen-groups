@@ -399,7 +399,7 @@ document.querySelector('.phone-inner').classList.toggle('is-fluid-today',s.view=
 if(s.view==='play')mountBlankBattle();
 view.querySelectorAll('textarea').forEach(field=>{if(drafts[field.id]!==undefined)field.value=drafts[field.id]});
 $('nav').innerHTML=[['today','Today','home'],['group','Groups','group'],['team','Team','team'],['read','Read','read']].map(([id,label,glyph])=>`<button type="button" class="${s.view===id||(s.view==='play'&&id==='read')?'active':''}" data-go="${id}" ${s.view===id||(s.view==='play'&&id==='read')?'aria-current="page"':''}>${icon(glyph)}<small>${label}</small></button>`).join('');
- if(s.view==='today')$('nav').children[1].insertAdjacentHTML('afterend',`<button type="button" class="fluid-quick" data-action="quick-actions" aria-label="Quick actions">${icon('plus')}<small>Quick</small></button>`);
+
 $('profile-initials').textContent=(todayUI.name||'Jonathan').split(/\s+/).map(v=>v[0]).join('').slice(0,2).toUpperCase();
 const snapshot=T.snapshot(s,todayUI);$('activity-dot').hidden=!snapshot.attention&&!snapshot.leader;
 view.scrollTop=position;
