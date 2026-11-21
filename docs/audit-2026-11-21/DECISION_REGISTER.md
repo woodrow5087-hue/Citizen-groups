@@ -46,12 +46,21 @@
 - **Acceptance evidence required:** Church-owned policy review/signoff; evidence provenance and permissions matrix; fictional human-in-the-loop care task flows including verify, review, no-action, follow-up and resolution; retention/deletion and auditability requirements; explicit live-pilot approval before using real information.
 
 ## F-06 — Reusable, expressive messaging experience
+- **Decision:** APPROVED — Option B.
+- **Owner decision:** “Approve F-06, Option B. Record the decision and proceed to F-07 without implementing code yet.”
+- **Intended approach:** Design and build **one excellent, reusable fictional Wednesday Group conversation** inside the canonical working app rather than transferring the self-contained future-state demo wholesale. The component system includes sender-aligned matte-red/cream bubbles, conversation grouping, timestamps, expressive accessible reactions, quoted replies, an adaptive sticky multiline composer, retained drafts, mock send/pending/failure/retry feedback, and reusable context-action cards.
+- **Implementation sequence:** Apply the approved F-02 versioned message contract and F-04 module boundaries first; establish detailed UI/interaction specifications and acceptance screenshots; implement one mock-powered Wednesday Group thread; test on representative phone widths and actual iPhone keyboard/VoiceOver; extend to Team and permissioned direct messaging only after review and explicit approval.
+- **Guardrails:** Preserve the original Premium ALIVE red/charcoal/cream identity, circular Your People profiles, four-tab navigation and all unrelated existing routes/features. Use fictional browser-local identities and messages; no live delivery, external accounts, new backend, broad redesign, or production release is authorized.
+- **Implementation status:** NOT STARTED. This decision authorizes planning only, not application code, UI modifications, merges, or deployments.
+- **Acceptance evidence required:** A complete accessible thread with stable IDs, replies, reversible reactions, draft persistence, correct order and scroll/keyboard behavior, explicit sending/sent/failed states, reduced-motion support, and passing unit/browser/mobile visual regression against preserved screens.
+
+## F-07 — Today first-viewport information hierarchy
 - **Decision:** PENDING REVIEW.
-- **Audit finding:** Existing Group, Team and direct messages are basic local text lists/composers; the future-state lab demonstrates expressive bubbles, replies and reactions but is an independent HTML concept, not a reusable module in the canonical working app.
-- **Candidate approach:** Design, implement and rigorously test **one** exceptional fictional Wednesday Group conversation using a reusable component system, stable message IDs, reactions, quoted replies, composer keyboard/safe-area handling, pending/failure/retry, accessible mobile interaction, and locked Premium ALIVE visual references. Extend to Team and direct messages only after approval.
+- **Audit finding:** The large branded greeting, photo-led hero, and Your People circles occupy almost the whole initial 390×844 viewport in both the current v0.3 and future-state concepts, pushing the companion's useful next action down the screen.
+- **Candidate approach:** Refine the **information hierarchy** while preserving red/charcoal visual mass, photo warmth, prominent circular people profiles and established four-tab shell. Surface one specific relevant action in the initial viewport, then test content priority, conditional states and mobile accessibility.
 - **Implementation status:** NOT STARTED.
 
-## F-07 through F-14
+## F-08 through F-14
 **Decision:** NOT YET REVIEWED. Preserve the original prioritized foundation backlog for the decision sequence.
 
 ## Decision protocol
