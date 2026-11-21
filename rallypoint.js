@@ -21,6 +21,14 @@ const storageGuard=window.RallyStorageGuard.create({getItem:k=>localStorage.getI
 const $=x=>document.getElementById(x), e=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const save=()=>{const result=storageGuard.save({primaryRaw:JSON.stringify(s),todayRaw:JSON.stringify(todayUI)});storageWarning=result.ok?'':result.reason;};
 const canLead=area=>s.role==='leader'&&!!todayUI.memberships[area];
+// Shared read-only projection of the same F-02 snapshot mounted in Groups.
+// Legacy groupMessages remain an independent historical archive.
+const conversation=()=>{
+  try{return window.RallyConversationRead?.peek({
+    storage:localStorage,domain:window.RallyChatDomain,member:todayUI.memberships.group
+  })||{status:'unavailable',lastMessage:null,unreadCount:0};}
+  catch(_){return {status:'unavailable',lastMessage:null,unreadCount:0};}
+};
 const pill=(t,light=false)=>`<span class="pill ${light?'light':''}">${e(t)}</span>`;
 const icons={home:'⌂',group:'♙',team:'♡',read:'▤',arrow:'↗'};
 const sampleGroupPeople=[{id:'anna',name:'Anna L.',initials:'AL'},{id:'jess',name:'Jess W.',initials:'JW'},{id:'marcus',name:'Marcus C.',initials:'MC'},{id:'taylor',name:'Taylor D.',initials:'TD'}];
@@ -38,7 +46,7 @@ const prayerList=()=>s.prayers.map(m=>`<div class="message"><div class="avatar">
 const tabs=(area,values,active)=>`<div class="tabs" role="group" aria-label="${area} sections">${values.map(([id,label])=>`<button type="button" data-action="pane" data-area="${area}" data-value="${id}" class="${active===id?'selected':''}">${label}</button>`).join('')}</div>`;
 const compose=(type,title,placeholder)=>`<div class="composer"><label for="${type}-input">${title}</label><textarea id="${type}-input" rows="2" maxlength="700" placeholder="${placeholder}"></textarea><button type="button" class="btn red" data-action="send" data-value="${type}">Post to sample ${type==='group'?'group':type==='team'?'team':type==='direct'?'private demo conversation':'prayer board'} <span>➤</span></button></div>`;
 const lead=()=>`<div class="card"><div class="kicker">LEADER TOOLS · PRIVATE DEMO</div><h3>Record attendance</h3><p>Track actual participation, not whether someone opened the app.</p>${[['anna','Anna L.'],['jess','Jess W.'],['marcus','Marcus C.'],['taylor','Taylor D.']].map(([id,name])=>`<div class="attendance"><strong>${name}</strong><div class="actions">${[['here','Here'],['excused','Excused'],['unknown','Not recorded']].map(([v,label])=>`<button type="button" class="mini ${s.attendance[id]===v?'selected':''}" data-action="attendance" data-person="${id}" data-value="${v}">${label}</button>`).join('')}</div></div>`).join('')}</div><div class="card"><div class="kicker">PEOPLE FIRST</div><h3>Thoughtful check-ins</h3><p>These are fictional scenarios, not judgments about someone's spiritual health.</p>${[['marcus','Marcus C.','Two recent sample gatherings missed'],['taylor','Taylor D.','Signed up but no sample gathering yet']].map(([id,name,reason])=>`<div class="followup"><div>${pill(s.reached.includes(id)?'Reviewed':'Suggested check-in')}<strong>${name}</strong><small>${reason}</small></div><button type="button" class="btn outline" data-action="reached" data-person="${id}">${s.reached.includes(id)?'Undo':'Mark reviewed'}</button></div>`).join('')}</div>`;
-function renderPeople(snapshot){
+function renderPeople(snapshot,chat){
   if(!todayUI.memberships.group){
     return `<section class="today-people today-people--discover" aria-label="Your people">
       <div class="today-people-content">
@@ -54,10 +62,14 @@ function renderPeople(snapshot){
     </section>`;
   }
   const roster=sampleGroupPeople.map((person,index)=>`<span role="img" aria-label="${e(person.name)}" class="today-people-avatar today-people-avatar--${index+1}">${e(person.initials)}</span>`).join('');
-  const lastMessage=s.groupMessages.length?s.groupMessages[s.groupMessages.length-1]:null;
-  const author=lastMessage?e(lastMessage.name):'Your group';
-  const timestamp=lastMessage?e(lastMessage.time):'Start the conversation';
-  const preview=lastMessage?e(lastMessage.text):'No sample messages yet. Say hello to your group.';
+  const latest=chat.status==='ok'?chat.lastMessage:null;
+  const author=latest?e(latest.author):chat.status==='unavailable'?'Preview unavailable':'Your group';
+  const timestamp=latest?e(new Date(latest.createdAt).toLocaleString('en-US',{
+    month:'short',day:'numeric',hour:'numeric',minute:'2-digit'
+  })):chat.status==='unavailable'?'Review saved data':'Start the conversation';
+  const preview=latest?e(latest.body):chat.status==='unavailable'
+    ?'The new conversation could not be read. Earlier messages are still preserved in Groups.'
+    :'No new messages yet. Your earlier saved messages remain in Groups.';
   return `<section class="today-people" aria-label="Your people">
     <div class="today-people-content">
       <div class="today-people-kicker"><span>YOUR PEOPLE</span><span>${canLead('group')?'LEADER VIEW · DEMO':'YOUR COMMUNITY'}</span></div>
@@ -74,14 +86,14 @@ function renderPeople(snapshot){
         <span class="today-people-message-head">${icon('message')} <span>LATEST CONVERSATION</span><small>${timestamp}</small></span>
         <span class="today-people-message-author">${author}</span>
         <span class="today-people-message-text">${preview}</span>
-        <span class="today-people-message-action">OPEN CONVERSATION ${icon('arrow')}</span>
+        <span class="today-people-message-action">OPEN CONVERSATION${snapshot.unreadCount?` · ${snapshot.unreadCount} UNREAD`:''} ${icon('arrow')}</span>
       </button>
       ${snapshot.leader?`<button type="button" class="leader-entry today-people-leader" data-go="group" data-pane="leader" aria-label="Open authorized sample group leader check-ins">${icon('leader')}<span><span class="today-label">LEADER FOLLOW-UP · DEMO</span><strong>${snapshot.leader.remaining.length} sample check-ins to review</strong><small>People first, not engagement scores</small></span>${icon('arrow')}</button>`:''}
     </div>
   </section>`;
 }
 function today(){
-  const snapshot=T.snapshot(s,todayUI),event=snapshot.upNext;
+  const chat=conversation(),snapshot=T.snapshot(s,todayUI,new Date(),chat),event=snapshot.upNext;
   const campusLabel=({central:'Central',north:'North',maui:'Maui',online:'Online'})[todayUI.campus]||'';
   const day=event?.date.toLocaleDateString('en-US',{weekday:'short'})||'';
   const hour=event?.date.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'})||'';
@@ -126,7 +138,7 @@ function today(){
     ${H.todayHero(todayUI)}
     ${H.peopleRail(todayUI,'today')}
     ${H.todayPrompt(s,todayUI)}
-    ${renderPeople(snapshot)}
+    ${renderPeople(snapshot,chat)}
     <div class="dashboard-twins" role="group" aria-label="Upcoming gathering and serving">${nextWidget}${teamWidget}</div>
     <div class="today-reading">
       <span class="fluid-read-curve" aria-hidden="true"></span>
@@ -140,7 +152,7 @@ function today(){
       </div>
       <p class="reading-caption">${todayUI.memberships.group?'Your group’s selection':'Daily Scripture'} · Fictional reading fixture${s.read?' · Read today':''}</p>
     </div>
-    ${!snapshot.attention&&!snapshot.leader?`<div class="today-empty dashboard-clear">${icon('check')}<div><h3>You’re all caught up.</h3><p>No group messages or serving responses need your attention.</p></div></div>`:''}
+    ${!snapshot.attention&&!snapshot.leader&&chat.status!=='unavailable'?`<div class="today-empty dashboard-clear">${icon('check')}<div><h3>You’re all caught up.</h3><p>No group messages or serving responses need your attention.</p></div></div>`:''}
     <div class="fluid-week">
       <div class="fluid-week-heading"><span>THIS WEEK</span><small>YOUR RHYTHM</small></div>
       <div class="fluid-week-events">
@@ -188,7 +200,8 @@ function groupBrowse(){
 function group(){
 if(!todayUI.memberships.group)return groupBrowse();
 if(s.discover)return groupBrowse();
-const opts=[['chat','Conversation'],['people','People'],...(s.groupPane==='direct'?[['direct','Direct message']]:[]),['gather','Gathering'],['prayer','Prayer'],...(canLead('group')?[['leader','Leader tools']]:[])];
+const unreadGroup=s.groupPane==='chat'?0:conversation().unreadCount;
+ const opts=[['chat',unreadGroup?`Conversation (${unreadGroup} unread)`:'Conversation'],['people','People'],...(s.groupPane==='direct'?[['direct','Direct message']]:[]),['gather','Gathering'],['prayer','Prayer'],...(canLead('group')?[['leader','Leader tools']]:[])];
 let body='';
 if(s.groupPane==='chat')body=G.integratedGroupChat({messages:s.groupMessages,escape:e});
 if(s.groupPane==='people')body=`<div class="card group-people-card">
@@ -388,7 +401,6 @@ function render(){
 const view=$('view'),position=view.scrollTop;
 view.querySelectorAll('textarea').forEach(field=>{drafts[field.id]=field.value});
 if(!['today','group','team','read','play'].includes(s.view))s.view='today';
-if(s.view==='group'&&todayUI.memberships.group&&['chat','prayer'].includes(s.groupPane))todayUI.seenGroupSignature=T.signature(s);
 if(s.role!=='leader'){if(s.groupPane==='leader')s.groupPane='chat';if(s.teamPane==='leader')s.teamPane='schedule';}
 save();
 const hybridShell=document.querySelector('.phone-inner');
@@ -416,6 +428,13 @@ if(s.view==='group'&&s.groupPane==='chat'&&todayUI.memberships.group&&$('rpx-cha
         organizationId:'citizen_demo',groupId:'wed'},action
     }).allowed===true;
     Chat.mount(root,{authorize});
+    // A view visit is a read event even before a second chat rerender.
+    // The shared adapter preserves draft/reply fields and refuses malformed storage.
+    if(authorize('read')){
+      window.RallyConversationRead?.markRead({
+        storage:localStorage,domain:Domain,member:todayUI.memberships.group
+      });
+    }
   }else{
     const note=root.querySelector('#lab-error');
     if(note){note.hidden=false;note.textContent='The new fictional conversation could not load. Your earlier saved messages remain available below.';}
@@ -424,7 +443,7 @@ if(s.view==='group'&&s.groupPane==='chat'&&todayUI.memberships.group&&$('rpx-cha
 $('nav').innerHTML=[['today','Today','home'],['group','Groups','group'],['team','Team','team'],['read','Read','read']].map(([id,label,glyph])=>`<button type="button" class="${s.view===id||(s.view==='play'&&id==='read')?'active':''}" data-go="${id}" ${s.view===id||(s.view==='play'&&id==='read')?'aria-current="page"':''}>${icon(glyph)}<small>${label}</small></button>`).join('');
 
 $('profile-initials').textContent=(todayUI.name||'Jonathan').split(/\s+/).map(v=>v[0]).join('').slice(0,2).toUpperCase();
-const snapshot=T.snapshot(s,todayUI);$('activity-dot').hidden=!snapshot.attention&&!snapshot.leader;
+const snapshot=T.snapshot(s,todayUI,new Date(),conversation());$('activity-dot').hidden=!snapshot.attention&&!snapshot.leader;
 view.scrollTop=position;
 }
 function navigate(view,pane,reading){
@@ -433,7 +452,6 @@ s.view=view;
 if(view==='group'){
 s.discover=false;if(pane)s.groupPane=pane;
 if(pane==='leader'&&!(s.role==='leader'&&todayUI.memberships.group))s.groupPane='chat';
-if((pane==='chat'||pane==='prayer'||!pane)&&todayUI.memberships.group)todayUI.seenGroupSignature=T.signature(s);
 }
 if(view==='team'&&pane)s.teamPane=pane;
 render();$('view').scrollTop=0;
@@ -446,7 +464,7 @@ if(restore){if(dialogTrigger?.isConnected)dialogTrigger.focus({preventScroll:tru
 }
 function showDialog(type,trigger=document.activeElement){dialogTrigger=trigger;dialog=type;renderDialog();}
 function renderDialog(){
-let title='',body='';const snapshot=T.snapshot(s,todayUI);
+let title='',body='';const chat=conversation(),snapshot=T.snapshot(s,todayUI,new Date(),chat);
 if(dialog==='demo-controls'){
 title='Your local preview';body=`<p><strong>Rally Point · Phase 1</strong><br>Fictional people, messages and schedules. No account or integration is connected.</p><form data-form="demo-name" class="rp-stack"><label class="demo-field" for="demo-name">First name for this demo<input id="demo-name" name="name" maxlength="20" value="${e(todayUI.name)}" autocomplete="nickname" required></label><button type="submit" class="btn red">Save local name</button></form><div class="demo-section"><h3>Role preview</h3><button type="button" id="role" class="role" aria-label="Toggle member or leader preview">${s.role==='leader'?'Leader demo · Switch to member':'Member demo · Try leader tools'}</button><p class="fine-note">This grants fixture permissions only for Wednesday Group and Welcome Team when you belong to them. It is not a real account, authority grant or secure backend.</p></div><div class="demo-section"><h3>Try a Today state</h3><div class="rp-stack"><button type="button" class="demo-option" data-action="scenario" data-value="connected"><span>${icon('group')}</span><span><strong>Connected & actionable</strong><small>Group update and a pending serving response.</small></span></button><button type="button" class="demo-option" data-action="scenario" data-value="caught-up"><span>${icon('check')}</span><span><strong>All caught up</strong><small>Acknowledge updates and confirm the sample schedule.</small></span></button><button type="button" class="demo-option" data-action="scenario" data-value="no-memberships"><span>${icon('heart')}</span><span><strong>No group or team yet</strong><small>Welcoming empty state with Scripture and discovery paths.</small></span></button></div><p class="fine-note">Fixture controls change your local sample response and Today memberships. Your messages, prayer posts, RSVP and saved leader/reading choices are kept.</p></div><div class="demo-section"><h3>Welcome experience</h3><a href="?welcome=1" class="activity-item rp-replay-welcome">${icon('arrow')}<span><strong>Replay animated welcome</strong><small>Splash → Welcome → Log In or Campus → your existing Rally Point demo</small></span>${icon('arrow')}</a><p class="fine-note">Replaying onboarding won’t erase saved fictional messages, reading progress or schedule responses. Real sign-in is not connected.</p></div><div class="demo-section"><p class="fine-note">The working name and branding remain provisional. Local browser storage is not secure member storage. Please use fictional content.</p><a href="premium-hybrid-archive.html">Open the preserved Citizen Connect demo</a></div>`;
 }
@@ -454,7 +472,7 @@ if(dialog==='quick-actions'){
  title='Make your next move';body=`<p>Quick actions from your current Rally Point demo. Select one to open its existing feature.</p><div class="rp-stack">${todayUI.memberships.group?`<button type="button" class="activity-item" data-go="group" data-pane="chat">${icon('group')}<span><strong>Your group</strong><small>Open the Wednesday Group conversation</small></span>${icon('arrow')}</button>`:`<button type="button" class="activity-item" data-go="group">${icon('group')}<span><strong>Find a group</strong><small>Explore community</small></span>${icon('arrow')}</button>`}${todayUI.memberships.team?`<button type="button" class="activity-item" data-go="team" data-pane="schedule">${icon('team')}<span><strong>Your serving schedule</strong><small>See the upcoming sample shift</small></span>${icon('arrow')}</button>`:''}<button type="button" class="activity-item" data-go="read" data-reading="scripture">${icon('read')}<span><strong>Today’s Scripture</strong><small>Read John 15:9–12</small></span>${icon('arrow')}</button></div>`;
  }
  if(dialog==='notifications'){
-title='What needs your attention';body=`<p>Activity from the same local group and schedule fixtures shown on Today. No real notifications are sent.</p><div class="rp-stack">${snapshot.unread?`<button type="button" class="activity-item" data-go="group" data-pane="chat">${icon('message')}<span><strong>A group update</strong><small>Open Wednesday Group’s conversation.</small></span>${icon('arrow')}</button>`:''}${snapshot.pending?`<button type="button" class="activity-item" data-go="team" data-pane="schedule">${icon('confirm')}<span><strong>Your serving response</strong><small>Let the Welcome Team know your availability.</small></span>${icon('arrow')}</button>`:''}${snapshot.leader?`<button type="button" class="activity-item" data-go="group" data-pane="leader">${icon('leader')}<span><strong>Group leader check-ins</strong><small>${snapshot.leader.remaining.length} sample entries are awaiting review.</small></span>${icon('arrow')}</button>`:''}${!snapshot.attention&&!snapshot.leader?`<div class="today-empty">${icon('check')}<div><h3>You’re all caught up.</h3><p>Nothing needs your response in this fixture.</p></div></div>`:''}</div>`;
+title='What needs your attention';body=`<p>Activity from the same local group and schedule fixtures shown on Today. No real notifications are sent.</p><div class="rp-stack">${snapshot.unread?`<button type="button" class="activity-item" data-go="group" data-pane="chat">${icon('message')}<span><strong>A group update</strong><small>Open Wednesday Group’s conversation.</small></span>${icon('arrow')}</button>`:''}${snapshot.pending?`<button type="button" class="activity-item" data-go="team" data-pane="schedule">${icon('confirm')}<span><strong>Your serving response</strong><small>Let the Welcome Team know your availability.</small></span>${icon('arrow')}</button>`:''}${snapshot.leader?`<button type="button" class="activity-item" data-go="group" data-pane="leader">${icon('leader')}<span><strong>Group leader check-ins</strong><small>${snapshot.leader.remaining.length} sample entries are awaiting review.</small></span>${icon('arrow')}</button>`:''}${!snapshot.attention&&!snapshot.leader&&chat.status!=='unavailable'?`<div class="today-empty">${icon('check')}<div><h3>You’re all caught up.</h3><p>Nothing needs your response in this fixture.</p></div></div>`:''}${chat.status==='unavailable'?`<p role="status">The fictional group conversation could not be read. Open Groups to review your saved messages.</p>`:''}</div>`;
 }
 if(dialog==='memorize-preview'){
 title='Memorize · Phase 2 preview';body=`<p>The memorization exercise is not part of this Today-screen phase. This is a labeled preview, not a completed practice or progress record.</p><div class="phase-placeholder"><strong>${e(currentReading().passage)} · BSB excerpt</strong><blockquote>“${e(currentReading().excerpt)}”</blockquote></div><button type="button" class="btn red" data-go="read" data-reading="scripture">Open the existing reading</button><p class="fine-note">KJV text is public domain in the United States. Translation choice and full reading-plan scope remain later-phase decisions.</p>`;
@@ -477,8 +495,11 @@ if(['notifications','demo-controls','team-preview','quick-actions'].includes(a))
 if(a==='close-dialog'){closeDialog();return}
 if(a==='scenario'){
 todayUI.memberships={group:v!=='no-memberships',team:v!=='no-memberships'};
-if(v==='connected'){s.teamStatus='pending';todayUI.seenGroupSignature='';}
-if(v==='caught-up'){s.teamStatus='confirmed';s.coverage=false;todayUI.seenGroupSignature=T.signature(s);s.teamMessages=s.teamMessages.filter(m=>!m.coverage);}
+if(v==='connected'){s.teamStatus='pending';}
+if(v==='caught-up'){s.teamStatus='confirmed';s.coverage=false;s.teamMessages=s.teamMessages.filter(m=>!m.coverage);
+  // The demo control acknowledges the real modern cursor; it does not touch legacy messages.
+  try{window.RallyConversationRead?.markRead({storage:localStorage,domain:window.RallyChatDomain,member:todayUI.memberships.group});}catch(_){}
+ }
 s.view='today';closeDialog(false);render();$('view').scrollTop=0;notify('Local Today fixture updated. No data was sent.');return;
 }
 if(a==='memory-mode'){
@@ -608,5 +629,10 @@ if(!dialog)return;if(ev.key==='Escape'){ev.preventDefault();closeDialog();return
 if(ev.key==='Tab'){const nodes=[...$('dialog-root').querySelectorAll('button:not(:disabled),a[href],input,select,textarea')],first=nodes[0],last=nodes[nodes.length-1];if(ev.shiftKey&&document.activeElement===first){ev.preventDefault();last?.focus();}else if(!ev.shiftKey&&document.activeElement===last){ev.preventDefault();first?.focus();}}
 });
 document.addEventListener('visibilitychange',()=>{if(!document.hidden)render();});
+// Browser-local updates from another tab refresh Today without disturbing an active chat composer.
+window.addEventListener('storage',ev=>{
+ if(ev.key===window.RallyConversationRead?.STORAGE_KEY&&
+    (s.view==='today'||(s.view==='group'&&s.groupPane!=='chat')))render();
+});
 render();
 })();

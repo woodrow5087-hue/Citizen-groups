@@ -6,16 +6,17 @@ const {JSDOM}=require('jsdom');
 const T=require('../rallypoint-today.js');
 const {makeChatDomainBundle}=require('../scripts/build-chat-lab.cjs');
 const root=path.resolve(__dirname,'..'),key='rallypoint-phase1-2026';
-function open(t,{saved,ui,blocked=false,now='2026-11-23T12:00:00'}={}){
+function open(t,{saved,ui,modern,blocked=false,now='2026-11-23T12:00:00'}={}){
  const dom=new JSDOM(fs.readFileSync(path.join(root,'index.html'),'utf8'),{url:'https://rally.test',runScripts:'outside-only',pretendToBeVisual:true});t.after(()=>dom.window.close());const w=dom.window,d=w.document;
  const NativeDate=w.Date;w.Date=class extends NativeDate{constructor(...args){super(...(args.length?args:[now]));}static now(){return new NativeDate(now).getTime();}};
  w.HTMLElement.prototype.scrollIntoView=function(){};
  if(saved)w.localStorage.setItem(key,JSON.stringify(saved));if(ui)w.localStorage.setItem(T.UI_KEY,JSON.stringify(ui));
+  if(modern!==undefined)w.localStorage.setItem('rallypoint-wednesday-chat-lab-v1',modern);
  const other='{"reflection":"An existing Citizen Connect note"}';w.localStorage.setItem('citizen-premium-hybrid-demo-v1',other);
  if(blocked)Object.defineProperty(w,'localStorage',{get(){throw Error('Blocked storage');}});
  w.structuredClone=structuredClone;
   w.eval(makeChatDomainBundle());
-  for(const name of ['rallypoint-today.js','rallypoint-ui.js','rallypoint-memorize.js','rallypoint-verseplay-ui.js','rallypoint-premium-alive.js','rallypoint-group-view.js','rallypoint-storage-guard.js','wednesday-chat-lab.js','rallypoint.js'])w.eval(fs.readFileSync(path.join(root,name),'utf8'));
+  for(const name of ['rallypoint-today.js','rallypoint-ui.js','rallypoint-memorize.js','rallypoint-verseplay-ui.js','rallypoint-premium-alive.js','rallypoint-group-view.js','rallypoint-storage-guard.js','rallypoint-conversation-read-model.js','wednesday-chat-lab.js','rallypoint.js'])w.eval(fs.readFileSync(path.join(root,name),'utf8'));
  const click=selector=>{const el=d.querySelector(selector);assert.ok(el,selector);el.click();};
  const type=(id,value)=>{const el=d.getElementById(id);assert.ok(el,id);el.value=value;el.dispatchEvent(new w.Event('input',{bubbles:true}));};
  return {w,d,click,type,action:a=>click('[data-action="'+a+'"]'),go:v=>click('#nav [data-go="'+v+'"]'),saved:()=>JSON.parse(w.localStorage.getItem(key)),ui:()=>JSON.parse(w.localStorage.getItem(T.UI_KEY)),text:()=>d.getElementById('view').textContent,other};
@@ -43,7 +44,7 @@ test('four tabs retain source destinations and Today links directly to conversat
  for(const tab of ['group','team','read','today']){app.go(tab);assert.equal(app.d.querySelector('#nav [aria-current="page"]').dataset.go,tab);}
  app.action('demo-controls');app.click('[data-action="scenario"][data-value="connected"]');
  app.click('.up-next');assert.equal(app.saved().view,'group');assert.equal(app.saved().groupPane,'gather');assert.ok(app.d.querySelector('[data-action="rsvp"]'));
- app.go('today');app.click('.attention-tile[data-go="group"]');assert.equal(app.saved().groupPane,'chat');assert.ok(app.d.getElementById('group-input'));
+ app.go('today');app.click('.today-people-message[data-go="group"]');assert.equal(app.saved().groupPane,'chat');assert.ok(app.d.getElementById('group-input'));
  app.go('today');app.click('.availability-action');assert.equal(app.saved().view,'team');assert.equal(app.saved().teamPane,'schedule');
  app.go('today');app.click('[data-reading="scripture"]');assert.equal(app.d.activeElement.id,'reading-scripture');app.go('today');app.click('[data-reading="questions"]');assert.equal(app.d.activeElement.id,'reading-questions');
  assert.equal(app.w.localStorage.getItem('citizen-premium-hybrid-demo-v1'),app.other);
@@ -80,31 +81,53 @@ test('Connected Dashboard uses source state for side-by-side schedule and team w
  assert.ok(app.d.querySelector('.today-people-message'));
  assert.equal(app.d.querySelector('.reading-actions [data-reading="questions"]').textContent.includes('Reflect'),true);
 });
-test('Your People shows the actual latest local group conversation and routes to its source',t=>{
- const app=open(t);
- const panel=app.d.querySelector('.today-people');
- assert.ok(panel);
- const sections=[...app.d.querySelector('.today-screen').children];
- assert.equal(sections[0].classList.contains('today-welcome'),true);
- assert.equal(sections[1].classList.contains('pa-today-hero'),true,'Photo-led Premium Hybrid hero follows greeting');
- assert.equal(sections[2].classList.contains('pa-people-rail'),true,'ALIVE-style circle rail follows the hero');
- assert.equal(sections[3].classList.contains('pa-companion'),true,'Companion prompt has its own contextual action');
- assert.equal(sections[4],panel,'Existing local conversation is preserved beneath the new modules');
- assert.equal(sections[5].classList.contains('dashboard-twins'),true,'Original gathering/team actions remain');
- assert.ok(sections[5].querySelector('.up-next'));
- assert.ok(sections[5].querySelector('.dashboard-team'));
- assert.equal(panel.querySelectorAll('.today-people-avatar').length,4);
- assert.equal(panel.querySelector('.today-people-message-author').textContent,'Anna L.');
- assert.match(panel.querySelector('.today-people-message-text').textContent,/Looking forward to seeing everyone Wednesday/);
- app.click('.today-people-message');
- assert.equal(app.saved().view,'group');
- assert.equal(app.saved().groupPane,'chat');
- app.type('group-input','An updated thought from our group.');
- app.click('[data-action="send"][data-value="group"]');
- app.go('today');
- assert.equal(app.d.querySelector('.today-people-message-author').textContent,'You');
- assert.match(app.d.querySelector('.today-people-message-text').textContent,/An updated thought from our group/);
- assert.equal(app.d.querySelector('.today-people-avatars [aria-label="Jess W."]').textContent,'JW');
+test('Your People reads the modern conversation, not the preserved writable legacy archive',t=>{
+  const app=open(t);
+  const panel=app.d.querySelector('.today-people');
+  assert.ok(panel);
+  const sections=[...app.d.querySelector('.today-screen').children];
+  assert.equal(sections[0].classList.contains('today-welcome'),true);
+  assert.equal(sections[1].classList.contains('pa-today-hero'),true);
+  assert.equal(sections[2].classList.contains('pa-people-rail'),true);
+  assert.equal(sections[3].classList.contains('pa-companion'),true);
+  assert.equal(sections[4],panel);
+  assert.equal(sections[5].classList.contains('dashboard-twins'),true);
+  assert.equal(panel.querySelectorAll('.today-people-avatar').length,4);
+  assert.equal(panel.querySelector('.today-people-message-author').textContent,'You');
+  assert.match(panel.querySelector('.today-people-message-text').textContent,/Love that. Looking forward/);
+  assert.match(panel.querySelector('.today-people-message-action').textContent,/3 UNREAD/);
+  app.click('.today-people-message');
+  assert.equal(app.saved().view,'group');
+  assert.equal(app.saved().groupPane,'chat');
+  assert.ok(app.d.getElementById('rpx-chat'),'modern conversation is opened');
+  app.type('group-input','A preserved legacy thought.');
+  app.click('[data-action="send"][data-value="group"]');
+  app.go('today');
+  assert.equal(app.d.querySelector('.today-people-message-author').textContent,'You');
+  assert.match(app.d.querySelector('.today-people-message-text').textContent,/Love that. Looking forward/);
+  assert.ok(app.saved().groupMessages.some(m=>m.text==='A preserved legacy thought.'));
+  assert.doesNotMatch(app.d.querySelector('.today-people-message-text').textContent,/preserved legacy/);
+  assert.equal(app.d.querySelector('.attention-tile[data-go="group"]'),null);
+  assert.equal(app.d.querySelector('.today-people-avatars [aria-label="Jess W."]').textContent,'JW');
+
+  // The same F-02 store receives another fictional member's sent message.
+  const key='rallypoint-wednesday-chat-lab-v1',saved=JSON.parse(app.w.localStorage.getItem(key));
+  const repo=app.w.RallyChatDomain.createMockConversationRepository({
+    seed:saved.snapshot,clock:()=>new Date('2026-11-23T12:00:01.000Z')
+  });
+  const message=repo.sendMessage({conversationId:'group_wednesday',userId:'u_anna',
+    body:'A fresh modern conversation update.'});
+  repo.setDeliveryStatus({messageId:message.id,userId:'u_anna',status:'sent'});
+  saved.snapshot=repo.getSnapshot();
+  app.w.localStorage.setItem(key,JSON.stringify(saved));
+  app.go('team');app.go('today');
+  assert.equal(app.d.querySelector('.today-people-message-author').textContent,'Anna L.');
+  assert.match(app.d.querySelector('.today-people-message-text').textContent,/fresh modern conversation/);
+  assert.match(app.d.querySelector('.today-people-message-action').textContent,/1 UNREAD/);
+  app.click('.today-people-message');app.go('today');
+  assert.equal(app.d.querySelector('.attention-tile[data-go="group"]'),null);
+  assert.equal(app.w.RallyConversationRead.peek({storage:app.w.localStorage,
+    domain:app.w.RallyChatDomain}).unreadCount,0);
 });
 test('Your People adapts to authorized leaders and group discovery without inventing membership',t=>{
  const app=open(t);
@@ -128,17 +151,46 @@ test('Your People adapts to authorized leaders and group discovery without inven
  assert.equal(app.saved().view,'group');
  assert.match(app.text(),/Browse a few sample group options/);
 });
-test('Your People safely escapes local conversation preview content',t=>{
- const app=open(t,{saved:{groupMessages:[{name:'<img src=x>',time:'Today',text:'<script>not markup</script>'}]}});
- const preview=app.d.querySelector('.today-people-message');
- assert.equal(preview.textContent.includes('<script>not markup</script>'),true);
- assert.equal(preview.querySelector('script'),null);
- assert.equal(preview.querySelector('img'),null);
+test('Your People safely escapes the modern message body and preserves legacy HTML-looking text',t=>{
+  const app=open(t,{saved:{groupMessages:[{name:'<img src=x>',time:'Today',text:'Legacy <b>record</b>'}]}});
+  const modern=app.w.RallyConversationRead.fixture(app.w.RallyChatDomain);
+  modern.messages.at(-1).body='<script>not markup</script>';
+  app.w.localStorage.setItem('rallypoint-wednesday-chat-lab-v1',
+    JSON.stringify({schemaVersion:1,snapshot:modern,draft:'',replyTo:null}));
+  app.go('team');app.go('today');
+  const preview=app.d.querySelector('.today-people-message');
+  assert.equal(preview.textContent.includes('<script>not markup</script>'),true);
+  assert.equal(preview.querySelector('script'),null);
+  app.click('.today-people-message');
+  assert.match(app.d.querySelector('.rpx-legacy-records').textContent,/Legacy <b>record<\/b>/);
+  assert.equal(app.d.querySelector('.rpx-legacy-records img'),null);
 });
 test('Today settles into a real caught-up state after opening the source and confirming serving',t=>{
- const app=open(t);app.click('.attention-tile[data-go="group"]');app.go('today');app.click('.availability-action');app.click('[data-action="shift"][data-value="confirmed"]');app.go('today');assert.match(app.text(),/You’re all caught up/);assert.equal(app.d.querySelector('.attention-tile'),null);
+ const app=open(t);app.click('.attention-tile[data-go="group"]');
+  const modernKey='rallypoint-wednesday-chat-lab-v1';
+  assert.ok(app.w.localStorage.getItem(modernKey),'modern chat must persist after opening');
+  assert.equal(app.w.RallyConversationRead.peek({
+    storage:app.w.localStorage,domain:app.w.RallyChatDomain
+  }).unreadCount,0,'reading the embedded thread must clear its cursor');
+  const unread=()=>app.w.RallyConversationRead.peek({
+    storage:app.w.localStorage,domain:app.w.RallyChatDomain
+  }).unreadCount;
+  app.go('today');assert.equal(unread(),0,'after leaving chat');
+  app.click('.availability-action');assert.equal(unread(),0,'after opening serving schedule');
+  app.click('[data-action="shift"][data-value="confirmed"]');
+  assert.equal(unread(),0,'after confirming serving');
+  app.go('today');assert.equal(unread(),0,'after returning to Today');
+  assert.equal(app.saved().view,'today','current saved view is Today');
+  const current=app.w.RallyConversationRead.peek({storage:app.w.localStorage,domain:app.w.RallyChatDomain});
+  assert.equal(current.status,'ok','the modern read projection remains valid');
+  assert.equal(app.w.RallyToday.snapshot(app.saved(),app.ui(),new Date('2026-11-23T12:00:00'),current).unreadCount,0);
+  assert.equal(app.d.querySelector('.today-people-message-action').textContent.includes('UNREAD'),false,
+    'DOM should reflect read cursor after serving response');
+  assert.match(app.text(),/You’re all caught up/);assert.equal(app.d.querySelector('.attention-tile'),null);
  app.action('notifications');assert.match(app.d.querySelector('#dialog-root [role="dialog"]').textContent,/You’re all caught up/);app.action('close-dialog');
- const again=open(t,{saved:app.saved(),ui:app.ui()});assert.match(again.text(),/You’re all caught up/);
+ const again=open(t,{saved:app.saved(),ui:app.ui(),modern:app.w.localStorage.getItem(modernKey)});
+  assert.match(again.text(),/You’re all caught up/);
+  assert.equal(again.w.RallyConversationRead.peek({storage:again.w.localStorage,domain:again.w.RallyChatDomain}).unreadCount,0);
 });
 test('existing messages, prayer posts, RSVP, team coverage and reading remain functional after reload',t=>{
  const app=open(t);app.go('group');app.type('group-input','A local group thought.');app.click('[data-action="send"][data-value="group"]');assert.equal(app.d.getElementById('group-input').value,'');

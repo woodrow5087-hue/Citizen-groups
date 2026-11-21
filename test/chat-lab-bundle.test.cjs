@@ -31,7 +31,7 @@ test('shared controller powers both standalone lab and in-app Groups without leg
  const logic=fs.readFileSync(path.join(root,'wednesday-chat-lab.js'),'utf8');
  const build=fs.readFileSync(path.join(root,'scripts/build.cjs'),'utf8');
  const css=fs.readFileSync(path.join(root,'wednesday-chat-lab.css'),'utf8');
- for(const key of ['wednesday-chat-lab.js','rallypoint-chat-domain.browser.js','wednesday-chat-lab.css']){
+ for(const key of ['wednesday-chat-lab.js','rallypoint-conversation-read-model.js','rallypoint-chat-domain.browser.js','wednesday-chat-lab.css']){
    assert.ok(lab.includes(key),'expected lab asset '+key);
  }
  assert.ok(html.includes('wednesday-chat-lab.js'),'shared controller must be in actual Groups app');
