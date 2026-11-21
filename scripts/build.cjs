@@ -2,7 +2,7 @@ const fs=require('node:fs');
 const path=require('node:path');
 const vm=require('node:vm');
 const root=path.resolve(__dirname,'..'),out=path.join(root,'dist');
-const files=['index.html','rallypoint.js','rallypoint-today.js','rallypoint-ui.js','rallypoint.css','rallypoint-phase1.css','premium-hybrid-archive.html','alive-lab.html','alive-lab.css','alive-lab.js'];
+const files=['index.html','rallypoint.js','rallypoint-today.js','rallypoint-ui.js','rallypoint.css','rallypoint-phase1.css','premium-hybrid-archive.html','alive-lab.html','alive-lab.css','alive-lab.js','alive-citizen-v02.css','alive-citizen-v02.js'];
 for(const file of files){const source=fs.readFileSync(path.join(root,file),'utf8');if(file.endsWith('.js'))new vm.Script(source,{filename:file});}
 for(const asset of ['assets/citizen-flag.svg','assets/paper-grain.svg','assets/fonts/Manrope.ttf','assets/fonts/OFL-Manrope.txt','docs/assets/visual_reference_warm_editorial_v1.png','docs/assets/citizen_church_logo_reference.png'])if(!fs.existsSync(path.join(root,asset)))throw Error('Missing approved/runtime asset: '+asset);
 fs.rmSync(out,{recursive:true,force:true});fs.mkdirSync(out,{recursive:true});
