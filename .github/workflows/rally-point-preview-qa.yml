@@ -9,6 +9,7 @@ on:
       - main
       - 'rally-point/v08-preferred-design-snapshot'
       - 'rally-point/development-v08'
+      - 'rally-point/f12-release-safeguards'
 
 permissions:
   contents: read
@@ -39,6 +40,8 @@ jobs:
         run: npm run build
       - name: Install Playwright Chromium
         run: npx playwright install --with-deps chromium
+      - name: Run F-11 demo privacy and complete reset browser regression
+        run: npm run test:f11
       - name: Run mobile, accessibility, source navigation and VersePlay regression
         run: npm run test:browser
       - name: Run animated onboarding → dashboard integration regression
@@ -46,20 +49,21 @@ jobs:
       - name: Run Blank Battle mobile gameplay and screenshot QA
         run: npm run test:blank-battle
 
+
       # The user-approved v0.8 revision is a fixed visual specification.
       # Building from the commit (rather than comparing two moving branches)
       # prevents subsequent PRs from silently redefining the reference.
       - name: Check out approved v0.8 visual baseline
-        if: ${{ github.event_name == 'pull_request' && (github.base_ref == 'rally-point/v08-preferred-design-snapshot' || github.base_ref == 'rally-point/development-v08') }}
+        if: ${{ github.event_name == 'pull_request' && (github.base_ref == 'rally-point/v08-preferred-design-snapshot' || github.base_ref == 'rally-point/development-v08' || github.base_ref == 'rally-point/f12-release-safeguards') }}
         uses: actions/checkout@v4
         with:
           ref: 84e489b86851e853948a7d4246475e83b7ddd085
           path: .release-baseline
       - name: Build approved visual baseline
-        if: ${{ github.event_name == 'pull_request' && (github.base_ref == 'rally-point/v08-preferred-design-snapshot' || github.base_ref == 'rally-point/development-v08') }}
+        if: ${{ github.event_name == 'pull_request' && (github.base_ref == 'rally-point/v08-preferred-design-snapshot' || github.base_ref == 'rally-point/development-v08' || github.base_ref == 'rally-point/f12-release-safeguards') }}
         run: node .release-baseline/scripts/build.cjs
       - name: Check candidate against approved visual screens
-        if: ${{ github.event_name == 'pull_request' && (github.base_ref == 'rally-point/v08-preferred-design-snapshot' || github.base_ref == 'rally-point/development-v08') }}
+        if: ${{ github.event_name == 'pull_request' && (github.base_ref == 'rally-point/v08-preferred-design-snapshot' || github.base_ref == 'rally-point/development-v08' || github.base_ref == 'rally-point/f12-release-safeguards') }}
         run: npm run test:visual
 
       - name: Save browser QA, visual diffs, and results

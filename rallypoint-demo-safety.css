@@ -1,0 +1,26 @@
+/* F-11: clearly labeled staff-fixture mode. No alterations to v0.8 layout.
+ * Scope any changes to visible demo safety affordances.
+ */
+.header{position:relative}
+.rp-demo-chip{
+  position:absolute;z-index:5;top:max(3px,calc(env(safe-area-inset-top) - 13px));left:50%;
+  transform:translateX(-50%);display:inline-flex;align-items:center;justify-content:center;
+  border:1px solid #ffffffb0;border-radius:30px;
+  padding:2px 8px;line-height:1.2;font:800 9px/1.2 Manrope,system-ui,sans-serif;
+  letter-spacing:.055em;white-space:nowrap;color:#FFF6F0;background:#202024cc;
+  pointer-events:none;
+}
+.rp-demo-copy-warning{
+  color:#4A3430;font-size:11px;line-height:1.55;margin:9px 0 0;
+  background:#FDF1E4;border-left:3px solid #E3002B;padding:9px 11px;border-radius:7px;
+}
+.rp-demo-example{display:inline-flex;align-items:center;gap:5px;margin-top:8px;
+  border:1px solid #A79580;border-radius:13px;background:#F6E9DA;
+  padding:8px 11px;color:#30251F;font-size:11px;font-weight:850;cursor:pointer}
+.rp-demo-example:focus-visible{outline:3px solid #28292e;outline-offset:2px}
+.rp-demo-danger{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:12px}
+.rp-demo-danger .btn{min-height:44px;border:1px solid #AF3448;color:#94213C;background:#FFF1EF}
+.rp-demo-reset-confirm{display:grid;gap:12px}
+.rp-demo-reset-confirm .rp-demo-warning{background:#FFF0E7;border:1px solid #D5A999;padding:12px;border-radius:12px;color:#532722}
+.rp-demo-reset-confirm button{min-height:46px}
+@media(prefers-reduced-motion:reduce){.rp-demo-chip{transition:none}}
