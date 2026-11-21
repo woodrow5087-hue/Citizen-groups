@@ -20,12 +20,20 @@
 - **Acceptance evidence required:** Validated schemas and versioning rules, mock repository contract tests (ordering, replies, reactions, read state, delivery/retry), non-destructive legacy fixture migration, unchanged functional screens and demo data.
 
 ## F-03 — Verified identity, role, membership and access permissions
+- **Decision:** APPROVED — Option B.
+- **Owner decision:** “Approve F-03, Option B. Record the decision and proceed to F-04 without implementing code yet.”
+- **Intended approach:** Define an explicit role/resource/action authorization matrix for member, group leader, serving-team leader, and authorized church administration; verify group and team membership as separate scoped relationships. Require server-side authorization for all protected read/write operations in any eventual production implementation. Prototype and test rules using fictional identities and mock authorization first.
+- **Guardrails:** Distinguish identity, membership and permission. Define membership-revocation behavior; require church-approved safeguards for minors, direct messaging, sensitive prayer information and pastoral care. Neither local `role` toggles nor hidden UI elements constitute security. No live records or account integration authorized.
+- **Implementation status:** NOT STARTED. This is a planning decision only; no authentication, authorization, application code, integrations, or deployments have been implemented.
+- **Acceptance evidence required:** Resource/action permission matrix; mock positive/negative authorization tests including revoked membership; reviewed access boundaries for care tasks and messages; separate explicit authorization and backend verification before any live-member pilot.
+
+## F-04 — Incremental modularization of the application
 - **Decision:** PENDING REVIEW.
-- **Audit finding:** The app uses a browser-selected demo `role` and membership flags with client-side `canLead()`. These do not enforce access to real member information.
-- **Candidate approach:** Agree on an explicit role/resource/action authorization matrix, verified group/team membership and server-side checks, safe behavior when membership changes, and church-owned policy for minors/direct messaging. No real data until backend denial/revocation tests succeed.
+- **Audit finding:** `rallypoint.js` combines rendering, routing, persistence, UI actions and business logic. Separate Group, Team and direct-message templates risk divergence.
+- **Candidate approach:** Incremental, nonbreaking extraction of conversation models and repositories, shared conversation UI, composer, permissions checks and Today-selection rules, retaining existing routes, storage compatibility and the locked Premium ALIVE visuals.
 - **Implementation status:** NOT STARTED.
 
-## F-04 through F-14
+## F-05 through F-14
 **Decision:** NOT YET REVIEWED. Preserve the original prioritized foundation backlog for the decision sequence.
 
 ## Decision protocol
