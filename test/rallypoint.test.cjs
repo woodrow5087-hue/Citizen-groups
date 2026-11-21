@@ -590,7 +590,7 @@ test('F-07 withheld for non-members and corrupted modern data keeps legacy intac
   assert.match(app.d.querySelector('.group-pulse-route[data-value="chat"]').textContent,/Preview unavailable/);
   assert.equal(app.w.localStorage.getItem('rallypoint-wednesday-chat-lab-v1'),'{untouched-corrupt-conversation');
   assert.ok(app.d.querySelector('.rpx-legacy-records'));
-  app.action('demo-controls');app.click('[data-action="scenario"][data-value="no-memberships"]');
+  app.go('today');app.action('demo-controls');app.click('[data-action="scenario"][data-value="no-memberships"]');
   app.go('group');
   assert.equal(app.d.querySelector('.group-pulse'),null);
   assert.equal(app.d.getElementById('rpx-chat'),null);
