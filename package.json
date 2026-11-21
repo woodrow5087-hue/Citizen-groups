@@ -5,7 +5,8 @@
     "test": "node --test test/*.test.cjs",
     "build": "node scripts/build.cjs",
     "dev": "python3 -m http.server 8000",
-    "test:browser": "npm run build && node scripts/phase1-browser-check.mjs"
+    "test:browser": "npm run build && node scripts/phase1-browser-check.mjs",
+    "test:citizen": "npm run build && node scripts/alive-citizen-v02-browser-check.mjs"
   },
   "engines": {
     "node": ">=22.12"
