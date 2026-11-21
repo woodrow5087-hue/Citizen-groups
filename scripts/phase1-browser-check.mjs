@@ -24,12 +24,23 @@ async function journey(page){
  await demo(page,'connected');await page.locator('.attention-tile[data-go="group"]').click();assert.ok(await page.locator('#group-input').isVisible());await page.locator('#group-input').fill('A fictional note for the local group.');await page.locator('[data-action="send"][data-value="group"]').click();assert.equal(await page.locator('#group-input').inputValue(),'');
  await page.locator('[data-area="group"][data-value="prayer"]').click();await page.locator('#prayer-input').fill('A fictional prayer for patience.');await page.locator('[data-action="send"][data-value="prayer"]').click();await page.locator('[data-area="group"][data-value="gather"]').click();await page.locator('[data-action="rsvp"][data-value="going"]').click();
  await nav('today');await page.locator('.availability-action').click();assert.ok((await main.textContent()).includes('Awaiting response'));await page.locator('[data-action="shift"][data-value="confirmed"]').click();await nav('today');assert.ok((await main.textContent()).includes('You’re all caught up'));await audit(page,'Caught-up Today');
- await page.locator('.read-play-cta').click();assert.ok(await page.locator('#reading-memorize').isVisible(),'Today Play opens VersePlay');await audit(page,'Playable VersePlay');await nav('today');
+ await page.locator('.read-play-cta').click();assert.ok(await page.locator('.rp-play-screen').isVisible(),'Today Memorize opens integrated Blank Battle');assert.equal(await page.locator('.bb-slot').count(),5);await audit(page,'Integrated Blank Battle');await nav('today');
  await page.locator('[data-reading="questions"]').click();assert.equal(await page.locator('#reading-questions').evaluate(el=>document.activeElement===el),true);await nav('today');await page.locator('[data-reading="scripture"]').click();await page.locator('[data-action="read"]').click();await page.locator('[data-action="pray"]').click();await nav('today');assert.ok((await page.locator('.read-primary').textContent()).includes('Read today'));
  await page.locator('.profile-avatar').click();await audit(page,'Demo controls');await page.keyboard.press('Shift+Tab');assert.equal(await page.locator('#dialog-root [role="dialog"]').evaluate(el=>el.contains(document.activeElement)),true);await page.locator('#role').click();await page.locator('[data-action="close-dialog"]').click();await page.locator('.leader-entry').click();
  await page.locator('[data-action="attendance"][data-person="marcus"][data-value="here"]').click();for(const id of ['marcus','taylor'])await page.locator(`[data-action="reached"][data-person="${id}"]`).click();await nav('read');await page.locator('[data-action="plan"][data-value="study"]').click();await page.locator('#question').fill('A fictional leader-selected discussion question.');await page.locator('[data-action="question"]').click();await nav('today');assert.equal(await page.locator('.leader-entry').count(),0);
  const before=await page.evaluate(()=>JSON.parse(localStorage.getItem('rallypoint-phase1-2026')));await page.reload();const after=await page.evaluate(()=>JSON.parse(localStorage.getItem('rallypoint-phase1-2026')));assert.deepEqual(after,before);assert.equal(after.rsvp,'going');assert.equal(after.teamStatus,'confirmed');assert.equal(after.read,true);assert.equal(after.prayed,true);assert.equal(after.attendance.marcus,'here');assert.equal(after.plan,'study');assert.ok(after.groupMessages.some(m=>m.text==='A fictional note for the local group.'));
- await nav('read');await page.locator('[data-action="memory-mode"][data-value="solo"]').click();
+ await nav('read');
+ await page.locator('.rp-game-entry-play').click();
+ assert.equal(await page.locator('.bb-slot').count(),5,'five genuine Blank Battle slots in app');
+ await page.locator('[data-action="tile"][data-value="a0"]').click();
+ assert.equal(await page.locator('.bb-slot.is-filled').count(),1,'word placement works in app');
+ await page.locator('.rp-play-back').click();
+ assert.ok(await page.locator('.read-screen-v09').isVisible(),'back to Read without leaving app');
+ await page.locator('.rp-game-entry-play').click();
+ assert.equal(await page.locator('.bb-slot.is-filled').count(),1,'Blank Battle progress survives in-app navigation');
+ await page.locator('#nav [data-go="read"]').click();
+ assert.equal(await page.locator('.rp-game-entry-play').count(),1,'Read nav returns to Read view');
+ await page.locator('[data-action="memory-mode"][data-value="solo"]').click();
  for(let i=0;i<5;i++)await page.locator('[data-action="memory-pick"][data-value="a'+i+'"]').click();
  await page.locator('[data-action="memory-check"]').click();
  assert.ok(await page.locator('.vp-victory').isVisible(),'five correct word tiles complete a real game');
@@ -39,7 +50,7 @@ async function journey(page){
  assert.ok((await page.locator('.vp-board-title h3').textContent()).includes('Romans 8:28'));
  await nav('today');
  await page.locator('.read-play-cta').click();
- assert.equal(await page.locator('#reading-memorize').count(),1,'Today Play opens the actual game');
+ assert.equal(await page.locator('.rp-play-screen').count(),1,'Today Memorize opens latest Blank Battle');await page.locator('.rp-play-back').click();assert.equal(await page.locator('.rp-game-entry-play').count(),1,'Back returns to Read');
   await demo(page,'no-memberships');assert.ok((await main.textContent()).includes('There’s room'));assert.equal(await page.locator('.leader-entry').count(),0);await audit(page,'No-membership Today');
  await nav('group');assert.ok((await main.textContent()).includes('sample group options'));assert.equal(await page.locator('.group-discovery-hero').count(),1);assert.equal(await page.locator('.group-discovery-card').count(),3);await geometry(page,'group discovery');await audit(page,'Redesigned group discovery');
  if(page.viewportSize().width===390)await page.screenshot({path:path.join(out,'groups-discovery-390.png')});
@@ -56,7 +67,7 @@ try{
     await p.locator(`#nav [data-go="${tab}"]`).click();
     await geometry(p,tab+' '+width);await audit(p,tab+' '+width);
     if(tab==='read'){
-      assert.equal(await p.locator('.verseplay').count(),1,'Read has a prominent playable memory game');
+      assert.equal(await p.locator('.rp-game-entry-play').count(),1,'Read exposes the new Blank Battle entry');assert.equal(await p.locator('.verseplay').count(),1,'Read preserves existing local Pass & Play game');
       assert.equal(await p.locator('.vp-blank').count(),5,'VersePlay has five fillable words');
       assert.equal(await p.locator('.vp-tile').count(),7,'VersePlay has seven tactile word tiles');
       if(width===390&&!top)await p.screenshot({path:path.join(out,'verseplay-read-390.png')});
