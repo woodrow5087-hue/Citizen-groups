@@ -11,7 +11,7 @@ if(!['solo','pass'].includes(s.memoryMode))s.memoryMode='solo';
 if(!['sermon','study','year','romans'].includes(s.memoryActive))s.memoryActive=null;
 if(![1,2].includes(s.memoryPassTurn))s.memoryPassTurn=1;
 if(!Number.isInteger(s.memoryTarget)||s.memoryTarget<0||s.memoryTarget>4)s.memoryTarget=null;
-const T=window.RallyToday,U=window.RallyUI,M=window.RallyMemory,VP=window.RallyVersePlay,icon=U.icon;
+const T=window.RallyToday,U=window.RallyUI,M=window.RallyMemory,VP=window.RallyVersePlay,H=window.RallyHybrid,icon=U.icon;
 // Old KJV rounds cannot be carried into a new translation: preserve all other demo data.
 if(s.memoryTextRevision!==M.textRevision){s.memoryGames={};s.memoryTextRevision=M.textRevision;s.memoryTarget=null;}
 let todayUI=T.load({getItem:k=>localStorage.getItem(k)}),dialog=null,dialogTrigger=null,storageWarning='',drafts={};
@@ -121,6 +121,9 @@ function today(){
       <span class="dashboard-welcome-wave" aria-hidden="true"></span>
       <span class="today-watermark" aria-hidden="true"></span>
     </div>
+    ${H.todayHero(todayUI)}
+    ${H.peopleRail(todayUI,'today')}
+    ${H.todayPrompt(s,todayUI)}
     ${renderPeople(snapshot)}
     <div class="dashboard-twins" role="group" aria-label="Upcoming gathering and serving">${nextWidget}${teamWidget}</div>
     <div class="today-reading">
@@ -219,7 +222,7 @@ if(s.groupPane==='leader')body=lead();
 return `<section class="group-screen-v07">
   <div class="group-community-hero">
     <div class="group-hero-overline">MY COMMUNITY ${canLead('group')?pill('LEADER VIEW'):''}</div>
-    <h1>Wednesday<br>Group<span>.</span></h1>
+    <h1>${canLead('group')&&s.groupPane==='leader'?'Care for<br>your people.':'The people<br>who know you.'}</h1>
     <div class="group-hero-people">
       <span class="group-hero-faces">${sampleGroupPeople.map((member,i)=>`<span class="group-member-avatar group-member-avatar--${i+1}" aria-label="${e(member.name)}">${e(member.initials)}</span>`).join('')}</span>
       <span class="group-hero-count">8 fictional members</span>
@@ -228,6 +231,8 @@ return `<section class="group-screen-v07">
     <div class="group-hero-next">${icon('calendar')} ${wed()} · 6:30 PM</div>
     <button type="button" class="group-hero-find" data-action="browse">Explore more groups ${icon('arrow')}</button>
   </div>
+  ${H.peopleRail(todayUI,'group')}
+  ${H.groupSummary()}
   ${tabs('group',opts,s.groupPane)}${body}${footer()}
 </section>`;
 }
@@ -382,6 +387,9 @@ if(!['today','group','team','read','play'].includes(s.view))s.view='today';
 if(s.view==='group'&&todayUI.memberships.group&&['chat','prayer'].includes(s.groupPane))todayUI.seenGroupSignature=T.signature(s);
 if(s.role!=='leader'){if(s.groupPane==='leader')s.groupPane='chat';if(s.teamPane==='leader')s.teamPane='schedule';}
 save();
+const hybridShell=document.querySelector('.phone-inner');
+hybridShell.classList.add('premium-alive');
+hybridShell.classList.toggle('is-leader-hybrid',s.view==='group'&&s.groupPane==='leader'&&canLead('group'));
 document.querySelector('.phone-inner').classList.toggle('is-fluid-today',s.view==='today');
  document.querySelector('.phone-inner').classList.toggle('is-groups-v07',s.view==='group');
  document.querySelector('.phone-inner').classList.toggle('is-team-v08',s.view==='team');
@@ -391,7 +399,7 @@ document.querySelector('.phone-inner').classList.toggle('is-fluid-today',s.view=
 if(s.view==='play')mountBlankBattle();
 view.querySelectorAll('textarea').forEach(field=>{if(drafts[field.id]!==undefined)field.value=drafts[field.id]});
 $('nav').innerHTML=[['today','Today','home'],['group','Groups','group'],['team','Team','team'],['read','Read','read']].map(([id,label,glyph])=>`<button type="button" class="${s.view===id||(s.view==='play'&&id==='read')?'active':''}" data-go="${id}" ${s.view===id||(s.view==='play'&&id==='read')?'aria-current="page"':''}>${icon(glyph)}<small>${label}</small></button>`).join('');
- if(s.view==='today')$('nav').children[1].insertAdjacentHTML('afterend',`<button type="button" class="fluid-quick" data-action="quick-actions" aria-label="Quick actions">${icon('plus')}<small>Quick</small></button>`);
+
 $('profile-initials').textContent=(todayUI.name||'Jonathan').split(/\s+/).map(v=>v[0]).join('').slice(0,2).toUpperCase();
 const snapshot=T.snapshot(s,todayUI);$('activity-dot').hidden=!snapshot.attention&&!snapshot.leader;
 view.scrollTop=position;
@@ -493,6 +501,7 @@ if(['memory-pick','memory-check','memory-hint','memory-reset','memory-next-playe
    render();if(outcome.status==='complete')notify('Verse complete — nicely done!');return;
  }
 }
+if(a==='hybrid-person'){if(!todayUI.memberships.group)return;const member=sampleGroupPeople.find(p=>p.id===person);if(!member)return;s.directPerson=member.id;navigate('group','direct');return;}
 if(a==='message-person'){if(!todayUI.memberships.group)return;const member=sampleGroupPeople.find(p=>p.id===person);if(!member)return;s.directPerson=member.id;s.groupPane='direct';render();return}
  if(a==='pane'){if(v==='leader'&&!canLead(b.dataset.area))return;if(b.dataset.area==='group')s.groupPane=v;else s.teamPane=v;render();return}
 if(a==='browse'){s.discover=!s.discover;render();return}
