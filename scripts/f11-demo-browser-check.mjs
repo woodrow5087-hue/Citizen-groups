@@ -63,6 +63,7 @@ try{
   await page.locator('.profile-avatar').click();
   await page.locator('[data-action="reset-demo"]').click();
   assert.match(await page.locator('#dialog-root').textContent(),/This cannot be undone/);
+  assert.equal(await page.locator('#toast').evaluate(el=>el.hidden),true,'old toasts must not cover reset confirmation actions');
   // Review capture: the deliberate two-step destructive reset confirmation.
   await page.screenshot({path:path.join(root,'test-results','f11-reset-confirm-390.png'),animations:'disabled'});
   await page.locator('#dialog-root [data-action="demo-controls"]').click();
