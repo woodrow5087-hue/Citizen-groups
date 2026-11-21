@@ -3,15 +3,24 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <meta name="theme-color" content="#F3E5D6">
+  <meta name="theme-color" content="#E3002B">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-title" content="Rally Point">
   <meta name="description" content="Rally Point — a Warm Editorial Today prototype by Citizen Church. Fictional, local demo.">
-  <title>Rally Point — Today · Phase 1 Preview</title>
+  <title>Rally Point — Community Preview</title>
   <link rel="icon" href="assets/citizen-flag.svg" type="image/svg+xml">
   <link rel="preload" href="assets/fonts/Manrope.ttf" as="font" type="font/ttf" crossorigin>
   <link rel="stylesheet" href="rallypoint.css">
   <link rel="stylesheet" href="rallypoint-phase1.css">
+  <link rel="stylesheet" href="rallypoint-welcome.css">
+  <link rel="stylesheet" href="rallypoint-today-fluid.css">
+  <link rel="stylesheet" href="rallypoint-dashboard-v06.css">
+  <link rel="stylesheet" href="rallypoint-groups-v07.css">
+  <link rel="stylesheet" href="rallypoint-team-v08.css">
+  <link rel="stylesheet" href="rallypoint-read-v09.css">
+  <link rel="stylesheet" href="rallypoint-verseplay.css">
+  <link rel="stylesheet" href="rallypoint-studio-finish-v07.css">
+  <link rel="stylesheet" href="rallypoint-unified-v08.css">
 </head>
 <body>
   <div class="stage">
@@ -34,10 +43,29 @@
             <div class="header-controls">
               <button type="button" class="header-button" data-action="notifications" aria-label="Demo activity"><svg viewBox="0 0 24 24" class="icon" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 6-3 6-3 9h18c0-3-3-3-3-9m-11 13h4"/></svg><i id="activity-dot" aria-hidden="true"></i></button>
               <button type="button" class="profile-avatar" data-action="demo-controls" aria-label="Profile and demo controls"><span id="profile-initials">JD</span></button>
+              <a class="spotify-link" href="https://open.spotify.com/playlist/5ngORzvZN0m5cfegSfzAH2" target="_blank" rel="noopener noreferrer" aria-label="Open our Spotify playlist (opens in a new tab)" title="Open our Spotify playlist"><img src="assets/spotify.svg" width="24" height="24" alt=""></a>
             </div>
           </header>
           <main id="view" tabindex="-1"></main>
           <nav id="nav" class="bottom" aria-label="Main navigation"></nav>
+          <div id="rp-gateway" class="rp-gateway" role="dialog" aria-modal="true" aria-label="Welcome to Rally Point">
+            <section id="rp-entry" class="rp-entry" aria-label="Opening welcome">
+              <div class="rp-entry-brand" aria-label="Rally Point by Citizen Church">
+                <img src="assets/citizen-flag.svg" alt="Citizen Church flag logo" class="rp-entry-logo">
+                <h1 class="rp-entry-title"><span>RALLY</span> <span>POINT</span></h1>
+                <p class="rp-entry-church">CITIZEN CHURCH</p>
+              </div>
+              <div class="rp-welcome-copy"><h2>Welcome to<br>Rally Point</h2><span class="rp-copy-rule" aria-hidden="true"></span><p>Your connection to the<br>Citizen Church community.</p></div>
+              <p class="rp-splash-tagline">CONNECT · GROW · SERVE</p>
+              <div id="rp-entry-actions" class="rp-entry-actions" inert>
+                <button type="button" class="rp-entry-button rp-entry-button--create" data-welcome="create"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="7" r="3"/><path d="M2 21v-2a7 7 0 0 1 14 0v2M19 6v6m-3-3h6"/></svg>CREATE ACCOUNT</button>
+                <button type="button" class="rp-entry-button rp-entry-button--login" data-welcome="login"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 4h10v16H10m-7-8h11m-4-4 4 4-4 4"/></svg>LOG IN</button>
+                <p class="rp-entry-note">LOCAL PROTOTYPE · NO REAL ACCOUNTS<br>CREATE A DEMO PROFILE TO GET STARTED.</p>
+              </div>
+            </section>
+            <section id="rp-onboard" class="rp-onboard" aria-label="Personalize your preview" hidden></section>
+          </div>
+
         </div>
         <div id="dialog-root"></div>
         <div class="toast" role="status" aria-live="polite" id="toast" hidden></div>
@@ -48,6 +76,10 @@
   <noscript><p class="noscript">Enable JavaScript to explore this interactive local prototype.</p></noscript>
   <script src="rallypoint-today.js" defer></script>
   <script src="rallypoint-ui.js" defer></script>
+  <script src="rallypoint-memorize.js" defer></script>
+  <script src="rallypoint-verseplay-ui.js" defer></script>
+  <script src="blank-battle.js" defer></script>
   <script src="rallypoint.js" defer></script>
+  <script src="rallypoint-welcome.js" defer></script>
 </body>
 </html>
