@@ -341,7 +341,7 @@ function read(){
 }
 function play(){
  return `<section class="rp-play-screen" aria-label="VersePlay Blank Battle game">
-   <div class="rp-play-toolbar"><button type="button" class="rp-play-back" data-go="read" data-reading="memorize" aria-label="Back to Read">← Back to Read</button><span>VERSEPLAY · SOLO GAME</span></div>
+   <div class="rp-play-toolbar"><button type="button" class="rp-play-back" data-go="read" aria-label="Back to Read">← Back to Read</button><span>VERSEPLAY · SOLO GAME</span></div>
    <div id="rp-blankbattle-host" class="rp-blankbattle-host"></div>
    <p class="rp-play-note">This is a local game preview. Your puzzle progress is saved in this browser, separately from church activity.</p>
  </section>`;
