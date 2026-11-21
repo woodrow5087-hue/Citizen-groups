@@ -2,9 +2,11 @@
 (function () {
   'use strict';
   const M = window.RallyMemory;
-  const mount = document.getElementById('bb-screen');
-  const root = document.getElementById('bb-app');
-  if (!mount || !M) return;
+  function mountGame(root) {
+    const mount = root?.querySelector('#bb-screen');
+    if (!root || !mount || !M) return;
+    if (root.dataset.blankBattleReady === 'true') return;
+    root.dataset.blankBattleReady = 'true';
   const STORAGE_KEY = 'rallypoint-blank-battle-v1';
   const verseIds = ['romans', 'sermon', 'study', 'year'];
   const validId = value => verseIds.includes(value);
@@ -223,4 +225,8 @@
   });
   load();
   render();
+  }
+  window.RallyBlankBattle = {mount: mountGame};
+  const standalone = document.getElementById('bb-app');
+  if (standalone) mountGame(standalone);
 })();
