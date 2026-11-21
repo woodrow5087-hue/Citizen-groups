@@ -27,7 +27,7 @@ function legacyGroupChat({messages,escape}){
  * legacy sender IDs, UTC timestamps or unread markers are fabricated.
  */
 function integratedGroupChat({messages,escape}){
-  return \`<section id="rpx-chat" class="rpx-chat" aria-label="New Wednesday Group conversation · fictional">
+  return `<section id="rpx-chat" class="rpx-chat" aria-label="New Wednesday Group conversation · fictional">
     <div class="rpx-chat-title">
       <span class="rpx-chat-eyebrow">WEDNESDAY GROUP <b>✳</b> NEW CONVERSATION · DEMO</span>
       <h2>Stay in the <em>conversation.</em></h2>
@@ -55,8 +55,8 @@ function integratedGroupChat({messages,escape}){
   </section>
   <section class="rpx-legacy-records" aria-label="Earlier saved group messages">
     <div class="rpx-legacy-heading"><strong>YOUR EARLIER SAVED MESSAGES</strong><small>Preserved in their original format. Unknown historical dates were not guessed.</small></div>
-    \${legacyGroupChat({messages,escape})}
-  </section>\`;
+    ${legacyGroupChat({messages,escape})}
+  </section>`;
 }
 return Object.freeze({legacyMessages,legacyComposer,legacyGroupChat,integratedGroupChat});
 });
