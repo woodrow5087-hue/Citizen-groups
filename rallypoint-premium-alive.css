@@ -171,8 +171,16 @@
 .premium-alive.is-fluid-today .dashboard-v06 .today-people:not(.today-people--discover):after,
 .premium-alive.is-fluid-today .dashboard-v06 .today-people:not(.today-people--discover) .today-people-content:after{display:none}
 .premium-alive.is-fluid-today .dashboard-v06 .today-people:not(.today-people--discover) .today-people-kicker,
-.premium-alive.is-fluid-today .dashboard-v06 .today-people:not(.today-people--discover) .today-people-heading,
-.premium-alive.is-fluid-today .dashboard-v06 .today-people:not(.today-people--discover) .today-people-roster{display:none}
+.premium-alive.is-fluid-today .dashboard-v06 .today-people:not(.today-people--discover) .today-people-heading{display:none}
+/* Keep the existing 44px group navigation button accessible; only hide duplicate decorative initial avatars. */
+.premium-alive.is-fluid-today .dashboard-v06 .today-people:not(.today-people--discover) .today-people-roster{
+  display:flex;align-items:center;gap:8px;margin:0 0 9px;padding:6px 8px;
+  background:#9F0026;border:1px solid #F4B9C577;border-radius:14px;min-height:56px;
+}
+.premium-alive.is-fluid-today .dashboard-v06 .today-people:not(.today-people--discover) .today-people-avatars{display:none}
+.premium-alive.is-fluid-today .dashboard-v06 .today-people:not(.today-people--discover) .today-people-group-link{
+  width:44px;height:44px;min-width:44px;min-height:44px;flex:none;display:grid;place-items:center;
+}
 .premium-alive.is-fluid-today .dashboard-v06 .today-people:not(.today-people--discover) .today-people-message{
   margin:0;padding:11px 12px;background:#A9002A;border:1px solid #FFC2CA85;
   border-radius:15px;box-shadow:none;
