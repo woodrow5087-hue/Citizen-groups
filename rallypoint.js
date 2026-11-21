@@ -1,11 +1,12 @@
 (function rallyApp(){
 'use strict';
 const key='rallypoint-phase1-2026';
-const defaults=()=>({role:'member',groupPane:'chat',directPerson:'anna',directMessages:{},teamPane:'schedule',view:'today',discover:false,groupMessages:[{name:'Jess W.',time:'Yesterday',text:'What stood out to you in John 15 this week?'},{name:'Anna L.',time:'Today',text:'Looking forward to seeing everyone Wednesday.'}],teamMessages:[{name:'Sam R.',time:'Yesterday',text:'Welcome team — thank you for helping people feel at home!'}],prayers:[{name:'Marcus C.',time:'Yesterday',text:'Praying for wisdom with an upcoming decision.'}],rsvp:'',teamStatus:'pending',coverage:false,attendance:{anna:'here',jess:'here',marcus:'unknown',taylor:'unknown'},reached:[],interest:[],plan:'sermon',planQuestions:{},memoryTextRevision:'BSB-2026-1',memoryGames:{},memoryMode:'solo',memoryActive:null,memoryPassTurn:1,memoryTarget:null,question:'How can we love one another as Jesus has loved us?',read:false,prayed:false});
+const defaults=()=>({role:'member',groupPane:'chat',directPerson:'anna',directMessages:{},teamPane:'schedule',view:'today',discover:false,groupMessages:[{name:'Jess W.',time:'Yesterday',text:'What stood out to you in John 15 this week?'},{name:'Anna L.',time:'Today',text:'Looking forward to seeing everyone Wednesday.'}],teamMessages:[{name:'Sam R.',time:'Yesterday',text:'Welcome team — thank you for helping people feel at home!'}],prayers:[{name:'Marcus C.',time:'Yesterday',text:'Praying for wisdom with an upcoming decision.'}],rsvp:'',teamStatus:'pending',coverage:false,attendance:{anna:'here',jess:'here',marcus:'unknown',taylor:'unknown'},reached:[],interest:[],plan:'sermon',planQuestions:{},memoryTextRevision:'BSB-2026-1',memoryGames:{},memoryMode:'solo',memoryActive:null,memoryPassTurn:1,memoryTarget:null,question:'How can we love one another as Jesus has loved us?',read:false,prayed:false,companionCare:{}});
 let s;try{s={...defaults(),...JSON.parse(localStorage.getItem(key)||'null')}}catch(_){s=defaults()}
 if(!s||!s.groupMessages||!Array.isArray(s.groupMessages))s=defaults();
  if(!s.directMessages||typeof s.directMessages!=='object'||Array.isArray(s.directMessages))s.directMessages={};
  if(!s.planQuestions||typeof s.planQuestions!=='object'||Array.isArray(s.planQuestions))s.planQuestions={};
+if(!s.companionCare||typeof s.companionCare!=='object'||Array.isArray(s.companionCare))s.companionCare={};
 if(!s.memoryGames||typeof s.memoryGames!=='object'||Array.isArray(s.memoryGames))s.memoryGames={};
 if(!['solo','pass'].includes(s.memoryMode))s.memoryMode='solo';
 if(!['sermon','study','year','romans'].includes(s.memoryActive))s.memoryActive=null;
@@ -14,7 +15,7 @@ if(!Number.isInteger(s.memoryTarget)||s.memoryTarget<0||s.memoryTarget>4)s.memor
 const T=window.RallyToday,U=window.RallyUI,M=window.RallyMemory,VP=window.RallyVersePlay,H=window.RallyHybrid,icon=U.icon;
 // Old KJV rounds cannot be carried into a new translation: preserve all other demo data.
 if(s.memoryTextRevision!==M.textRevision){s.memoryGames={};s.memoryTextRevision=M.textRevision;s.memoryTarget=null;}
-let todayUI=T.load({getItem:k=>localStorage.getItem(k)}),dialog=null,dialogTrigger=null,storageWarning='',drafts={};
+let todayUI=T.load({getItem:k=>localStorage.getItem(k)}),dialog=null,dialogTrigger=null,storageWarning='',drafts={},companionFocus=null;
 const $=x=>document.getElementById(x), e=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const save=()=>{try{localStorage.setItem(key,JSON.stringify(s));localStorage.setItem(T.UI_KEY,JSON.stringify(todayUI));storageWarning='';}catch(_){storageWarning='This browser could not save your demo changes. They may be lost on refresh.';}};
 const canLead=area=>s.role==='leader'&&!!todayUI.memberships[area];
@@ -211,6 +212,7 @@ if(s.groupPane==='direct'){
       <span class="group-member-avatar" aria-hidden="true">${e(person.initials)}</span>
       <span><h2>${e(person.name)}</h2><small>Sample direct conversation · never sent</small></span>
     </div>
+    ${companionFocus===person.id?`<div class="pa-care-context"><strong>A thoughtful check-in</strong><p>Your companion noticed a fictional group prayer note. Write what feels natural; nothing will be sent to a real person.</p><button type="button" data-action="companion-starter" class="pa-care-starter">Suggest a message</button></div>`:''}
     ${messages.length?`<div class="group-direct-messages">${messages.map(msg=>`<div class="group-direct-bubble"><strong>${e(msg.name)}</strong><p>${e(msg.text)}</p><small>${e(msg.time)}</small></div>`).join('')}</div>`:`<div class="group-direct-empty">${icon('message')}<strong>Start a conversation.</strong><p>Keep in touch with people in your group. This is a private local fixture; no real person will receive it.</p></div>`}
     ${compose('direct','Your sample message','Write something encouraging…')}
     <button type="button" class="text-button group-back" data-action="pane" data-area="group" data-value="people">← Back to people</button>
@@ -501,13 +503,44 @@ if(['memory-pick','memory-check','memory-hint','memory-reset','memory-next-playe
    render();if(outcome.status==='complete')notify('Verse complete — nicely done!');return;
  }
 }
+if(a==='companion-snooze'){
+  if(!todayUI.memberships.group)return;
+  s.companionCare.marcus={...(s.companionCare.marcus||{}),snoozedUntil:new Date(Date.now()+24*60*60*1000).toISOString()};
+  render();notify('This fictional suggestion will return in about a day.');return;
+}
+if(a==='companion-encourage'){
+  if(!todayUI.memberships.group||!s.prayers.some(p=>p?.name==='Marcus C.'))return;
+  companionFocus='marcus';s.directPerson='marcus';navigate('group','direct');return;
+}
+if(a==='companion-starter'){
+  if(companionFocus!=='marcus'||s.groupPane!=='direct'||s.directPerson!=='marcus')return;
+  const field=$('direct-input');
+  if(field){field.value='Hey Marcus, I saw your note in our group. Thinking of you and praying for you.';field.focus();}
+  return;
+}
 if(a==='hybrid-person'){if(!todayUI.memberships.group)return;const member=sampleGroupPeople.find(p=>p.id===person);if(!member)return;s.directPerson=member.id;navigate('group','direct');return;}
 if(a==='message-person'){if(!todayUI.memberships.group)return;const member=sampleGroupPeople.find(p=>p.id===person);if(!member)return;s.directPerson=member.id;s.groupPane='direct';render();return}
  if(a==='pane'){if(v==='leader'&&!canLead(b.dataset.area))return;if(b.dataset.area==='group')s.groupPane=v;else s.teamPane=v;render();return}
 if(a==='browse'){s.discover=!s.discover;render();return}
 if(a==='rsvp'){s.rsvp=s.rsvp===v?'':v;render();notify('Sample RSVP updated');return}
 if(a==='interest'){s.interest=s.interest.includes(v)?s.interest.filter(x=>x!==v):[...s.interest,v];render();notify('Interest saved locally, not submitted');return}
-if(a==='send'){const x=$(v+'-input'),txt=x?.value.trim();if(!txt){notify('Write a message first');return}const item={name:'You',time:'Just now',text:txt};if(v==='group')s.groupMessages.push(item);else if(v==='team')s.teamMessages.push(item);else if(v==='direct'){if(!todayUI.memberships.group||!sampleGroupPeople.some(p=>p.id===s.directPerson))return;s.directMessages[s.directPerson]??=[];s.directMessages[s.directPerson].push(item);}else s.prayers.push(item);x.value='';delete drafts[v+'-input'];render();notify('Saved to this device only');return}
+if(a==='send'){
+ const x=$(v+'-input'),txt=x?.value.trim();if(!txt){notify('Write a message first');return}
+ const item={name:'You',time:'Just now',text:txt};
+ if(v==='group')s.groupMessages.push(item);
+ else if(v==='team')s.teamMessages.push(item);
+ else if(v==='direct'){
+  if(!todayUI.memberships.group||!sampleGroupPeople.some(p=>p.id===s.directPerson))return;
+  s.directMessages[s.directPerson]??=[];
+  s.directMessages[s.directPerson].push(item);
+  // The care loop remembers only that the optional action occurred; content remains in the existing local DM.
+  if(s.directPerson==='marcus'&&s.prayers.some(p=>p?.name==='Marcus C.')){
+   s.companionCare.marcus={completedAt:new Date().toISOString()};
+  }
+  companionFocus=null;
+ }else s.prayers.push(item);
+ x.value='';delete drafts[v+'-input'];render();notify('Saved to this device only');return;
+}
 if(a==='attendance'&&canLead('group')){s.attendance[person]=v;render();notify('Sample attendance updated');return}
 if(a==='reached'&&canLead('group')){s.reached=s.reached.includes(person)?s.reached.filter(x=>x!==person):[...s.reached,person];render();return}
 if(a==='shift'){s.teamStatus=v;if(v==='confirmed'){s.coverage=false;s.teamMessages=s.teamMessages.filter(x=>!x.coverage)}render();notify('Sample serving response saved');return}

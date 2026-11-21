@@ -21,7 +21,20 @@ async function geometry(page,label){const g=await page.evaluate(()=>{const main=
 async function demo(page,scenario){await page.locator('.profile-avatar').click();await page.locator(`[data-action="scenario"][data-value="${scenario}"]`).click();}
 async function journey(page){
  const nav=id=>page.locator(`#nav [data-go="${id}"]`).click(),main=page.locator('#view');
- await demo(page,'connected');await page.locator('.attention-tile[data-go="group"]').click();assert.ok(await page.locator('#group-input').isVisible());await page.locator('#group-input').fill('A fictional note for the local group.');await page.locator('[data-action="send"][data-value="group"]').click();assert.equal(await page.locator('#group-input').inputValue(),'');
+ await demo(page,'connected');
+ assert.ok((await page.locator('.pa-companion').textContent()).includes('Marcus shared a fictional prayer request'));
+ await page.locator('.pa-companion [data-action="companion-encourage"]').click();
+ assert.ok(await page.locator('.pa-care-context').isVisible());
+ await page.locator('[data-action="companion-starter"]').click();
+ assert.ok((await page.locator('#direct-input').inputValue()).includes('Hey Marcus'));
+ const beforeCare=await page.evaluate(()=>JSON.parse(localStorage.getItem('rallypoint-phase1-2026')));
+ assert.ok(!beforeCare.companionCare?.marcus?.completedAt,'draft alone is not a completed check-in');
+ await page.locator('[data-action="send"][data-value="direct"]').click();
+ await nav('today');
+ assert.ok(await page.locator('.pa-care-memory').isVisible());
+ assert.equal(await page.locator('[data-action="companion-encourage"]').count(),0);
+ if(page.viewportSize().width===390)await page.screenshot({path:path.join(out,'companion-cared-390.png')});
+ await page.locator('.attention-tile[data-go="group"]').click();assert.ok(await page.locator('#group-input').isVisible());await page.locator('#group-input').fill('A fictional note for the local group.');await page.locator('[data-action="send"][data-value="group"]').click();assert.equal(await page.locator('#group-input').inputValue(),'');
  await page.locator('[data-area="group"][data-value="prayer"]').click();await page.locator('#prayer-input').fill('A fictional prayer for patience.');await page.locator('[data-action="send"][data-value="prayer"]').click();await page.locator('[data-area="group"][data-value="gather"]').click();await page.locator('[data-action="rsvp"][data-value="going"]').click();
  await nav('today');await page.locator('.availability-action').click();assert.ok((await main.textContent()).includes('Awaiting response'));await page.locator('[data-action="shift"][data-value="confirmed"]').click();await nav('today');assert.ok((await main.textContent()).includes('You’re all caught up'));await audit(page,'Caught-up Today');
  await page.locator('.read-play-cta').click();assert.ok(await page.locator('.rp-play-screen').isVisible(),'Today Memorize opens integrated Blank Battle');assert.equal(await page.locator('.bb-slot').count(),5);await audit(page,'Integrated Blank Battle');await nav('today');

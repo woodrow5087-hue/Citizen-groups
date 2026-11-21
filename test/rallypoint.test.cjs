@@ -383,3 +383,47 @@ test('Premium ALIVE people circles open existing fictional direct conversations 
  app.click('.pa-group-summary');
  assert.equal(app.saved().groupPane,'gather');
 });
+
+
+test('companion care loop suggests, drafts, saves and remembers a fictional check-in',t=>{
+ const app=open(t);
+ assert.match(app.d.querySelector('.pa-companion').textContent,/Marcus shared a fictional prayer request/);
+ app.click('.pa-companion [data-action="companion-encourage"]');
+ assert.equal(app.saved().view,'group');
+ assert.equal(app.saved().groupPane,'direct');
+ assert.equal(app.saved().directPerson,'marcus');
+ assert.ok(app.d.querySelector('.pa-care-context'));
+ app.click('[data-action="companion-starter"]');
+ assert.match(app.d.getElementById('direct-input').value,/Hey Marcus/);
+ assert.equal(app.saved().companionCare.marcus,undefined,'Drafting alone must not mark complete');
+ app.click('[data-action="send"][data-value="direct"]');
+ assert.equal(app.saved().directMessages.marcus.length,1);
+ assert.ok(app.saved().companionCare.marcus.completedAt);
+ app.go('today');
+ assert.match(app.d.querySelector('.pa-companion .pa-care-memory').textContent,/checked in with Marcus/);
+ assert.equal(app.d.querySelector('[data-action="companion-encourage"]'),null);
+ assert.match(app.d.querySelector('.pa-companion').textContent,/Review my serve/);
+ const restored=open(t,{saved:app.saved(),ui:app.ui()});
+ assert.match(restored.d.querySelector('.pa-companion .pa-care-memory').textContent,/checked in/);
+ assert.equal(restored.saved().directMessages.marcus.length,1);
+});
+test('companion care nudge is voluntary and snoozes without changing messages or roles',t=>{
+ const app=open(t);
+ const before=app.saved();
+ app.click('.pa-companion [data-action="companion-snooze"]');
+ assert.equal(app.d.querySelector('[data-action="companion-encourage"]'),null);
+ assert.ok(Date.parse(app.saved().companionCare.marcus.snoozedUntil)>new Date('2026-11-23T12:00:00').getTime());
+ assert.deepEqual(app.saved().directMessages,before.directMessages);
+ assert.equal(app.saved().role,before.role);
+ assert.match(app.d.querySelector('.pa-companion').textContent,/Review my serve/);
+ const restored=open(t,{saved:app.saved(),ui:app.ui()});
+ assert.equal(restored.d.querySelector('[data-action="companion-encourage"]'),null);
+});
+test('companion care does not show private group prompts when group membership is off',t=>{
+ const app=open(t);
+ app.action('demo-controls');
+ app.click('[data-action="scenario"][data-value="no-memberships"]');
+ assert.equal(app.d.querySelector('[data-action="companion-encourage"]'),null);
+ assert.equal(app.d.querySelector('.pa-care-memory'),null);
+ assert.equal(app.d.querySelector('.pa-care-later'),null);
+});
