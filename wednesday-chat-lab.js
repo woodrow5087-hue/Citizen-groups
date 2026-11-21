@@ -3,7 +3,7 @@
 'use strict';
 /** Single reusable controller, mounted in lab or Groups. */
 function mount(root=document,{authorize=null}={}){
-const DOMAIN=window.RallyChatDomain;
+const DOMAIN=window.RallyChatDomain,READ=window.RallyConversationRead;
 const STORAGE_KEY='rallypoint-wednesday-chat-lab-v1';
 const CONVERSATION='group_wednesday';
 const SELF='u_you';
@@ -22,53 +22,15 @@ const status=$('save-indicator'),error=$('lab-error'),failControl=$('fail-next')
 const messagesById=new Map();
 const esc=value=>String(value??'').replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
 const showError=message=>{error.textContent=message;error.hidden=!message;};
-function fixture(){
- const snapshot=DOMAIN.emptyConversationSnapshot();
- snapshot.users=structuredClone(users);
- snapshot.conversations=[{id:CONVERSATION,organizationId:'citizen_demo',kind:'group',
-   title:'Wednesday Group',createdAt:date}];
- snapshot.memberships=users.map((person,index)=>({
-   id:'member_'+person.id,conversationId:CONVERSATION,userId:person.id,
-   role:index===1?'leader':'member',status:'active'
- }));
- snapshot.messages=[
-   {id:'seed_jess',conversationId:CONVERSATION,authorId:'u_jess',
-     body:'This week we’re reading John 15:12. What’s one practical way we can love one another?',createdAt:'2026-11-18T18:30:00.000Z',
-     deliveryStatus:'sent',replyToMessageId:null},
-   {id:'seed_anna',conversationId:CONVERSATION,authorId:'u_anna',
-     body:'I keep thinking it can be as simple as checking in on someone who’s had a hard week.',
-     createdAt:'2026-11-18T18:33:00.000Z',deliveryStatus:'sent',replyToMessageId:'seed_jess'},
-   {id:'seed_marcus',conversationId:CONVERSATION,authorId:'u_marcus',
-     body:'That means a lot. Really grateful for you all.',
-     createdAt:'2026-11-20T15:12:00.000Z',deliveryStatus:'sent',replyToMessageId:null},
-   {id:'seed_you',conversationId:CONVERSATION,authorId:SELF,
-     body:'Love that. Looking forward to seeing everyone Wednesday!',
-     createdAt:'2026-11-20T16:21:00.000Z',deliveryStatus:'sent',replyToMessageId:'seed_anna'}
- ];
- snapshot.reactions=[
-   {id:'seed_react',messageId:'seed_marcus',userId:'u_jess',emoji:'❤️',createdAt:'2026-11-20T15:13:00.000Z'}
- ];
- return snapshot;
-}
+function fixture(){return READ.fixture(DOMAIN);}
 let repository,draft='',replyTo=null,storageLocked=false;
 function readLab(){
- try {
-   const raw=localStorage.getItem(STORAGE_KEY);
-   if(raw===null)return null;
-   const parsed=JSON.parse(raw);
-   if(parsed?.schemaVersion!==1 || !parsed.snapshot || typeof parsed.draft!=='string' ||
-     parsed.draft.length>700 ||
-     !(parsed.replyTo===null||typeof parsed.replyTo==='string'))throw Error('Unsupported local demo version');
-   DOMAIN.assertConversationSnapshot(parsed.snapshot);
-   const current=parsed.snapshot.conversations.some(c=>c.id===CONVERSATION);
-   const member=parsed.snapshot.memberships.some(m=>m.userId===SELF&&m.conversationId===CONVERSATION&&m.status==='active');
-   if(!current||!member)throw Error('Missing local demo thread or membership');
-   return parsed;
- } catch(_){
-   storageLocked=true;
-   showError('This lab has saved data that could not be read. Nothing has been overwritten. Use Reset to start a fresh fictional lab.');
-   return null;
- }
+  try{return READ.readSaved(localStorage,DOMAIN);}
+  catch(_){
+    storageLocked=true;
+    showError('This lab has saved data that could not be read. Nothing has been overwritten. Use Reset to start a fresh fictional lab.');
+    return null;
+  }
 }
 function saveLab(){
  if(storageLocked)return false;
@@ -192,7 +154,7 @@ function retry(id){
    deliver(id,shouldFail);
  }catch(ex){errorMessage(ex.message);}
 }
-if(!DOMAIN){
+if(!DOMAIN||!READ){
  errorMessage('Could not load the conversation domain. Refresh this demo.');
  input.disabled=true;send.disabled=true;
  return;
