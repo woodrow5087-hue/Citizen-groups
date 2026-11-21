@@ -1,8 +1,6 @@
 /* F-06 fictional Wednesday Group lab: no real people, server, or legacy state migration. */
 (function(){
 'use strict';
-/** Single reusable controller, mounted in lab or Groups. */
-function mount(root=document,{authorize=null}={}){
 const DOMAIN=window.RallyChatDomain;
 const STORAGE_KEY='rallypoint-wednesday-chat-lab-v1';
 const CONVERSATION='group_wednesday';
@@ -15,13 +13,7 @@ const users=[
   {id:'u_marcus',organizationId:'citizen_demo',displayName:'Marcus C.'},
   {id:'u_taylor',organizationId:'citizen_demo',displayName:'Taylor D.'}
 ];
-const $=id=>root.querySelector('#'+id);
-const permitted=action=>typeof authorize!=='function'||authorize(action)===true;
-const view=$('conversation'),scroll=$('thread-scroll'),input=$('message-input'),send=$('send-message');
-const status=$('save-indicator'),error=$('lab-error'),failControl=$('fail-next');
-const messagesById=new Map();
-const esc=value=>String(value??'').replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
-const showError=message=>{error.textContent=message;error.hidden=!message;};
+
 function fixture(){
  const snapshot=DOMAIN.emptyConversationSnapshot();
  snapshot.users=structuredClone(users);
@@ -50,24 +42,65 @@ function fixture(){
  ];
  return snapshot;
 }
+/** The read model and the visible thread use the same validated F-02 snapshot.
+ * Legacy groupMessages never enter this versioned conversation and are never rewritten.
+ */
+function storedRecord(storage){
+ const raw=storage.getItem(STORAGE_KEY);
+ if(raw===null)return null;
+ const parsed=JSON.parse(raw);
+ if(parsed?.schemaVersion!==1||!parsed.snapshot||typeof parsed.draft!=='string'||
+   parsed.draft.length>700||!(parsed.replyTo===null||typeof parsed.replyTo==='string'))throw Error('Unsupported local demo version');
+ DOMAIN.assertConversationSnapshot(parsed.snapshot);
+ const current=parsed.snapshot.conversations.some(c=>c.id===CONVERSATION);
+ const member=parsed.snapshot.memberships.some(m=>m.userId===SELF&&m.conversationId===CONVERSATION&&m.status==='active');
+ if(!current||!member)throw Error('Missing local demo thread or membership');
+ return parsed;
+}
+function preview({storage=localStorage,authorized=true}={}){
+ if(!authorized)return {available:false,unreadCount:0,latest:null};
+ try {
+  if(!DOMAIN)throw Error('Missing conversation runtime');
+  const saved=storedRecord(storage);
+  const repository=DOMAIN.createMockConversationRepository({seed:saved?.snapshot||fixture()});
+  const last=repository.listMessages({conversationId:CONVERSATION,userId:SELF})
+   .filter(m=>m.deliveryStatus==='sent').at(-1)||null;
+  return {available:true,unreadCount:repository.getUnreadCount({conversationId:CONVERSATION,userId:SELF}),
+   latest:last?{id:last.id,author:last.authorId===SELF?'You':users.find(p=>p.id===last.authorId)?.displayName||'Fictional member',body:last.body,createdAt:last.createdAt}:null};
+ }catch(_){return {available:false,unreadCount:0,latest:null,error:'saved-data-unreadable'};}
+}
+/** The explicit "All caught up" demo action uses the same cursor as opening Groups. */
+function acknowledge({storage=localStorage,authorized=true}={}){
+ if(!authorized||!DOMAIN)return false;
+ try {
+  const saved=storedRecord(storage);
+  const repository=DOMAIN.createMockConversationRepository({seed:saved?.snapshot||fixture()});
+  const last=repository.listMessages({conversationId:CONVERSATION,userId:SELF})
+   .filter(m=>m.deliveryStatus==='sent').at(-1)||null;
+  if(last)repository.markRead({conversationId:CONVERSATION,userId:SELF,messageId:last.id});
+  storage.setItem(STORAGE_KEY,JSON.stringify({schemaVersion:1,snapshot:repository.getSnapshot(),
+   draft:saved?.draft||'',replyTo:saved?.replyTo||null}));
+  return true;
+ }catch(_){return false;}
+}
+
+/** Single reusable controller, mounted in lab or Groups. */
+function mount(root=document,{authorize=null}={}){
+const $=id=>root.querySelector('#'+id);
+const permitted=action=>typeof authorize!=='function'||authorize(action)===true;
+const view=$('conversation'),scroll=$('thread-scroll'),input=$('message-input'),send=$('send-message');
+const status=$('save-indicator'),error=$('lab-error'),failControl=$('fail-next');
+const messagesById=new Map();
+const esc=value=>String(value??'').replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
+const showError=message=>{error.textContent=message;error.hidden=!message;};
+
 let repository,draft='',replyTo=null,storageLocked=false;
 function readLab(){
- try {
-   const raw=localStorage.getItem(STORAGE_KEY);
-   if(raw===null)return null;
-   const parsed=JSON.parse(raw);
-   if(parsed?.schemaVersion!==1 || !parsed.snapshot || typeof parsed.draft!=='string' ||
-     parsed.draft.length>700 ||
-     !(parsed.replyTo===null||typeof parsed.replyTo==='string'))throw Error('Unsupported local demo version');
-   DOMAIN.assertConversationSnapshot(parsed.snapshot);
-   const current=parsed.snapshot.conversations.some(c=>c.id===CONVERSATION);
-   const member=parsed.snapshot.memberships.some(m=>m.userId===SELF&&m.conversationId===CONVERSATION&&m.status==='active');
-   if(!current||!member)throw Error('Missing local demo thread or membership');
-   return parsed;
- } catch(_){
-   storageLocked=true;
-   showError('This lab has saved data that could not be read. Nothing has been overwritten. Use Reset to start a fresh fictional lab.');
-   return null;
+ try{return storedRecord(localStorage);}
+ catch(_){
+  storageLocked=true;
+  showError('This lab has saved data that could not be read. Nothing has been overwritten. Use Reset to start a fresh fictional lab.');
+  return null;
  }
 }
 function saveLab(){
@@ -244,6 +277,6 @@ $('reset-lab').addEventListener('click',()=>{
  catch(_){errorMessage('This browser prevented resetting the lab storage.');}
 });
 }
-window.RallyWednesdayChat=Object.freeze({mount});
+window.RallyWednesdayChat=Object.freeze({mount,preview,acknowledge});
 if(document.getElementById('conversation')&&!document.getElementById('rpx-chat'))mount(document);
 })();
