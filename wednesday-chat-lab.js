@@ -1,6 +1,8 @@
 /* F-06 fictional Wednesday Group lab: no real people, server, or legacy state migration. */
 (function(){
 'use strict';
+/** Single reusable controller, mounted in lab or Groups. */
+function mount(root=document,{authorize=null}={}){
 const DOMAIN=window.RallyChatDomain;
 const STORAGE_KEY='rallypoint-wednesday-chat-lab-v1';
 const CONVERSATION='group_wednesday';
@@ -13,7 +15,8 @@ const users=[
   {id:'u_marcus',organizationId:'citizen_demo',displayName:'Marcus C.'},
   {id:'u_taylor',organizationId:'citizen_demo',displayName:'Taylor D.'}
 ];
-const $=id=>document.getElementById(id);
+const $=id=>root.querySelector('#'+id);
+const permitted=action=>typeof authorize!=='function'||authorize(action)===true;
 const view=$('conversation'),scroll=$('thread-scroll'),input=$('message-input'),send=$('send-message');
 const status=$('save-indicator'),error=$('lab-error'),failControl=$('fail-next');
 const messagesById=new Map();
@@ -143,6 +146,7 @@ function render({bottom=false}={}){
 }
 function deliver(id,fail){
  window.setTimeout(()=>{
+   if(root!==document&&!root.isConnected)return;
    try{
      const record=repository.getSnapshot().messages.find(m=>m.id===id);
      if(!record||record.deliveryStatus!=='pending')return;
@@ -154,6 +158,7 @@ function deliver(id,fail){
 function sendMessage(){
  const body=input.value.trim();
  if(!body||storageLocked)return;
+ if(!permitted('write')){errorMessage('Fictional group membership is required to send.');return;}
  try {
    const message=repository.sendMessage({conversationId:CONVERSATION,userId:SELF,body,replyToMessageId:replyTo});
    draft='';replyTo=null;input.value='';
@@ -165,16 +170,19 @@ function sendMessage(){
  }catch(ex){errorMessage(ex.message);}
 }
 function react(id,emoji){
+ if(!permitted('react')){errorMessage('Fictional group access is required to react.');return;}
  try{repository.toggleReaction({messageId:id,userId:SELF,emoji});saveLab();render();}
  catch(ex){errorMessage(ex.message);}
 }
 function reply(id){
+ if(!permitted('write')){errorMessage('Fictional group access is required to reply.');return;}
  const target=messagesById.get(id);
  if(!target||target.deliveryStatus!=='sent')return;
  replyTo=id;saveLab();updateCompose();
  input.focus({preventScroll:true});
 }
 function retry(id){
+ if(!permitted('write')){errorMessage('Fictional group access is required to retry.');return;}
  const target=messagesById.get(id);
  if(!target||target.authorId!==SELF||target.deliveryStatus==='sent')return;
  try{
@@ -186,6 +194,12 @@ function retry(id){
 }
 if(!DOMAIN){
  errorMessage('Could not load the conversation domain. Refresh this demo.');
+ input.disabled=true;send.disabled=true;
+ return;
+}
+if(!permitted('read')){
+ errorMessage('This fictional group is unavailable because the fixture membership is not active.');
+ input.disabled=true;send.disabled=true;
  return;
 }
 const saved=readLab();
@@ -229,4 +243,7 @@ $('reset-lab').addEventListener('click',()=>{
  try{localStorage.removeItem(STORAGE_KEY);window.location.reload();}
  catch(_){errorMessage('This browser prevented resetting the lab storage.');}
 });
+}
+window.RallyWednesdayChat=Object.freeze({mount});
+if(document.getElementById('conversation')&&!document.getElementById('rpx-chat'))mount(document);
 })();
