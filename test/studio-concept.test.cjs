@@ -27,7 +27,7 @@ test('the four-screen demonstration has interactive Today to Groups navigation a
  slot.querySelector('[data-action="nav"][data-view="people"]').click();
  assert.equal(slot.querySelector('.phone').dataset.screen,'people');
  slot.querySelector('[data-action="checkin"]').click();
- assert.match(slot.textContent,/CHECKED IN/);
+ assert.match(slot.textContent,/Checked in/);
  const saved=JSON.parse(d.window.localStorage.getItem('rally-point-studio-concept-v09'));
  assert.equal(saved.checkIn,true);
  d.window.close();
