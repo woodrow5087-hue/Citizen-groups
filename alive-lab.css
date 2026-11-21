@@ -143,7 +143,7 @@ img{display:block;max-width:100%}
 .group-feature-body strong{display:block;font-size:25px;letter-spacing:-.06em;line-height:1.1}
 .group-feature-body>div:first-child span{display:block;margin-top:5px;font-size:32px;letter-spacing:-.09em;font-weight:950;line-height:.88}
 .group-feature-body h3{font-size:22px;line-height:1.1;letter-spacing:-.06em;margin:0;font-weight:900}
-.group-feature-body p{font-size:10px;line-height:1.4;margin:11px 0 0;color:#ffeddf}
+.group-feature-body p{font-size:10px;line-height:1.4;margin:11px 0 0;color:#ffffff}
 .rsvp-button{position:relative;z-index:2;display:flex;justify-content:space-between;align-items:center;width:100%;background:#fff5e8;border:0;color:#251f24;border-radius:10px;padding:13px 15px;font-size:13px;font-weight:950}
 .rsvp-button b{font-size:22px}
 .rsvp-button.is-going{background:#c9ffa0}
