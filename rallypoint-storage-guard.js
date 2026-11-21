@@ -46,7 +46,7 @@ function create(storage){
       const a=parse(current.primaryRaw,'primary'),b=parse(current.todayRaw,'today');
       if(!a.ok||!b.ok)return {ok:false,reason:'Saved data needs recovery: '+(!a.ok?a.reason:b.reason)+'. Nothing will be overwritten.'};
       return {ok:true,raw:current};
-    }catch(_){return {ok:false,reason:'Browser storage could not be read. Nothing will be overwritten.'};}
+    }catch(_){return {ok:false,reason:'This browser could not save safely because storage could not be read. Nothing will be overwritten.'};}
   }
   const initial=inspect();
   if(initial.ok)baseline=cloneRaw(initial.raw);
