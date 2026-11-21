@@ -45,7 +45,11 @@ test('Read has the newest game entry while remaining independent from v0.8',()=>
  const d=load(),doc=d.window.document,slot=doc.querySelector('[data-initial="today"]');
  slot.querySelector('[data-action="nav"][data-view="read"]').click();
  assert.equal(slot.querySelector('.phone').dataset.screen,'read');
- assert.match(slot.textContent,/VERSEPLAY/);
- assert.ok(slot.querySelector('[data-action="game"]'));
+ assert.ok(slot.querySelector('.reading-plan-hero'),'Read shows the approved reading-plan artwork');
+ assert.match(slot.textContent,/The Way of Jesus/);
+ slot.querySelector('[data-action="readpane"][data-pane="study"]').click();
+ assert.ok(slot.querySelector('[data-action="game"]'),'Study provides a handoff to Blank Battle');
+ slot.querySelector('[data-action="readpane"][data-pane="discuss"]').click();
+ assert.match(slot.textContent,/What does love look like/);
  d.window.close();
 });
