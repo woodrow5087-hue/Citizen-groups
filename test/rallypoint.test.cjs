@@ -171,7 +171,15 @@ test('Today settles into a real caught-up state after opening the source and con
   assert.equal(app.w.RallyConversationRead.peek({
     storage:app.w.localStorage,domain:app.w.RallyChatDomain
   }).unreadCount,0,'reading the embedded thread must clear its cursor');
-  app.go('today');app.click('.availability-action');app.click('[data-action="shift"][data-value="confirmed"]');app.go('today');assert.match(app.text(),/You’re all caught up/);assert.equal(app.d.querySelector('.attention-tile'),null);
+  const unread=()=>app.w.RallyConversationRead.peek({
+    storage:app.w.localStorage,domain:app.w.RallyChatDomain
+  }).unreadCount;
+  app.go('today');assert.equal(unread(),0,'after leaving chat');
+  app.click('.availability-action');assert.equal(unread(),0,'after opening serving schedule');
+  app.click('[data-action="shift"][data-value="confirmed"]');
+  assert.equal(unread(),0,'after confirming serving');
+  app.go('today');assert.equal(unread(),0,'after returning to Today');
+  assert.match(app.text(),/You’re all caught up/);assert.equal(app.d.querySelector('.attention-tile'),null);
  app.action('notifications');assert.match(app.d.querySelector('#dialog-root [role="dialog"]').textContent,/You’re all caught up/);app.action('close-dialog');
  const again=open(t,{saved:app.saved(),ui:app.ui()});assert.match(again.text(),/You’re all caught up/);
 });
