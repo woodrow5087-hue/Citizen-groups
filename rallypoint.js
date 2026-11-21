@@ -13,12 +13,13 @@ if(!['solo','pass'].includes(s.memoryMode))s.memoryMode='solo';
 if(!['sermon','study','year','romans'].includes(s.memoryActive))s.memoryActive=null;
 if(![1,2].includes(s.memoryPassTurn))s.memoryPassTurn=1;
 if(!Number.isInteger(s.memoryTarget)||s.memoryTarget<0||s.memoryTarget>4)s.memoryTarget=null;
-const T=window.RallyToday,U=window.RallyUI,M=window.RallyMemory,VP=window.RallyVersePlay,H=window.RallyHybrid,icon=U.icon;
+const T=window.RallyToday,U=window.RallyUI,M=window.RallyMemory,VP=window.RallyVersePlay,H=window.RallyHybrid,G=window.RallyGroupView,icon=U.icon;
 // Old KJV rounds cannot be carried into a new translation: preserve all other demo data.
 if(s.memoryTextRevision!==M.textRevision){s.memoryGames={};s.memoryTextRevision=M.textRevision;s.memoryTarget=null;}
-let todayUI=T.load({getItem:k=>localStorage.getItem(k)}),dialog=null,dialogTrigger=null,storageWarning='',drafts={},companionFocus=null;
+const storageGuard=window.RallyStorageGuard.create(localStorage);
+ let todayUI=T.load({getItem:k=>localStorage.getItem(k)}),dialog=null,dialogTrigger=null,storageWarning=storageGuard.status().reason||'',drafts={},companionFocus=null;
 const $=x=>document.getElementById(x), e=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const save=()=>{try{localStorage.setItem(key,JSON.stringify(s));localStorage.setItem(T.UI_KEY,JSON.stringify(todayUI));storageWarning='';}catch(_){storageWarning='This browser could not save your demo changes. They may be lost on refresh.';}};
+const save=()=>{const result=storageGuard.save({primaryRaw:JSON.stringify(s),todayRaw:JSON.stringify(todayUI)});storageWarning=result.ok?'':result.reason;};
 const canLead=area=>s.role==='leader'&&!!todayUI.memberships[area];
 const pill=(t,light=false)=>`<span class="pill ${light?'light':''}">${e(t)}</span>`;
 const icons={home:'⌂',group:'♙',team:'♡',read:'▤',arrow:'↗'};
@@ -32,7 +33,6 @@ const readingLibrary={
 const currentReading=()=>readingLibrary[s.plan]||readingLibrary.sermon;
 const next=d=>T.nextEvent(d,d===3?18:9,d===3?30:0).toLocaleDateString('en-US',{weekday:'long',month:'short',day:'numeric'});
 const wed=()=>next(3),sun=()=>next(0);
-const groupList=()=>s.groupMessages.map(m=>`<div class="message"><div class="avatar">${e(m.name.split(' ').map(x=>x[0]).join('').slice(0,2))}</div><div><div class="message-meta"><strong>${e(m.name)}</strong><small>${e(m.time)}</small></div><p>${e(m.text)}</p></div></div>`).join('');
 const teamList=()=>s.teamMessages.map(m=>`<div class="message"><div class="avatar">${e(m.name.split(' ').map(x=>x[0]).join('').slice(0,2))}</div><div><div class="message-meta"><strong>${e(m.name)}</strong><small>${e(m.time)}</small></div><p>${e(m.text)}</p></div></div>`).join('');
 const prayerList=()=>s.prayers.map(m=>`<div class="message"><div class="avatar">${e(m.name[0])}</div><div><div class="message-meta"><strong>${e(m.name)}</strong><small>${e(m.time)}</small></div><p>${e(m.text)}</p></div></div>`).join('');
 const tabs=(area,values,active)=>`<div class="tabs" role="group" aria-label="${area} sections">${values.map(([id,label])=>`<button type="button" data-action="pane" data-area="${area}" data-value="${id}" class="${active===id?'selected':''}">${label}</button>`).join('')}</div>`;
@@ -190,7 +190,7 @@ if(!todayUI.memberships.group)return groupBrowse();
 if(s.discover)return groupBrowse();
 const opts=[['chat','Conversation'],['people','People'],...(s.groupPane==='direct'?[['direct','Direct message']]:[]),['gather','Gathering'],['prayer','Prayer'],...(canLead('group')?[['leader','Leader tools']]:[])];
 let body='';
-if(s.groupPane==='chat')body=`<div class="card group-conversation"><div class="kicker">GROUP CONVERSATION · SAMPLE</div>${groupList()}${compose('group','Say something to your group','Share a thought or encouragement…')}</div>`;
+if(s.groupPane==='chat')body=G.legacyGroupChat({messages:s.groupMessages,escape:e});
 if(s.groupPane==='people')body=`<div class="card group-people-card">
   <div class="kicker">YOUR PEOPLE · SAMPLE COMMUNITY</div>
   <h2>Stay connected.</h2>
