@@ -79,8 +79,8 @@
     '<div class="message-row">'+avatar(2)+'<div class="message"><strong>Mark</strong> <span class="message-time">· 3h</span><p>Can you pray for my dad’s procedure tomorrow?</p></div></div>'+
     (state.messagesSent?'<div class="message-row">'+avatar(0)+'<div class="message"><strong>You</strong> <span class="message-time">· just now</span><p>Looking forward to seeing everyone!</p></div></div>':'')+
     '<div class="divider"></div><div class="mini-label">'+ico('prayer')+' PRAYER REQUESTS</div>'+
-    '<button class="prayer-item" data-action="pray">'+avatar(1)+'<span>'+(state.prayed?'You’re praying for Mark’s family':'Pray for Mark’s dad and a smooth recovery')+'</span>'+ico('right')+'</button>'+
-    '<button class="cta-red" data-action="checkin">'+ico('chat')+(state.checkIn?'✓ CHECKED IN':'CHECK IN')+'</button>'+
+    '<button class="prayer-item" data-action="pray">'+avatar(1)+'<span>'+(state.prayed?'You’re praying for Mark’s family':'Pray for Dad’s procedure tomorrow and a smooth recovery')+'</span>'+ico('right')+'</button>'+
+    '<button class="cta-red" data-action="checkin">'+ico('chat')+(state.checkIn?'✓ Checked in':'Check in')+'</button>'+
     ''+
    '</div></div>';
  }
@@ -91,7 +91,7 @@
    '<button type="button" class="confirmed" data-action="confirm" aria-label="Change your demo serving response">'+(state.teamConfirmed?ico('check')+' Confirmed':'Response needed')+'</button>'+
    '</section>'+
    '<section class="dark-tile update-card"><div class="eyebrow-row">'+ico('megaphone')+' TEAM UPDATE</div><h2>Welcome Team</h2><p>Need one person for 11:00.<br>If you’re available, reply below and we’ll coordinate.</p>'+
-    '<button class="cta-cream" data-action="help">'+ico('chat')+(state.helpOffered?'✓ RESPONSE RECORDED':'REPLY TO TEAM')+'</button></section>'+
+    '<button class="cta-cream" data-action="help">'+ico('chat')+(state.helpOffered?'✓ Response recorded':'Reply to team')+'</button></section>'+
    '</div>';
  }
  function leader(){
