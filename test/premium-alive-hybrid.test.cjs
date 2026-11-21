@@ -45,7 +45,7 @@ test('Today hero remains personal and companion prompt adapts to meaningful sour
 });
 test('group summary routes to existing gathering rather than inventing attendance or messages',()=>{
  const h=helpers();
- assert.match(h.groupSummary(),/data-area="group" data-value="gather"/);
+ assert.match(h.groupSummary(),/data-go="group" data-pane="gather"/);
  assert.match(h.groupSummary(),/fictional members/);
  const code=fs.readFileSync(path.join(root,'rallypoint-premium-alive.js'),'utf8');
  for(const forbidden of ['fetch(', 'XMLHttpRequest', 'localStorage.setItem(', 'navigator.sendBeacon(', 'WebSocket('])
