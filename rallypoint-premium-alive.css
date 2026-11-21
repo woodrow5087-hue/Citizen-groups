@@ -196,6 +196,9 @@
 .premium-alive.is-groups-v07 .header{background:#101A1C}
 .premium-alive.is-groups-v07 main{background:#101A1C}
 .premium-alive.is-groups-v07 .group-screen-v07{background:#101A1C}
+/* Keep the full-bleed story strip contained within narrow iPhone viewports.
+ * Its inner .pa-people-scroll retains independent horizontal swiping. */
+.premium-alive.is-groups-v07 .group-screen-v07{overflow-x:clip}
 .premium-alive.is-groups-v07 .group-community-hero{
   margin-bottom:0;background:#101A1C;border-radius:0;
   padding:20px 20px 13px;
