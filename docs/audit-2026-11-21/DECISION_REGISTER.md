@@ -55,12 +55,22 @@
 - **Acceptance evidence required:** A complete accessible thread with stable IDs, replies, reversible reactions, draft persistence, correct order and scroll/keyboard behavior, explicit sending/sent/failed states, reduced-motion support, and passing unit/browser/mobile visual regression against preserved screens.
 
 ## F-07 — Today first-viewport information hierarchy
+- **Decision:** APPROVED — Option B.
+- **Owner decision:** “Approve F-07, Option B. Record the decision and proceed to F-08 without implementing code yet.”
+- **Intended approach:** Preserve the Premium ALIVE vivid matte Citizen red, charcoal structural regions, photographic warmth, signature circular Your People profiles and existing four-tab navigation. Carefully refine Today’s information hierarchy so one contextually relevant, useful action is visible in the first 390×844 viewport without scrolling. Do not transform Today into a generic compact task dashboard or remove the branded identity.
+- **Interaction rules:** Contextual action priority must use permitted, trustworthy and explainable information: e.g., pending serving response, relevant group update, upcoming gathering, user-selected Scripture intention, or a gentle empty state when nothing is pressing. Avoid manufactured urgency or inferred spiritual engagement scores.
+- **Implementation sequence:** Agree on hierarchy and rule priorities; produce before/after 390×844 reference screenshots and responsive captures; test alternate fictional user states and accessibility; implement only after explicit feature-level authorization.
+- **Guardrails:** Visual direction is locked; no unapproved redesign of existing screens, routes, member rail, onboarding, or unrelated controls. No live user data or external integrations.
+- **Implementation status:** NOT STARTED. Planning approval only; no code changes or deployment.
+- **Acceptance evidence required:** First-viewport action clearly visible on phone, visual parity with primary red/black design, preserved people circles/hero identity, deterministic and respectful action logic, mobile/keyboard/accessibility checks, and regression tests.
+
+## F-08 — Versioned browser persistence and accurate activity tracking
 - **Decision:** PENDING REVIEW.
-- **Audit finding:** The large branded greeting, photo-led hero, and Your People circles occupy almost the whole initial 390×844 viewport in both the current v0.3 and future-state concepts, pushing the companion's useful next action down the screen.
-- **Candidate approach:** Refine the **information hierarchy** while preserving red/charcoal visual mass, photo warmth, prominent circular people profiles and established four-tab shell. Surface one specific relevant action in the initial viewport, then test content priority, conditional states and mobile accessibility.
+- **Audit finding:** Current `rallypoint-phase1-2026` and `rallypoint-today-ui-v1` browser storage combines unrelated demo state. Daily read/prayed statuses are undated booleans and unread recognition is a serialized message-array signature rather than a per-conversation, per-user read marker.
+- **Candidate approach:** Introduce versioned, migration-safe local fixture contracts, stable message/event identifiers, per-conversation read state and date-scoped reading/prayer activity; preserve all existing fictional saved messages, user selections and VersePlay progress. No production database or cross-device synchronization at this phase.
 - **Implementation status:** NOT STARTED.
 
-## F-08 through F-14
+## F-09 through F-14
 **Decision:** NOT YET REVIEWED. Preserve the original prioritized foundation backlog for the decision sequence.
 
 ## Decision protocol
