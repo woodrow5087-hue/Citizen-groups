@@ -4,9 +4,11 @@ on:
   push:
     branches:
       - 'rally-point/v10-pilot-readiness'
+      - 'rally-point/develop'
   pull_request:
     branches:
       - main
+      - 'rally-point/develop'
 
 permissions:
   contents: read
