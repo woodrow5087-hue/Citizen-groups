@@ -316,3 +316,77 @@
 @media(prefers-reduced-motion:reduce){
   .premium-alive .pa-care-later,.premium-alive .pa-care-starter{transition:none!important;animation:none!important}
 }
+
+/* Companion v0.3 — one action from Scripture to everyday life.
+ * Scoped additions inside existing Read reflection and Today companion cards. */
+.premium-alive .pa-rhythm-editor{
+  margin-top:18px;padding:17px 15px 15px;border-top:4px solid #E3002B;
+  border-radius:0 0 17px 17px;background:#F3E5D6;color:#242322;
+}
+.premium-alive .pa-rhythm-overline{
+  color:#BA002A;font-size:9px;font-weight:950;letter-spacing:.14em;
+}
+.premium-alive .pa-rhythm-editor h3{
+  margin:8px 0 7px;font:950 clamp(21px,5.8vw,25px)/1.08 Manrope,sans-serif;
+  letter-spacing:-.06em;color:#242322;
+}
+.premium-alive .pa-rhythm-editor>p{
+  color:#5A5049;font-size:12px;line-height:1.55;margin:0 0 14px;
+}
+.premium-alive .pa-rhythm-editor label{
+  display:block;font-size:11px;font-weight:900;color:#242322;margin-bottom:7px;
+}
+.premium-alive .pa-rhythm-editor textarea{
+  display:block;width:100%;min-height:88px;box-sizing:border-box;padding:12px;
+  border:1px solid #AC9182;border-radius:13px;background:#FFFCF6;
+  font:600 13px/1.5 Manrope,sans-serif;color:#242322;resize:vertical;
+}
+.premium-alive .pa-rhythm-editor textarea:focus-visible{
+  outline:3px solid #C70032;outline-offset:2px;
+}
+.premium-alive .pa-rhythm-editor-actions{
+  display:flex;flex-wrap:wrap;gap:9px;margin-top:11px;
+}
+.premium-alive .pa-rhythm-save,.premium-alive .pa-rhythm-remove{
+  min-height:44px;flex:1 1 140px;border-radius:13px;
+  font:900 12px/1.2 Manrope,sans-serif;padding:10px 13px;
+}
+.premium-alive .pa-rhythm-save{border:1px solid #E3002B;background:#E3002B;color:white}
+.premium-alive .pa-rhythm-remove{border:1px solid #AC9182;background:transparent;color:#50443E}
+.premium-alive .pa-rhythm-editor .pa-rhythm-privacy{
+  margin:12px 0 0;font-size:10px;line-height:1.5;color:#665D56;
+}
+.premium-alive .pa-rhythm-followup{
+  margin-top:13px;padding:13px 14px 12px;background:#FFF6EC;
+  border:1px solid #D9BBAA;border-left:4px solid #E3002B;
+  border-radius:12px;color:#242322;
+}
+.premium-alive .pa-rhythm-small-head{
+  display:flex;align-items:center;gap:6px;font:950 9px Manrope,sans-serif;
+  color:#A9002A;letter-spacing:.09em;
+}
+.premium-alive .pa-rhythm-small-head span{font-size:15px}
+.premium-alive .pa-rhythm-note{
+  color:#242322;font:850 13px/1.5 Manrope,sans-serif;margin:8px 0 4px;
+  overflow-wrap:anywhere;
+}
+.premium-alive .pa-rhythm-followup small{
+  display:block;color:#695D54;font-size:9px;line-height:1.4;
+}
+.premium-alive .pa-rhythm-buttons{
+  display:flex;gap:7px;flex-wrap:wrap;margin-top:11px;
+}
+.premium-alive .pa-rhythm-complete,.premium-alive .pa-rhythm-defer,
+.premium-alive .pa-rhythm-link{
+  min-height:44px;border-radius:12px;padding:8px 11px;
+  font:900 11px/1.3 Manrope,sans-serif;
+}
+.premium-alive .pa-rhythm-complete{background:#E3002B;border:1px solid #E3002B;color:#fff;flex:1 1 90px}
+.premium-alive .pa-rhythm-defer{background:transparent;border:1px solid #BAA293;color:#4C433E;flex:1 1 90px}
+.premium-alive .pa-rhythm-link{
+  margin-top:9px;background:transparent;color:#B6002A;border:1px solid #C69B92;
+}
+@media(prefers-reduced-motion:reduce){
+  .premium-alive .pa-rhythm-save,.premium-alive .pa-rhythm-complete,
+  .premium-alive .pa-rhythm-defer{transition:none!important;animation:none!important}
+}
