@@ -27,7 +27,7 @@ jobs:
           npm run build
           test -s dist/index.html
           test -s dist/alive-lab.html
-          grep -q 'ALIVE concept lab' dist/alive-lab.html
+          grep -q 'ALIVE × Citizen concept 02' dist/alive-lab.html
       - name: Check reachable Netlify PR preview
         env:
           PREVIEW_URL: https://deploy-preview-${{ github.event.pull_request.number }}--citizen-connect-test.netlify.app/alive-lab.html
