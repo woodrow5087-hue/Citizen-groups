@@ -1,8 +1,15 @@
 # Rally Point — 14 Approved Decisions & Recommended Implementation Roadmap
 **Audit review finalized:** November 21, 2026  
-**Decision status:** 14/14 owner-approved, all Option B. **Execution status (November 21, 2026):** Milestone 0.1 (Stage 0 develop/CI/Netlify preview canary) is **completed and owner-accepted**. Stage 1/F-02 code implementation requires separate explicit authorization; see the [decision register](DECISION_REGISTER.md).  
+**Decision status:** 14/14 owner-approved, all Option B. **Execution status (November 21, 2026):** Milestone 0.1 is completed and accepted; the **F-02 domain foundation (12 contracts/tests/docs files) was independently owner-approved and merged into `rally-point/develop` via [PR #65](https://github.com/woodrow5087-hue/Citizen-groups/pull/65)**. This does **not** include an actual browser-data migration, messaging UI, live data, `main`, or production changes. Separate authorization is required for further implementation; see the [decision register](DECISION_REGISTER.md).  
 **Roadmap status:** Assistant recommendation for the next implementation authorization; the sequencing below is **not itself permission to build, merge or deploy**.  
 **Audit source:** [01 Current Application Map](01_CURRENT_APPLICATION_MAP.md) · [02 Visual Gap Matrix](02_DESIGN_GAP_MATRIX.md) · [03 Ranked Foundation Backlog](03_RANKED_FOUNDATION_BACKLOG.md) · [Official Decision Register](DECISION_REGISTER.md)
+
+## Execution checkpoint — integrated F-02 development foundation
+
+- The combined versioned conversation, serving, companion-action, care, source-reference and uncertainty-aware migration **rehearsal** code is now on `rally-point/develop` at merge commit `3550e442d5e253b5dedd4e6f32a0463eafcbfc12`.
+- All 12 approved file contents were verified intact after merging; CI and Netlify PR preview passed beforehand. `main` was confirmed unchanged.
+- [PR #63](https://github.com/woodrow5087-hue/Citizen-groups/pull/63) and [PR #64](https://github.com/woodrow5087-hue/Citizen-groups/pull/64) were closed as superseded. GitHub marks #63 as merged by commit ancestry; no separate merge was invoked. #64 is closed unmerged.
+- No browser-local `localStorage` data was migrated and no real persistent backup was written. The application still runs the original fictional demo. Further migration, permission enforcement and Wednesday Group UI implementation are **not authorized by this checkpoint**.
 
 ## Executive conclusion
 
