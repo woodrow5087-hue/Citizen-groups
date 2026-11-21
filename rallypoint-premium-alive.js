@@ -33,8 +33,22 @@
       '</button>';
   }
   function todayPrompt(s,ui){
-    let overline='YOUR COMPANION · TODAY',title='',desc='',action='',dest='',pane='';
-    if(ui.memberships?.team && s.teamStatus==='pending'){
+    let overline='YOUR COMPANION · TODAY',title='',desc='',action='',dest='',pane='',intent='';
+    // A care suggestion is based on a real source *within the fictional local fixture*.
+    // No inference from absence, app usage, or unapproved people records.
+    const care=s.companionCare?.marcus||{};
+    const source=ui.memberships?.group && Array.isArray(s.prayers) &&
+      s.prayers.some(p=>p?.name==='Marcus C.' && typeof p.text==='string' && p.text.trim());
+    const snoozed=Number.isFinite(Date.parse(care.snoozedUntil)) &&
+      Date.parse(care.snoozedUntil)>Date.now();
+    const needsCare=source && !care.completedAt && !snoozed;
+    if(needsCare){
+      overline='A MOMENT TO CONNECT · SAMPLE';
+      title='Someone to encourage.';
+      desc='Marcus shared a fictional prayer request with your group. Want to send a thoughtful check-in?';
+      action='Check in with Marcus';
+      intent='companion-encourage';
+    }else if(ui.memberships?.team && s.teamStatus==='pending'){
       title='Your team is counting on you.';desc='Review your sample Sunday availability.';action='Review my serve';dest='team';pane='schedule';
     }else if(ui.memberships?.group && s.groupMessages?.length){
       title='A little more life, together.';desc='Your Wednesday Group conversation is ready when you are.';action='Catch up with my group';dest='group';pane='chat';
@@ -45,10 +59,16 @@
     }else{
       title='You showed up today.';desc='Small moments add up. There’s no streak to protect.';action='Explore my reading';dest='read';
     }
+    const primary=intent?'data-action="'+intent+'" data-person="marcus"':
+      'data-go="'+dest+'"'+(pane?' data-pane="'+pane+'"':'');
+    const memory=ui.memberships?.group&&care.completedAt?
+      '<p class="pa-care-memory" role="status">✓ You checked in with Marcus · saved in this local demo</p>':'';
+    const skip=needsCare?'<button class="pa-care-later" type="button" data-action="companion-snooze">Not now — remind me tomorrow</button>':'';
     return '<section class="pa-companion" aria-label="Personalized companion suggestion">'+
       '<div class="pa-companion-top"><span class="pa-pulse" aria-hidden="true"></span>'+overline+'<button type="button" class="pa-companion-more" data-action="quick-actions" title="More ways to connect" aria-label="Open companion quick actions">✳</button></div>'+
       '<h2>'+title+'</h2><p>'+desc+'</p>'+
-      '<button type="button" class="pa-companion-link" data-go="'+dest+'"'+(pane?' data-pane="'+pane+'"':'')+'>'+action+' <span aria-hidden="true">↗</span></button>'+
+      '<button type="button" class="pa-companion-link" '+primary+'>'+action+' <span aria-hidden="true">↗</span></button>'+
+      skip+memory+
       '</section>';
   }
   function groupSummary(){
