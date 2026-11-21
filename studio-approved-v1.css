@@ -237,3 +237,43 @@ main{max-width:1580px;padding:0 9px 22px;margin:0 auto}
 /* Center the short brand underline beneath each screen heading. */
 .concept-label{position:relative;justify-content:center}
 .concept-label:after{left:50%;top:100%;transform:translateX(-50%);margin-top:10px}
+
+
+/* Final proportion correction, checked against exported 1440px board and 390px
+   phone screenshots side by side with the client's approved rendering. */
+.prayer-item .av,.people-head .prayer-item>.av{flex:0 0 37px!important;min-width:37px;max-width:37px;overflow:hidden}
+.people-head .prayer-item .av img{width:100%;height:100%;object-fit:cover}
+/* Red sweep stays beneath the content, rather than cutting across the text. */
+.dark-screen .page-hero:after{
+ width:238px;height:170px;right:-127px;bottom:-88px;
+ border-radius:48%;transform:rotate(-25deg);background:#ed0039;
+}
+.leader-head:before{
+ width:270px;height:260px;right:-160px;bottom:-190px;
+ border-radius:50%;background:#fff0de;
+}
+@media(min-width:851px){
+ .concept-label{margin-bottom:46px}
+ .phone{aspect-ratio:.427}
+ .hero-card{min-height:234px}
+ .today-stack>.tile-button{min-height:83px}
+ .today-stack .today-read{min-height:78px}
+ .dark-screen .page-hero{min-height:140px;padding:7px 18px 17px}
+ .people-head{padding:12px 10px 13px}
+ .people-head .divider{margin:9px 0 10px}
+ .people-head .message-row{margin-bottom:8px}
+ .people-head .message p{padding:7px 9px}
+ .people-head .prayer-item{min-height:55px;margin-top:8px}
+ .people-head .cta-red{min-height:51px;margin-top:11px}
+ .red-screen .page-hero{min-height:155px;padding:10px 18px 20px}
+ .update-card{min-height:227px}
+ .leader-head{min-height:150px;padding:9px 17px 16px}
+}
+@media(max-width:570px){
+ .hero-card{min-height:264px}
+ .today-stack>.tile-button{min-height:93px}
+ .split-tile{min-height:127px}
+ .today-stack .today-read{min-height:80px}
+ .people-head .prayer-item>.av{flex:0 0 37px!important}
+ .leader-head:before{width:270px;height:260px;right:-160px;bottom:-190px}
+}
