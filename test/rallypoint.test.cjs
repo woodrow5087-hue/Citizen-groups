@@ -43,7 +43,7 @@ test('four tabs retain source destinations and Today links directly to conversat
  for(const tab of ['group','team','read','today']){app.go(tab);assert.equal(app.d.querySelector('#nav [aria-current="page"]').dataset.go,tab);}
  app.action('demo-controls');app.click('[data-action="scenario"][data-value="connected"]');
  app.click('.up-next');assert.equal(app.saved().view,'group');assert.equal(app.saved().groupPane,'gather');assert.ok(app.d.querySelector('[data-action="rsvp"]'));
- app.go('today');app.click('.attention-tile[data-go="group"]');assert.equal(app.saved().groupPane,'chat');assert.ok(app.d.getElementById('group-input'));
+ app.go('today');app.click('.today-people-message[data-go="group"]');assert.equal(app.saved().groupPane,'chat');assert.ok(app.d.getElementById('group-input'));
  app.go('today');app.click('.availability-action');assert.equal(app.saved().view,'team');assert.equal(app.saved().teamPane,'schedule');
  app.go('today');app.click('[data-reading="scripture"]');assert.equal(app.d.activeElement.id,'reading-scripture');app.go('today');app.click('[data-reading="questions"]');assert.equal(app.d.activeElement.id,'reading-questions');
  assert.equal(app.w.localStorage.getItem('citizen-premium-hybrid-demo-v1'),app.other);
