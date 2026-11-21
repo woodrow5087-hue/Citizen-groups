@@ -435,7 +435,12 @@ document.querySelector('.phone-inner').classList.toggle('is-fluid-today',s.view=
  document.querySelector('.phone-inner').classList.toggle('is-team-v08',s.view==='team');
  document.querySelector('.phone-inner').classList.toggle('is-read-v09',s.view==='read'||s.view==='play');
  document.querySelector('.phone-inner').classList.toggle('is-play-v08',s.view==='play');
- view.innerHTML=(storageWarning?`<p class="storage-notice" role="status">${e(storageWarning)}</p>`:'')+(s.view==='today'?today():s.view==='group'?group():s.view==='team'?team():s.view==='play'?play():read());
+ // Opening the actual thread advances its cursor before the shared overview is drawn.
+// Today and other Group panes remain strictly read-only; malformed snapshots are refused.
+if(s.view==='group'&&s.groupPane==='chat'&&todayUI.memberships.group){
+  try{window.RallyConversationRead?.markRead({storage:localStorage,domain:window.RallyChatDomain,member:true});}catch(_){}
+}
+view.innerHTML=(storageWarning?`<p class="storage-notice" role="status">${e(storageWarning)}</p>`:'')+(s.view==='today'?today():s.view==='group'?group():s.view==='team'?team():s.view==='play'?play():read());
 if(s.view==='play')mountBlankBattle();
 view.querySelectorAll('textarea').forEach(field=>{if(drafts[field.id]!==undefined)field.value=drafts[field.id]});
 if(s.view==='group'&&s.groupPane==='chat'&&todayUI.memberships.group&&$('rpx-chat')){
