@@ -101,12 +101,20 @@
 - **Acceptance evidence required:** Accurate canonical README and version/build identification, consistent member-facing navigation labels, explicit demo-mode disclosures, reviewed header controls, preservation of existing routes and regression screenshots.
 
 ## F-12 — Church system integration and live pilot readiness
+- **Decision:** APPROVED — Option B.
+- **Owner decision:** “Approve F-12, Option B. Record the decision and proceed to F-13 without implementing code, connecting accounts, or accessing real church data yet.”
+- **Intended approach:** Retain the D-10 companion architecture: Rally Point owns its premium member/companion experience while verified existing church systems remain authoritative for their approved operational records. Plan a **church-authorized integration discovery** with named leadership and technical owners, mapping the actual products in use, workflow-to-record ownership, available documented endpoints or verified deep links, read/write availability, authentication scopes, privacy needs and least-privilege authorization. After obtaining explicit approval, favor a small, read-only, adult-cohort *My Groups / My Schedule* or safe link-out test before considering any real chat, write-back serving responses, attendance, notifications or pastoral follow-up.
+- **Guardrails:** A documented public API is not equivalent to access to Citizen Church member records. No access to actual accounts, secrets, OAuth tokens, member identities or church systems, and no code/integration/production work is authorized by this review. Messaging requires an independent approved link-out vs secure backend decision and minors/direct-message safeguards; pastoral data follows F-03/F-05. Keep the machine-readable v1.0 pilot readiness status **blocked** until every relevant gate is separately verified and formally approved.
+- **Implementation status:** NOT STARTED. **Documentation decision only.** No accounts were connected, no real church data accessed, no application code or release configuration modified.
+- **Acceptance evidence required:** Church-approved scope and data owners; evidence-based feasibility matrix for Groups, Services, attendance, response/writeback and messaging; verified least privilege and denial/revocation tests; documented deletion/retention/support/incident and rollback; secure authentication; accessibility/QA and authorized dry run; explicit no-go/go decision before any real-member pilot.
+
+## F-13 — Notification architecture and member preferences
 - **Decision:** PENDING REVIEW.
-- **Audit finding:** No authorized, verified real-member connection exists to Citizen Church's Planning Center/Church Center account, and current messaging and notifications are browser-local simulations. The machine-readable live-pilot gate is blocked and unapproved.
-- **Candidate approach:** Preserve the existing D-10 companion architecture decision; perform church-approved integration discovery and workflow/source ownership mapping, verify exact OAuth/API/deep-link capabilities and least-privilege access, choose a small read-only My Groups/My Schedule or verified safe-link pilot first, then separately evaluate real messaging and pastoral workflows under F-03/F-05 safeguards. No credentials or live data until explicit authorization.
+- **Audit finding:** Current/future-state notifications are fictional browser-simulated activity, not a genuine push or synced notification inbox. The app has no production identity, delivery, opt-in/out preferences, quiet hours, sensitive-content redaction, token lifecycle, retries or deduplication.
+- **Candidate approach:** Define notification categories and preference/consent and privacy boundaries now; implement a safe mock preference/inbox model first; defer real push infrastructure until F-03 authorization and F-12 authenticated messaging and member-service decisions are actually implemented and approved.
 - **Implementation status:** NOT STARTED.
 
-## F-13 through F-14
+## F-14
 **Decision:** NOT YET REVIEWED. Preserve the original prioritized foundation backlog for the decision sequence.
 
 ## Decision protocol
