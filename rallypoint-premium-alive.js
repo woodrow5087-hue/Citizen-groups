@@ -66,42 +66,24 @@
       '<small>From '+escapeNote(item.passage||'your reading')+' · private local demo</small>'+
       buttons+'</div>';
   }
-  function todayPrompt(s,ui){
-    let overline='YOUR COMPANION · TODAY',title='',desc='',action='',dest='',pane='',intent='';
-    // A care suggestion is based on a real source *within the fictional local fixture*.
-    // No inference from absence, app usage, or unapproved people records.
+  function todayPrompt(s,ui,conversation){
+    // All priorities come from one explainable, read-only F-08 decision.
+    // The same modern F-02 cursor used by Today and Groups is passed through.
+    const d=window.RallyCompanionDecision.choose({state:s,ui,conversation,now:new Date()});
     const care=s.companionCare?.marcus||{};
-    const source=ui.memberships?.group && Array.isArray(s.prayers) &&
-      s.prayers.some(p=>p?.name==='Marcus C.' && typeof p.text==='string' && p.text.trim());
-    const snoozed=Number.isFinite(Date.parse(care.snoozedUntil)) &&
-      Date.parse(care.snoozedUntil)>Date.now();
-    const needsCare=source && !care.completedAt && !snoozed;
-    if(needsCare){
-      overline='A MOMENT TO CONNECT · SAMPLE';
-      title='Someone to encourage.';
-      desc='Marcus shared a fictional prayer request with your group. Want to send a thoughtful check-in?';
-      action='Check in with Marcus';
-      intent='companion-encourage';
-    }else if(ui.memberships?.team && s.teamStatus==='pending'){
-      title='Your team is counting on you.';desc='Review your sample Sunday availability.';action='Review my serve';dest='team';pane='schedule';
-    }else if(ui.memberships?.group && s.groupMessages?.length){
-      title='A little more life, together.';desc='Your Wednesday Group conversation is ready when you are.';action='Catch up with my group';dest='group';pane='chat';
-    }else if(!s.read){
-      title='Take a moment in the Word.';desc='Continue your Scripture rhythm with John 15.';action='Open today’s reading';dest='read';
-    }else if(!s.prayed){
-      title='Carry one another.';desc='Make space for a small moment of prayer today.';action='Open prayer';dest=ui.memberships?.group?'group':'read';pane=ui.memberships?.group?'prayer':'';
-    }else{
-      title='You showed up today.';desc='Small moments add up. There’s no streak to protect.';action='Explore my reading';dest='read';
-    }
-    const primary=intent?'data-action="'+intent+'" data-person="marcus"':
-      'data-go="'+dest+'"'+(pane?' data-pane="'+pane+'"':'');
+    const primary=d.intent?'data-action="'+d.intent+'" data-person="marcus"':
+      'data-go="'+d.dest+'"'+(d.pane?' data-pane="'+d.pane+'"':'');
     const memory=ui.memberships?.group&&care.completedAt?
       '<p class="pa-care-memory" role="status">✓ You checked in with Marcus · saved in this local demo</p>':'';
-    const skip=needsCare?'<button class="pa-care-later" type="button" data-action="companion-snooze">Not now — remind me tomorrow</button>':'';
-    return '<section class="pa-companion" aria-label="Personalized companion suggestion">'+
-      '<div class="pa-companion-top"><span class="pa-pulse" aria-hidden="true"></span>'+overline+'<button type="button" class="pa-companion-more" data-action="quick-actions" title="More ways to connect" aria-label="Open companion quick actions">✳</button></div>'+
-      '<h2>'+title+'</h2><p>'+desc+'</p>'+
-      '<button type="button" class="pa-companion-link" '+primary+'>'+action+' <span aria-hidden="true">↗</span></button>'+
+    const skip=d.id==='care-marcus'?
+      '<button class="pa-care-later" type="button" data-action="companion-snooze">Not now — remind me tomorrow</button>':
+      d.deferable?'<button class="pa-care-later" type="button" data-action="companion-later" data-value="'+d.id+'">Not right now · show another idea</button>':'';
+    return '<section class="pa-companion" aria-label="Personalized companion suggestion" data-suggestion="'+d.id+'">'+
+      '<div class="pa-companion-top"><span class="pa-pulse" aria-hidden="true"></span>'+escapeNote(d.overline)+
+      '<button type="button" class="pa-companion-more" data-action="quick-actions" title="More ways to connect" aria-label="Open companion quick actions">✳</button></div>'+
+      '<h2>'+escapeNote(d.title)+'</h2><p>'+escapeNote(d.description)+'</p>'+
+      '<button type="button" class="pa-companion-link" '+primary+'>'+escapeNote(d.action)+' <span aria-hidden="true">↗</span></button>'+
+      '<p class="pa-companion-why"><strong>WHY THIS?</strong> '+escapeNote(d.why)+'</p>'+
       skip+memory+rhythmFollowup(s)+
       '</section>';
   }
