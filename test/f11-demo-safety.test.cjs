@@ -62,7 +62,9 @@ test('F-11 demo controls present irreversible-reset confirmation, a cancel path 
   const state=JSON.parse(w.localStorage.getItem('rallypoint-phase1-2026'));
   assert.ok(state.groupMessages.some(m=>m.text===w.RallyDemoSafety.samples.group));
   d.querySelector('[data-action="fill-demo-example"][data-value="group"]').click();
-  field.value='Send private details to alex@example.org';
+  const nextField=d.getElementById('group-input');
+  nextField.value='Send private details to alex@example.org';
+  nextField.dispatchEvent(new w.Event('input',{bubbles:true}));
   d.querySelector('[data-action="send"][data-value="group"]').click();
   const later=JSON.parse(w.localStorage.getItem('rallypoint-phase1-2026'));
   assert.equal(later.groupMessages.length,state.groupMessages.length,'blocked content is not stored');
