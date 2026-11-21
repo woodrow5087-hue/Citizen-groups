@@ -643,7 +643,7 @@ test('F-08 refuses to invent a read state on corrupt modern store and hides grou
   assert.equal(app.w.localStorage.getItem('rallypoint-wednesday-chat-lab-v1'),'{bad-unmodified');
   app.go('today');
   app.action('demo-controls');app.click('[data-action="scenario"][data-value="no-memberships"]');
-  assert.equal(app.d.querySelector('.pa-companion').dataset.suggestion,'explore-reading');
+  assert.equal(app.d.querySelector('.pa-companion').dataset.suggestion,'find-community');
   assert.doesNotMatch(app.d.querySelector('.pa-companion').textContent,/group thread could not|Earlier saved messages/);
   assert.equal(app.d.querySelector('.pa-care-memory'),null);
 });
