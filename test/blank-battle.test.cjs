@@ -64,3 +64,32 @@ test('player can choose a particular blank and replace its word', () => {
   app.click('slot','3');
   assert.equal(app.state().games.romans.slots[3],null);
 });
+
+
+test('premium screen displays real verse position, personal best and earned round statistics', () => {
+  const app = setup();
+  assert.match(app.screen.innerHTML,/VERSE 01 \/ 04/);
+  assert.match(app.screen.innerHTML,/PERSONAL BEST <b>—<\/b>/);
+  assert.match(app.screen.innerHTML,/HINT · −12/);
+  for (const token of ['a0','a1','a2','a3','a4']) app.click('tile',token);
+  assert.match(app.screen.innerHTML,/just-placed/);
+  app.click('check');
+  assert.match(app.screen.innerHTML,/Corrections <b>0<\/b>/);
+  assert.match(app.screen.innerHTML,/Hints <b>0<\/b>/);
+  assert.match(app.screen.innerHTML,/Best <b>100<\/b>/);
+  app.click('reset');
+  assert.match(app.screen.innerHTML,/PERSONAL BEST <b>100<\/b>/);
+  app.click('next');
+  assert.match(app.screen.innerHTML,/VERSE 02 \/ 04/);
+});
+
+test('earned stars and recorded corrections reflect mistakes rather than simulated rewards', () => {
+  const app = setup();
+  for (const token of ['d0','a1','a2','a3','a4']) app.click('tile',token);
+  app.click('check');
+  app.click('tile','a0');
+  app.click('check');
+  assert.match(app.screen.innerHTML,/Corrections <b>1<\/b>/);
+  assert.match(app.screen.innerHTML,/Best <b>91<\/b>/);
+  assert.doesNotMatch(app.screen.innerHTML,/Perfect Round earned/);
+});
