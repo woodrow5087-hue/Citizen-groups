@@ -118,10 +118,13 @@
 - **Acceptance evidence required:** Reviewed event taxonomy and privacy/consent matrix, preference/quiet-hours and suppression rules, lock-screen redaction, revoked membership and duplicate-event tests, and separate authorization before real delivery.
 
 ## F-14 — Citizen-first validation and future expansion
-- **Decision:** PENDING REVIEW.
-- **Audit finding:** Multi-church expansion, monetization/commercialization and broad parity with other church apps are potential future avenues but distract from validating a safe, exceptional experience for one Citizen Church cohort if pursued too early.
-- **Candidate approach:** Prioritize product-market/mission fit within an authorized Citizen pilot first; keep tenant/church boundaries possible in data contracts without implementing multi-organization settings, marketplace, billing or distribution infrastructure now. Revisit broader rollout after reliable participation, communication and serving outcomes are demonstrated.
-- **Implementation status:** NOT STARTED. 
+- **Decision:** APPROVED — Option B.
+- **Owner decision:** “Approve F-14, Option B. Record our final decision. Then give me a consolidated review of all 14 approved audit decisions and your recommended implementation roadmap, without changing application code yet.”
+- **Intended approach:** Build an exceptional, safe, functional **Citizen Church-first** companion, centered on personal groups, serving, Scripture, contextual assistance and the approved Premium ALIVE identity. Design narrow organization/tenant boundaries into the F-02 data contracts and keep brand/assets and integration adapters separable to avoid needlessly preventing eventual extension to other churches. Do not create a multi-church admin product, tenant onboarding platform, billing system, marketplace or commercial launch now.
+- **Future decision gates:** First validate tangible usefulness with one explicitly authorized Citizen cohort and evidence of reliable participation and serving/communication workflows; review church branding, content, intellectual property ownership, operational contribution and commercialization permissions **before** licensing, partner rollout or monetization. Evaluate experience and mission-fit without spiritual-risk surveillance or coercive engagement scoring.
+- **Guardrails:** No actual commercialization, external church rollout or new system/integration authorized. Future expansion is an option, not an approved feature set or launch commitment.
+- **Implementation status:** NOT STARTED. Planning approval only; no application code, data, integrations, production build or deployments modified.
+- **Acceptance evidence required:** Documented organization boundaries in schema, Citizen-first scoped pilot results and user feedback, explicit ownership/licensing review, and a separate product-owner/church authorization before multi-church work.
 
 ## Decision protocol
 Each item is discussed and explicitly decided before any resulting implementation is undertaken. The user can revise a recorded decision. Do not infer that approval of one finding authorizes changes for another. Protect the agreed Premium ALIVE Hybrid design identity.
