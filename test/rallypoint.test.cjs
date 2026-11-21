@@ -35,8 +35,8 @@ test('attention and leader entry come from source state and contextual fixture p
 });
 test('four tabs retain source destinations and Today links directly to conversation, schedule and reading',t=>{
  const app=open(t);assert.deepEqual([...app.d.querySelectorAll('#nav [data-go]')].map(b=>b.textContent.trim()),['Today','Groups','Team','Read']);
- assert.equal(app.d.querySelectorAll('#nav button').length,5);
- assert.ok(app.d.querySelector('#nav .fluid-quick'));
+ assert.equal(app.d.querySelectorAll('#nav button').length,4);
+ assert.ok(app.d.querySelector('.pa-companion-more'));
  for(const tab of ['group','team','read','today']){app.go(tab);assert.equal(app.d.querySelector('#nav [aria-current="page"]').dataset.go,tab);}
  app.action('demo-controls');app.click('[data-action="scenario"][data-value="connected"]');
  app.click('.up-next');assert.equal(app.saved().view,'group');assert.equal(app.saved().groupPane,'gather');assert.ok(app.d.querySelector('[data-action="rsvp"]'));
