@@ -93,12 +93,20 @@
 - **Acceptance evidence required:** CI on canonical branch, protected screenshot goldens, deterministic conversation data/failure/retry tests, 320–430px responsive checks, meaningful accessibility and keyboard coverage, and recorded real-device signoff for significant mobile UI changes.
 
 ## F-11 — Product identity, version labels and navigation coherence
+- **Decision:** APPROVED — Option B.
+- **Owner decision:** “Approve F-11, Option B. Record the decision and proceed to F-12 without implementing code yet.”
+- **Intended approach:** Maintain one canonical product identity and reliable build/version label; separate internal branch/version/debug information from member-facing screens. Use consistent terminology for the four existing navigation destinations (Today / Groups / Team / Read) and expressive screen headings (Your People / My Team / Daily Rhythm) without changing route behavior or introducing a public fifth Leader Care tab. Review placement of header actions, including the current Spotify playlist shortcut, rather than removing them without product-owner approval.
+- **Guardrails:** Rally Point remains a provisional working name, not final public Citizen Church branding. Preserve the Citizen flag, approved Premium ALIVE design and meaningful fictional/demo disclaimers; never represent simulated messages, scheduling, permissions or accounts as live. No unrelated rebranding or navigation redesign.
+- **Implementation status:** NOT STARTED. This decision records planning direction only; no source documentation beyond this register, application labels, navigation, header items or deployments changed.
+- **Acceptance evidence required:** Accurate canonical README and version/build identification, consistent member-facing navigation labels, explicit demo-mode disclosures, reviewed header controls, preservation of existing routes and regression screenshots.
+
+## F-12 — Church system integration and live pilot readiness
 - **Decision:** PENDING REVIEW.
-- **Audit finding:** The README still describes “Phase 1 Today” and an older branch/preview, the active UI displays legacy “Phase 1” and “v0.6” fixture labels, and a Spotify playlist shortcut occupies prime header space alongside notifications/profile controls. Inconsistent names and historical demo labels can obscure which product/build is under review.
-- **Candidate approach:** Establish one canonical source-of-truth product identity and build/version label, distinguish official screen names from development milestones, preserve clear demo/fictional disclaimers and four-tab routing, and review the relative priority of header actions. Do not silently finalize the Rally Point public name or remove a music link without a separate decision.
+- **Audit finding:** No authorized, verified real-member connection exists to Citizen Church's Planning Center/Church Center account, and current messaging and notifications are browser-local simulations. The machine-readable live-pilot gate is blocked and unapproved.
+- **Candidate approach:** Preserve the existing D-10 companion architecture decision; perform church-approved integration discovery and workflow/source ownership mapping, verify exact OAuth/API/deep-link capabilities and least-privilege access, choose a small read-only My Groups/My Schedule or verified safe-link pilot first, then separately evaluate real messaging and pastoral workflows under F-03/F-05 safeguards. No credentials or live data until explicit authorization.
 - **Implementation status:** NOT STARTED.
 
-## F-12 through F-14
+## F-13 through F-14
 **Decision:** NOT YET REVIEWED. Preserve the original prioritized foundation backlog for the decision sequence.
 
 ## Decision protocol
