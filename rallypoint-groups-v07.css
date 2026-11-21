@@ -576,6 +576,8 @@
  color:#F3E5D6;background:#3C3636;border:1px solid #665A56;border-radius:18px;
 }
 .is-groups-v07 .group-pulse-route:nth-child(2){background:#E3002B;color:#FFFFFF;border-color:#F04B68}
+.is-groups-v07 .group-pulse-route:nth-child(2) .group-pulse-route-kind,
+.is-groups-v07 .group-pulse-route:nth-child(2) small{opacity:1;color:#FFFFFF}
 .is-groups-v07 .group-pulse-route-kind{font-size:8px;font-weight:900;letter-spacing:.12em;opacity:.78}
 .is-groups-v07 .group-pulse-route strong{font-size:13px;font-weight:900;line-height:1.14;overflow-wrap:anywhere}
 .is-groups-v07 .group-pulse-route small{font-size:9px;line-height:1.25;opacity:.85}
