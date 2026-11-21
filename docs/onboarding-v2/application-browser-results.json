@@ -1,0 +1,62 @@
+{
+  "cases": [
+    {
+      "width": 320,
+      "height": 568,
+      "top": 0,
+      "bottom": 0,
+      "result": "passed"
+    },
+    {
+      "width": 375,
+      "height": 667,
+      "top": 0,
+      "bottom": 0,
+      "result": "passed"
+    },
+    {
+      "width": 375,
+      "height": 812,
+      "top": 0,
+      "bottom": 0,
+      "result": "passed"
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "top": 0,
+      "bottom": 0,
+      "result": "passed"
+    },
+    {
+      "width": 430,
+      "height": 932,
+      "top": 0,
+      "bottom": 0,
+      "result": "passed"
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "top": 47,
+      "bottom": 34,
+      "result": "passed"
+    },
+    {
+      "width": 430,
+      "height": 932,
+      "top": 59,
+      "bottom": 34,
+      "result": "passed"
+    },
+    {
+      "width": 1280,
+      "height": 1020,
+      "top": 0,
+      "bottom": 0,
+      "result": "passed"
+    }
+  ],
+  "flows": "Source links, original messages/prayers, RSVP, serving, role/leader tools, reading/question, empty states, focus, persistence and storage fallback passed.",
+  "axe": "No detected WCAG A/AA violations on tested views/dialogs."
+}
