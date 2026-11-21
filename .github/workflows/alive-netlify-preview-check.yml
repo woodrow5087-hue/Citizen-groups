@@ -1,0 +1,46 @@
+name: Alive Netlify Preview Link Check
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'alive-lab.*'
+      - 'scripts/build.cjs'
+      - '.github/workflows/alive-netlify-preview-check.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  verify-preview:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci
+      - name: Check isolated build without modifying main UI
+        run: |
+          npm run build
+          test -s dist/index.html
+          test -s dist/alive-lab.html
+          grep -q 'ALIVE × Citizen concept 02' dist/alive-lab.html
+      - name: Check reachable Netlify PR preview
+        env:
+          PREVIEW_URL: https://deploy-preview-${{ github.event.pull_request.number }}--citizen-connect-test.netlify.app/alive-lab.html
+        run: |
+          echo "Testing $PREVIEW_URL"
+          for attempt in $(seq 1 12); do
+            status=$(curl --location --silent --output /tmp/alive-page --write-out '%{http_code}' --connect-timeout 5 --max-time 12 "$PREVIEW_URL" || true)
+            echo "Attempt $attempt: HTTP $status"
+            if [ "$status" = "200" ] && grep -q 'ALIVE × Citizen concept 02' /tmp/alive-page; then
+              echo "VERIFIED LIVE PREVIEW: $PREVIEW_URL"
+              exit 0
+            fi
+            sleep 10
+          done
+          echo "Netlify preview not yet available. PR is safe and unpublished."
+          exit 1

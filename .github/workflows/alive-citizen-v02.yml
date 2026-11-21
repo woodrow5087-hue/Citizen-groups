@@ -1,0 +1,62 @@
+name: ALIVE Citizen V02 Preview QA
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'alive-lab.*'
+      - 'alive-citizen-v02.*'
+      - 'scripts/build.cjs'
+      - 'scripts/alive-citizen-v02-browser-check.mjs'
+      - 'test/alive-citizen-v02.test.cjs'
+      - 'package.json'
+      - '.github/workflows/alive-citizen-v02.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  citizen-v02-preview:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Install dependencies
+        run: npm ci
+      - name: Test all standalone and existing app logic
+        run: npm test
+      - name: Build production-isolated static preview
+        run: npm run build
+      - name: Install browser
+        run: npx playwright install --with-deps chromium
+      - name: Test ALIVE × Citizen across phones and desktop
+        run: npm run test:citizen
+      - name: Check PR-specific Netlify preview URL
+        env:
+          PREVIEW_URL: https://deploy-preview-${{ github.event.pull_request.number }}--citizen-connect-test.netlify.app/alive-lab.html
+        run: |
+          mkdir -p test-results/alive-citizen-v02
+          echo "Checking $PREVIEW_URL" | tee test-results/alive-citizen-v02/preview-status.txt
+          for attempt in $(seq 1 10); do
+            status=$(curl --location --silent --output /tmp/alive-citizen-page --write-out '%{http_code}' --connect-timeout 5 --max-time 12 "$PREVIEW_URL" || true)
+            echo "Attempt $attempt: HTTP $status" | tee -a test-results/alive-citizen-v02/preview-status.txt
+            if [ "$status" = "200" ] && grep -q 'ALIVE × Citizen concept 02' /tmp/alive-citizen-page; then
+              echo "VERIFIED: $PREVIEW_URL" | tee -a test-results/alive-citizen-v02/preview-status.txt
+              exit 0
+            fi
+            sleep 10
+          done
+          echo "Preview not verified" | tee -a test-results/alive-citizen-v02/preview-status.txt
+          exit 1
+      - name: Save mobile screenshots and report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: alive-citizen-v02-review
+          path: test-results/alive-citizen-v02/
+          if-no-files-found: ignore
+          retention-days: 30
