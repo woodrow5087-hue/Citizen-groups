@@ -37,12 +37,21 @@
 - **Acceptance evidence required:** Module contracts, regression tests, no loss of existing browser demo messages/progress or routes, visual comparison against protected references, and explicit approval of each implementation slice.
 
 ## F-05 — Pastoral care, verified evidence and human oversight
+- **Decision:** APPROVED — Option B.
+- **Owner decision:** “Approve F-05, Option B. Record the decision and proceed to F-06 without implementing code yet.”
+- **Intended approach:** Establish church-owned data governance, privacy standards, and human-reviewed care workflows before connecting real attendance, prayer, follow-up, or pastoral records. Define the authoritative source and provenance of every fact; distinguish unrecorded attendance from confirmed absence, and distinguish facts from optional follow-up suggestions. Specify scoped access, task owner, consent and visibility, escalation, retention, deletion, and a reviewable resolution state.
+- **Guardrails:** The product supports leaders' care, not surveillance or automated spiritual/psychological classification. Personal app inactivity, attendance gaps, or inferred engagement must not automatically become pastoral risk scores. Sensitive prayer or direct-message content is not generally available to leaders or administrators. Separate church-approved safeguarding rules apply for minors and sensitive data. Use fictional/demo-only examples until the church approves actual policies, and preserve the Premium ALIVE design.
+- **Dependencies:** F-02 data/source contracts and F-03 scoped permission rules. Live deployment remains gated by church policies and independent security/privacy validation.
+- **Implementation status:** NOT STARTED. No application code, real records, integrations, automatic alerts, or deployments are authorized by this decision.
+- **Acceptance evidence required:** Church-owned policy review/signoff; evidence provenance and permissions matrix; fictional human-in-the-loop care task flows including verify, review, no-action, follow-up and resolution; retention/deletion and auditability requirements; explicit live-pilot approval before using real information.
+
+## F-06 — Reusable, expressive messaging experience
 - **Decision:** PENDING REVIEW.
-- **Audit finding:** The companion and Leader Care currently use fictional prayer/attendance fixtures; official attendance sources, case ownership, consent/visibility, escalation, retention and deletion are not established.
-- **Candidate approach:** Define a church-owned pastoral-care and data governance policy before introducing real information. Separate recorded facts from suggestions, permit only authorized leaders to make decisions, and keep care notes restricted and reviewed.
+- **Audit finding:** Existing Group, Team and direct messages are basic local text lists/composers; the future-state lab demonstrates expressive bubbles, replies and reactions but is an independent HTML concept, not a reusable module in the canonical working app.
+- **Candidate approach:** Design, implement and rigorously test **one** exceptional fictional Wednesday Group conversation using a reusable component system, stable message IDs, reactions, quoted replies, composer keyboard/safe-area handling, pending/failure/retry, accessible mobile interaction, and locked Premium ALIVE visual references. Extend to Team and direct messages only after approval.
 - **Implementation status:** NOT STARTED.
 
-## F-06 through F-14
+## F-07 through F-14
 **Decision:** NOT YET REVIEWED. Preserve the original prioritized foundation backlog for the decision sequence.
 
 ## Decision protocol
