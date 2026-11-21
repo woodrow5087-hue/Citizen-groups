@@ -179,6 +179,12 @@ test('Today settles into a real caught-up state after opening the source and con
   app.click('[data-action="shift"][data-value="confirmed"]');
   assert.equal(unread(),0,'after confirming serving');
   app.go('today');assert.equal(unread(),0,'after returning to Today');
+  assert.equal(app.saved().view,'today','current saved view is Today');
+  const current=app.w.RallyConversationRead.peek({storage:app.w.localStorage,domain:app.w.RallyChatDomain});
+  assert.equal(current.status,'ok','the modern read projection remains valid');
+  assert.equal(app.w.RallyToday.snapshot(app.saved(),app.ui(),new Date('2026-11-23T12:00:00'),current).unreadCount,0);
+  assert.equal(app.d.querySelector('.today-people-message-action').textContent.includes('UNREAD'),false,
+    'DOM should reflect read cursor after serving response');
   assert.match(app.text(),/You’re all caught up/);assert.equal(app.d.querySelector('.attention-tile'),null);
  app.action('notifications');assert.match(app.d.querySelector('#dialog-root [role="dialog"]').textContent,/You’re all caught up/);app.action('close-dialog');
  const again=open(t,{saved:app.saved(),ui:app.ui()});assert.match(again.text(),/You’re all caught up/);
