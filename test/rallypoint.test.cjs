@@ -15,7 +15,7 @@ function open(t,{saved,ui,blocked=false,now='2026-11-23T12:00:00'}={}){
  if(blocked)Object.defineProperty(w,'localStorage',{get(){throw Error('Blocked storage');}});
  w.structuredClone=structuredClone;
   w.eval(makeChatDomainBundle());
-  for(const name of ['rallypoint-today.js','rallypoint-ui.js','rallypoint-memorize.js','rallypoint-verseplay-ui.js','rallypoint-premium-alive.js','rallypoint-group-view.js','rallypoint-storage-guard.js','wednesday-chat-lab.js','rallypoint.js'])w.eval(fs.readFileSync(path.join(root,name),'utf8'));
+  for(const name of ['rallypoint-today.js','rallypoint-ui.js','rallypoint-memorize.js','rallypoint-verseplay-ui.js','rallypoint-premium-alive.js','rallypoint-group-view.js','rallypoint-storage-guard.js','rallypoint-conversation-read-model.js','wednesday-chat-lab.js','rallypoint.js'])w.eval(fs.readFileSync(path.join(root,name),'utf8'));
  const click=selector=>{const el=d.querySelector(selector);assert.ok(el,selector);el.click();};
  const type=(id,value)=>{const el=d.getElementById(id);assert.ok(el,id);el.value=value;el.dispatchEvent(new w.Event('input',{bubbles:true}));};
  return {w,d,click,type,action:a=>click('[data-action="'+a+'"]'),go:v=>click('#nav [data-go="'+v+'"]'),saved:()=>JSON.parse(w.localStorage.getItem(key)),ui:()=>JSON.parse(w.localStorage.getItem(T.UI_KEY)),text:()=>d.getElementById('view').textContent,other};
