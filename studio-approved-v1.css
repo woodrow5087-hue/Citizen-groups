@@ -285,3 +285,16 @@ main{max-width:1580px;padding:0 9px 22px;margin:0 auto}
 .phone-logo strong{font-size:14px}
 .phone-logo small{font-size:7px}
 @media(max-width:570px){.phone-logo strong{font-size:14px}.phone-logo small{font-size:7px}}
+
+
+/* Final Citizen-brand watermark fidelity: use the real flag in approved red heroes. */
+.hero-card:after{
+ content:'';position:absolute;right:10px;top:37px;
+ width:102px;height:94px;background:url("assets/citizen-flag.svg") center/contain no-repeat;
+ transform:rotate(-12deg);opacity:.24;filter:saturate(.9);pointer-events:none;
+}
+.red-screen .page-hero:before{
+ content:'';position:absolute;right:9px;top:31px;
+ width:102px;height:96px;background:url("assets/citizen-flag.svg") center/contain no-repeat;
+ transform:rotate(-12deg);opacity:.22;pointer-events:none;z-index:-1;
+}
