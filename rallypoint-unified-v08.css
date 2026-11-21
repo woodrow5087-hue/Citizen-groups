@@ -1,0 +1,98 @@
+/* Rally Point v0.8 — Unified Experience
+ * Same approved visual language, real in-app Blank Battle route.
+ * Only presentational styles: no demo-state or church-data behavior changes. */
+.is-read-v09 .rp-game-entry{
+  position:relative;isolation:isolate;overflow:hidden;
+  margin:18px 15px 23px;padding:24px 20px 19px;
+  background:#14151D;color:#F9F7EB;
+  border:1.5px solid #687378;border-radius:28px;
+  box-shadow:inset 0 1px 0 #ffffff29,0 5px 0 #0a0b0f,0 13px 24px #0a0b0f66;
+}
+.is-read-v09 .rp-game-entry:before{
+  content:'';pointer-events:none;position:absolute;right:-115px;top:-113px;
+  width:230px;height:230px;background:#27372D;border-radius:50%;opacity:.56;
+  box-shadow:-20px 28px 0 #1C2A2A44;z-index:-1;
+}
+.is-read-v09 .rp-game-entry-top{
+  display:flex;align-items:center;justify-content:space-between;
+  color:#DFFF00;font-size:10px;letter-spacing:.135em;font-weight:950;
+}
+.is-read-v09 .rp-game-entry-top>span:last-child{font-size:25px;line-height:1}
+.is-read-v09 .rp-game-entry h2{
+  font-size:clamp(32px,9vw,46px);line-height:.99;letter-spacing:-.065em;
+  font-weight:950;color:#F9F7EB;margin:14px 0 12px;
+}
+.is-read-v09 .rp-game-entry h2 em{font-style:normal;color:#DFFF00}
+.is-read-v09 .rp-game-entry p{
+  color:#D3D5D4;line-height:1.55;font-size:13px;max-width:290px;margin:0 0 18px;
+}
+.is-read-v09 .rp-game-entry-play{
+  display:flex;align-items:center;justify-content:center;gap:9px;
+  width:100%;min-height:55px;background:#DFFF00;color:#171922;
+  border:1px solid #EDFF8D;border-radius:17px;
+  box-shadow:inset 0 2px 0 #ffffff88,0 5px 0 #24BCAE,0 9px 16px #040c0b88;
+  font-size:13px;font-weight:950;letter-spacing:.03em;
+  transition:transform .14s ease,box-shadow .14s ease;
+}
+.is-read-v09 .rp-game-entry-play .icon{width:19px;height:19px;flex:none}
+.is-read-v09 .rp-game-entry-play:active{
+  transform:translateY(4px);
+  box-shadow:inset 0 1px 0 #ffffff8a,0 1px 0 #24BCAE;
+}
+.is-read-v09 .rp-game-entry>small{
+  display:block;text-align:center;color:#AFB9B8;margin-top:15px;
+  font-weight:750;font-size:10px;line-height:1.5;
+}
+.is-read-v09 .rp-game-classic-label{
+  display:flex;align-items:center;justify-content:space-between;gap:10px;
+  margin:18px 17px 12px;color:#D2C3B8;
+}
+.is-read-v09 .rp-game-classic-label strong{
+  font-size:9px;letter-spacing:.11em;font-weight:950;
+}
+.is-read-v09 .rp-game-classic-label span{
+  font-size:9px;color:#C1ABA1;text-align:right;
+}
+.is-play-v08 main{padding:0;background:#242322}
+.is-play-v08 .rp-play-screen{
+  min-height:100%;background:#242322;color:#F3E5D6;
+  padding:15px 13px 34px;
+}
+.is-play-v08 .rp-play-toolbar{
+  display:flex;align-items:center;justify-content:space-between;
+  gap:10px;margin:0 0 16px;
+}
+.is-play-v08 .rp-play-toolbar>span{
+  font-size:9px;letter-spacing:.11em;font-weight:950;
+  color:#F3E5D6;white-space:nowrap;
+}
+.is-play-v08 .rp-play-back{
+  min-height:44px;display:inline-flex;align-items:center;justify-content:center;
+  gap:7px;padding:9px 13px;border-radius:15px;
+  background:#F3E5D6;border:1px solid #FFF8EC;
+  color:#242322;font-size:12px;font-weight:950;
+  box-shadow:0 3px 0 #151112;
+}
+.is-play-v08 .rp-play-back:active{transform:translateY(2px);box-shadow:0 1px 0 #151112}
+.is-play-v08 .rp-blankbattle-host{
+  background:#111219;border-radius:26px;padding:16px 12px 7px;
+  border:1.5px solid #666974;
+  box-shadow:0 5px 0 #100E11,0 12px 24px #0606065E;
+  min-width:0;
+}
+.is-play-v08 .rp-play-note{
+  color:#D4C4B9;font-size:10px;line-height:1.6;
+  padding:14px 6px 0;text-align:center;
+}
+.is-play-v08 .bottom button[data-go="read"].active{
+  background:#E3002B;color:white;
+}
+@media(max-width:350px){
+ .is-play-v08 .rp-play-screen{padding:11px 8px 22px}
+ .is-play-v08 .rp-blankbattle-host{padding:11px 8px 6px;border-radius:20px}
+ .is-play-v08 .rp-play-toolbar>span{font-size:8px}
+ .is-read-v09 .rp-game-entry{margin-left:11px;margin-right:11px;padding:19px 15px}
+}
+@media(prefers-reduced-motion:reduce){
+ .is-read-v09 .rp-game-entry-play{transition:none}
+}
