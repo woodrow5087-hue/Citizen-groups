@@ -133,7 +133,7 @@
  }
  document.addEventListener('click',event=>{
   const mobile=event.target.closest('[data-mobile-screen]');
-  if(mobile){activeMobile=mobile.dataset.mobileScreen;draw();return}
+  if(mobile){activeMobile=mobile.dataset.mobileScreen;const slot=slots.find(s=>s.dataset.initial===activeMobile);if(slot)slot.querySelector('.phone').dataset.screen=activeMobile;draw();return}
   const action=event.target.closest('button[data-action]');
   if(!action)return;
   const phone=action.closest('.phone');
