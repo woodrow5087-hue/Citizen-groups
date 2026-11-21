@@ -14,6 +14,7 @@
   let activeSlot = null;
   let notice = '';
   let noticeTone = '';
+  let justPlaced = -1;
 
   function load() {
     try {
@@ -67,7 +68,7 @@
       const bankWord = c.bank.find(w => w.id === token);
       const filled = Boolean(bankWord);
       const label = filled ? bankWord.label : '_____';
-      const classes = 'bb-slot' + (filled ? ' is-filled' : '') + (target === i && !g.solved ? ' is-active' : '');
+      const classes = 'bb-slot' + (filled ? ' is-filled' : '') + (justPlaced === i ? ' just-placed' : '') + (target === i && !g.solved ? ' is-active' : '');
       const title = filled ? 'Filled with ' + bankWord.label + '. Tap to remove.' : 'Empty blank ' + (i + 1) + '. Tap to select.';
       return '<span class="bb-phrase">' + escape(parts.prefix) +
         '<button type="button" class="' + classes + '" data-action="slot" data-value="' + i +
@@ -99,11 +100,15 @@
       '<span class="' + (i < stars ? '' : 'empty') + '" aria-hidden="true">★</span>').join('');
     const perfect = g.misses === 0 && g.hints === 0;
     return '<div class="bb-board bb-results" role="status" aria-label="Round complete">' +
+      '<div class="bb-win-emblem" aria-hidden="true">★</div>' +
       '<div class="bb-kicker">VERSE COMPLETE</div><h2>Nicely done!</h2>' +
       '<div class="bb-stars" aria-label="' + stars + ' out of 3 stars">' + rating + '</div>' +
       '<div class="bb-score">' + points + '</div><div class="bb-score-label">PUZZLE POINTS</div>' +
       '<div class="bb-reward' + (perfect ? '' : ' is-normal') + '">' +
-      (perfect ? '✦ Perfect Round earned' : '✓ Verse complete · ' + g.hints + ' hints used') + '</div>' +
+      (perfect ? '✦ Perfect Round earned' : '✓ Verse complete') + '</div>' +
+      '<div class="bb-result-stats"><span>Corrections <b>' + g.misses + '</b></span>' +
+      '<span>Hints <b>' + g.hints + '</b></span>' +
+      '<span>Best <b>' + (g.best === null ? points : g.best) + '</b></span></div>' +
       '<div class="bb-full-verse">“' + escape(c.text) + '”<br><strong>' + escape(c.reference) + ' · BSB</strong></div>' +
       '<div class="bb-result-buttons">' +
       '<button type="button" class="bb-again" data-action="reset">Play again ↺</button>' +
@@ -113,8 +118,14 @@
   function render(focusAction) {
     const c = M.challenge(verseId);
     const g = game();
+    const versePosition = verseIds.indexOf(verseId) + 1;
+    const strap = '<div class="bb-game-strap"><span class="bb-round-label">VERSE ' +
+      String(versePosition).padStart(2, '0') + ' / ' +
+      String(verseIds.length).padStart(2, '0') + '</span>' +
+      '<span class="bb-best">PERSONAL BEST <b>' + (g.best === null ? '—' : g.best) +
+      '</b></span></div>';
     if (g.solved) {
-      mount.innerHTML = resultMarkup(c, g);
+      mount.innerHTML = strap + resultMarkup(c, g);
     } else {
       const filled = M.filled(g);
       const body = '<div class="bb-board">' + referenceMarkup(c) +
@@ -123,11 +134,12 @@
         '<p class="bb-instruction">Fill all five blanks. You can change a word anytime.</p></div>' +
         bankMarkup(c, g) +
         '<div class="bb-actions"><button type="button" class="bb-check" data-action="check">CHECK WORDS ✓</button>' +
-        '<button type="button" class="bb-hint" data-action="hint"' + (filled === 5 ? ' disabled' : '') + '>Hint ✦</button></div>' +
+        '<button type="button" class="bb-hint" data-action="hint"' + (filled === 5 ? ' disabled' : '') + '>HINT · −12</button></div>' +
         '<p class="bb-message" data-tone="' + escape(noticeTone) + '" role="status" aria-live="polite">' +
         escape(notice || 'Tap a word tile. Tap a filled blank to change it.') + '</p>';
-      mount.innerHTML = body;
+      mount.innerHTML = strap + body;
     }
+    justPlaced = -1;
     if (focusAction) {
       const target = mount.querySelector(focusAction);
       if (target) target.focus({preventScroll:true});
@@ -141,6 +153,7 @@
       if (target < 0) { setNotice('All blanks are filled. Tap Check Words!', 'good'); render(); return; }
       const next = M.pick(g, verseId, value, target);
       setGame(next);
+      justPlaced = target;
       activeSlot = null;
       setNotice(M.filled(next) === 5 ? 'All set! Check your verse.' : 'Nice! Keep filling the blanks.', 'good');
       render('[data-action="tile"]:not(:disabled)');
@@ -152,9 +165,11 @@
       if (g.slots[slot] !== null) {
         setGame(M.clear(g, verseId, slot));
         activeSlot = slot;
+        justPlaced = -1;
         setNotice('Word returned to the bank. Choose a replacement.');
       } else {
         activeSlot = slot;
+        justPlaced = -1;
         setNotice('Choose a word for blank ' + (slot + 1) + '.');
       }
       render();
@@ -164,6 +179,7 @@
       const answer = M.check(g, verseId);
       setGame(answer.state);
       activeSlot = null;
+      justPlaced = -1;
       if (answer.status === 'complete') {
         setNotice('', 'good');
         render('[data-action="reset"]');
@@ -177,6 +193,7 @@
       if (g.solved) return;
       const next = M.hint(g, verseId);
       setGame(next);
+      justPlaced = -1;
       activeSlot = null;
       setNotice(next.feedback, 'good');
       render('[data-action="tile"]:not(:disabled)');
@@ -184,6 +201,7 @@
     }
     if (action === 'reset') {
       setGame(M.reset(g, verseId));
+      justPlaced = -1;
       activeSlot = null;
       setNotice('Fresh round, same verse. You got this!');
       render();
@@ -191,9 +209,10 @@
     }
     if (action === 'next') {
       verseId = verseIds[(verseIds.indexOf(verseId) + 1) % verseIds.length];
+      justPlaced = -1;
       activeSlot = null;
       save();
-      setNotice('New verse unlocked for play!', 'good');
+      setNotice('Next verse. Fresh challenge!', 'good');
       render();
     }
   }
