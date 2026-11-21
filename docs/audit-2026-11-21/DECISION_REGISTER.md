@@ -28,12 +28,21 @@
 - **Acceptance evidence required:** Resource/action permission matrix; mock positive/negative authorization tests including revoked membership; reviewed access boundaries for care tasks and messages; separate explicit authorization and backend verification before any live-member pilot.
 
 ## F-04 — Incremental modularization of the application
+- **Decision:** APPROVED — Option B.
+- **Owner decision:** “Approve F-04, Option B. Record the decision and proceed to F-05 without implementing code yet.”
+- **Intended approach:** Gradually extract independent, reusable modules from `rallypoint.js`, starting with the F-02 conversation contract, a mock conversation repository, shared conversation rendering and composer, permission boundaries, and eventually a separately testable Today companion selector. Keep existing route names, browser-local demo state, core functionality, and Premium ALIVE visual design intact.
+- **Implementation sequence:** Define module interfaces and tests → adapt a single Wednesday Group conversation → verify unchanged app behavior → reuse for Team and authorized direct messages → continue targeted extraction. Do not require a React rewrite or another framework migration as a prerequisite.
+- **Guardrails:** Small isolated feature branches, regression screenshots and tests at each stage; no broad CSS replacement or unrelated design changes. This decision authorizes architecture planning, **not** immediate source code changes, merges or deployment.
+- **Implementation status:** NOT STARTED.
+- **Acceptance evidence required:** Module contracts, regression tests, no loss of existing browser demo messages/progress or routes, visual comparison against protected references, and explicit approval of each implementation slice.
+
+## F-05 — Pastoral care, verified evidence and human oversight
 - **Decision:** PENDING REVIEW.
-- **Audit finding:** `rallypoint.js` combines rendering, routing, persistence, UI actions and business logic. Separate Group, Team and direct-message templates risk divergence.
-- **Candidate approach:** Incremental, nonbreaking extraction of conversation models and repositories, shared conversation UI, composer, permissions checks and Today-selection rules, retaining existing routes, storage compatibility and the locked Premium ALIVE visuals.
+- **Audit finding:** The companion and Leader Care currently use fictional prayer/attendance fixtures; official attendance sources, case ownership, consent/visibility, escalation, retention and deletion are not established.
+- **Candidate approach:** Define a church-owned pastoral-care and data governance policy before introducing real information. Separate recorded facts from suggestions, permit only authorized leaders to make decisions, and keep care notes restricted and reviewed.
 - **Implementation status:** NOT STARTED.
 
-## F-05 through F-14
+## F-06 through F-14
 **Decision:** NOT YET REVIEWED. Preserve the original prioritized foundation backlog for the decision sequence.
 
 ## Decision protocol
