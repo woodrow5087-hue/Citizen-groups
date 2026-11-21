@@ -51,3 +51,20 @@ test('group summary routes to existing gathering rather than inventing attendanc
  for(const forbidden of ['fetch(', 'XMLHttpRequest', 'localStorage.setItem(', 'navigator.sendBeacon(', 'WebSocket('])
    assert.ok(!code.includes(forbidden),'No writeback or network operations in visual helpers: '+forbidden);
 });
+
+
+test('optional care companion uses only a fictional source note and remembers completion',()=>{
+ const h=helpers();
+ const ui=connected;
+ const state={teamStatus:'pending',prayers:[{name:'Marcus C.',text:'A fictional request'}]};
+ const before=h.todayPrompt(state,ui);
+ assert.match(before,/Check in with Marcus/);
+ assert.match(before,/data-action="companion-encourage"/);
+ assert.match(before,/companion-snooze/);
+ const after=h.todayPrompt({...state,companionCare:{marcus:{completedAt:'2026-11-21T16:00:00Z'}}},ui);
+ assert.match(after,/checked in with Marcus/);
+ assert.match(after,/Review my serve/);
+ assert.doesNotMatch(after,/data-action="companion-encourage"/);
+ const noSource=h.todayPrompt({...state,prayers:[]},ui);
+ assert.doesNotMatch(noSource,/Check in with Marcus/);
+});
