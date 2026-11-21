@@ -361,3 +361,25 @@ test('demo name is escaped, saved independently and modal keyboard dismissal res
 test('storage failure is disclosed while the demo stays usable',t=>{
  const app=open(t,{blocked:true});assert.match(app.text(),/could not save/);app.go('group');app.type('group-input','An in-memory sample');app.click('[data-action="send"][data-value="group"]');assert.match(app.text(),/An in-memory sample/);
 });
+
+test('Premium ALIVE people circles open existing fictional direct conversations and preserve local replies',t=>{
+ const app=open(t);
+ assert.ok(app.d.querySelector('.phone-inner').classList.contains('premium-alive'));
+ assert.equal(app.d.querySelectorAll('.pa-people-rail--today .pa-person-trigger').length,5);
+ app.click('.pa-people-rail--today [data-action="hybrid-person"][data-person="marcus"]');
+ assert.equal(app.saved().view,'group');
+ assert.equal(app.saved().groupPane,'direct');
+ assert.equal(app.saved().directPerson,'marcus');
+ assert.match(app.text(),/ONE-TO-ONE · LOCAL DEMO ONLY/);
+ app.type('direct-input','Thanks for being part of this fictional group.');
+ app.click('[data-action="send"][data-value="direct"]');
+ assert.ok(app.saved().directMessages.marcus.some(m=>m.text==='Thanks for being part of this fictional group.'));
+ app.go('today');
+ app.click('.pa-people-rail--today [data-action="hybrid-person"][data-person="marcus"]');
+ assert.match(app.text(),/Thanks for being part of this fictional group/);
+ app.go('group');
+ assert.ok(app.d.querySelector('.pa-people-rail--group'));
+ assert.ok(app.d.querySelector('.pa-group-summary'));
+ app.click('.pa-group-summary');
+ assert.equal(app.saved().groupPane,'gather');
+});
