@@ -104,11 +104,14 @@ try{
  await rhythmPage.locator('#nav [data-go="today"]').click();
  assert.ok((await rhythmPage.locator('.pa-rhythm-followup').textContent()).includes('A SMALL STEP FOR TOMORROW'));
  assert.equal(await rhythmPage.locator('[data-action="rhythm-complete"]').count(),0);
+ await rhythmPage.locator('.pa-rhythm-followup').scrollIntoViewIfNeeded();
+ await rhythmPage.locator('#toast').evaluate(el=>el.hidden=true);
  await rhythmPage.screenshot({path:path.join(out,'companion-scripture-saved-390.png')});
  await rhythmPage.clock.setFixedTime(new Date('2026-11-25T12:00:00'));
  await rhythmPage.locator('#nav [data-go="read"]').click();
  await rhythmPage.locator('#nav [data-go="today"]').click();
  assert.ok((await rhythmPage.locator('.pa-rhythm-followup').textContent()).includes('YOUR STEP FOR TODAY'));
+ await rhythmPage.locator('.pa-rhythm-followup').scrollIntoViewIfNeeded();
  await rhythmPage.screenshot({path:path.join(out,'companion-scripture-returned-390.png')});
  await rhythmPage.locator('[data-action="rhythm-complete"]').click();
  assert.ok((await rhythmPage.locator('.pa-rhythm-followup').textContent()).includes('YOU FOLLOWED THROUGH'));
