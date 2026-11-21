@@ -74,12 +74,21 @@
 - **Acceptance evidence required:** Versioned fixture schemas; deterministic migration, refresh, failure/recovery and idempotence tests; preservation of existing fictional saved data; accurate per-event/date and per-conversation state; unchanged unrelated UI.
 
 ## F-09 — Preserve and consolidate the visual styling system
+- **Decision:** APPROVED — Option B.
+- **Owner decision:** “Approve F-09, Option B. Record the decision and proceed to F-10 without implementing code yet.”
+- **Intended approach:** Incrementally consolidate the existing 12 ordered CSS stylesheets into a **protected Premium ALIVE design system**, introducing shared named design tokens, explicit component style ownership, and scoped styles as each functional area is deliberately improved. Preserve the exact approved four-phone red/charcoal/cream identity and the signature Your People circles.
+- **Implementation sequence:** Document existing computed token values and visual reference screenshots; map cascade overrides and component ownership; extract only the styles necessary for the next approved feature (initially the F-06 conversation components); compare before/after screenshots and computed properties; reduce obsolete duplicates only when equivalent appearance and behavior have been verified.
+- **Guardrails:** No wholesale CSS replacement, generic UI kit, visual flattening, font/logo changes, removal of photo-led composition or broad layout adjustments under the guise of refactoring. Each deviation from the approved reference requires owner review; unrelated screens remain unchanged.
+- **Implementation status:** NOT STARTED. This decision is planning-only; no CSS edits, application code, merges, or deployments authorized.
+- **Acceptance evidence required:** Documented tokens and component boundaries; pixel/visual-reference and mobile regression comparisons; keyboard/focus, contrast, reduced-motion and accessibility checks; no loss of approved screen personality or functionality.
+
+## F-10 — Automated QA, visual regression and real-device validation
 - **Decision:** PENDING REVIEW.
-- **Audit finding:** The working application loads 12 sequential CSS files spanning several historical design iterations, increasing selector-cascade confusion and visual regression risk.
-- **Candidate approach:** Incrementally establish shared Premium ALIVE design tokens and component-level style boundaries, preserve exact approved visual references, and gradually reduce duplicate overrides **without** changing layout, colors, silhouettes, typography, icons or other unrelated screens.
+- **Audit finding:** Existing GitHub Actions tests include fixture tests, builds, Chromium Playwright, axe, onboarding and Blank Battle checks, but the workflow targets PRs to `main` instead of the agreed future canonical development branch. Screenshot artifacts expire after 7 days, and real iPhone Safari/VoiceOver validation is not established as a release gate.
+- **Candidate approach:** Integrate CI and Deploy Previews directly with the F-01 canonical branch, maintain versioned protected visual baselines, add focused conversation/domain contract and failure/offline tests, validate phone sizes and WebKit behavior, and require a physical-device interaction/accessibility signoff before approving significant UI work.
 - **Implementation status:** NOT STARTED.
 
-## F-10 through F-14
+## F-11 through F-14
 **Decision:** NOT YET REVIEWED. Preserve the original prioritized foundation backlog for the decision sequence.
 
 ## Decision protocol
