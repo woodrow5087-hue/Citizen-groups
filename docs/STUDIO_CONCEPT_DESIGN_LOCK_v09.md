@@ -53,3 +53,26 @@ Get stakeholder feedback under **Visual fidelity**, **Understanding the next act
 ## Structural caution
 
 This code lives on \`rally-point/studio-concept-v09\` based on unmerged v0.8 work; PR #33 is cumulative against \`main\` for Netlify preview and must not be merged as a clean standalone patch.
+
+
+## Approved visual master — final production styling brief
+
+The client has explicitly approved the **exact four-phone rendering**, not merely its palette or general creative direction. The screens are an authoritative visual specification. The consulting firm's responsibility is to implement their layout, text hierarchy, proportions, components, and navigation faithfully, adding only minor professional refinements that support those designs.
+
+**Explicitly prohibited:** new marketing headers around the app, "studio concept" dashboards, unrelated UI frameworks, corporate SaaS styling, extra action buttons not in the approved composition, miniature nested phone frames on a real iPhone, oversized default SVGs, and arbitrary new navigation.
+
+### Exact 4-screen comparison gates
+
+1. **Today** — greeting and campus, red "Your people. Your place." feature with member photos, cream Wednesday Group message, two side-by-side gathering/serving cards, cream John 15:9–12 Read tile, black bottom nav.
+2. **My People** — charcoal identity hero, one extended warm-cream group conversation card with Wednesday Group and member row, two sample conversation bubbles, prayer request and one prominent Check in button.
+3. **My Team** — red "Serve together." hero, one cream next-serving card with small green confirmation chip, one dark Team Update card with a cream reply CTA. No other large action in the first serving card.
+4. **Leader Care** — red hero with warm cream curved transition, 2 follow-ups summary, two member cards with compact Reach out / Mark reviewed actions, dark bottom nav. The preview-only care experience is not evidence of real permission enforcement.
+
+On desktop: four large phones, aligned to the original artboard, without other visual content competing with them.
+On iPhone: show the **full-screen app**, not a miniature phone inside a marketing site. Bottom nav is the means of switching; tap the Today profile badge to view sample Leader Care.
+
+The approved reference is the source of truth for future changes. Existing code is subordinate to the artwork, not vice versa.
+
+### Release honesty
+
+The delivered experience is a **visual and functional front-end preview**, not a commercially operational application. Real authentication, member authorization, integration, messaging, notifications, secure storage and production observability remain unimplemented. This status should be explained in release notes and stakeholder communications even when the interface looks production-polished.
