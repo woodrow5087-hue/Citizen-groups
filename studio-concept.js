@@ -36,10 +36,12 @@
   game:'<path d="M6 12h4m-2-2v4m7-3h.01M18 13h.01M5 6h14c2.5 0 4 2 4 5l-1 6c-.5 2-2.5 3-4 1l-2-2H8l-2 2c-1.5 2-3.5 1-4-1l-1-6c0-3 1.5-5 4-5z"/>'
  };
  const ico=(name)=>'<svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">'+(iconPaths[name]||iconPaths.right)+'</svg>';
- const avatars=[
-  ['AL',12],['JW',47],['MK',15],['SR',44],['CM',33],['JD',60]
- ];
- const avatar=(i,extra='')=>{const a=avatars[i%avatars.length];return '<span class="av '+extra+'"><img alt="" loading="eager" decoding="async" src="https://i.pravatar.cc/96?img='+a[1]+'"><span style="display:none">'+a[0]+'</span></span>'};
+ const avatars=['JW','AL','MK','SR','CM','AN','JD'];
+ const avatar=(i,extra='')=>{
+  const idx=Math.abs(Number(i)||0)%avatars.length;
+  const pos=(idx*100/(avatars.length-1)).toFixed(3);
+  return '<span class="av '+extra+'"><img alt="" loading="eager" decoding="async" style="object-position:'+pos+'% center" src="assets/studio-people.svg"><span style="display:none">'+avatars[idx]+'</span></span>';
+ };
  const avrow=(count=5)=>'<div class="avatars">'+Array.from({length:count},(_,i)=>avatar(i)).join('')+'<span class="av count">+'+(count===4?'12':'7')+'</span></div>';
  const shell=(content,view,index)=>{
    const dark=view==='people';
