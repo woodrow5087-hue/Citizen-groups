@@ -35,7 +35,7 @@ test('Sunday recap, campuses and Church Center use verified real public destinat
   ];
   for(const link of links)assert.ok(html.includes(link),link);
   assert.ok(/Nov 2026 example/.test(html));
-  assert.ok(/not live-synced/i.test(html));
+  assert.ok(/aren.t live-synced|not live-synced/i.test(html));
   assert.ok(!/tonight at 6:30.*men.s night/i.test(html),'No stale upcoming event claims');
 });
 test('Campus selection changes only demo locale, persists, never modifies Rally Point v0.8 state',t=>{
@@ -67,5 +67,5 @@ test('v02 is an additive layer; no API, private profiles or implied live church 
   assert.ok(css.includes('.citizen-week'));
   assert.ok(css.includes('.citizen-campus-cards'));
   assert.ok(html.includes('No demo requests are submitted here.'));
-  assert.ok(html.includes('not live-synced'));
+  assert.ok(/aren.t live-synced|not live-synced/i.test(html));
 });
