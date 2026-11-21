@@ -6,11 +6,12 @@ const {JSDOM}=require('jsdom');
 const T=require('../rallypoint-today.js');
 const {makeChatDomainBundle}=require('../scripts/build-chat-lab.cjs');
 const root=path.resolve(__dirname,'..'),key='rallypoint-phase1-2026';
-function open(t,{saved,ui,blocked=false,now='2026-11-23T12:00:00'}={}){
+function open(t,{saved,ui,modern,blocked=false,now='2026-11-23T12:00:00'}={}){
  const dom=new JSDOM(fs.readFileSync(path.join(root,'index.html'),'utf8'),{url:'https://rally.test',runScripts:'outside-only',pretendToBeVisual:true});t.after(()=>dom.window.close());const w=dom.window,d=w.document;
  const NativeDate=w.Date;w.Date=class extends NativeDate{constructor(...args){super(...(args.length?args:[now]));}static now(){return new NativeDate(now).getTime();}};
  w.HTMLElement.prototype.scrollIntoView=function(){};
  if(saved)w.localStorage.setItem(key,JSON.stringify(saved));if(ui)w.localStorage.setItem(T.UI_KEY,JSON.stringify(ui));
+  if(modern!==undefined)w.localStorage.setItem('rallypoint-wednesday-chat-lab-v1',modern);
  const other='{"reflection":"An existing Citizen Connect note"}';w.localStorage.setItem('citizen-premium-hybrid-demo-v1',other);
  if(blocked)Object.defineProperty(w,'localStorage',{get(){throw Error('Blocked storage');}});
  w.structuredClone=structuredClone;
@@ -187,7 +188,9 @@ test('Today settles into a real caught-up state after opening the source and con
     'DOM should reflect read cursor after serving response');
   assert.match(app.text(),/You’re all caught up/);assert.equal(app.d.querySelector('.attention-tile'),null);
  app.action('notifications');assert.match(app.d.querySelector('#dialog-root [role="dialog"]').textContent,/You’re all caught up/);app.action('close-dialog');
- const again=open(t,{saved:app.saved(),ui:app.ui()});assert.match(again.text(),/You’re all caught up/);
+ const again=open(t,{saved:app.saved(),ui:app.ui(),modern:app.w.localStorage.getItem(modernKey)});
+  assert.match(again.text(),/You’re all caught up/);
+  assert.equal(again.w.RallyConversationRead.peek({storage:again.w.localStorage,domain:again.w.RallyChatDomain}).unreadCount,0);
 });
 test('existing messages, prayer posts, RSVP, team coverage and reading remain functional after reload',t=>{
  const app=open(t);app.go('group');app.type('group-input','A local group thought.');app.click('[data-action="send"][data-value="group"]');assert.equal(app.d.getElementById('group-input').value,'');
