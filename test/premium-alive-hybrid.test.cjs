@@ -68,3 +68,24 @@ test('optional care companion uses only a fictional source note and remembers co
  const noSource=h.todayPrompt({...state,prayers:[]},ui);
  assert.doesNotMatch(noSource,/Check in with Marcus/);
 });
+
+
+test('private Scripture step uses existing reflection and Today cards with no added navigation',()=>{
+ const h=helpers();
+ const reading={passage:'John 15:12'};
+ const editor=h.rhythmEditor({},reading);
+ assert.match(editor,/Take it into the week/);
+ assert.match(editor,/data-action="rhythm-save"/);
+ assert.match(editor,/No notifications are sent/);
+ const item={rhythm:{text:'Help a neighbor',passage:'John 15:12',followUpAt:'2026-11-24T08:00:00Z',completedAt:null}};
+ const initial=h.rhythmFollowup(item,new Date('2026-11-23T10:00:00Z'));
+ assert.match(initial,/A SMALL STEP FOR TOMORROW/);
+ assert.doesNotMatch(initial,/data-action="rhythm-complete"/);
+ const due=h.rhythmFollowup(item,new Date('2026-11-25T10:00:00Z'));
+ assert.match(due,/data-action="rhythm-complete"/);
+ assert.match(due,/data-action="rhythm-defer"/);
+ const done=h.rhythmFollowup({rhythm:{...item.rhythm,completedAt:'2026-11-25T12:00:00Z'}},new Date('2026-11-26T10:00:00Z'));
+ assert.match(done,/YOU FOLLOWED THROUGH/);
+ assert.doesNotMatch(done,/data-action="rhythm-complete"/);
+ assert.match(h.todayPrompt({rhythm:item.rhythm,teamStatus:'pending',prayers:[]},connected),/pa-rhythm-followup/);
+});

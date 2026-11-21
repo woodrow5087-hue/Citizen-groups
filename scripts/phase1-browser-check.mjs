@@ -92,6 +92,34 @@ try{
  }
  // Reference-aligned capture is a real app render with an explicitly frozen Monday fixture.
  const ctx=await browser.newContext({viewport:{width:390,height:844},isMobile:true,hasTouch:true,reducedMotion:'reduce'}),p=await ctx.newPage();await p.clock.install({time:new Date('2026-11-23T12:00:00')});await p.goto(todayUrl);await p.evaluate(()=>document.fonts.ready);await p.screenshot({path:path.join(out,'today-reference-aligned-390.png')});await p.locator('.profile-avatar').click();await p.locator('#role').click();await p.locator('[data-action="close-dialog"]').click();await p.screenshot({path:path.join(out,'today-leader-390.png')});await p.locator('#view').evaluate(el=>el.scrollTop=el.scrollHeight);await p.screenshot({path:path.join(out,'today-leader-entry-390.png')});await p.locator('.leader-entry').click();await p.screenshot({path:path.join(out,'leader-care-390.png')});await p.locator('#nav [data-go="today"]').click();await demo(p,'caught-up');await p.screenshot({path:path.join(out,'today-caught-up-390.png')});await demo(p,'no-memberships');await p.screenshot({path:path.join(out,'today-empty-390.png')});await ctx.close();
+ // New companion contract: a saved Scripture intention resurfaces only on a later visit,
+ // never auto-completes, and never sends anything to group or church systems.
+ const rhythmContext=await browser.newContext({viewport:{width:390,height:844},isMobile:true,hasTouch:true,reducedMotion:'reduce'});
+ const rhythmPage=await rhythmContext.newPage();
+ await rhythmPage.clock.install({time:new Date('2026-11-23T12:00:00')});
+ await rhythmPage.goto(todayUrl);
+ await rhythmPage.locator('#nav [data-go="read"]').click();
+ await rhythmPage.locator('#rhythm-input').fill('Encourage one person in my group.');
+ await rhythmPage.locator('[data-action="rhythm-save"]').click();
+ await rhythmPage.locator('#nav [data-go="today"]').click();
+ assert.ok((await rhythmPage.locator('.pa-rhythm-followup').textContent()).includes('A SMALL STEP FOR TOMORROW'));
+ assert.equal(await rhythmPage.locator('[data-action="rhythm-complete"]').count(),0);
+ await rhythmPage.locator('.pa-rhythm-followup').scrollIntoViewIfNeeded();
+ await rhythmPage.locator('#toast').evaluate(el=>el.hidden=true);
+ await rhythmPage.screenshot({path:path.join(out,'companion-scripture-saved-390.png')});
+ await rhythmPage.clock.setFixedTime(new Date('2026-11-25T12:00:00'));
+ await rhythmPage.locator('#nav [data-go="read"]').click();
+ await rhythmPage.locator('#nav [data-go="today"]').click();
+ assert.ok((await rhythmPage.locator('.pa-rhythm-followup').textContent()).includes('YOUR STEP FOR TODAY'));
+ await rhythmPage.locator('.pa-rhythm-followup').scrollIntoViewIfNeeded();
+ await rhythmPage.screenshot({path:path.join(out,'companion-scripture-returned-390.png')});
+ await rhythmPage.locator('[data-action="rhythm-complete"]').click();
+ assert.ok((await rhythmPage.locator('.pa-rhythm-followup').textContent()).includes('YOU FOLLOWED THROUGH'));
+ await rhythmPage.reload();
+ assert.ok((await rhythmPage.locator('.pa-rhythm-followup').textContent()).includes('YOU FOLLOWED THROUGH'));
+ assert.equal(await rhythmPage.locator('.pa-people-rail--today').count(),1,'Approved people rail remains');
+ await audit(rhythmPage,'Scripture follow-through remembered');
+ await rhythmContext.close();
  const fallback=await browser.newContext({viewport:{width:375,height:812},reducedMotion:'reduce'});await fallback.addInitScript(()=>Object.defineProperty(window,'localStorage',{get(){throw Error('Blocked');}}));const fp=await fallback.newPage();await fp.goto(todayUrl);assert.ok((await fp.locator('#view').textContent()).includes('could not save'));await fp.locator('#nav [data-go="read"]').click();await fp.locator('[data-action="read"]').click();assert.ok((await fp.locator('#view').textContent()).includes('Read today'));await fallback.close();
  fs.writeFileSync(path.join(out,'phase1-browser-results.json'),JSON.stringify({cases:results,flows:'Source links, original messages/prayers, RSVP, serving, role/leader tools, reading/question, empty states, focus, persistence and storage fallback passed.',axe:'No detected WCAG A/AA violations on tested views/dialogs.'},null,2));console.log('All Phase 1 mobile, accessibility, persistence and source-flow checks passed.');
 }finally{await browser.close();if(server)await new Promise(r=>server.close(r));}

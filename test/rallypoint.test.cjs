@@ -427,3 +427,69 @@ test('companion care does not show private group prompts when group membership i
  assert.equal(app.d.querySelector('.pa-care-memory'),null);
  assert.equal(app.d.querySelector('.pa-care-later'),null);
 });
+
+
+test('Sunday-to-week companion saves one private step and resurfaces it on a later day',t=>{
+ const app=open(t,{now:'2026-11-23T12:00:00'});
+ app.go('read');
+ assert.ok(app.d.querySelector('.pa-rhythm-editor'),'Read keeps the intention editor inside the existing reflection card');
+ app.type('rhythm-input','Encourage someone who needs a friend.');
+ app.click('[data-action="rhythm-save"]');
+ const saved=app.saved();
+ assert.equal(saved.rhythm.text,'Encourage someone who needs a friend.');
+ assert.equal(saved.rhythm.passage,'John 15:12');
+ assert.ok(Date.parse(saved.rhythm.followUpAt)>new Date('2026-11-23T12:00:00').getTime());
+ assert.equal(saved.rhythm.completedAt,null,'Saving does not mark action done');
+ app.go('today');
+ assert.match(app.d.querySelector('.pa-rhythm-followup').textContent,/A SMALL STEP FOR TOMORROW/);
+ assert.equal(app.d.querySelector('[data-action="rhythm-complete"]'),null,'No completion control until a future visit');
+ const later=open(t,{saved,ui:app.ui(),now:'2026-11-25T12:00:00'});
+ later.go('today'); // The saved fixture was captured while Read was active.
+ assert.match(later.d.querySelector('.pa-rhythm-followup').textContent,/YOUR STEP FOR TODAY/);
+ later.click('[data-action="rhythm-complete"]');
+ assert.ok(later.saved().rhythm.completedAt);
+ assert.match(later.d.querySelector('.pa-rhythm-followup').textContent,/YOU FOLLOWED THROUGH/);
+ const restored=open(t,{saved:later.saved(),ui:later.ui(),now:'2026-11-26T12:00:00'});
+ assert.match(restored.d.querySelector('.pa-rhythm-followup').textContent,/YOU FOLLOWED THROUGH/);
+ assert.equal(restored.d.querySelectorAll('#nav button').length,4);
+ assert.ok(restored.d.querySelector('.pa-people-rail--today'));
+});
+test('Sunday-to-week step is voluntary, deferrable, editable and clearable without changing other flows',t=>{
+ const app=open(t,{now:'2026-11-23T12:00:00'});
+ const before=app.saved();
+ app.go('read');
+ app.click('[data-action="rhythm-save"]');
+ assert.deepEqual(app.saved().rhythm,{},'Empty reflections are not saved');
+ app.type('rhythm-input','Offer to help with the gathering.');
+ app.click('[data-action="rhythm-save"]');
+ const due=app.saved().rhythm.followUpAt;
+ app.go('today');
+ const later=open(t,{saved:app.saved(),ui:app.ui(),now:'2026-11-25T12:00:00'});
+ later.click('[data-action="rhythm-defer"]');
+ assert.ok(Date.parse(later.saved().rhythm.followUpAt)>Date.parse(due));
+ assert.equal(later.d.querySelector('[data-action="rhythm-complete"]'),null);
+ later.go('read');
+ later.type('rhythm-input','Invite somebody to join me.');
+ later.click('[data-action="rhythm-save"]');
+ assert.equal(later.saved().rhythm.text,'Invite somebody to join me.');
+ later.click('[data-action="rhythm-clear"]');
+ assert.deepEqual(later.saved().rhythm,{});
+ later.go('today');
+ assert.equal(later.d.querySelector('.pa-rhythm-followup'),null);
+ assert.deepEqual(later.saved().groupMessages,before.groupMessages);
+ assert.deepEqual(later.saved().prayers,before.prayers);
+ assert.deepEqual(later.saved().directMessages,before.directMessages);
+});
+test('Sunday-to-week private text is HTML-escaped in Read and Today, never published to group',t=>{
+ const app=open(t);
+ app.go('read');
+ app.type('rhythm-input','<img src=x onerror=alert(1)>');
+ app.click('[data-action="rhythm-save"]');
+ app.go('today');
+ assert.match(app.d.querySelector('.pa-rhythm-followup').textContent,/<img src=x onerror=alert\(1\)>/);
+ assert.equal(app.d.querySelector('.pa-rhythm-followup img'),null);
+ app.go('read');
+ assert.equal(app.d.querySelector('.pa-rhythm-editor img'),null);
+ assert.match(app.d.getElementById('rhythm-input').value,/<img src=x/);
+ assert.equal(app.saved().groupMessages.length,2);
+});
