@@ -147,7 +147,7 @@ test('F-04 modular Groups rendering reproduces byte-identical old HTML and escap
    expected+originalComposer('group','Say something to your group','Share a thought or encouragement…')+'</div>');
  assert.match(Group.legacyMessages(messages,esc),/&lt;everyone&gt; &amp;/);
 });
-test('shared safe-save modules are loaded only in existing UI and do not import the separate chat lab',()=>{
+test('F-08 guarded legacy storage stays loaded while reusable chat is intentionally integrated',()=>{
  const root=path.resolve(__dirname,'..');
  const index=fs.readFileSync(path.join(root,'index.html'),'utf8');
  const app=fs.readFileSync(path.join(root,'rallypoint.js'),'utf8');
@@ -158,8 +158,11 @@ test('shared safe-save modules are loaded only in existing UI and do not import 
  }
  assert.ok(index.indexOf('rallypoint-storage-guard.js')<index.indexOf('rallypoint.js'));
  assert.ok(index.indexOf('rallypoint-group-view.js')<index.indexOf('rallypoint.js'));
- assert.ok(app.includes('G.legacyGroupChat({messages:s.groupMessages,escape:e})'));
+ assert.ok(app.includes('G.integratedGroupChat({messages:s.groupMessages,escape:e})'));
+ assert.ok(fs.readFileSync(path.join(root,'rallypoint-group-view.js'),'utf8').includes('legacyGroupChat({messages,escape})'));
  assert.ok(app.includes('storageGuard.save('));
- assert.equal(index.includes('wednesday-chat-lab'),false);
+ assert.ok(index.includes('wednesday-chat-lab.js'));
+ assert.ok(index.includes('rallypoint-chat-domain.browser.js'));
+ assert.equal(index.includes('wednesday-chat-lab.css'),false,'standalone lab CSS stays out of root app');
  assert.equal(index.includes('mock-access-policy'),false,'client-side role toggle is NOT security');
 });
