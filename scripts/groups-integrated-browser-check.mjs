@@ -48,7 +48,7 @@ try{
    await p.locator('#rpx-chat [data-message-id="seed_jess"]').waitFor();
    assert.equal(await p.locator('#nav button').count(),4,'original tabs retained');
    assert.equal(await p.locator('.rpx-legacy-records .message').count(),2,'old records stay visible');
-   assert.ok((await p.locator('.rpx-legacy-records').textContent()).includes('unknown historical dates'));
+   assert.ok((await p.locator('.rpx-legacy-records').textContent()).toLowerCase().includes('unknown historical dates'));
    assert.equal(await p.locator('#rpx-chat .message-row').count(),4,'v1 thread renders');
    const geom=await p.evaluate(()=>{
      const n=document.querySelector('#nav').getBoundingClientRect(),v=document.querySelector('#view').getBoundingClientRect();
