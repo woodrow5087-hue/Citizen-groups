@@ -65,12 +65,21 @@
 - **Acceptance evidence required:** First-viewport action clearly visible on phone, visual parity with primary red/black design, preserved people circles/hero identity, deterministic and respectful action logic, mobile/keyboard/accessibility checks, and regression tests.
 
 ## F-08 — Versioned browser persistence and accurate activity tracking
+- **Decision:** APPROVED — Option B.
+- **Owner decision:** “Approve F-08, Option B. Record the decision and proceed to F-09 without implementing code yet.”
+- **Intended approach:** Introduce **versioned, migration-safe browser-local demo persistence** based on the F-02 data contracts and F-04 modular boundaries. Use stable IDs for messages and identifiable events; maintain per-conversation, per-user read cursors; record date-scoped Scripture/prayer actions and shift-specific responses instead of undated booleans or a serialized message-array unread signature.
+- **Migration requirements:** Recognize existing `rallypoint-phase1-2026` and `rallypoint-today-ui-v1` fixtures; preserve messages, preferences, direct conversations, selected readings, drafts where stored, and VersePlay progress. Never invent historical timestamps for records labeled only “Today” or “Yesterday.” Test full upgrade and recovery; retain the old data on failure rather than silently overwriting it.
+- **Guardrails:** Local persistence does not imply real account identity, encrypted member records, live notifications, cross-device sync, or a cloud database. No actual church data or integration is authorized. Keep the Premium ALIVE visual identity and existing workflows unchanged.
+- **Implementation status:** NOT STARTED. Planning approval only; no code, data migration, deployment, or backend change.
+- **Acceptance evidence required:** Versioned fixture schemas; deterministic migration, refresh, failure/recovery and idempotence tests; preservation of existing fictional saved data; accurate per-event/date and per-conversation state; unchanged unrelated UI.
+
+## F-09 — Preserve and consolidate the visual styling system
 - **Decision:** PENDING REVIEW.
-- **Audit finding:** Current `rallypoint-phase1-2026` and `rallypoint-today-ui-v1` browser storage combines unrelated demo state. Daily read/prayed statuses are undated booleans and unread recognition is a serialized message-array signature rather than a per-conversation, per-user read marker.
-- **Candidate approach:** Introduce versioned, migration-safe local fixture contracts, stable message/event identifiers, per-conversation read state and date-scoped reading/prayer activity; preserve all existing fictional saved messages, user selections and VersePlay progress. No production database or cross-device synchronization at this phase.
+- **Audit finding:** The working application loads 12 sequential CSS files spanning several historical design iterations, increasing selector-cascade confusion and visual regression risk.
+- **Candidate approach:** Incrementally establish shared Premium ALIVE design tokens and component-level style boundaries, preserve exact approved visual references, and gradually reduce duplicate overrides **without** changing layout, colors, silhouettes, typography, icons or other unrelated screens.
 - **Implementation status:** NOT STARTED.
 
-## F-09 through F-14
+## F-10 through F-14
 **Decision:** NOT YET REVIEWED. Preserve the original prioritized foundation backlog for the decision sequence.
 
 ## Decision protocol
