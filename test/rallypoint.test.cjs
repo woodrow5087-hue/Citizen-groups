@@ -4,6 +4,7 @@ const fs=require('node:fs');
 const path=require('node:path');
 const {JSDOM}=require('jsdom');
 const T=require('../rallypoint-today.js');
+const {makeChatDomainBundle}=require('../scripts/build-chat-lab.cjs');
 const root=path.resolve(__dirname,'..'),key='rallypoint-phase1-2026';
 function open(t,{saved,ui,blocked=false,now='2026-11-23T12:00:00'}={}){
  const dom=new JSDOM(fs.readFileSync(path.join(root,'index.html'),'utf8'),{url:'https://rally.test',runScripts:'outside-only',pretendToBeVisual:true});t.after(()=>dom.window.close());const w=dom.window,d=w.document;
@@ -12,7 +13,9 @@ function open(t,{saved,ui,blocked=false,now='2026-11-23T12:00:00'}={}){
  if(saved)w.localStorage.setItem(key,JSON.stringify(saved));if(ui)w.localStorage.setItem(T.UI_KEY,JSON.stringify(ui));
  const other='{"reflection":"An existing Citizen Connect note"}';w.localStorage.setItem('citizen-premium-hybrid-demo-v1',other);
  if(blocked)Object.defineProperty(w,'localStorage',{get(){throw Error('Blocked storage');}});
- for(const name of ['rallypoint-today.js','rallypoint-ui.js','rallypoint-memorize.js','rallypoint-verseplay-ui.js','rallypoint-premium-alive.js','rallypoint.js'])w.eval(fs.readFileSync(path.join(root,name),'utf8'));
+ w.structuredClone=structuredClone;
+  w.eval(makeChatDomainBundle());
+  for(const name of ['rallypoint-today.js','rallypoint-ui.js','rallypoint-memorize.js','rallypoint-verseplay-ui.js','rallypoint-premium-alive.js','rallypoint-group-view.js','rallypoint-storage-guard.js','wednesday-chat-lab.js','rallypoint.js'])w.eval(fs.readFileSync(path.join(root,name),'utf8'));
  const click=selector=>{const el=d.querySelector(selector);assert.ok(el,selector);el.click();};
  const type=(id,value)=>{const el=d.getElementById(id);assert.ok(el,id);el.value=value;el.dispatchEvent(new w.Event('input',{bubbles:true}));};
  return {w,d,click,type,action:a=>click('[data-action="'+a+'"]'),go:v=>click('#nav [data-go="'+v+'"]'),saved:()=>JSON.parse(w.localStorage.getItem(key)),ui:()=>JSON.parse(w.localStorage.getItem(T.UI_KEY)),text:()=>d.getElementById('view').textContent,other};
