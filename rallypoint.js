@@ -428,6 +428,13 @@ if(s.view==='group'&&s.groupPane==='chat'&&todayUI.memberships.group&&$('rpx-cha
         organizationId:'citizen_demo',groupId:'wed'},action
     }).allowed===true;
     Chat.mount(root,{authorize});
+    // A view visit is a read event even before a second chat rerender.
+    // The shared adapter preserves draft/reply fields and refuses malformed storage.
+    if(authorize('read')){
+      window.RallyConversationRead?.markRead({
+        storage:localStorage,domain:Domain,member:todayUI.memberships.group
+      });
+    }
   }else{
     const note=root.querySelector('#lab-error');
     if(note){note.hidden=false;note.textContent='The new fictional conversation could not load. Your earlier saved messages remain available below.';}
