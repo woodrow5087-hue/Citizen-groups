@@ -510,7 +510,7 @@ if(a==='rhythm-save'){
  const text=$('rhythm-input')?.value.trim().slice(0,160)||'';
  if(!text){notify('Choose one small action before saving.');return;}
  const now=new Date(),next=new Date(now);
- next.setDate(next.getDate()+1);next.setHours(8,0,0,0);
+ next.setDate(next.getDate()+1);next.setHours(0,0,0,0);
  s.rhythm={text,passage:currentReading().passage,savedAt:now.toISOString(),followUpAt:next.toISOString(),completedAt:null};
  delete drafts['rhythm-input'];
  render();notify('Your step is saved locally for tomorrow.');return;
@@ -529,7 +529,7 @@ if(a==='rhythm-complete'){
 if(a==='rhythm-defer'){
  if(typeof s.rhythm?.text!=='string'||!s.rhythm.text.trim()||s.rhythm.completedAt)return;
  if(!Number.isFinite(Date.parse(s.rhythm.followUpAt))||Date.parse(s.rhythm.followUpAt)>Date.now())return;
- const now=new Date(),next=new Date(now);next.setDate(next.getDate()+1);next.setHours(8,0,0,0);
+ const now=new Date(),next=new Date(now);next.setDate(next.getDate()+1);next.setHours(0,0,0,0);
  s.rhythm.followUpAt=next.toISOString();render();notify('Your step will reappear next time you open Rally Point tomorrow.');return;
 }
 if(a==='companion-snooze'){
