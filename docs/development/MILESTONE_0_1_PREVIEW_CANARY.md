@@ -37,6 +37,12 @@ Docs:
 
 **Privacy:** Branch deploy URLs can be indexed; don't put real people, confidential content, tokens or member records in these builds. Preview protection may require Netlify site settings.
 
+## Site-owner configuration confirmation / retrigger
+
+On November 21, 2026, the Netlify site owner reported that the `rally-point/develop` branch-deploy setting had been updated. This is **owner-reported configuration**, not a verified successful Deploy Preview. The original GitHub Actions [run #44945286190](https://github.com/woodrow5087-hue/Citizen-groups/actions/runs/44945286190) completed successfully across unit, build, Chromium/axe, onboarding and Blank Battle checks.
+
+This documentation-only canary update intentionally triggers a new PR event **after** the branch setting change to test whether Netlify now creates an actual PR preview. Do not mark the Netlify gate passed until the URL appears as a genuine GitHub/Netlify deploy record and renders the expected app. No application files or production targets are modified.
+
 ## Completion gate (human review)
 
 Mark Milestone 0.1 complete **only** after both direct GitHub CI and an actual Netlify preview are verified. Document the PR number, SHA, run result and URL. If Netlify access/configuration is unavailable, label the preview gate **BLOCKED**, not passed.
