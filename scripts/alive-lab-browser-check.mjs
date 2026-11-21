@@ -46,15 +46,24 @@ try{
     assert.ok(dimensions.scrollWidth<=width+2,'No horizontal overflow');
     if(width===390||width===1280){
       await page.screenshot({path:path.join(out,'alive-today-'+width+'.png'),animations:'disabled'});
+      if(width===390){
+        await page.locator('.rhythm-scripture').scrollIntoViewIfNeeded();
+        await page.screenshot({path:path.join(out,'alive-rhythm-390.png'),animations:'disabled'});
+      }
       const accessibility=await new AxeBuilder({page}).withTags(['wcag2a','wcag2aa','wcag21aa']).analyze();
       assert.deepEqual(accessibility.violations.map(v=>({rule:v.id,nodes:v.nodes.map(n=>n.target)})),[],'A11y Today '+width);
     }
     await page.locator('.feature-photo-card').click();
     await page.locator('#view-groups').waitFor({state:'visible'});
+    if(width===390)await page.screenshot({path:path.join(out,'alive-groups-hero-390.png'),animations:'disabled'});
     await page.locator('.rsvp-button').click();
     assert.ok((await page.locator('#rsvp-label').textContent()).includes('on the list'),'RSVP updates');
     await page.locator('[data-action="group-tab"][data-value="explore"]').click();
     assert.ok(await page.locator('#group-explore').isVisible(),'Explore is interactive');
+    if(width===390){
+      await page.locator('.explore-card').first().scrollIntoViewIfNeeded();
+      await page.screenshot({path:path.join(out,'alive-groups-explore-390.png'),animations:'disabled'});
+    }
     await page.locator('[data-action="group-tab"][data-value="mine"]').click();
     await page.locator('.rsvp-button').scrollIntoViewIfNeeded();
     if(width===390){
