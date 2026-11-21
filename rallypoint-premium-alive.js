@@ -32,6 +32,40 @@
       '<span class="pa-hero-bottom">'+(hasGroup?'WEDNESDAY GROUP · OPEN CONVERSATION':'FIND YOUR PEOPLE · EXPLORE GROUPS')+' <span aria-hidden="true">↗</span></span>'+
       '</button>';
   }
+  const escapeNote=value=>String(value??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+  const rhythmData=s=>{
+    const v=s?.rhythm;
+    return v&&typeof v==='object'&&!Array.isArray(v)&&typeof v.text==='string'?v:null;
+  };
+  function rhythmEditor(s,plan){
+    const item=rhythmData(s),note=item?.text||'';
+    return '<div class="pa-rhythm-editor" aria-label="Carry the reading into your week">'+
+      '<div class="pa-rhythm-overline">SUNDAY → EVERYDAY · YOUR NEXT STEP</div>'+
+      '<h3>Take it into the week.</h3><p>Based on '+escapeNote(plan.passage)+', name one small, meaningful action you could take.</p>'+
+      '<label for="rhythm-input">One thing I want to do</label>'+
+      '<textarea id="rhythm-input" rows="2" maxlength="160" placeholder="Example: Encourage someone in my group…">'+escapeNote(note)+'</textarea>'+
+      '<div class="pa-rhythm-editor-actions"><button type="button" data-action="rhythm-save" class="pa-rhythm-save">'+(note?'Update my step':'Save for tomorrow')+'</button>'+
+      (note?'<button type="button" data-action="rhythm-clear" class="pa-rhythm-remove">Clear</button>':'')+'</div>'+
+      '<p class="pa-rhythm-privacy">This fictional demo keeps your note on this device only. It will reappear when you open Rally Point tomorrow. No notifications are sent.</p>'+
+      '</div>';
+  }
+  function rhythmFollowup(s,now=new Date()){
+    const item=rhythmData(s);
+    if(!item?.text)return '';
+    const due=Number.isFinite(Date.parse(item.followUpAt))&&Date.parse(item.followUpAt)<=now.getTime();
+    const done=!!item.completedAt;
+    const label=done?'YOU FOLLOWED THROUGH':due?'YOUR STEP FOR TODAY':'A SMALL STEP FOR TOMORROW';
+    const buttons=done?
+      '<button type="button" data-go="read" data-reading="questions" class="pa-rhythm-link">Choose another step ↗</button>':
+      due?'<div class="pa-rhythm-buttons"><button type="button" data-action="rhythm-complete" class="pa-rhythm-complete">I did it ✓</button>'+
+        '<button type="button" data-action="rhythm-defer" class="pa-rhythm-defer">Tomorrow instead</button></div>':
+      '<button type="button" data-go="read" data-reading="questions" class="pa-rhythm-link">Edit my step ↗</button>';
+    return '<div class="pa-rhythm-followup" aria-label="Your private Scripture follow-through">'+
+      '<div class="pa-rhythm-small-head"><span aria-hidden="true">✳</span>'+label+'</div>'+
+      '<p class="pa-rhythm-note">'+escapeNote(item.text.slice(0,160))+'</p>'+
+      '<small>From '+escapeNote(item.passage||'your reading')+' · private local demo</small>'+
+      buttons+'</div>';
+  }
   function todayPrompt(s,ui){
     let overline='YOUR COMPANION · TODAY',title='',desc='',action='',dest='',pane='',intent='';
     // A care suggestion is based on a real source *within the fictional local fixture*.
@@ -68,12 +102,12 @@
       '<div class="pa-companion-top"><span class="pa-pulse" aria-hidden="true"></span>'+overline+'<button type="button" class="pa-companion-more" data-action="quick-actions" title="More ways to connect" aria-label="Open companion quick actions">✳</button></div>'+
       '<h2>'+title+'</h2><p>'+desc+'</p>'+
       '<button type="button" class="pa-companion-link" '+primary+'>'+action+' <span aria-hidden="true">↗</span></button>'+
-      skip+memory+
+      skip+memory+rhythmFollowup(s)+
       '</section>';
   }
   function groupSummary(){
     return '<button type="button" class="pa-group-summary" data-go="group" data-pane="gather" aria-label="View next fictional Wednesday Group gathering">'+
       '<span class="pa-summary-mark" aria-hidden="true">♧</span><span class="pa-summary-body"><strong>Wednesday Group</strong><small>8 fictional members · Next gathering Wednesday at 6:30 PM</small></span><span class="pa-summary-arrow" aria-hidden="true">›</span></button>';
   }
-  window.RallyHybrid=Object.freeze({peopleRail,todayHero,todayPrompt,groupSummary});
+  window.RallyHybrid=Object.freeze({peopleRail,todayHero,todayPrompt,groupSummary,rhythmEditor,rhythmFollowup});
 })();
