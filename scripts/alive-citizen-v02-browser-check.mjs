@@ -30,6 +30,8 @@ try{
     await page.goto(url,{waitUntil:'domcontentloaded'});
     await page.locator('#citizen-campus-button').waitFor({state:'visible'});
     await page.evaluate(()=>document.fonts.ready);
+    // Give external campus photography and lazy-loaded cards a paint cycle.
+    await page.waitForTimeout(1300);
     const metrics=await page.evaluate(()=>({
       viewport:innerWidth,scrollWidth:document.documentElement.scrollWidth,
       rings:document.querySelectorAll('.story-item').length,
@@ -43,10 +45,13 @@ try{
     if(width===390){
       await page.screenshot({path:path.join(out,'citizen-today-390.png'),animations:'disabled'});
       await page.locator('.citizen-week').scrollIntoViewIfNeeded();
+      await page.waitForTimeout(750);
       await page.screenshot({path:path.join(out,'citizen-sunday-recap-390.png'),animations:'disabled'});
       await page.locator('.citizen-local').scrollIntoViewIfNeeded();
+      await page.waitForTimeout(750);
       await page.screenshot({path:path.join(out,'citizen-campuses-390.png'),animations:'disabled'});
       await page.locator('.citizen-upcoming').scrollIntoViewIfNeeded();
+      await page.waitForTimeout(750);
       await page.screenshot({path:path.join(out,'citizen-upcoming-390.png'),animations:'disabled'});
       const a11y=await new AxeBuilder({page}).withTags(['wcag2a','wcag2aa','wcag21aa']).analyze();
       assert.deepEqual(a11y.violations.map(v=>({rule:v.id,nodes:v.nodes.map(n=>n.target)})),[],'Today accessibility');
@@ -72,7 +77,9 @@ try{
       assert.deepEqual(axe.violations.map(v=>({rule:v.id,nodes:v.nodes.map(n=>n.target)})),[],'Groups accessibility');
     }
     results.push({viewport:width+'x'+height,passed:true,metrics});
-    console.log('ALIVE × Citizen '+width+'x'+height+' PASS, public images '+metrics.officialImages.filter(x=>x.loaded).length+'/'+metrics.officialImages.length);
+    const photoStatus=await page.evaluate(()=>[...document.querySelectorAll('.citizen-week img,.citizen-campus-cards img,.citizen-outreach-row img')].map(x=>({loaded:x.complete&&x.naturalWidth>0,src:x.currentSrc.slice(0,90)})));
+    results[results.length-1].photoStatus=photoStatus;
+    console.log('ALIVE × Citizen '+width+'x'+height+' PASS, public images after scroll '+photoStatus.filter(x=>x.loaded).length+'/'+photoStatus.length);
     await context.close();
   }
   fs.writeFileSync(path.join(out,'report.json'),JSON.stringify({passed:true,results},null,2)+'\n');
