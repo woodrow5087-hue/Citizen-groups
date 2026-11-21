@@ -61,7 +61,16 @@ async function capture(browser,base,spec){
         const section=(view==='groups'||view==='leader')?'group':view==='play'?'read':view;
         await page.locator('#nav [data-go="'+section+'"]').click();
       }
-      if(view==='play')await page.locator('.rp-game-entry-play').click();
+      if(view==='play'){
+        await page.locator('.rp-game-entry-play').click();
+        // Blank Battle loads its CSS inside a ShadowRoot. document.fonts.ready
+        // alone does not guarantee that the nested stylesheet has finished.
+        await page.waitForFunction(()=>{
+          const shadow=document.getElementById('rp-blankbattle-host')?.shadowRoot;
+          const style=shadow?.querySelector('link[rel="stylesheet"]');
+          return Boolean(style?.sheet) && shadow.querySelectorAll('.bb-slot').length===5;
+        });
+      }
       if(view==='leader'){
         await page.locator('.profile-avatar').click();
         await page.locator('#role').click();
