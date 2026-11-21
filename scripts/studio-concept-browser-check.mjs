@@ -53,6 +53,13 @@ try{
    await page.reload({waitUntil:'domcontentloaded'});
    await page.locator('.phone-slot.is-mobile-active .top-avatar').click();
    assert.match(await page.locator('.phone-slot.is-mobile-active').innerText(),/1 follow-up to review/);
+   await page.locator('.phone-slot.is-mobile-active .phone-bottom [data-view="read"]').click();
+   assert.ok(await page.locator('.phone-slot.is-mobile-active .reading-plan-hero').isVisible(),'approved Read plan hero');
+   await page.screenshot({path:path.join(out,'studio-concept-read-mobile.png'),fullPage:true});
+   await page.locator('.phone-slot.is-mobile-active [data-action="readpane"][data-pane="study"]').click();
+   assert.ok(await page.locator('.phone-slot.is-mobile-active [data-action="game"]').isVisible(),'game linked from Study');
+   await page.locator('.phone-slot.is-mobile-active [data-action="readpane"][data-pane="discuss"]').click();
+   assert.match(await page.locator('.phone-slot.is-mobile-active').innerText(),/What does love look like/);
   }else{
    assert.equal(await page.locator('.phone-slot:visible').count(),4);
    assert.equal(await page.locator('.proposal-heading').isVisible(),false,'the approved four-phone board is the presentation');
