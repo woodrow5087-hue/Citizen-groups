@@ -148,7 +148,13 @@
   font-size:9px;font-weight:950;letter-spacing:.1em;
 }
 .premium-alive .pa-pulse{width:8px;height:8px;border-radius:50%;background:#E3002B}
-.premium-alive .pa-companion-mark{margin-left:auto;font-size:22px;color:#E3002B}
+.premium-alive .pa-companion-more{
+  margin-left:auto;flex:none;display:grid;place-items:center;width:44px;height:44px;
+  min-width:44px;min-height:44px;padding:0;border:0;border-radius:14px;
+  background:#FFF2E3;color:#E3002B;font-size:25px;font-weight:900;
+  box-shadow:inset 0 0 0 1px #DABFB0;
+}
+.premium-alive .pa-companion-more:focus-visible{outline:3px solid #242322;outline-offset:2px}
 .premium-alive .pa-companion h2{
   color:#242322;font-size:clamp(24px,6vw,30px);
   line-height:1.06;letter-spacing:-.068em;margin:11px 0 7px;font-weight:950;
