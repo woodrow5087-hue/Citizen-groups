@@ -13,7 +13,7 @@ if(!['solo','pass'].includes(s.memoryMode))s.memoryMode='solo';
 if(!['sermon','study','year','romans'].includes(s.memoryActive))s.memoryActive=null;
 if(![1,2].includes(s.memoryPassTurn))s.memoryPassTurn=1;
 if(!Number.isInteger(s.memoryTarget)||s.memoryTarget<0||s.memoryTarget>4)s.memoryTarget=null;
-const T=window.RallyToday,U=window.RallyUI,M=window.RallyMemory,VP=window.RallyVersePlay,H=window.RallyHybrid,G=window.RallyGroupView,icon=U.icon;
+const T=window.RallyToday,U=window.RallyUI,M=window.RallyMemory,VP=window.RallyVersePlay,H=window.RallyHybrid,G=window.RallyGroupView,GX=window.RallyGroupExperience,icon=U.icon;
 // Old KJV rounds cannot be carried into a new translation: preserve all other demo data.
 if(s.memoryTextRevision!==M.textRevision){s.memoryGames={};s.memoryTextRevision=M.textRevision;s.memoryTarget=null;}
 const storageGuard=window.RallyStorageGuard.create({getItem:k=>localStorage.getItem(k),setItem:(k,v)=>localStorage.setItem(k,v),removeItem:k=>localStorage.removeItem(k)});
@@ -197,6 +197,28 @@ function groupBrowse(){
   ${footer()}
 </section>`;
 }
+function connectedGroup(){
+  // A projection, never an extra inbox, attendance source, or read receipt.
+  const x=GX.snapshot(s,todayUI.memberships.group,conversation());
+  if(!x.visible)return '';
+  const route=(pane,kind,title,detail)=>`<button type="button" class="group-pulse-route" data-action="pane" data-area="group" data-value="${pane}" aria-label="Open ${e(kind)}: ${e(detail)}">
+    <span class="group-pulse-route-kind">${e(kind)}</span><strong>${e(title)}</strong><small>${e(detail)}</small><span class="group-pulse-route-arrow" aria-hidden="true">↗</span>
+  </button>`;
+  return `<section class="group-pulse" aria-label="Your Wednesday Group at a glance">
+    <div class="group-pulse-top"><span>YOUR GROUP, TOGETHER.</span><span>LIVE FROM LOCAL SAMPLE DATA</span></div>
+    <button type="button" class="group-pulse-feature" data-action="pane" data-area="group" data-value="${x.focus.pane}">
+      <span class="group-pulse-eyebrow">${e(x.focus.eyebrow)}</span>
+      <strong>${e(x.focus.title)}</strong><span class="group-pulse-detail">${e(x.focus.detail)}</span>
+      <span class="group-pulse-feature-cta">${e(x.focus.action)} <span aria-hidden="true">↗</span></span>
+    </button>
+    <div class="group-pulse-routes" role="group" aria-label="Jump to group activity">
+      ${route('chat','CONVERSATION',x.messageLabel,x.status==='unavailable'?'Earlier notes preserved':'Modern group thread')}
+      ${route('gather','GATHERING',x.rsvpLabel,wed()+' · 6:30 PM')}
+      ${route('prayer','PRAYER',x.prayerCount+' saved sample '+(x.prayerCount===1?'request':'requests'),'Support your people')}
+      ${route('people','PEOPLE','8 fictional members','Find someone to encourage')}
+    </div>
+  </section>`;
+}
 function group(){
 if(!todayUI.memberships.group)return groupBrowse();
 if(s.discover)return groupBrowse();
@@ -215,6 +237,7 @@ if(s.groupPane==='people')body=`<div class="card group-people-card">
       <button type="button" class="group-member-message" data-action="message-person" data-person="${member.id}" aria-label="Open sample direct conversation with ${e(member.name)}">${icon('message')}<span>Message</span></button>
     </div>`).join('')}
   </div>
+  <button type="button" class="group-people-chat-link" data-action="pane" data-area="group" data-value="chat">Open your group conversation ${icon('arrow')}</button>
   <p class="fine-note">Profiles and direct messages here are fictional browser-only data. No messages leave your device.</p>
 </div>`;
 if(s.groupPane==='direct'){
@@ -232,8 +255,8 @@ if(s.groupPane==='direct'){
     <button type="button" class="text-button group-back" data-action="pane" data-area="group" data-value="people">← Back to people</button>
   </div>`;
 }
-if(s.groupPane==='gather')body=`<div class="card"><div class="kicker">NEXT GROUP GATHERING</div><h3>${wed()} · 6:30 PM</h3><p>${e(currentReading().passage)} · ${e(s.question)}</p><div class="actions"><button class="btn ${s.rsvp==='going'?'chosen':'outline'}" data-action="rsvp" data-value="going">I'm going</button><button class="btn ${s.rsvp==='maybe'?'chosen':'outline'}" data-action="rsvp" data-value="maybe">Maybe</button></div></div><div class="card"><h3>Connected beyond the semester.</h3><p>Continuity is a proposed model, not an approved policy. Groups may continue through breaks, subject to church leadership decisions.</p></div>`;
-if(s.groupPane==='prayer')body=`<div class="card"><h3>Pray for one another.</h3><p>Use fictional examples here—do not enter private real requests into this demo.</p>${prayerList()}${compose('prayer','Add a sample prayer request','What can your group pray about?')}</div>`;
+if(s.groupPane==='gather')body=`<div class="card"><div class="kicker">NEXT GROUP GATHERING · SAMPLE</div><h3>${wed()} · 6:30 PM</h3><p>${e(currentReading().passage)} · ${e(s.question)}</p><p class="group-gather-rsvp" role="status">${s.rsvp==='going'?'You’re going · saved on this device':s.rsvp==='maybe'?'Maybe · saved on this device':'Your response is still open'}</p><div class="actions"><button class="btn ${s.rsvp==='going'?'chosen':'outline'}" data-action="rsvp" data-value="going" aria-pressed="${s.rsvp==='going'}">I'm going</button><button class="btn ${s.rsvp==='maybe'?'chosen':'outline'}" data-action="rsvp" data-value="maybe" aria-pressed="${s.rsvp==='maybe'}">Maybe</button></div><div class="group-gather-next"><span>STAY CONNECTED</span><button type="button" data-action="pane" data-area="group" data-value="chat">Talk with your group ${icon('arrow')}</button><button type="button" data-go="read" data-reading="scripture">Read ${e(currentReading().passage)} ${icon('arrow')}</button></div></div><div class="card"><h3>Connected beyond the semester.</h3><p>Continuity is a proposed model, not an approved policy. Groups may continue through breaks, subject to church leadership decisions.</p></div>`;
+if(s.groupPane==='prayer')body=`<div class="card"><div class="kicker">PEOPLE BEFORE POSTS · LOCAL DEMO</div><h3>Pray for one another.</h3><p>Use fictional examples here—do not enter private real requests into this demo.</p>${prayerList()}${compose('prayer','Add a sample prayer request','What can your group pray about?')}<div class="group-prayer-next"><span>CONTINUE THE CONVERSATION</span><button type="button" data-action="pane" data-area="group" data-value="people">Check in with someone ${icon('arrow')}</button></div></div>`;
 if(s.groupPane==='leader')body=lead();
 return `<section class="group-screen-v07">
   <div class="group-community-hero">
@@ -249,6 +272,7 @@ return `<section class="group-screen-v07">
   </div>
   ${H.peopleRail(todayUI,'group')}
   ${H.groupSummary()}
+  ${connectedGroup()}
   ${tabs('group',opts,s.groupPane)}${body}${footer()}
 </section>`;
 }
@@ -411,7 +435,12 @@ document.querySelector('.phone-inner').classList.toggle('is-fluid-today',s.view=
  document.querySelector('.phone-inner').classList.toggle('is-team-v08',s.view==='team');
  document.querySelector('.phone-inner').classList.toggle('is-read-v09',s.view==='read'||s.view==='play');
  document.querySelector('.phone-inner').classList.toggle('is-play-v08',s.view==='play');
- view.innerHTML=(storageWarning?`<p class="storage-notice" role="status">${e(storageWarning)}</p>`:'')+(s.view==='today'?today():s.view==='group'?group():s.view==='team'?team():s.view==='play'?play():read());
+ // Opening the actual thread advances its cursor before the shared overview is drawn.
+// Today and other Group panes remain strictly read-only; malformed snapshots are refused.
+if(s.view==='group'&&s.groupPane==='chat'&&todayUI.memberships.group){
+  try{window.RallyConversationRead?.markRead({storage:localStorage,domain:window.RallyChatDomain,member:true});}catch(_){}
+}
+view.innerHTML=(storageWarning?`<p class="storage-notice" role="status">${e(storageWarning)}</p>`:'')+(s.view==='today'?today():s.view==='group'?group():s.view==='team'?team():s.view==='play'?play():read());
 if(s.view==='play')mountBlankBattle();
 view.querySelectorAll('textarea').forEach(field=>{if(drafts[field.id]!==undefined)field.value=drafts[field.id]});
 if(s.view==='group'&&s.groupPane==='chat'&&todayUI.memberships.group&&$('rpx-chat')){

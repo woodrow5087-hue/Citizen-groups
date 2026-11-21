@@ -522,3 +522,88 @@
   .is-groups-v07 .group-discovery-card-head{gap:5px}
   .is-groups-v07 .group-discovery-category{font-size:8px;padding:7px 9px}
 }
+
+/* F-07 connected-group activity: a single local-state projection, not new data storage.
+   Preserve the approved matte Citizen red / cream / charcoal palette. */
+.is-groups-v07 .group-pulse{
+ margin:0 0 14px;min-width:0;color:#F3E5D6;
+}
+.is-groups-v07 .group-pulse-top{
+ display:flex;justify-content:space-between;gap:10px;align-items:center;
+ padding:2px 2px 9px;
+ color:#F8E6D9;font-size:9px;font-weight:900;letter-spacing:.09em;
+}
+.is-groups-v07 .group-pulse-top span:last-child{color:#D5AFA4;font-size:8px;text-align:right}
+.is-groups-v07 .group-pulse-feature{
+ position:relative;isolation:isolate;overflow:hidden;
+ width:100%;min-height:130px;
+ display:flex;flex-direction:column;align-items:flex-start;text-align:left;
+ gap:7px;padding:18px 20px 17px;
+ border:1.5px solid #FFE7DB;border-radius:25px;
+ background:#F3E5D6;color:#242322;
+}
+.is-groups-v07 .group-pulse-feature::after{
+ content:"";position:absolute;z-index:-1;pointer-events:none;
+ right:-42px;top:-82px;width:180px;height:180px;
+ background:#EBB8AA;transform:rotate(-24deg);border-radius:45%;
+ opacity:.42;
+}
+.is-groups-v07 .group-pulse-eyebrow{
+ display:block;color:#AA0025;font-weight:900;letter-spacing:.11em;font-size:9px;
+}
+.is-groups-v07 .group-pulse-feature>strong{
+ display:block;max-width:290px;font-size:clamp(23px,6.3vw,30px);
+ font-weight:950;line-height:1.03;letter-spacing:-.055em;
+}
+.is-groups-v07 .group-pulse-detail{
+ display:block;max-width:340px;font-size:11px;line-height:1.4;color:#5C4B45;
+}
+.is-groups-v07 .group-pulse-feature-cta{
+ display:flex;gap:12px;align-items:center;min-height:32px;
+ margin-top:4px;font-size:11px;color:#AB0025;font-weight:900;
+}
+.is-groups-v07 .group-pulse-feature-cta span{
+ width:28px;height:28px;border-radius:50%;
+ display:grid;place-items:center;background:#E3002B;color:#FFFFFF;font-size:17px;
+}
+.is-groups-v07 .group-pulse-routes{
+ display:grid;grid-template-columns:repeat(2,minmax(0,1fr));
+ gap:8px;margin-top:10px;
+}
+.is-groups-v07 .group-pulse-route{
+ display:flex;flex-direction:column;align-items:flex-start;text-align:left;
+ position:relative;min-width:0;min-height:86px;gap:5px;padding:12px 27px 12px 13px;
+ color:#F3E5D6;background:#3C3636;border:1px solid #665A56;border-radius:18px;
+}
+.is-groups-v07 .group-pulse-route:nth-child(2){background:#E3002B;color:#FFFFFF;border-color:#F04B68}
+.is-groups-v07 .group-pulse-route:nth-child(2) .group-pulse-route-kind,
+.is-groups-v07 .group-pulse-route:nth-child(2) small{opacity:1;color:#FFFFFF}
+.is-groups-v07 .group-pulse-route-kind{font-size:8px;font-weight:900;letter-spacing:.12em;opacity:.78}
+.is-groups-v07 .group-pulse-route strong{font-size:13px;font-weight:900;line-height:1.14;overflow-wrap:anywhere}
+.is-groups-v07 .group-pulse-route small{font-size:9px;line-height:1.25;opacity:.85}
+.is-groups-v07 .group-pulse-route-arrow{position:absolute;right:11px;top:10px;font-size:14px}
+.is-groups-v07 .group-gather-rsvp{
+ font-weight:850;color:#960021!important;
+ background:#FFECE8;border-radius:12px;padding:10px 12px;
+}
+.is-groups-v07 .group-gather-next,.is-groups-v07 .group-prayer-next{
+ display:grid;gap:7px;margin-top:18px;padding-top:15px;border-top:1px solid #C6B1A4;
+}
+.is-groups-v07 .group-gather-next>span,.is-groups-v07 .group-prayer-next>span{
+ color:#9C0022;font-size:9px;font-weight:900;letter-spacing:.13em;
+}
+.is-groups-v07 .group-gather-next button,.is-groups-v07 .group-prayer-next button,.is-groups-v07 .group-people-chat-link{
+ width:100%;min-height:44px;display:flex;align-items:center;justify-content:space-between;
+ padding:10px 13px;border:1px solid #352B29;border-radius:14px;
+ background:#2D2928;color:#FFFFFF;font-size:11px;font-weight:850;text-align:left;
+}
+.is-groups-v07 .group-gather-next button .icon,.is-groups-v07 .group-prayer-next button .icon,.is-groups-v07 .group-people-chat-link .icon{width:17px;height:17px}
+@media(max-width:350px){
+ .is-groups-v07 .group-pulse-feature{padding:15px 16px}
+ .is-groups-v07 .group-pulse-route{padding:11px 23px 11px 10px;min-height:91px}
+ .is-groups-v07 .group-pulse-route strong{font-size:12px}
+ .is-groups-v07 .group-pulse-top span:last-child{font-size:7px}
+}
+@media(prefers-reduced-motion:reduce){
+ .is-groups-v07 .group-pulse *{transition:none!important;animation:none!important}
+}

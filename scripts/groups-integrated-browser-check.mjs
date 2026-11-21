@@ -46,6 +46,8 @@ try{
    await p.goto(base);
    await p.locator('#nav [data-go="group"]').click();
    await p.locator('#rpx-chat [data-message-id="seed_jess"]').waitFor();
+   assert.equal(await p.locator('.group-pulse-route').count(),4,'F-07 routes visible at '+width);
+   assert.ok((await p.locator('.group-pulse-route[data-value="chat"]').textContent()).includes('caught up'),'opening conversation clears shared cursor');
    assert.equal(await p.locator('#nav button').count(),4,'original tabs retained');
    assert.equal(await p.locator('.rpx-legacy-records .message').count(),2,'old records stay visible');
    assert.ok((await p.locator('.rpx-legacy-records').textContent()).toLowerCase().includes('unknown historical dates'));
@@ -120,6 +122,29 @@ try{
  assert.equal(await page.locator('#rpx-chat .message-row').count(),6,'modern messages survive reload');
  assert.equal(await page.locator('.rpx-legacy-records .message').count(),3,'old messages survive reload');
  assert.equal(await heart.getAttribute('aria-pressed'),'true','reaction survives reload');
+ // F-07: complete a connected group loop without touching modern messages or legacy archive.
+ await page.locator('.group-pulse-route[data-value="gather"]').click();
+ assert.ok((await page.locator('.group-gather-rsvp').textContent()).includes('still open'));
+ await page.locator('[data-action="rsvp"][data-value="going"]').click();
+ assert.ok((await page.locator('.group-pulse-route[data-value="gather"]').textContent()).includes('Going'));
+ await page.locator('.group-pulse-route[data-value="prayer"]').click();
+ await page.locator('#prayer-input').fill('A fictional prayer from connected Groups.');
+ await page.locator('[data-action="send"][data-value="prayer"]').click();
+ assert.ok((await page.locator('.group-pulse-route[data-value="prayer"]').textContent()).includes('1 saved sample request'));
+ await page.locator('.group-prayer-next button').click();
+ await page.locator('.group-member-message[data-person="anna"]').click();
+ await page.locator('#direct-input').fill('Local only; no delivery.');
+ await page.locator('[data-action="send"][data-value="direct"]').click();
+ await page.locator('.group-pulse-route[data-value="chat"]').click();
+ assert.equal(await page.locator('#rpx-chat .message-row').count(),6);
+ const afterJourney=await storage(page);
+ assert.deepEqual(JSON.parse(afterJourney.primary).groupMessages,
+   JSON.parse(afterLegacy.primary).groupMessages,'F-07 leaves legacy messages unchanged');
+ assert.equal(JSON.parse(afterJourney.primary).rsvp,'going');
+ assert.equal(JSON.parse(afterJourney.primary).prayers.at(-1).text,'A fictional prayer from connected Groups.');
+ assert.equal(JSON.parse(afterJourney.primary).directMessages.anna.at(-1).text,'Local only; no delivery.');
+ assert.deepEqual(JSON.parse(afterJourney.chat).snapshot.messages,
+   JSON.parse(afterLegacy.chat).snapshot.messages,'F-07 never migrates/rewrites modern messages');
  await page.screenshot({path:path.join(results,'full-journey-390.png'),fullPage:false});
  assert.deepEqual(errors,[],'full conversation journey browser errors');
  await ctx.close();
