@@ -1,6 +1,6 @@
 # Rally Point — 14 Approved Decisions & Recommended Implementation Roadmap
 **Audit review finalized:** November 21, 2026  
-**Decision status:** 14/14 owner-approved, all Option B; **none implemented**  
+**Decision status:** 14/14 owner-approved, all Option B. **Execution status (November 21, 2026):** Stage 0 is partially implemented; see the [decision register](DECISION_REGISTER.md) for the live evidence and remaining gates.  
 **Roadmap status:** Assistant recommendation for the next implementation authorization; the sequencing below is **not itself permission to build, merge or deploy**.  
 **Audit source:** [01 Current Application Map](01_CURRENT_APPLICATION_MAP.md) · [02 Visual Gap Matrix](02_DESIGN_GAP_MATRIX.md) · [03 Ranked Foundation Backlog](03_RANKED_FOUNDATION_BACKLOG.md) · [Official Decision Register](DECISION_REGISTER.md)
 
@@ -126,4 +126,4 @@ Only if all relevant gates of `config/rallypoint-v10-readiness.json` independent
 - Final public product name, branding/licensing and any eventual commercial rights.
 - Review and explicit authorization of **each** future code-delivery slice, beginning with Stage 0.
 
-**At the close of the audit review:** 14/14 option-B approvals; no application code changes, provider connections, data migrations, production changes or deployments. This file itself is documentation-only on the isolated audit branch.
+**At the close of the decision review:** 14/14 Option-B approvals. After the user authorized starting Stage 0, `rally-point/develop` was created, the GitHub Actions PR target was updated and [draft docs-only canary PR #62](https://github.com/woodrow5087-hue/Citizen-groups/pull/62) was opened; GitHub Actions run #44945286190 triggered. CI and a genuine Netlify preview remain separate acceptance gates. No application JS/CSS/UI, church accounts, member data, production deployment or `main` changed. This roadmap document is documentation-only on the isolated audit branch.
