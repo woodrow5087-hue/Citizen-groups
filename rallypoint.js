@@ -21,6 +21,9 @@ const storageGuard=window.RallyStorageGuard.create({getItem:k=>localStorage.getI
 const $=x=>document.getElementById(x), e=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const save=()=>{const result=storageGuard.save({primaryRaw:JSON.stringify(s),todayRaw:JSON.stringify(todayUI)});storageWarning=result.ok?'':result.reason;};
 const canLead=area=>s.role==='leader'&&!!todayUI.memberships[area];
+// Modern Wednesday messages and Today read the SAME F-02 state. Legacy remains archival.
+const groupPreview=()=>window.RallyWednesdayChat?.preview({authorized:!!todayUI.memberships.group})||
+  {available:false,unreadCount:0,latest:null};
 const pill=(t,light=false)=>`<span class="pill ${light?'light':''}">${e(t)}</span>`;
 const icons={home:'⌂',group:'♙',team:'♡',read:'▤',arrow:'↗'};
 const sampleGroupPeople=[{id:'anna',name:'Anna L.',initials:'AL'},{id:'jess',name:'Jess W.',initials:'JW'},{id:'marcus',name:'Marcus C.',initials:'MC'},{id:'taylor',name:'Taylor D.',initials:'TD'}];
@@ -38,7 +41,7 @@ const prayerList=()=>s.prayers.map(m=>`<div class="message"><div class="avatar">
 const tabs=(area,values,active)=>`<div class="tabs" role="group" aria-label="${area} sections">${values.map(([id,label])=>`<button type="button" data-action="pane" data-area="${area}" data-value="${id}" class="${active===id?'selected':''}">${label}</button>`).join('')}</div>`;
 const compose=(type,title,placeholder)=>`<div class="composer"><label for="${type}-input">${title}</label><textarea id="${type}-input" rows="2" maxlength="700" placeholder="${placeholder}"></textarea><button type="button" class="btn red" data-action="send" data-value="${type}">Post to sample ${type==='group'?'group':type==='team'?'team':type==='direct'?'private demo conversation':'prayer board'} <span>➤</span></button></div>`;
 const lead=()=>`<div class="card"><div class="kicker">LEADER TOOLS · PRIVATE DEMO</div><h3>Record attendance</h3><p>Track actual participation, not whether someone opened the app.</p>${[['anna','Anna L.'],['jess','Jess W.'],['marcus','Marcus C.'],['taylor','Taylor D.']].map(([id,name])=>`<div class="attendance"><strong>${name}</strong><div class="actions">${[['here','Here'],['excused','Excused'],['unknown','Not recorded']].map(([v,label])=>`<button type="button" class="mini ${s.attendance[id]===v?'selected':''}" data-action="attendance" data-person="${id}" data-value="${v}">${label}</button>`).join('')}</div></div>`).join('')}</div><div class="card"><div class="kicker">PEOPLE FIRST</div><h3>Thoughtful check-ins</h3><p>These are fictional scenarios, not judgments about someone's spiritual health.</p>${[['marcus','Marcus C.','Two recent sample gatherings missed'],['taylor','Taylor D.','Signed up but no sample gathering yet']].map(([id,name,reason])=>`<div class="followup"><div>${pill(s.reached.includes(id)?'Reviewed':'Suggested check-in')}<strong>${name}</strong><small>${reason}</small></div><button type="button" class="btn outline" data-action="reached" data-person="${id}">${s.reached.includes(id)?'Undo':'Mark reviewed'}</button></div>`).join('')}</div>`;
-function renderPeople(snapshot){
+function renderPeople(snapshot,conversation){
   if(!todayUI.memberships.group){
     return `<section class="today-people today-people--discover" aria-label="Your people">
       <div class="today-people-content">
@@ -54,10 +57,13 @@ function renderPeople(snapshot){
     </section>`;
   }
   const roster=sampleGroupPeople.map((person,index)=>`<span role="img" aria-label="${e(person.name)}" class="today-people-avatar today-people-avatar--${index+1}">${e(person.initials)}</span>`).join('');
-  const lastMessage=s.groupMessages.length?s.groupMessages[s.groupMessages.length-1]:null;
-  const author=lastMessage?e(lastMessage.name):'Your group';
-  const timestamp=lastMessage?e(lastMessage.time):'Start the conversation';
-  const preview=lastMessage?e(lastMessage.text):'No sample messages yet. Say hello to your group.';
+  const lastMessage=conversation?.available?conversation.latest:null;
+  const author=lastMessage?e(lastMessage.author):'Your group';
+  const timestamp=lastMessage?e(new Date(lastMessage.createdAt).toLocaleDateString('en-US',{month:'short',day:'numeric'})):'';
+  const preview=lastMessage?e(lastMessage.body):conversation?.error
+    ?'Saved conversation unavailable. Your earlier messages are still protected.'
+    :'No new conversation messages yet. Open Groups to say hello.';
+  const unreadCount=conversation?.available?conversation.unreadCount:0;
   return `<section class="today-people" aria-label="Your people">
     <div class="today-people-content">
       <div class="today-people-kicker"><span>YOUR PEOPLE</span><span>${canLead('group')?'LEADER VIEW · DEMO':'YOUR COMMUNITY'}</span></div>
@@ -71,7 +77,7 @@ function renderPeople(snapshot){
         <button type="button" class="today-people-group-link" data-go="group" data-pane="chat" aria-label="Open Wednesday Group">${icon('arrow')}</button>
       </div>
       <button type="button" class="today-people-message ${snapshot.unread?'attention-tile':''}" data-go="group" data-pane="chat" aria-label="Open Wednesday Group conversation">
-        <span class="today-people-message-head">${icon('message')} <span>LATEST CONVERSATION</span><small>${timestamp}</small></span>
+        <span class="today-people-message-head">${icon('message')} <span>LATEST CONVERSATION</span><small>${unreadCount?`${unreadCount} UNREAD · `:''}${timestamp}</small></span>
         <span class="today-people-message-author">${author}</span>
         <span class="today-people-message-text">${preview}</span>
         <span class="today-people-message-action">OPEN CONVERSATION ${icon('arrow')}</span>
@@ -81,7 +87,7 @@ function renderPeople(snapshot){
   </section>`;
 }
 function today(){
-  const snapshot=T.snapshot(s,todayUI),event=snapshot.upNext;
+  const conversation=groupPreview(),snapshot=T.snapshot(s,todayUI,new Date(),conversation),event=snapshot.upNext;
   const campusLabel=({central:'Central',north:'North',maui:'Maui',online:'Online'})[todayUI.campus]||'';
   const day=event?.date.toLocaleDateString('en-US',{weekday:'short'})||'';
   const hour=event?.date.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'})||'';
@@ -126,7 +132,7 @@ function today(){
     ${H.todayHero(todayUI)}
     ${H.peopleRail(todayUI,'today')}
     ${H.todayPrompt(s,todayUI)}
-    ${renderPeople(snapshot)}
+    ${renderPeople(snapshot,conversation)}
     <div class="dashboard-twins" role="group" aria-label="Upcoming gathering and serving">${nextWidget}${teamWidget}</div>
     <div class="today-reading">
       <span class="fluid-read-curve" aria-hidden="true"></span>
@@ -388,7 +394,6 @@ function render(){
 const view=$('view'),position=view.scrollTop;
 view.querySelectorAll('textarea').forEach(field=>{drafts[field.id]=field.value});
 if(!['today','group','team','read','play'].includes(s.view))s.view='today';
-if(s.view==='group'&&todayUI.memberships.group&&['chat','prayer'].includes(s.groupPane))todayUI.seenGroupSignature=T.signature(s);
 if(s.role!=='leader'){if(s.groupPane==='leader')s.groupPane='chat';if(s.teamPane==='leader')s.teamPane='schedule';}
 save();
 const hybridShell=document.querySelector('.phone-inner');
@@ -424,7 +429,7 @@ if(s.view==='group'&&s.groupPane==='chat'&&todayUI.memberships.group&&$('rpx-cha
 $('nav').innerHTML=[['today','Today','home'],['group','Groups','group'],['team','Team','team'],['read','Read','read']].map(([id,label,glyph])=>`<button type="button" class="${s.view===id||(s.view==='play'&&id==='read')?'active':''}" data-go="${id}" ${s.view===id||(s.view==='play'&&id==='read')?'aria-current="page"':''}>${icon(glyph)}<small>${label}</small></button>`).join('');
 
 $('profile-initials').textContent=(todayUI.name||'Jonathan').split(/\s+/).map(v=>v[0]).join('').slice(0,2).toUpperCase();
-const snapshot=T.snapshot(s,todayUI);$('activity-dot').hidden=!snapshot.attention&&!snapshot.leader;
+const snapshot=T.snapshot(s,todayUI,new Date(),groupPreview());$('activity-dot').hidden=!snapshot.attention&&!snapshot.leader;
 view.scrollTop=position;
 }
 function navigate(view,pane,reading){
@@ -433,7 +438,6 @@ s.view=view;
 if(view==='group'){
 s.discover=false;if(pane)s.groupPane=pane;
 if(pane==='leader'&&!(s.role==='leader'&&todayUI.memberships.group))s.groupPane='chat';
-if((pane==='chat'||pane==='prayer'||!pane)&&todayUI.memberships.group)todayUI.seenGroupSignature=T.signature(s);
 }
 if(view==='team'&&pane)s.teamPane=pane;
 render();$('view').scrollTop=0;
@@ -446,7 +450,7 @@ if(restore){if(dialogTrigger?.isConnected)dialogTrigger.focus({preventScroll:tru
 }
 function showDialog(type,trigger=document.activeElement){dialogTrigger=trigger;dialog=type;renderDialog();}
 function renderDialog(){
-let title='',body='';const snapshot=T.snapshot(s,todayUI);
+let title='',body='';const snapshot=T.snapshot(s,todayUI,new Date(),groupPreview());
 if(dialog==='demo-controls'){
 title='Your local preview';body=`<p><strong>Rally Point · Phase 1</strong><br>Fictional people, messages and schedules. No account or integration is connected.</p><form data-form="demo-name" class="rp-stack"><label class="demo-field" for="demo-name">First name for this demo<input id="demo-name" name="name" maxlength="20" value="${e(todayUI.name)}" autocomplete="nickname" required></label><button type="submit" class="btn red">Save local name</button></form><div class="demo-section"><h3>Role preview</h3><button type="button" id="role" class="role" aria-label="Toggle member or leader preview">${s.role==='leader'?'Leader demo · Switch to member':'Member demo · Try leader tools'}</button><p class="fine-note">This grants fixture permissions only for Wednesday Group and Welcome Team when you belong to them. It is not a real account, authority grant or secure backend.</p></div><div class="demo-section"><h3>Try a Today state</h3><div class="rp-stack"><button type="button" class="demo-option" data-action="scenario" data-value="connected"><span>${icon('group')}</span><span><strong>Connected & actionable</strong><small>Group update and a pending serving response.</small></span></button><button type="button" class="demo-option" data-action="scenario" data-value="caught-up"><span>${icon('check')}</span><span><strong>All caught up</strong><small>Acknowledge updates and confirm the sample schedule.</small></span></button><button type="button" class="demo-option" data-action="scenario" data-value="no-memberships"><span>${icon('heart')}</span><span><strong>No group or team yet</strong><small>Welcoming empty state with Scripture and discovery paths.</small></span></button></div><p class="fine-note">Fixture controls change your local sample response and Today memberships. Your messages, prayer posts, RSVP and saved leader/reading choices are kept.</p></div><div class="demo-section"><h3>Welcome experience</h3><a href="?welcome=1" class="activity-item rp-replay-welcome">${icon('arrow')}<span><strong>Replay animated welcome</strong><small>Splash → Welcome → Log In or Campus → your existing Rally Point demo</small></span>${icon('arrow')}</a><p class="fine-note">Replaying onboarding won’t erase saved fictional messages, reading progress or schedule responses. Real sign-in is not connected.</p></div><div class="demo-section"><p class="fine-note">The working name and branding remain provisional. Local browser storage is not secure member storage. Please use fictional content.</p><a href="premium-hybrid-archive.html">Open the preserved Citizen Connect demo</a></div>`;
 }
@@ -477,8 +481,8 @@ if(['notifications','demo-controls','team-preview','quick-actions'].includes(a))
 if(a==='close-dialog'){closeDialog();return}
 if(a==='scenario'){
 todayUI.memberships={group:v!=='no-memberships',team:v!=='no-memberships'};
-if(v==='connected'){s.teamStatus='pending';todayUI.seenGroupSignature='';}
-if(v==='caught-up'){s.teamStatus='confirmed';s.coverage=false;todayUI.seenGroupSignature=T.signature(s);s.teamMessages=s.teamMessages.filter(m=>!m.coverage);}
+if(v==='connected'){s.teamStatus='pending';}
+if(v==='caught-up'){s.teamStatus='confirmed';s.coverage=false;window.RallyWednesdayChat?.acknowledge({authorized:!!todayUI.memberships.group});s.teamMessages=s.teamMessages.filter(m=>!m.coverage);}
 s.view='today';closeDialog(false);render();$('view').scrollTop=0;notify('Local Today fixture updated. No data was sent.');return;
 }
 if(a==='memory-mode'){
@@ -599,6 +603,9 @@ if(a==='read'){s.read=!s.read;render();return}
 if(a==='pray'){s.prayed=!s.prayed;render();return}
 });
 document.addEventListener('click',ev=>{if(ev.target.dataset.dismiss==='dialog')closeDialog();});
+window.addEventListener('storage',event=>{
+ if(event.key==='rallypoint-wednesday-chat-lab-v1'&&s.view==='today'&&!dialog)render();
+});
 document.addEventListener('submit',ev=>{
 if(ev.target.dataset.form!=='demo-name')return;ev.preventDefault();const value=String(new FormData(ev.target).get('name')||'').trim();
 if(!value){notify('Add a first name for this local demo.');return;}todayUI.name=value.slice(0,20);render();closeDialog();notify('Your demo name is saved locally.');
