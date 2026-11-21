@@ -67,5 +67,5 @@ test('v02 is an additive layer; no API, private profiles or implied live church 
   assert.ok(css.includes('.citizen-week'));
   assert.ok(css.includes('.citizen-campus-cards'));
   assert.ok(html.includes('No demo requests are submitted here.'));
-  assert.ok(html.includes('No real-time'));
+  assert.ok(html.includes('not live-synced'));
 });
