@@ -1,6 +1,7 @@
 /* Shared original SVG components. The Citizen mark uses the supplied logo pixels. */
 window.RallyUI=(()=>{
   const paths={
+    plus:'<path d="M12 4v16M4 12h16"/>',
     home:'<path d="m3 10 9-7 9 7v11h-6v-7H9v7H3z"/>',
     group:'<circle cx="12" cy="7" r="3"/><path d="M6 21v-3a6 6 0 0 1 12 0v3M4 5a3 3 0 0 0 0 6m-1 4a5 5 0 0 0-2 4M20 5a3 3 0 0 1 0 6m1 4a5 5 0 0 1 2 4"/>',
     team:'<path d="m12 3 10 5-10 5L2 8zM2 12l10 5 10-5M2 16l10 5 10-5"/>',
