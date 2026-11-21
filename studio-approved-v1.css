@@ -1,0 +1,346 @@
+/* RALLY POINT — Approved Four-Screen Master, Fidelity Pass
+   Authoritative reference: the four-phone board supplied by the user.
+   This overrides styling experiments; it does not introduce a new direction. */
+
+/* The approved artboard is the deliverable. No agency presentation wrapped
+   around it; no dashboard / mockup-only panels competing with the screens. */
+:root{--red:#e3002b;--red2:#f10838;--deep-red:#bd002d;--cream:#fff0df;--paper:#fff0df;--paper2:#f4e1d0;--ink:#242122;--black:#171419}
+html,body{background:#fdf2e6;min-width:320px}
+.proposal-header,.proposal-heading,.concept-guide,.studio-decisions,.studio-footnotes{display:none!important}
+main{max-width:1580px;padding:0 9px 22px;margin:0 auto}
+.studio-gallery{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));column-gap:11px;row-gap:10px;padding:0;max-width:none;margin:0}
+.concept-label{font-size:clamp(14px,1.52vw,24px);letter-spacing:.015em;line-height:1.1;margin:28px 0 26px;color:#191718}
+.concept-label b{font-size:1.03em;color:#c8002b}
+.concept-label:after{content:'';position:absolute;width:68px;height:4px;border-radius:20px;background:#c8002b;transform:translate(0,25px)}
+.phone{max-width:370px;aspect-ratio:.417;min-width:0;box-shadow:inset 0 2px 0 #fff8,0 0 0 1px #1d1b1e,0 9px 18px #1d101025,0 22px 27px #1d101018}
+.phone-viewport{background:#e3002b}
+.phone-viewport .phone-dynamic{height:100%;width:100%}
+.phone-scroller{scrollbar-width:none}
+.phone-top{padding:8px 14px 2px;min-height:49px}
+.phone-logo{gap:9px}
+.phone-logo img{width:31px;height:30px;padding:0;background:#fff;object-fit:contain}
+.phone-logo strong{font-size:13px;letter-spacing:.018em}
+.phone-logo small{font-size:6px;letter-spacing:.18em}
+.phone-top-actions{gap:8px}
+.top-icon{border:0;background:transparent;box-shadow:none;width:30px;height:32px}
+.top-icon svg{height:21px;width:21px}
+.simple-top-icon{font-size:27px;line-height:1.1;font-weight:400}
+.top-avatar{width:33px;height:33px;line-height:1;cursor:pointer}
+.leader-view-pill{font-size:10px;font-weight:950;color:white;background:#a9002a62;border:1px solid #ffd6d5;border-radius:100px;white-space:nowrap;padding:9px 11px;min-height:34px}
+.leader-view-pill:active{background:#7b002a}
+.phone-status{padding:10px 18px 0;font-size:12px;font-weight:900}
+.phone-bottom{left:7px;right:7px;bottom:7px;min-height:77px;border-radius:24px;background:linear-gradient(150deg,#292425,#1f1e1e);border:1px solid #ac9993;padding:5px}
+.phone-bottom button{min-height:64px;font-size:10px;gap:5px;border-radius:22px}
+.phone-bottom svg{height:23px;width:23px}
+.phone-bottom button.active{background:linear-gradient(153deg,#ff1c48,#c5002c);box-shadow:0 3px 0 #89001f,inset 0 1px 0 #fffb}
+.phone-bottom button:focus-visible{outline-offset:-2px}
+.red-screen{background:linear-gradient(145deg,#ea0236,#e90030 46%,#d2002c);min-height:100%}
+.dark-screen{background:linear-gradient(155deg,#312b2b 0%,#272324 65%,#211e20 100%)}
+.care-screen{background:linear-gradient(165deg,#f7e8da 0,#eedbca 100%);min-height:100%;color:#222}
+.care-screen .phone-top{background:#e3002b;border-radius:0;color:white}
+.care-screen .phone-status{background:#e3002b;color:white}
+
+/* 01 TODAY — the exact card hierarchy in the approved artboard. */
+.today-welcome{padding:9px 17px 10px}
+.today-welcome strong{font-size:16px;letter-spacing:-.052em;white-space:nowrap}
+.today-welcome .campus{font-size:9px;margin-top:5px;letter-spacing:.13em}
+.hero-card{margin:4px 10px 12px;padding:21px 18px 18px;min-height:234px;border-radius:27px;background:linear-gradient(150deg,#f11545 0%,#d1002e 73%,#ce0030 100%);border:1.2px solid #ffbabf;box-shadow:inset 0 2px 0 #ffffff4b,0 4px 0 #970026,0 7px 16px #65001b5c}
+.hero-card:before{right:-108px;top:-93px;width:245px;height:180px;background:#ff667b32}
+.hero-card:after{right:14px;top:20px;font-size:92px;color:#f9a2a133}
+.hero-card h2{font-size:clamp(27px,2.45vw,35px);line-height:1.045;font-weight:950;letter-spacing:-.068em}
+.hero-card p{font-size:12px;line-height:1.44;max-width:230px;margin:13px 0 19px}
+.avatars{gap:0}
+.av,.studio-gallery .av{height:37px;width:37px;border:2px solid #faeae0;margin-left:-5px;box-shadow:0 1px 4px #0004;background:#645751}
+.av img{height:100%;width:100%;object-fit:cover;border-radius:50%}
+.av.count,.studio-gallery .av.count{height:37px;width:37px;font-size:10px;background:#f3dfd1}
+.today-stack{padding:0 10px}
+.today-stack>.tile-button{margin-bottom:11px}
+.tile-button{min-height:85px;padding:12px 14px;border-radius:17px;gap:11px}
+.tile-symbol{display:grid;place-items:center;flex:none;width:45px;height:45px;border-radius:14px;background:#e3002b;color:#fff}
+.tile-symbol svg{height:24px;width:24px}
+.tile-body strong{font-size:13px;line-height:1.1;font-weight:950}
+.tile-body small{font-size:10px;line-height:1.37;margin-top:5px}
+.tile-chevron{height:18px!important;width:18px!important}
+.split-tiles{gap:10px;margin-bottom:10px}
+.split-tile{min-height:122px;padding:13px 12px;border-radius:19px}
+.split-tile .kicker{font-size:9px;line-height:1.4;letter-spacing:0}
+.split-tile .kicker svg{height:19px;width:19px}
+.split-tile strong{font-size:clamp(22px,2vw,29px);margin-top:12px}
+.split-tile small{font-size:10px;margin-top:5px}
+.today-read{min-height:78px}
+.today-read>svg:first-child{width:25px;height:25px;color:#df002c}
+.today-read strong{font-size:22px;line-height:1.13}
+.today-read .tile-body small{font-size:10px;font-weight:900;margin:0 0 5px;color:#302827}
+
+/* 02 MY PEOPLE — one coherent cream conversation panel. */
+.dark-screen .phone-top{background:transparent}
+.dark-screen .page-hero{min-height:163px;padding:23px 18px 25px;background:transparent}
+.dark-screen .page-hero:after{height:240px;width:350px;right:-170px;bottom:-186px;border-radius:49%;background:#ef0038;transform:rotate(-17deg)}
+.dark-screen .page-hero h1{font-size:clamp(29px,2.9vw,38px);margin:5px 0 10px;line-height:1.04;letter-spacing:-.07em}
+.dark-screen .page-hero p{font-size:12px;opacity:.95}
+.people-body{padding:1px 10px 15px}
+.people-head{padding:16px 12px 18px;border-radius:28px;background:linear-gradient(160deg,#fff0de 0%,#f8e9d7 100%);box-shadow:0 4px 0 #171214,0 12px 18px #0006}
+.people-head .section-row{min-height:43px}
+.people-head .section-title{align-items:center;gap:10px}
+.people-head .section-title svg{width:27px;height:27px}
+.people-head .section-title strong{font-size:16px;line-height:1.1}
+.people-head .section-title small{font-size:11px}
+.section-chevron{display:grid;place-items:center;flex:none;width:30px;height:37px;border:0;background:transparent;color:#111}
+.section-chevron svg{width:23px;height:23px}
+.people-head .avatars{margin:13px 0 14px;padding-left:3px}
+.people-head .av,.people-head .av.count{height:41px;width:41px}
+.people-head .divider{margin:14px 0 13px;background:#ddc8b7}
+.people-head .message-row{margin-bottom:14px;align-items:flex-start;gap:10px}
+.people-head .message-row>.av{width:37px;height:37px;margin:0;flex:none}
+.people-head .message{min-width:0}
+.people-head .message strong{font-size:11px;letter-spacing:-.022em}
+.people-head .message-time{float:right;font-size:10px;margin-top:3px;color:#6f5d53}
+.people-head .message p{font-size:11px;line-height:1.45;margin-top:4px;padding:9px 11px;border-radius:12px;background:#ecd8c9}
+.people-head .mini-label{font-size:11px;letter-spacing:.01em;gap:8px}
+.people-head .mini-label svg{width:20px;height:20px}
+.people-head .prayer-item{min-height:61px;background:#fff4e6;border-color:#f0d6c7;border-radius:20px;padding:9px 10px;margin:11px 0 0;font-size:10px}
+.people-head .prayer-item>.av{width:37px;height:37px;margin-left:0}
+.people-head .prayer-item svg:last-child{height:16px;width:16px}
+.people-head .cta-red{min-height:56px;margin-top:16px;font-size:16px;border-radius:19px}
+.people-head .cta-red svg{width:22px;height:22px}
+
+/* 03 MY TEAM — no extra giant action on the serve card. */
+.red-screen .page-hero{min-height:192px;padding:22px 18px 24px}
+.red-screen .page-hero h1{font-size:clamp(31px,3.15vw,41px);line-height:1.025}
+.red-screen .page-hero p{font-size:12px}
+.red-screen .page-hero:after{right:-120px;bottom:-172px;width:350px;height:255px;background:#ff417c32}
+.team-body{padding:3px 10px 15px}
+.serve-card{padding:18px 17px 18px;min-height:191px;border-radius:25px}
+.serve-card .eyebrow-row{font-size:11px;letter-spacing:0;gap:9px}
+.serve-card .eyebrow-row svg{width:25px;height:25px}
+.serve-card h2{font-size:clamp(22px,2.45vw,31px);margin:20px 0 6px}
+.serve-card p{font-size:14px;margin-bottom:15px}
+.confirmed{border:0;cursor:pointer;min-height:35px;font-size:12px;background:#dbedcb}
+.confirmed:focus-visible{outline-color:#e3002b}
+.update-card{display:flex;flex-direction:column;min-height:257px;padding:19px 17px 18px;margin-top:15px;border-radius:25px;background:linear-gradient(155deg,#484042,#242021)}
+.update-card .eyebrow-row{font-size:11px;letter-spacing:.02em}
+.update-card .eyebrow-row svg{width:25px;height:25px}
+.update-card h2{font-size:clamp(23px,2.45vw,30px);margin:19px 0 9px}
+.update-card p{font-size:13px;line-height:1.52}
+.update-card .cta-cream{margin-top:auto;min-height:54px;border-radius:19px;font-size:14px}
+
+/* 04 LEADER CARE — cream from the hero down, humane contextual prompts. */
+.leader-head{min-height:202px;padding:20px 17px 25px;background:linear-gradient(160deg,#ed0539 0%,#d00030 100%);color:white}
+.leader-head:before{height:270px;width:300px;right:-148px;bottom:-150px;opacity:.95;background:#ffefdf}
+.leader-head h1{font-size:clamp(31px,3.15vw,41px);max-width:290px;margin:10px 0 11px;line-height:1.02}
+.leader-head p{font-size:11px;position:relative;color:white}
+.leader-body{padding:13px 11px 18px;background:linear-gradient(165deg,#ffefde,#efdbca)}
+.leader-summary{border-radius:22px;min-height:53px;margin-bottom:13px;padding:12px 15px;font-size:12px;justify-content:initial;gap:9px;background:linear-gradient(150deg,#443d3e,#292425)}
+.leader-summary svg:first-child{height:21px;width:21px;flex:none}
+.leader-summary span{flex:1;text-align:left}
+.leader-summary svg:last-child{height:17px;width:17px}
+.leader-card{min-height:171px;padding:16px 13px 13px;margin-bottom:12px;border-radius:23px;background:linear-gradient(150deg,#fff5e8,#f8e6d6);box-shadow:0 3px 0 #d7b5a8,0 10px 17px #39121a28}
+.leader-person{align-items:center;gap:11px}
+.leader-person .av{height:46px;width:46px;flex:none}
+.leader-person strong{font-size:15px}
+.leader-person p{font-size:11px;line-height:1.4}
+.leader-actions{gap:9px;margin-top:16px;grid-template-columns:1fr 1.15fr}
+.leader-actions button{min-height:43px;display:flex;justify-content:center;align-items:center;gap:4px;border-radius:15px;font-size:11px;padding:5px 7px;white-space:nowrap;background:#ecd0c7}
+.leader-actions button.primary{background:linear-gradient(150deg,#f31743,#c90030)}
+.leader-actions button svg{height:17px;width:17px;flex:none}
+.leader-actions button.reviewed{background:#d4e7c7}
+.leader-body>div:last-child{font-size:9px;line-height:1.4}
+
+/* Precisely sized icons: never let an unspecified SVG dictate card height. */
+.section-row>svg{width:20px;height:20px;flex:none}
+.tile-button svg,.prayer-item svg{max-height:26px}
+.phone svg{flex-shrink:0}
+.phone button{touch-action:manipulation}
+.phone button:focus-visible{outline:3px solid #ffc366;outline-offset:2px}
+
+/* The four approved handsets take priority at the supplied mockup width. */
+@media(max-width:1500px) and (min-width:851px){
+ main{padding-left:9px;padding-right:9px}
+ .studio-gallery{gap:11px}
+ .phone{max-width:none;aspect-ratio:.417}
+ .phone-top{padding:6px 12px 2px}
+ .hero-card{min-height:213px;padding:17px 14px}
+ .hero-card p{margin:11px 0 16px}
+ .tile-button{min-height:75px}
+ .split-tile{min-height:111px}
+ .today-read{min-height:72px}
+ .people-head{padding:13px 10px}
+ .people-head .av,.people-head .av.count{height:36px;width:36px}
+ .people-head .message p{padding:7px 9px}
+ .people-head .prayer-item{min-height:57px}
+ .people-head .cta-red{min-height:52px}
+ .red-screen .page-hero{min-height:176px}
+ .serve-card{min-height:173px}
+ .update-card{min-height:240px}
+ .leader-head{min-height:190px}
+ .leader-card{min-height:161px}
+ .leader-actions button{min-height:38px}
+}
+/* Tablets: keep screenshots useful, with two phones per row. */
+@media(min-width:571px) and (max-width:850px){
+ .studio-gallery{grid-template-columns:repeat(2,minmax(0,1fr));max-width:760px;margin:auto;gap:25px}
+ .concept-label{font-size:21px}
+ .phone{max-width:370px;aspect-ratio:.417}
+}
+/* iPhone: use the full phone screen, not a miniature phone inside a website.
+   This is the approved visual identity in the real mobile viewport. */
+@media(max-width:570px){
+ html,body{height:100%;overflow:hidden;background:#e3002b}
+ main{padding:0;max-width:none;width:100%;height:100%}
+ .mobile-screen-nav{display:none!important}
+ .studio-gallery{display:block;width:100%;height:100%;max-width:none;padding:0;margin:0}
+ .phone-slot{display:none;height:100%;width:100%;margin:0}
+ .phone-slot.is-mobile-active{display:block}
+ .concept-label{display:none!important}
+ .phone{width:100%;max-width:none;aspect-ratio:auto;height:100dvh;min-height:0;padding:0;border:0;border-radius:0;background:#e3002b;box-shadow:none}
+ .phone:before,.island,.phone-status{display:none!important}
+ .phone-viewport{height:100%;width:100%;border-radius:0;background:#e3002b}
+ .phone-scroller{height:100%;padding-top:env(safe-area-inset-top,0px);padding-bottom:0;scrollbar-width:none}
+ .phone-bottom{position:absolute;bottom:max(7px,env(safe-area-inset-bottom,7px));left:8px;right:8px;min-height:77px;border-radius:24px}
+ .phone-bottom button{min-height:65px;font-size:10px}
+ .phone-bottom svg{height:24px;width:24px}
+ .phone-top{padding:10px 17px 4px;min-height:54px}
+ .phone-logo img{height:31px;width:32px}
+ .phone-logo strong{font-size:13px}
+ .phone-top .top-avatar{width:34px;height:34px}
+ .phone-top .top-icon{width:34px;height:34px}
+ .today-welcome{padding:12px 17px 13px}
+ .today-welcome strong{font-size:17px}
+ .hero-card{margin:5px 10px 13px;padding:25px 20px 20px;min-height:237px}
+ .hero-card h2{font-size:38px}
+ .hero-card p{font-size:13px;margin:12px 0 20px}
+ .hero-card .av,.hero-card .av.count{height:42px;width:42px}
+ .tile-button{min-height:83px}
+ .split-tile{min-height:117px}
+ .split-tile strong{font-size:clamp(24px,7vw,29px)}
+ .today-read{min-height:75px}
+ .page-hero h1{font-size:clamp(34px,9.7vw,42px)}
+ .dark-screen .page-hero{min-height:176px;padding:22px 17px 28px}
+ .people-body{padding:5px 10px 92px}
+ .people-head{padding:17px 13px 19px}
+ .people-head .av,.people-head .av.count{height:41px;width:41px}
+ .people-head .message p{font-size:11px;padding:10px}
+ .people-head .cta-red{min-height:56px}
+ .red-screen .page-hero{min-height:190px;padding:22px 18px 25px}
+ .team-body{padding:4px 10px 92px}
+ .serve-card{min-height:190px}
+ .update-card{min-height:248px}
+ .leader-head{min-height:203px}
+ .leader-head h1{font-size:39px}
+ .leader-body{min-height:calc(100dvh - 320px);padding:13px 11px 95px}
+ .leader-card{min-height:169px}
+ .read-body{padding-bottom:100px}
+ .care-screen{min-height:100%}
+}
+@media(prefers-reduced-motion:reduce){.phone *{scroll-behavior:auto;transition:none!important}}
+
+/* Center the short brand underline beneath each screen heading. */
+.concept-label{position:relative;justify-content:center}
+.concept-label:after{left:50%;top:100%;transform:translateX(-50%);margin-top:10px}
+
+
+/* Final proportion correction, checked against exported 1440px board and 390px
+   phone screenshots side by side with the client's approved rendering. */
+.prayer-item .av,.people-head .prayer-item>.av{flex:0 0 37px!important;min-width:37px;max-width:37px;overflow:hidden}
+.people-head .prayer-item .av img{width:100%;height:100%;object-fit:cover}
+/* Red sweep stays beneath the content, rather than cutting across the text. */
+.dark-screen .page-hero:after{
+ width:238px;height:170px;right:-127px;bottom:-88px;
+ border-radius:48%;transform:rotate(-25deg);background:#ed0039;
+}
+.leader-head:before{
+ width:270px;height:260px;right:-160px;bottom:-190px;
+ border-radius:50%;background:#fff0de;
+}
+@media(min-width:851px){
+ .concept-label{margin-bottom:46px}
+ .phone{aspect-ratio:.427}
+ .hero-card{min-height:234px}
+ .today-stack>.tile-button{min-height:83px}
+ .today-stack .today-read{min-height:78px}
+ .dark-screen .page-hero{min-height:140px;padding:7px 18px 17px}
+ .people-head{padding:12px 10px 13px}
+ .people-head .divider{margin:9px 0 10px}
+ .people-head .message-row{margin-bottom:8px}
+ .people-head .message p{padding:7px 9px}
+ .people-head .prayer-item{min-height:55px;margin-top:8px}
+ .people-head .cta-red{min-height:51px;margin-top:11px}
+ .red-screen .page-hero{min-height:155px;padding:10px 18px 20px}
+ .update-card{min-height:227px}
+ .leader-head{min-height:150px;padding:9px 17px 16px}
+}
+@media(max-width:570px){
+ .hero-card{min-height:264px}
+ .today-stack>.tile-button{min-height:93px}
+ .split-tile{min-height:127px}
+ .today-stack .today-read{min-height:80px}
+ .people-head .prayer-item>.av{flex:0 0 37px!important}
+ .leader-head:before{width:270px;height:260px;right:-160px;bottom:-190px}
+}
+
+
+/* Approved My People hero: crimson curve enters from the RIGHT, exactly
+   as in the signed-off mockup. Explicitly reset inherited left anchoring. */
+.dark-screen .page-hero:after{left:auto!important;right:-127px!important}
+.phone-logo strong{font-size:14px}
+.phone-logo small{font-size:7px}
+@media(max-width:570px){.phone-logo strong{font-size:14px}.phone-logo small{font-size:7px}}
+
+
+/* Final Citizen-brand watermark fidelity: use the real flag in approved red heroes. */
+.hero-card:after{
+ content:'';position:absolute;right:10px;top:37px;
+ width:102px;height:94px;background:url("assets/citizen-flag.svg") center/contain no-repeat;
+ transform:rotate(-12deg);opacity:.24;filter:saturate(.9);pointer-events:none;
+}
+.red-screen .page-hero:before{
+ content:'';position:absolute;right:9px;top:31px;
+ width:102px;height:96px;background:url("assets/citizen-flag.svg") center/contain no-repeat;
+ transform:rotate(-12deg);opacity:.22;pointer-events:none;z-index:-1;
+}
+
+
+/* 05 READ — design lifted from the additional approved blueprint phone:
+   real Plan / Study / Discuss tabs, sunset reading-plan artwork, cream prompts. */
+.studio-read{padding:10px 12px 94px;background:linear-gradient(150deg,#e90035,#d1002d 90%);min-height:calc(100% - 49px)}
+.studio-read-heading{display:flex;align-items:baseline;justify-content:space-between;color:white;padding:4px 5px 10px;gap:8px}
+.studio-read-heading h1{font-size:36px;letter-spacing:-.075em;line-height:1;font-weight:950;margin:0}
+.studio-read-heading span{font-size:9px;font-weight:900;letter-spacing:.14em;opacity:.85}
+.studio-read-tabs{display:flex;gap:4px;background:#f8e7d7;padding:5px;border-radius:999px;margin:4px 0 13px;box-shadow:0 2px 0 #8d0021}
+.studio-read-tabs button{flex:1;min-width:0;min-height:36px;border:0;border-radius:999px;background:transparent;color:#7e6660;font-size:12px;font-weight:850}
+.studio-read-tabs button.current{background:#fffdf8;color:#19181b;box-shadow:0 2px 5px #40112130}
+.studio-read-tabs button:active{transform:scale(.98)}
+.reading-plan-hero{position:relative;isolation:isolate;overflow:hidden;min-height:215px;border-radius:20px;background:#49425d url("assets/studio-sunset.svg") center/cover no-repeat;border:1px solid #f7c4bb;box-shadow:inset 0 1px 0 #ffffff9c,0 4px 0 #920022,0 10px 18px #53001a66;color:#fff}
+.reading-plan-hero:after{content:'';position:absolute;z-index:-1;inset:0;background:linear-gradient(180deg,#10152222 5%,#15122011 35%,#090913bd 100%)}
+.plan-art-label{padding:16px 15px;font-size:9px;letter-spacing:.12em;font-weight:950;text-shadow:0 1px 6px #000a}
+.reading-plan-content{position:absolute;bottom:14px;left:16px;right:16px}
+.reading-plan-content h2{font-size:26px;letter-spacing:-.064em;line-height:1.08;margin:0 0 3px;font-weight:950;text-shadow:0 3px 8px #0c07128c}
+.reading-plan-content p{font-size:11px;margin:0 0 12px;text-shadow:0 2px 5px #000b}
+.plan-progress{height:7px;background:#141a1eb8;border-radius:999px;overflow:hidden;border:1px solid #ffffff8b}
+.plan-fill{width:43%;height:100%;background:#dfff00;box-shadow:0 0 7px #dfff00}
+.reading-plan-content small{display:block;text-align:right;margin-top:5px;color:#f7f2e9;font-size:10px;font-weight:850}
+.studio-read-tile{display:block;width:100%;border:1px solid #fff8ee;background:linear-gradient(156deg,#fff3e7,#f2dece);color:#242022;text-align:left;padding:14px 15px;min-height:83px;border-radius:18px;margin-top:14px;box-shadow:inset 0 1px 0 #fff,0 4px 0 #a97876ab,0 10px 14px #49001447}
+.studio-read-tile>span{display:flex;align-items:center;gap:7px;font-size:11px;font-weight:950}
+.studio-read-tile svg{width:20px;height:20px;color:#e3002b}
+.studio-read-tile b{display:block;font-size:19px;letter-spacing:-.065em;margin:6px 0 2px}
+.studio-read-tile small{display:block;color:#6d5e58;font-size:10px;line-height:1.45}
+.studio-read-tile p{font-size:12px;line-height:1.5;margin:8px 0 0}
+.studio-read-tile:active{transform:translateY(2px);box-shadow:0 1px 0 #a97876ab}
+.studio-read-tile h2{font-weight:950;letter-spacing:-.063em;line-height:1.12;font-size:22px;margin:12px 0 7px}
+.studio-read .cta-red{border:1px solid #ffe9df;background:#f5e7da;color:#262223;box-shadow:0 4px 0 #b2897d;font-size:13px}
+@media(max-width:570px){
+ .studio-read{padding:12px 12px 100px}
+ .studio-read-heading h1{font-size:40px}
+ .studio-read-tabs button{min-height:41px}
+ .reading-plan-hero{min-height:224px}
+ .studio-read-tile{min-height:91px}
+}
+
+
+/* Reliable photo-style plan compositing across iOS Safari and Chrome.
+   Use the explicit image instead of relying on CSS background rendering. */
+.reading-plan-hero{background:linear-gradient(155deg,#404568 0%,#bb817d 52%,#34304c 100%)}
+.reading-plan-image{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;z-index:0}
+.reading-plan-hero:after{z-index:1}
+.plan-art-label{position:relative;z-index:2}
+.reading-plan-content{z-index:2}

@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 350" role="img" aria-label="Illustrated Sandia-inspired sunset landscape">
+<defs>
+ <linearGradient id="sky" x1="0" y1="0" x2=".15" y2="1"><stop stop-color="#2b2d60"/><stop offset=".27" stop-color="#735875"/><stop offset=".56" stop-color="#ea9164"/><stop offset=".76" stop-color="#e9b789"/><stop offset="1" stop-color="#615769"/></linearGradient>
+ <radialGradient id="glow" cx="65%" cy="45%" r="55%"><stop stop-color="#ffe7ac" stop-opacity=".98"/><stop offset=".24" stop-color="#fdc78d" stop-opacity=".4"/><stop offset="1" stop-color="#ffe2c0" stop-opacity="0"/></radialGradient>
+ <linearGradient id="ridge" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#655575"/><stop offset="1" stop-color="#31283b"/></linearGradient>
+ <linearGradient id="shade" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#1c172f" stop-opacity=".08"/><stop offset="1" stop-color="#080a17" stop-opacity=".88"/></linearGradient>
+ <filter id="grain"><feTurbulence baseFrequency=".4" numOctaves="2" seed="3" result="noise"/><feColorMatrix in="noise" type="saturate" values="0"/><feComponentTransfer><feFuncA type="linear" slope=".095"/></feComponentTransfer><feBlend in="SourceGraphic" mode="multiply"/></filter>
+</defs>
+<rect width="640" height="350" fill="url(#sky)"/><rect width="640" height="350" fill="url(#glow)"/>
+<g opacity=".5" fill="#f8cfa7"><path d="M0 98C105 119 157 93 265 108C386 130 469 83 640 105V119C474 104 393 146 265 126C153 109 91 138 0 116Z"/><path d="M0 137C97 149 209 120 317 139C438 160 509 128 640 135v10c-142-7-231 25-346 9C195 140 92 164 0 151z" opacity=".42"/></g>
+<path fill="#8b6b7a" d="M0 235 62 222 103 218 137 203 189 187 235 198 280 183 316 162 360 170 403 142 436 153 482 135 517 149 553 132 595 151 640 159V350H0z"/>
+<path fill="url(#ridge)" d="m0 268 42-19 69 12 38-30 44-16 35 9 26-26 32 22 36-30 26 13 31-32 28 21 29-29 34 17 34-21 38 18 34-8 34 18V350H0z"/>
+<path fill="#2b2a46" d="m0 292 76-12 47 10 54-28 45 12 38-17 31 8 40-16 31 11 48-12 43 15 64-14 43 10 40-9V350H0z"/>
+<path fill="#181d38" d="M0 323q55-27 108-14 65-15 109-6 72-34 140-18 69-12 112-6 80-16 171 4V350H0z"/>
+<rect width="640" height="350" fill="url(#shade)"/>
+<rect width="640" height="350" filter="url(#grain)" opacity=".24"/>
+</svg>

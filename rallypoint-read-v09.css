@@ -1,0 +1,237 @@
+/* Rally Point v0.9 — three meeting-discussed reading pathways.
+   Scripture excerpts are public-domain KJV, and all progress/plan choices are local fixtures. */
+.is-read-v09{--read-red:#E3002B;--read-cream:#F3E5D6;--read-charcoal:#242322}
+.is-read-v09 .header{background:#E3002B;color:#fff;border:0}
+.is-read-v09 .brand-home{color:#fff}
+.is-read-v09 .brand-home img{filter:brightness(0) invert(1)}
+.is-read-v09 .brand-home span{color:#fff}
+.is-read-v09 .header-button,.is-read-v09 .profile-avatar{background:#A90023;color:#fff;border:1px solid #FFD0D8}
+.is-read-v09 .spotify-link{background:#A9002380}
+.is-read-v09 .spotify-link img{filter:brightness(0) invert(1)}
+.is-read-v09 main{padding:0;background:#242322}
+.is-read-v09 .read-screen-v09{background:#242322;color:#F3E5D6;min-height:100%;padding:0 15px 22px}
+.is-read-v09 .read-v09-hero{
+ isolation:isolate;position:relative;overflow:hidden;
+ background:#E3002B;color:#FFFFFF;
+ margin:0 -15px 17px;padding:23px 23px 29px;
+ border-radius:0 0 42px 12px;
+}
+.is-read-v09 .read-v09-hero:before{
+ content:"";position:absolute;z-index:-1;pointer-events:none;
+ right:-120px;top:-110px;width:370px;height:215px;
+ background:#F91944;border-radius:62%;transform:rotate(-13deg);
+}
+.is-read-v09 .read-v09-hero:after{
+ content:"";position:absolute;z-index:-1;pointer-events:none;
+ left:-120px;bottom:-123px;width:360px;height:200px;
+ background:#BC002A;border-radius:65% 0 0 0;
+ transform:rotate(15deg);opacity:.75;
+}
+.is-read-v09 .read-v09-overline{
+ font-size:9px;letter-spacing:.18em;
+ font-weight:850;color:#FFE3E2;
+}
+.is-read-v09 .read-v09-hero h1{
+ color:#fff;font-size:clamp(41px,11vw,49px);
+ letter-spacing:-.07em;line-height:.96;
+ font-weight:900;margin:16px 0 15px;
+}
+.is-read-v09 .read-v09-hero h1 span{color:#FFCDD7}
+.is-read-v09 .read-v09-hero p{
+ font-size:12px;line-height:1.55;color:#FFF3F0;
+ max-width:260px;margin:0;
+}
+.is-read-v09 .read-focus-card{
+ background:#343132;color:#FFF7F1;
+ border:1.5px solid #A58A82;
+ border-radius:28px 30px 27px 27px;
+ box-shadow:0 5px 0 #151213;
+ padding:18px;margin:0 0 19px;
+ overflow:hidden;position:relative;isolation:isolate;
+}
+.is-read-v09 .read-focus-card:after{
+ content:"";position:absolute;right:-87px;bottom:-92px;
+ width:235px;height:160px;border-radius:68% 0 0 0;
+ transform:rotate(-17deg);
+ background:#E3002B;
+ z-index:-1;pointer-events:none;
+}
+.is-read-v09 .read-focus-head{
+ display:flex;align-items:center;justify-content:space-between;gap:10px;
+ color:#FCE1DD;
+ font-size:9px;letter-spacing:.15em;font-weight:850;
+}
+.is-read-v09 .read-focus-head .icon{width:23px;height:23px;color:#FF9BB1}
+.is-read-v09 .read-focus-card h2{
+ color:#fff;font-weight:900;
+ font-size:clamp(29px,8vw,35px);
+ letter-spacing:-.055em;line-height:1.05;margin:13px 0 5px;
+}
+.is-read-v09 .read-focus-card p{color:#E4CCC1;font-size:12px;line-height:1.45;margin-bottom:14px}
+.is-read-v09 .read-focus-detail{
+ display:grid;gap:5px;
+ border-top:1px solid #FFE4D444;
+ padding-top:12px;
+}
+.is-read-v09 .read-focus-detail strong{font-size:13px;color:#FFEFE8;font-weight:850}
+.is-read-v09 .read-focus-detail small{font-size:9px;line-height:1.35;color:#E8CDC8}
+.is-read-v09 .read-screen-v09 .card{
+ border-radius:27px 28px 28px 26px;
+ border:1.5px solid #FFE9DC;
+ box-shadow:0 5px 0 #161313;
+ margin:0 0 20px;
+ padding:18px 17px;
+ background:#F3E5D6;color:#242322;
+}
+.is-read-v09 .read-section-label{
+ display:flex;align-items:center;gap:9px;
+ color:#242322;font-size:10px;font-weight:850;letter-spacing:.1em;
+ line-height:1.2;
+}
+.is-read-v09 .read-section-label .icon{
+ width:22px;height:22px;color:#E3002B;flex:none;
+}
+.is-read-v09 .read-section-label i{display:block;height:2px;width:30px;background:currentColor;margin-left:2px}
+.is-read-v09 .read-scripture-card h2{
+ font-size:clamp(30px,8.5vw,37px);
+ letter-spacing:-.055em;line-height:1.05;
+ margin:17px 0;
+ font-weight:900;color:#242322;
+}
+.is-read-v09 .read-scripture-card blockquote{
+ position:relative;
+ border:0;
+ margin:0 0 18px;
+ padding:0 2px;
+ color:#3F3331;
+ font-size:18px;font-weight:700;
+ line-height:1.55;letter-spacing:-.02em;
+}
+.is-read-v09 .read-scripture-card .btn{
+ min-height:45px;padding:9px 20px;
+ background:#E3002B;color:#fff;border:1px solid #E3002B;
+ border-radius:999px;font-size:12px;font-weight:850;
+}
+.is-read-v09 .read-scripture-card .btn.chosen{
+ background:#242322;color:#FFF7EB;border-color:#242322;
+}
+.is-read-v09 .read-scripture-card .fine-note{
+ color:#706057;font-size:9px;line-height:1.45;margin-top:13px;
+}
+.is-read-v09 .read-screen-v09 .card.read-question-card{
+ background:#333031;color:#FFFFFF;border-color:#8E7774;
+}
+.is-read-v09 .read-question-card .read-section-label{color:#FFE4DD}
+.is-read-v09 .read-question-card .read-section-label .icon{color:#FF8DA7}
+.is-read-v09 .read-question-card h2{
+ color:#fff;font-size:26px;line-height:1.06;
+ font-weight:900;letter-spacing:-.06em;
+ margin:15px 0 14px;
+}
+.is-read-v09 .read-question-card p{
+ color:#F4DFD4;font-size:15px;line-height:1.5;
+ margin:0 0 20px;font-weight:650;
+}
+.is-read-v09 .read-discuss-action{
+ display:flex;align-items:center;justify-content:center;gap:8px;
+ width:100%;min-height:47px;
+ padding:11px 15px;background:#F3E5D6;color:#242322;
+ border:1px solid #F3E5D6;border-radius:999px;
+ font-size:12px;font-weight:850;
+}
+.is-read-v09 .read-discuss-action .icon{width:19px;height:19px}
+.is-read-v09 .read-discuss-action .icon:last-child{margin-left:auto}
+.is-read-v09 .read-memory-card{
+ display:flex;align-items:center;gap:10px;justify-content:space-between;
+ position:relative;isolation:isolate;overflow:hidden;
+ min-height:142px;
+ padding:18px 17px;margin:0 0 20px;
+ background:#E3002B;color:#fff;
+ border:1.5px solid #FFB2B9;
+ border-radius:26px 29px 29px 25px;
+ box-shadow:0 5px 0 #151213;
+}
+.is-read-v09 .read-memory-card:after{
+ content:"";position:absolute;right:-120px;bottom:-90px;
+ width:280px;height:170px;
+ border-radius:68% 0 0 0;
+ background:#F21A40;transform:rotate(-18deg);
+ z-index:-1;pointer-events:none;
+}
+.is-read-v09 .read-memory-copy{max-width:79%}
+.is-read-v09 .read-memory-label{
+ display:flex;gap:8px;align-items:center;
+ font-size:9px;letter-spacing:.16em;font-weight:850;
+ color:#FFF1ED;
+}
+.is-read-v09 .read-memory-label .icon{width:19px;height:19px}
+.is-read-v09 .read-memory-card h2{
+ color:#fff;font-size:27px;font-weight:900;
+ letter-spacing:-.055em;line-height:1.04;
+ margin:13px 0 7px;
+}
+.is-read-v09 .read-memory-card p{color:#FFE3E5;font-size:11px;line-height:1.4}
+.is-read-v09 .read-memory-card>button{
+ display:grid;place-items:center;flex:none;
+ width:46px;height:46px;background:#F3E5D6;color:#242322;
+ border:1px solid #FFF0E7;border-radius:16px;
+}
+.is-read-v09 .read-memory-card>button .icon{width:22px;height:22px}
+.is-read-v09 .read-leader-card h2{
+ font-size:25px;font-weight:900;letter-spacing:-.05em;margin:14px 0 12px;
+}
+.is-read-v09 .read-leader-card p{font-size:12px;line-height:1.5;color:#5A4B44}
+.is-read-v09 .read-plan-choices{display:grid;gap:8px;margin:17px 0 20px}
+.is-read-v09 .read-plan-button{
+ background:#FFF8F0;color:#242322;
+ min-height:44px;border:1px solid #CCB5A7;
+ border-radius:14px;padding:10px 13px;
+ font-size:12px;font-weight:850;text-align:left;
+}
+.is-read-v09 .read-plan-button.selected{
+ background:#242322;border-color:#242322;color:#fff;
+}
+.is-read-v09 .read-leader-card label{
+ display:block;font-size:11px;font-weight:850;margin-bottom:8px;
+}
+.is-read-v09 .read-leader-card textarea{
+ border:1px solid #C7B0A1;background:#FFF8F2;
+ color:#242322;border-radius:14px;font-size:12px;
+ margin:0 0 12px;line-height:1.4;
+}
+.is-read-v09 .read-leader-card .btn.dark-btn{
+ background:#E3002B;color:#fff;border:0;
+ border-radius:14px;min-height:46px;font-size:12px;
+}
+.is-read-v09 .read-leader-card .fine-note{font-size:9px;color:#6E5B51;margin-top:12px}
+.is-read-v09 .read-prayer-card{
+ display:flex;align-items:center;justify-content:space-between;gap:14px;
+}
+.is-read-v09 .read-prayer-card .icon{width:20px;height:20px;color:#E3002B}
+.is-read-v09 .read-prayer-card h3{color:#242322;font-size:19px;margin:7px 0;font-weight:850}
+.is-read-v09 .read-prayer-card p{color:#695B4F;font-size:11px;line-height:1.45;margin:0}
+.is-read-v09 .read-prayer-card button.round{
+ flex:none;width:47px;height:47px;
+ display:grid;place-items:center;
+ background:#242322;color:#fff;border:1px solid #242322;
+ border-radius:50%;
+}
+.is-read-v09 .read-prayer-card button.round.done{background:#E3002B;border-color:#E3002B}
+.is-read-v09 .bottom{background:#252426;border-top:1px solid #BDAAA2;color:#F3E5D6}
+.is-read-v09 .bottom button{color:#E0CFC4}
+.is-read-v09 .bottom button.active{background:#E3002B;color:#fff}
+.is-read-v09 button:focus-visible{outline:3px solid #E3002B;outline-offset:3px}
+.is-read-v09 .read-memory-card button:focus-visible,.is-read-v09 .read-v09-hero button:focus-visible{outline-color:#FFFFFF}
+@media(max-width:350px){
+ .is-read-v09 .read-screen-v09{padding-left:11px;padding-right:11px}
+ .is-read-v09 .read-v09-hero{margin-left:-11px;margin-right:-11px;padding:18px 18px 25px}
+ .is-read-v09 .read-screen-v09 .card{padding:16px 13px}
+ .is-read-v09 .read-focus-card{padding:16px 14px}
+ .is-read-v09 .read-question-card h2{font-size:23px}
+ .is-read-v09 .read-discuss-action{font-size:11px}
+ .is-read-v09 .read-memory-card{padding:16px 13px}
+ .is-read-v09 .read-memory-card h2{font-size:23px}
+}
+@media(prefers-reduced-motion:reduce){
+ .is-read-v09 *,.is-read-v09 *:before,.is-read-v09 *:after{transition:none!important;animation:none!important}
+}

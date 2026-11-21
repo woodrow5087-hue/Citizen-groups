@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+ <meta charset="utf-8">
+ <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+ <meta name="theme-color" content="#E3002B">
+ <meta name="description" content="Rally Point studio concept — an interactive, high-fidelity proposal for Citizen Church. All content is illustrative demo data.">
+ <title>Rally Point — Studio Concept v0.9</title>
+ <link rel="icon" href="assets/citizen-flag.svg" type="image/svg+xml">
+ <link rel="stylesheet" href="studio-concept.css">
+ <link rel="stylesheet" href="studio-approved-v1.css">
+ <script src="studio-concept.js" defer></script>
+</head>
+<body>
+ <header class="proposal-header">
+  <div class="proposal-brand"><img src="assets/citizen-flag.svg" alt="" width="38" height="38"><span><strong>RALLY POINT</strong><small>THE STUDIO CONCEPT</small></span></div>
+  <div class="proposal-header-side"><span class="proposal-pill">DESIGN EXPLORATION · V0.9</span><a href="./?welcome=1">Current working app <span aria-hidden="true">↗</span></a></div>
+ </header>
+ <main>
+  <section class="proposal-heading" aria-label="Design concept introduction">
+   <div><div class="proposal-eyebrow">CITIZEN CHURCH / PRODUCT DESIGN PROPOSAL</div><h1>Your people.<br><em>Your place.</em></h1></div>
+   <div class="proposal-intro"><p>Four connected experiences. One community-first app. Designed to feel as strong in your hand as it does in a presentation.</p><div class="proposal-line">01 TODAY <span>·</span> 02 PEOPLE <span>·</span> 03 TEAM <span>·</span> 04 CARE</div></div>
+  </section>
+  <div class="concept-guide">INTERACTIVE MOBILE PREVIEW <span>Tap the cards, actions, and bottom navigation to explore</span></div>
+  <nav class="mobile-screen-nav" aria-label="Choose a demo screen">
+   <button type="button" data-mobile-screen="today" aria-pressed="true">Today</button>
+   <button type="button" data-mobile-screen="people" aria-pressed="false">My People</button>
+   <button type="button" data-mobile-screen="team" aria-pressed="false">My Team</button>
+   <button type="button" data-mobile-screen="care" aria-pressed="false">Leader Care</button>
+  </nav>
+  <section id="studio-phones" class="studio-gallery" aria-label="Four interactive phone screens">
+   <div class="phone-slot" data-initial="today"><div class="concept-label"><b>01</b> TODAY</div><article class="phone" data-screen="today"><div class="phone-dynamic" aria-live="polite"></div></article></div>
+   <div class="phone-slot" data-initial="people"><div class="concept-label"><b>02</b> MY PEOPLE</div><article class="phone" data-screen="people"><div class="phone-dynamic" aria-live="polite"></div></article></div>
+   <div class="phone-slot" data-initial="team"><div class="concept-label"><b>03</b> MY TEAM</div><article class="phone" data-screen="team"><div class="phone-dynamic" aria-live="polite"></div></article></div>
+   <div class="phone-slot" data-initial="care"><div class="concept-label"><b>04</b> LEADER CARE</div><article class="phone" data-screen="care"><div class="phone-dynamic" aria-live="polite"></div></article></div>
+  </section>
+  <div class="studio-footnotes"><div><span class="dot"></span> <b>CONCEPT ONLY</b> No real accounts, conversations, church records or notifications.</div><div>Designed from the approved Rally Point product blueprint. The live v0.8 prototype remains unchanged.</div></div>
+  <section class="studio-decisions">
+   <div><span class="decisions-eyebrow">THE CREATIVE THESIS</span><h2>A place for people.<br>Not another dashboard.</h2></div>
+   <div class="decision-columns"><p><b>Member-first:</b> Bring the next meaningful connection to the surface, so people do not hunt through menus.</p><p><b>Leader-aware:</b> Introduce contextual care tools only for authorized roles. Prompt personal outreach, never make judgments.</p><p><b>Visual direction:</b> Citizen red, warm cream, charcoal and purposeful dimensional details. No generic corporate cards.</p></div>
+  </section>
+ </main>
+ <div id="studio-toast" role="status" aria-live="polite" class="studio-toast" hidden></div>
+</body>
+</html>
