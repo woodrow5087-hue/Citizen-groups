@@ -7,14 +7,6 @@ const DOMAIN=window.RallyChatDomain,READ=window.RallyConversationRead;
 const STORAGE_KEY='rallypoint-wednesday-chat-lab-v1';
 const CONVERSATION='group_wednesday';
 const SELF='u_you';
-const date='2026-11-18T18:30:00.000Z';
-const users=[
-  {id:'u_you',organizationId:'citizen_demo',displayName:'You'},
-  {id:'u_jess',organizationId:'citizen_demo',displayName:'Jess W.'},
-  {id:'u_anna',organizationId:'citizen_demo',displayName:'Anna L.'},
-  {id:'u_marcus',organizationId:'citizen_demo',displayName:'Marcus C.'},
-  {id:'u_taylor',organizationId:'citizen_demo',displayName:'Taylor D.'}
-];
 const $=id=>root.querySelector('#'+id);
 const permitted=action=>typeof authorize!=='function'||authorize(action)===true;
 const view=$('conversation'),scroll=$('thread-scroll'),input=$('message-input'),send=$('send-message');
@@ -49,7 +41,7 @@ function errorMessage(message){
  showError(message);
  if(message)status.textContent='Please review';
 }
-function nameOf(id){return users.find(person=>person.id===id)?.displayName||'Fictional member';}
+function nameOf(id){return repository?.getSnapshot().users.find(person=>person.id===id)?.displayName||'Fictional member';}
 function initials(id){return nameOf(id).split(' ').map(w=>w[0]).join('').slice(0,2);}
 function isoTime(iso){return new Date(iso).toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'});}
 function isoDay(iso){return new Date(iso).toLocaleDateString('en-US',{weekday:'long',month:'short',day:'numeric'});}
