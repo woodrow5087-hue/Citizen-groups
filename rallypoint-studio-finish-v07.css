@@ -1,0 +1,245 @@
+/* Rally Point / Studio Finish v0.7
+ * Visual refinement of the existing approved Nov 20 Rally Point concept.
+ * Deliberately scoped to the welcome journey and the established Fluid Today
+ * dashboard. No copy, data, navigation or authentication behavior changes.
+ * Palette: Citizen red #E3002B, warm cream #F3E5D6, ink #242322.
+ */
+
+/* A disciplined set of interactive details beats another redesign. */
+.rp-gateway button,
+.is-fluid-today .dashboard-v06 button,
+.is-fluid-today .bottom button,
+.is-fluid-today .header button {
+  -webkit-tap-highlight-color:transparent;
+  touch-action:manipulation;
+}
+.rp-gateway button:focus-visible,
+.is-fluid-today .dashboard-v06 button:focus-visible,
+.is-fluid-today .header button:focus-visible,
+.is-fluid-today .bottom button:focus-visible {
+  outline:3px solid #fff9e9;
+  outline-offset:3px;
+}
+
+/* WELCOME — retain the graphic flowing red identity and animation. */
+.rp-gateway {
+  --entry-cream:#F3E5D6;
+  --entry-ink:#242322;
+  background-color:#E3002B;
+}
+.rp-welcome-copy h2,
+.rp-screen-heading h2 {
+  font-weight:900;
+  letter-spacing:-.058em;
+  text-wrap:balance;
+}
+.rp-welcome-copy .rp-copy-rule,
+.rp-kicker>span {
+  height:2px;
+  border-radius:2px;
+  background:#FFF4EC;
+}
+.rp-entry-button,
+.rp-onboard-continue {
+  box-shadow:inset 0 2px 0 #ffffff8c,0 4px 0 #97052a5e,0 9px 19px #42001735;
+  transition:transform 160ms cubic-bezier(.2,.8,.2,1),box-shadow 160ms ease,filter 160ms ease;
+}
+.rp-entry-button--login,
+.rp-button-charcoal {
+  background:#282627;
+  border-color:#FFEEE6B5;
+  box-shadow:inset 0 1px 0 #ffffff33,0 4px 0 #7700207a,0 10px 19px #31000930;
+}
+.rp-entry-button:not(:disabled):active,
+.rp-onboard-continue:not(:disabled):active {
+  transform:translateY(3px) scale(.994);
+  box-shadow:inset 0 1px 0 #ffffff70,0 1px 0 #80051b4f,0 4px 8px #42001733;
+}
+@media(hover:hover) {
+  .rp-entry-button:not(:disabled):hover,
+  .rp-onboard-continue:not(:disabled):hover {filter:brightness(1.055)}
+}
+.rp-onboard-back {
+  border-radius:14px;
+  transition:background 150ms ease;
+}
+.rp-onboard-back:active {background:#78001942}
+.rp-campus-card {
+  border-color:#FFF1E4A8;
+  box-shadow:inset 0 1px 0 #ffffff3d,0 4px 0 #8b00254d,0 10px 18px #30000c30;
+  transition:transform 150ms ease,box-shadow 160ms ease,border-color 160ms ease;
+}
+.rp-campus-card>img {filter:saturate(1.07) contrast(1.035)}
+.rp-campus-card:active {
+  transform:translateY(2px) scale(.992);
+  box-shadow:inset 0 1px 0 #ffffff29,0 2px 0 #8b00254d,0 5px 12px #30000c24;
+}
+.rp-campus-card[aria-pressed="true"] {
+  border-color:#FFF8F0;
+  box-shadow:0 0 0 2px #FFF4EEC9,inset 0 1px 0 #ffffff55,0 4px 0 #80002283;
+}
+.rp-login-field {
+  border-color:#FFE9D9A8;
+  background:#2A2226DD;
+  box-shadow:inset 0 1px 0 #ffffff1c,0 2px 0 #98002657;
+}
+.rp-login-field:focus-within {
+  border-color:#FFF6E9;
+  box-shadow:0 0 0 2px #FFF6E94D,inset 0 1px 0 #ffffff1c;
+}
+
+/* TODAY — elevate the real, data-backed cards; do not invent UI content. */
+.is-fluid-today .header {
+  box-shadow:inset 0 1px 0 #ffffff11;
+}
+.is-fluid-today .brand-home img {
+  filter:brightness(0) invert(1) drop-shadow(0 1px 1px #85001929);
+}
+.is-fluid-today .brand-home span {
+  letter-spacing:-.062em;
+  font-weight:950;
+}
+.is-fluid-today .header-button,
+.is-fluid-today .spotify-link {
+  box-shadow:inset 0 1px 0 #ffffff29;
+  transition:background 150ms ease,transform 150ms ease;
+}
+.is-fluid-today .header-button:active,
+.is-fluid-today .profile-avatar:active {
+  transform:scale(.96);
+}
+.is-fluid-today .dashboard-v06 .today-welcome {
+  background:linear-gradient(153deg,#DF002B 0%,#EC0734 62%,#F51541 100%);
+}
+.is-fluid-today .dashboard-v06 .dashboard-identity h1 {
+  font-weight:850;
+  letter-spacing:-.03em;
+  line-height:1.38;
+}
+.is-fluid-today .dashboard-v06 .dashboard-today-date {
+  background:#AB002B72;
+  border-color:#FFE5DD86;
+  color:#FFF8F2;
+  box-shadow:inset 0 1px 0 #ffffff25;
+}
+.is-fluid-today .dashboard-v06 .today-people {
+  background:linear-gradient(153deg,#F00736 0%,#E3002B 56%,#D80031 100%);
+  border-color:#FFACBA;
+  box-shadow:inset 0 1px 0 #FFFFFF9C,0 5px 0 #920024,0 15px 27px #1600066B;
+}
+.is-fluid-today .dashboard-v06 .today-people-heading h2 {
+  letter-spacing:-.067em;
+  line-height:1.055;
+  text-wrap:balance;
+}
+.is-fluid-today .dashboard-v06 .today-people-avatar {
+  box-shadow:0 2px 0 #A8002B,0 3px 7px #67001955;
+}
+.is-fluid-today .dashboard-v06 .today-people-message,
+.is-fluid-today .dashboard-v06 .today-people-message.attention-tile {
+  background:linear-gradient(145deg,#BA0029 0%,#C90030 100%);
+  border-color:#FFC8CA6B;
+  box-shadow:inset 0 1px 0 #ffffff2b,0 3px 8px #90001b2b;
+  transition:transform 150ms ease,box-shadow 150ms ease;
+}
+.is-fluid-today .dashboard-v06 .today-people-message-head {
+  font-weight:850;
+  letter-spacing:.105em;
+}
+.is-fluid-today .dashboard-v06 .today-people-message-text {
+  line-height:1.42;
+  letter-spacing:-.016em;
+}
+.is-fluid-today .dashboard-v06 .today-people-discover-link {
+  border:1px solid #fff8;
+  box-shadow:0 3px 0 #a800275d,0 9px 15px #5e001d3a;
+}
+.is-fluid-today .dashboard-v06 .dashboard-twins button {
+  border-radius:28px;
+  transition:transform 170ms cubic-bezier(.2,.75,.25,1),box-shadow 170ms ease,filter 170ms ease;
+}
+.is-fluid-today .dashboard-v06 .dashboard-next,
+.is-fluid-today .dashboard-v06 .up-next.dashboard-next {
+  background:linear-gradient(152deg,#FFF0E2 0%,#F3E5D6 68%,#EED8C8 100%);
+  border-color:#FFF8EE;
+  box-shadow:inset 0 1px 0 #ffffffb8,0 5px 0 #151012,0 12px 20px #08060770;
+}
+.is-fluid-today .dashboard-v06 .dashboard-event-when {
+  font-weight:950;
+  letter-spacing:-.07em;
+}
+.is-fluid-today .dashboard-v06 .dashboard-team,
+.is-fluid-today .dashboard-v06 .dashboard-team.attention-tile.availability-action {
+  background:linear-gradient(156deg,#3F3B3D 0%,#333031 100%);
+  border-color:#B9A39B;
+  box-shadow:inset 0 1px 0 #ffffff31,0 5px 0 #151011,0 12px 20px #08060770;
+}
+.is-fluid-today .dashboard-v06 .dashboard-team-title {
+  font-weight:950;
+  letter-spacing:-.075em;
+}
+.is-fluid-today .dashboard-v06 .today-reading {
+  background:linear-gradient(147deg,#FFF1E3 0%,#F3E5D6 72%,#EAD5C5 100%);
+  border-color:#FFF8EE;
+  box-shadow:inset 0 1px 0 #ffffffbb,0 5px 0 #151012,0 12px 20px #08060770;
+}
+.is-fluid-today .dashboard-v06 .today-reading h2 {
+  letter-spacing:-.073em;
+  font-weight:950;
+}
+.is-fluid-today .dashboard-v06 .reading-actions button {
+  border-color:#D6BBAE;
+  box-shadow:inset 0 1px 0 #fff8,0 3px 0 #AE8D783d;
+  transition:transform 145ms ease,box-shadow 145ms ease,filter 145ms ease;
+}
+.is-fluid-today .dashboard-v06 .reading-actions .read-primary {
+  background:#E3002B;
+  border-color:#FF94A9;
+  box-shadow:inset 0 1px 0 #ffffff50,0 3px 0 #AC002C;
+}
+@media(hover:hover) {
+  .is-fluid-today .dashboard-v06 .dashboard-twins button:hover,
+  .is-fluid-today .dashboard-v06 .today-people-message:hover,
+  .is-fluid-today .dashboard-v06 .reading-actions button:hover {filter:brightness(1.045)}
+}
+.is-fluid-today .dashboard-v06 .dashboard-twins button:active,
+.is-fluid-today .dashboard-v06 .today-people-message:active,
+.is-fluid-today .dashboard-v06 .reading-actions button:active {
+  transform:translateY(3px);
+  box-shadow:inset 0 1px 0 #ffffff3c,0 2px 0 #1D1216,0 5px 11px #08060750;
+}
+
+/* Navigation: slightly more sculpted and unmistakably tappable. */
+.is-fluid-today .bottom {
+  border-color:#E7D6C6;
+  background:linear-gradient(165deg,#302D2D 0%,#242322 100%);
+  box-shadow:inset 0 1px 0 #FFFFFF25,0 5px 0 #151012,0 13px 24px #08060788;
+}
+.is-fluid-today .bottom button {
+  transition:background 145ms ease,transform 145ms ease;
+}
+.is-fluid-today .bottom button.active {
+  background:linear-gradient(150deg,#F01942 0%,#E3002B 90%);
+  box-shadow:inset 0 1px 0 #ffffff7d,0 2px 0 #990021;
+}
+.is-fluid-today .bottom button.fluid-quick {
+  background:linear-gradient(145deg,#F31A45,#E3002B 70%);
+  box-shadow:inset 0 1px 0 #ffffff4c,0 5px 0 #151010,0 9px 15px #0007;
+}
+.is-fluid-today .bottom button:active {
+  transform:translateY(2px);
+}
+
+/* Fidelity and usability checks at small widths; do not add any horizontal scroll. */
+@media(max-width:350px) {
+ .is-fluid-today .dashboard-v06 .today-people-heading h2{letter-spacing:-.055em}
+ .is-fluid-today .dashboard-v06 .dashboard-twins button{border-radius:25px}
+ .rp-screen-heading h2{letter-spacing:-.043em}
+}
+@media(prefers-reduced-motion:reduce) {
+ .rp-gateway button,.rp-campus-card,
+ .is-fluid-today .dashboard-v06 button,
+ .is-fluid-today .bottom button,.is-fluid-today .header button {
+   transition:none!important;animation:none!important;
+ }
+}

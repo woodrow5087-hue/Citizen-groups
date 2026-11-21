@@ -1,0 +1,49 @@
+name: Rally Point Preview QA
+
+on:
+  push:
+    branches:
+      - 'rally-point/v10-pilot-readiness'
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  preview-qa:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Check out preview branch
+        uses: actions/checkout@v4
+      - name: Use Node 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Install locked dependencies
+        run: npm ci
+      - name: Run unit and fixture flow tests
+        run: npm test
+      - name: Build static preview
+        run: npm run build
+      - name: Install Playwright Chromium
+        run: npx playwright install --with-deps chromium
+      - name: Run mobile, accessibility, source navigation and VersePlay regression
+        run: npm run test:browser
+      - name: Run animated onboarding → dashboard integration regression
+        run: npm run test:onboarding
+      - name: Run Blank Battle mobile gameplay and screenshot QA
+        run: npm run test:blank-battle
+      - name: Run Studio Concept four-screen preview QA
+        run: npm run test:studio
+      - name: Save visual QA screenshots and results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: rally-point-preview-qa
+          path: test-results/
+          if-no-files-found: ignore
+          retention-days: 7
