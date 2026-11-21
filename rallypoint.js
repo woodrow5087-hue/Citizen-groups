@@ -1,12 +1,15 @@
 (function rallyApp(){
 'use strict';
 const key='rallypoint-phase1-2026';
-const defaults=()=>({role:'member',groupPane:'chat',directPerson:'anna',directMessages:{},teamPane:'schedule',view:'today',discover:false,groupMessages:[{name:'Jess W.',time:'Yesterday',text:'What stood out to you in John 15 this week?'},{name:'Anna L.',time:'Today',text:'Looking forward to seeing everyone Wednesday.'}],teamMessages:[{name:'Sam R.',time:'Yesterday',text:'Welcome team — thank you for helping people feel at home!'}],prayers:[{name:'Marcus C.',time:'Yesterday',text:'Praying for wisdom with an upcoming decision.'}],rsvp:'',teamStatus:'pending',coverage:false,attendance:{anna:'here',jess:'here',marcus:'unknown',taylor:'unknown'},reached:[],interest:[],plan:'sermon',planQuestions:{},memoryTextRevision:'BSB-2026-1',memoryGames:{},memoryMode:'solo',memoryActive:null,memoryPassTurn:1,memoryTarget:null,question:'How can we love one another as Jesus has loved us?',read:false,prayed:false,companionCare:{},rhythm:{}});
+const defaults=()=>({role:'member',groupPane:'chat',directPerson:'anna',directMessages:{},teamPane:'schedule',view:'today',discover:false,groupMessages:[{name:'Jess W.',time:'Yesterday',text:'What stood out to you in John 15 this week?'},{name:'Anna L.',time:'Today',text:'Looking forward to seeing everyone Wednesday.'}],teamMessages:[{name:'Sam R.',time:'Yesterday',text:'Welcome team — thank you for helping people feel at home!'}],prayers:[{name:'Marcus C.',time:'Yesterday',text:'Praying for wisdom with an upcoming decision.'}],rsvp:'',teamStatus:'pending',coverage:false,attendance:{anna:'here',jess:'here',marcus:'unknown',taylor:'unknown'},reached:[],interest:[],plan:'sermon',planQuestions:{},memoryTextRevision:'BSB-2026-1',memoryGames:{},memoryMode:'solo',memoryActive:null,memoryPassTurn:1,memoryTarget:null,question:'How can we love one another as Jesus has loved us?',read:false,prayed:false,companionCare:{},companionChoices:{snoozedUntil:{}},rhythm:{}});
 let s;try{s={...defaults(),...JSON.parse(localStorage.getItem(key)||'null')}}catch(_){s=defaults()}
 if(!s||!s.groupMessages||!Array.isArray(s.groupMessages))s=defaults();
  if(!s.directMessages||typeof s.directMessages!=='object'||Array.isArray(s.directMessages))s.directMessages={};
  if(!s.planQuestions||typeof s.planQuestions!=='object'||Array.isArray(s.planQuestions))s.planQuestions={};
 if(!s.companionCare||typeof s.companionCare!=='object'||Array.isArray(s.companionCare))s.companionCare={};
+if(!s.companionChoices||typeof s.companionChoices!=='object'||Array.isArray(s.companionChoices))s.companionChoices={};
+if(!s.companionChoices.snoozedUntil||typeof s.companionChoices.snoozedUntil!=='object'||
+   Array.isArray(s.companionChoices.snoozedUntil))s.companionChoices.snoozedUntil={};
 if(!s.rhythm||typeof s.rhythm!=='object'||Array.isArray(s.rhythm))s.rhythm={};
 if(!s.memoryGames||typeof s.memoryGames!=='object'||Array.isArray(s.memoryGames))s.memoryGames={};
 if(!['solo','pass'].includes(s.memoryMode))s.memoryMode='solo';
@@ -137,7 +140,7 @@ function today(){
     </div>
     ${H.todayHero(todayUI)}
     ${H.peopleRail(todayUI,'today')}
-    ${H.todayPrompt(s,todayUI)}
+    ${H.todayPrompt(s,todayUI,chat)}
     ${renderPeople(snapshot,chat)}
     <div class="dashboard-twins" role="group" aria-label="Upcoming gathering and serving">${nextWidget}${teamWidget}</div>
     <div class="today-reading">
@@ -600,6 +603,16 @@ if(a==='rhythm-defer'){
  if(!Number.isFinite(Date.parse(s.rhythm.followUpAt))||Date.parse(s.rhythm.followUpAt)>Date.now())return;
  const now=new Date(),next=new Date(now);next.setDate(next.getDate()+1);next.setHours(0,0,0,0);
  s.rhythm.followUpAt=next.toISOString();render();notify('Your step will reappear next time you open Rally Point tomorrow.');return;
+}
+if(a==='companion-later'){
+  // Only defer the currently displayed, source-backed fictional suggestion.
+  // This does not mark unread as read, submit an RSVP, or alter anyone's data.
+  const current=window.RallyCompanionDecision?.choose({
+    state:s,ui:todayUI,conversation:conversation(),now:new Date()
+  });
+  if(!current?.deferable||current.id!==v)return;
+  s.companionChoices.snoozedUntil[v]=new Date(Date.now()+24*60*60*1000).toISOString();
+  render();notify('Idea deferred on this device for a day.');return;
 }
 if(a==='companion-snooze'){
   if(!todayUI.memberships.group)return;
