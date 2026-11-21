@@ -8,7 +8,8 @@
     "test:browser": "npm run build && node scripts/phase1-browser-check.mjs",
     "test:onboarding": "npm run build && node scripts/onboarding-browser-check.mjs",
     "pilot:check": "node scripts/check-pilot-readiness.cjs",
-    "test:blank-battle": "npm run build && node scripts/blank-battle-browser-check.mjs"
+    "test:blank-battle": "npm run build && node scripts/blank-battle-browser-check.mjs",
+    "test:groups-safety": "npm run build && node scripts/groups-safety-browser-check.mjs"
   },
   "engines": {
     "node": ">=22.12"
