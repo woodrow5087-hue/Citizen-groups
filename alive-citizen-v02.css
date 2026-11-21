@@ -1,0 +1,89 @@
+/* Rally Point ALIVE × CITIZEN v02
+ * Layered only on the standalone concept. V0.8 and ALIVE v01 remain untouched.
+ * References: Citizen's official site, public photos, Church Center links and
+ * example weekly recap supplied by the project sponsor.
+ */
+.citizen-campus-picker{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:0 0 10px}
+.citizen-campus-caption{font:900 8px/1 Manrope,system-ui,sans-serif;letter-spacing:.14em;color:#bdc7bd}
+#citizen-campus-button{display:flex;align-items:center;gap:6px;padding:6px 10px;border-radius:18px;color:#fff;background:#273438;border:1px solid #6c8d83;font-size:9px;font-weight:900;letter-spacing:.065em;min-height:32px}
+#citizen-campus-button:focus-visible{outline:3px solid #b6efe2}
+.citizen-pin{color:#ff5e79}
+.citizen-local-copy{margin-left:auto;font-size:7px;color:#c9d0c9;letter-spacing:.07em;font-weight:850}
+.citizen-story-ring{border-color:#ff476d;background:#102225}
+.citizen-story-ring img{object-fit:cover}
+.citizen-week{padding:21px 13px 20px;background:#f5efe4}
+.citizen-week-top{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:0 6px 12px}
+.citizen-edition{font-size:9px;color:#6c4745;font-weight:950;letter-spacing:.09em;white-space:nowrap}
+.citizen-week-hero{display:block;position:relative;overflow:hidden;height:257px;text-decoration:none;color:#fff;background:#192b33;border-radius:15px 5px 17px 5px}
+.citizen-week-hero>img{width:100%;height:100%;position:absolute;inset:0;object-fit:cover;object-position:center 47%;transition:transform .3s ease}
+.citizen-week-hero:hover>img{transform:scale(1.035)}
+.citizen-week-gradient{position:absolute;inset:0;background:linear-gradient(90deg,rgba(8,23,34,.94),rgba(14,34,42,.48) 68%,rgba(12,24,26,.1)),linear-gradient(0deg,rgba(2,12,18,.58),transparent 55%)}
+.citizen-week-heading{position:absolute;top:28px;left:20px;right:20px;display:flex;flex-direction:column;align-items:start;gap:10px}
+.citizen-week-heading small{font-size:9px;letter-spacing:.17em;font-weight:950;color:#d0e4e6}
+.citizen-week-heading strong{font-size:39px;line-height:.98;letter-spacing:-.077em;font-weight:950}
+.citizen-week-heading em{font-family:Georgia,serif;font-style:italic;color:#ffd0c5;font-weight:400}
+.citizen-week-heading>span{display:inline-flex;border:1px solid #f3d7ca98;color:#fff;background:#152b32b5;border-radius:20px;padding:7px 10px;font-size:11px;font-weight:850}
+.citizen-week-arrow{position:absolute;bottom:16px;right:15px;display:grid;place-items:center;width:39px;height:39px;border-radius:50%;background:#f7eddf;color:#263031;font-size:23px;font-weight:950}
+.citizen-week-actions{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:9px}
+.citizen-week-actions a{display:flex;align-items:center;justify-content:center;gap:8px;min-height:43px;padding:8px 7px;border-radius:10px;background:#fff9ef;color:#192d2c;text-align:center;font-size:11px;font-weight:950;text-decoration:none;border:1px solid #cbb8aa}
+.citizen-week-actions a>span{font-size:17px;line-height:1;color:#c2173c}
+.citizen-week-actions a:hover,.citizen-churchcenter-link a:hover{background:#f1ded0}
+.citizen-source-note{margin:10px 4px 0;color:#625c54;font-size:10px;line-height:1.5;font-weight:650}
+.citizen-local{background:#e4eae3;padding:24px 0 24px;border-top:1px solid #c8d2c8}
+.citizen-local-heading{margin-bottom:9px}
+.citizen-local-intro{margin:0 19px 18px;color:#45554d;font-size:12px;line-height:1.65;max-width:350px}
+.citizen-campus-cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;padding:0 14px}
+.citizen-campus-card{display:flex;flex-direction:column;justify-content:end;position:relative;height:198px;border-radius:16px 5px 16px 5px;overflow:hidden;color:#fff;text-decoration:none;background:#20383a;border:2px solid #f8f2e8}
+.citizen-campus-card.is-campus-active{outline:3px solid #e3002b;outline-offset:2px}
+.citizen-campus-card>img{width:100%;height:100%;position:absolute;inset:0;object-fit:cover}
+.citizen-campus-shadow{position:absolute;inset:0;background:linear-gradient(180deg,rgba(10,30,30,.05),rgba(10,27,31,.22) 35%,rgba(10,27,31,.9))}
+.citizen-campus-card>span:last-child{position:relative;z-index:1;display:flex;flex-direction:column;align-items:start;padding:15px 12px;gap:5px}
+.citizen-campus-card small{font-size:8px;letter-spacing:.13em;font-weight:900;color:#e8f3ec}
+.citizen-campus-card strong{font-size:26px;font-weight:950;letter-spacing:-.07em;line-height:1.1}
+.citizen-campus-card em{font-size:10px;font-style:normal;text-decoration:underline;text-underline-offset:2px;font-weight:800;color:#fff}
+.citizen-outreach-row{margin:22px 14px 0;display:grid;grid-template-columns:110px 1fr;gap:15px;align-items:center;padding:10px;background:#fff9ee;border:1px solid #d5d7cd;border-radius:14px}
+.citizen-outreach-row>img{width:110px;height:119px;object-fit:cover;border-radius:8px}
+.citizen-outreach-row>div{display:flex;flex-direction:column;align-items:start;gap:8px;padding:4px 3px 4px 0}
+.citizen-outreach-row span{font-size:8px;letter-spacing:.12em;font-weight:950;color:#914d4e}
+.citizen-outreach-row strong{font-size:20px;line-height:1.12;letter-spacing:-.05em;font-weight:950}
+.citizen-outreach-row a{font-size:11px;font-weight:900;color:#9b1237;text-decoration:underline;text-underline-offset:3px}
+.citizen-upcoming{padding:27px 0 21px;background:#f5efe4}
+.citizen-upcoming .section-heading{margin-bottom:16px}
+.citizen-upcoming-scroll{display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;padding:0 15px 9px;scrollbar-width:none}
+.citizen-update-card{position:relative;display:flex;flex-direction:column;align-items:start;gap:14px;flex:0 0 245px;height:260px;border-radius:16px 5px 17px 5px;scroll-snap-align:start;background:#6f9c9f;color:#122c30;padding:18px;overflow:hidden}
+.citizen-update-card:before{content:'';position:absolute;right:-38px;top:15px;width:135px;height:170px;border-radius:80px 80px 0 0;border:18px solid #cee1d8;opacity:.7}
+.citizen-update-banner{position:relative;z-index:1;font-size:9px;letter-spacing:.15em;font-weight:950}
+.citizen-update-card>strong{font:italic 400 53px/.95 Georgia,serif;letter-spacing:-.055em;z-index:1;margin:18px 0 0}
+.citizen-update-card>strong em{color:#fff9eb;font-style:italic}
+.citizen-update-card>small{position:relative;z-index:1;font-size:11px;font-weight:700;line-height:1.4}
+.citizen-update-card>a{position:relative;z-index:1;display:block;background:#fff7ea;border-radius:22px;color:#1a3534;font-size:11px;font-weight:950;text-decoration:none;padding:11px 13px;margin-top:auto}
+.citizen-update-card-dark{background:#26353a;color:#fff9ec}
+.citizen-update-card-dark:before{border-color:#42616b}
+.citizen-update-card-dark>strong em{color:#e7ff9e}
+.citizen-update-card-photo{background:#302e32;color:#fff}
+.citizen-update-card-photo>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.citizen-photo-cover{position:absolute;inset:0;background:linear-gradient(0deg,#112328ed 0%,#11232888 55%,#11232844)}
+.citizen-update-card-photo:before{display:none}
+.citizen-update-card-photo>strong{font-size:49px}
+.citizen-update-card-photo>strong em{color:#ffd2c5}
+.citizen-upcoming .citizen-source-note{padding:0 15px}
+.citizen-churchcenter-link{padding:17px;margin:8px 14px 20px;background:#f8fbf3;border:1px solid #cbcec5;border-radius:14px}
+.citizen-churchcenter-link small{font-size:9px;font-weight:950;letter-spacing:.12em;color:#893444}
+.citizen-churchcenter-link strong{display:block;font-size:20px;margin:9px 0 5px;letter-spacing:-.055em;line-height:1.16}
+.citizen-churchcenter-link p{color:#4e5e5c;margin:0 0 13px;font-size:11px;line-height:1.5}
+.citizen-churchcenter-link a{display:flex;justify-content:space-between;align-items:center;gap:8px;background:#edebdf;border-radius:9px;padding:11px;color:#252e31;font-size:11px;font-weight:900;text-decoration:none}
+.citizen-churchcenter-link a span{font-size:18px}
+.citizen-story-pop{padding:0 0 11px}
+.citizen-story-pop>img{width:100%;height:185px;border-radius:12px;object-fit:cover}
+.citizen-story-pop>h3{font-size:25px;line-height:1.1;letter-spacing:-.07em;margin:15px 0 8px}
+.citizen-story-pop>p{font-size:12px;line-height:1.5;color:#50605a}
+.citizen-story-pop>a{display:inline-flex;padding:11px 15px;border-radius:10px;background:#d9002d;color:white;font-size:11px;font-weight:900;text-decoration:none}
+@media(max-width:365px){
+.citizen-campus-picker{gap:5px}
+.citizen-local-copy{display:none}
+.citizen-week-heading strong{font-size:34px}
+.citizen-campus-card{height:170px}
+.citizen-outreach-row{grid-template-columns:95px 1fr}
+.citizen-outreach-row>img{width:95px}
+}
+@media(prefers-reduced-motion:reduce){.citizen-week-hero>img{transition:none!important}}
