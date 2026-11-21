@@ -1,12 +1,13 @@
 (function rallyApp(){
 'use strict';
 const key='rallypoint-phase1-2026';
-const defaults=()=>({role:'member',groupPane:'chat',directPerson:'anna',directMessages:{},teamPane:'schedule',view:'today',discover:false,groupMessages:[{name:'Jess W.',time:'Yesterday',text:'What stood out to you in John 15 this week?'},{name:'Anna L.',time:'Today',text:'Looking forward to seeing everyone Wednesday.'}],teamMessages:[{name:'Sam R.',time:'Yesterday',text:'Welcome team — thank you for helping people feel at home!'}],prayers:[{name:'Marcus C.',time:'Yesterday',text:'Praying for wisdom with an upcoming decision.'}],rsvp:'',teamStatus:'pending',coverage:false,attendance:{anna:'here',jess:'here',marcus:'unknown',taylor:'unknown'},reached:[],interest:[],plan:'sermon',planQuestions:{},memoryTextRevision:'BSB-2026-1',memoryGames:{},memoryMode:'solo',memoryActive:null,memoryPassTurn:1,memoryTarget:null,question:'How can we love one another as Jesus has loved us?',read:false,prayed:false,companionCare:{}});
+const defaults=()=>({role:'member',groupPane:'chat',directPerson:'anna',directMessages:{},teamPane:'schedule',view:'today',discover:false,groupMessages:[{name:'Jess W.',time:'Yesterday',text:'What stood out to you in John 15 this week?'},{name:'Anna L.',time:'Today',text:'Looking forward to seeing everyone Wednesday.'}],teamMessages:[{name:'Sam R.',time:'Yesterday',text:'Welcome team — thank you for helping people feel at home!'}],prayers:[{name:'Marcus C.',time:'Yesterday',text:'Praying for wisdom with an upcoming decision.'}],rsvp:'',teamStatus:'pending',coverage:false,attendance:{anna:'here',jess:'here',marcus:'unknown',taylor:'unknown'},reached:[],interest:[],plan:'sermon',planQuestions:{},memoryTextRevision:'BSB-2026-1',memoryGames:{},memoryMode:'solo',memoryActive:null,memoryPassTurn:1,memoryTarget:null,question:'How can we love one another as Jesus has loved us?',read:false,prayed:false,companionCare:{},rhythm:{}});
 let s;try{s={...defaults(),...JSON.parse(localStorage.getItem(key)||'null')}}catch(_){s=defaults()}
 if(!s||!s.groupMessages||!Array.isArray(s.groupMessages))s=defaults();
  if(!s.directMessages||typeof s.directMessages!=='object'||Array.isArray(s.directMessages))s.directMessages={};
  if(!s.planQuestions||typeof s.planQuestions!=='object'||Array.isArray(s.planQuestions))s.planQuestions={};
 if(!s.companionCare||typeof s.companionCare!=='object'||Array.isArray(s.companionCare))s.companionCare={};
+if(!s.rhythm||typeof s.rhythm!=='object'||Array.isArray(s.rhythm))s.rhythm={};
 if(!s.memoryGames||typeof s.memoryGames!=='object'||Array.isArray(s.memoryGames))s.memoryGames={};
 if(!['solo','pass'].includes(s.memoryMode))s.memoryMode='solo';
 if(!['sermon','study','year','romans'].includes(s.memoryActive))s.memoryActive=null;
@@ -330,6 +331,7 @@ function read(){
      <div class="read-section-label">${icon('message')} <span>REFLECT TOGETHER</span><i></i></div>
      <h2>A question worth sharing.</h2><p>${e(s.question)}</p>
      <button type="button" class="read-discuss-action" data-go="group" data-pane="chat">${icon('group')} Open group conversation ${icon('arrow')}</button>
+     ${H.rhythmEditor(s,plan)}
    </section>
    ${canLead('group')?`<section class="card read-leader-card">
      <div class="read-section-label">${icon('leader')} <span>GROUP LEADER · LOCAL DEMO</span></div>
@@ -502,6 +504,33 @@ if(['memory-pick','memory-check','memory-hint','memory-reset','memory-next-playe
    const outcome=M.check(g,key);s.memoryGames[scope]=outcome.state;s.memoryTarget=outcome.state.slots.indexOf(null);
    render();if(outcome.status==='complete')notify('Verse complete — nicely done!');return;
  }
+}
+if(a==='rhythm-save'){
+ if(s.view!=='read')return;
+ const text=$('rhythm-input')?.value.trim().slice(0,160)||'';
+ if(!text){notify('Choose one small action before saving.');return;}
+ const now=new Date(),next=new Date(now);
+ next.setDate(next.getDate()+1);next.setHours(8,0,0,0);
+ s.rhythm={text,passage:currentReading().passage,savedAt:now.toISOString(),followUpAt:next.toISOString(),completedAt:null};
+ delete drafts['rhythm-input'];
+ render();notify('Your step is saved locally for tomorrow.');return;
+}
+if(a==='rhythm-clear'){
+ if(s.view!=='read')return;
+ s.rhythm={};delete drafts['rhythm-input'];
+ render();notify('Local step cleared.');return;
+}
+if(a==='rhythm-complete'){
+ if(typeof s.rhythm?.text!=='string'||!s.rhythm.text.trim()||s.rhythm.completedAt)return;
+ if(!Number.isFinite(Date.parse(s.rhythm.followUpAt))||Date.parse(s.rhythm.followUpAt)>Date.now())return;
+ s.rhythm.completedAt=new Date().toISOString();
+ render();notify('You marked your step complete.');return;
+}
+if(a==='rhythm-defer'){
+ if(typeof s.rhythm?.text!=='string'||!s.rhythm.text.trim()||s.rhythm.completedAt)return;
+ if(!Number.isFinite(Date.parse(s.rhythm.followUpAt))||Date.parse(s.rhythm.followUpAt)>Date.now())return;
+ const now=new Date(),next=new Date(now);next.setDate(next.getDate()+1);next.setHours(8,0,0,0);
+ s.rhythm.followUpAt=next.toISOString();render();notify('Your step will reappear next time you open Rally Point tomorrow.');return;
 }
 if(a==='companion-snooze'){
   if(!todayUI.memberships.group)return;
