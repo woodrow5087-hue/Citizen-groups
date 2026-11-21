@@ -31,14 +31,14 @@ jobs:
         run: npm run build
       - name: Install Playwright Chromium
         run: npx playwright install --with-deps chromium
+      - name: Run Studio Concept four-screen preview QA
+        run: npm run test:studio
       - name: Run mobile, accessibility, source navigation and VersePlay regression
         run: npm run test:browser
       - name: Run animated onboarding → dashboard integration regression
         run: npm run test:onboarding
       - name: Run Blank Battle mobile gameplay and screenshot QA
         run: npm run test:blank-battle
-      - name: Run Studio Concept four-screen preview QA
-        run: npm run test:studio
       - name: Save visual QA screenshots and results
         if: always()
         uses: actions/upload-artifact@v4
