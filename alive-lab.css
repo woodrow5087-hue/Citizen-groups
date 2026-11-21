@@ -204,3 +204,21 @@ img{display:block;max-width:100%}
 @media(min-width:901px) and (max-height:740px){.lab-phone{min-height:590px}.stage-note{min-height:590px}}
 @media(max-width:350px){.day-intro h1,.groups-intro h1{font-size:43px}.photo-wordmark{font-size:45px}.people-reel{gap:10px}.feature-photo-card{height:386px}.rhythm-card{flex-basis:220px;min-width:220px}.moment-body{grid-template-columns:1fr 105px}.groups-section-heading h2{font-size:31px}.group-feature-body{grid-template-columns:72px 1fr}}
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.01ms!important;transition-duration:.01ms!important;scroll-behavior:auto!important}}
+
+.concept-corner{font-size:15px;letter-spacing:-.025em;text-transform:none}
+.corner-index select{color:var(--paper);background:var(--deep);border:1px solid #748782;border-radius:99px;padding:6px 10px;font:700 13px Manrope,Arial,sans-serif}
+.find-group{text-decoration:none}.find-group .story-avatar{display:grid;place-items:center;font-size:30px;border-color:#739289}
+.story-item.seen .story-avatar{border-color:#63706b}
+.sermon{background:#103746;color:#fff9ef}.sermon>img,.upcoming>img{width:100%;display:block}
+.sermon-body,.discussion,.recap-block{padding:22px}.sermon-body small,.discussion small{font-weight:850;letter-spacing:.13em;font-size:10px}
+.sermon h1{font-size:clamp(35px,7vw,48px);line-height:.98;letter-spacing:-.065em;margin:10px 0}
+.sermon p,.upcoming p{margin:8px 0 16px}.sermon-actions{display:flex;flex-wrap:wrap;gap:10px}
+.sermon-actions>*{display:inline-flex;align-items:center;border-radius:24px;border:1px solid #a2bdc2;padding:10px 14px;font:700 13px Manrope,Arial,sans-serif;color:white;background:transparent;text-decoration:none}
+.sermon-actions a{background:#f7ecd8;color:#143642;border-color:transparent}
+.discussion{background:#fae6d2;color:#261c1c;border-bottom:1px solid #d9c7b6}
+.discussion small{color:#8f1838}.discussion h2,.recap-block h2{font-size:28px;line-height:1.1;letter-spacing:-.055em;margin:6px 0 12px}
+.weekly-question{line-height:1.55;margin:0 0 14px;max-width:42ch}
+.recap-link{display:inline-block;padding:7px 0;border:0;background:none;color:#891234;font-weight:850;text-decoration:underline;text-underline-offset:4px}
+.recap-block{background:#fff8ed}.upcoming{padding-top:2px}.upcoming>img{border-radius:12px}.upcoming h3{margin:14px 0 0}
+#albums{display:grid;grid-template-columns:1fr 1fr;gap:8px}.album{background:#172324;border-radius:12px;color:white;text-decoration:none;display:flex;align-items:center;gap:9px;overflow:hidden}.album img{width:38%;height:78px;object-fit:cover}.album small,.album strong{display:block}.album small{font-size:10px}
+#reply-form label{display:block;font-weight:800}#reply{display:block;width:100%;margin-top:6px;border-radius:12px;padding:10px;font:inherit}
