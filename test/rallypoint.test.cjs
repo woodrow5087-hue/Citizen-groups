@@ -12,7 +12,7 @@ function open(t,{saved,ui,blocked=false,now='2026-11-23T12:00:00'}={}){
  if(saved)w.localStorage.setItem(key,JSON.stringify(saved));if(ui)w.localStorage.setItem(T.UI_KEY,JSON.stringify(ui));
  const other='{"reflection":"An existing Citizen Connect note"}';w.localStorage.setItem('citizen-premium-hybrid-demo-v1',other);
  if(blocked)Object.defineProperty(w,'localStorage',{get(){throw Error('Blocked storage');}});
- for(const name of ['rallypoint-today.js','rallypoint-ui.js','rallypoint-memorize.js','rallypoint-verseplay-ui.js','rallypoint.js'])w.eval(fs.readFileSync(path.join(root,name),'utf8'));
+ for(const name of ['rallypoint-today.js','rallypoint-ui.js','rallypoint-memorize.js','rallypoint-verseplay-ui.js','rallypoint-premium-alive.js','rallypoint.js'])w.eval(fs.readFileSync(path.join(root,name),'utf8'));
  const click=selector=>{const el=d.querySelector(selector);assert.ok(el,selector);el.click();};
  const type=(id,value)=>{const el=d.getElementById(id);assert.ok(el,id);el.value=value;el.dispatchEvent(new w.Event('input',{bubbles:true}));};
  return {w,d,click,type,action:a=>click('[data-action="'+a+'"]'),go:v=>click('#nav [data-go="'+v+'"]'),saved:()=>JSON.parse(w.localStorage.getItem(key)),ui:()=>JSON.parse(w.localStorage.getItem(T.UI_KEY)),text:()=>d.getElementById('view').textContent,other};
@@ -83,10 +83,13 @@ test('Your People shows the actual latest local group conversation and routes to
  assert.ok(panel);
  const sections=[...app.d.querySelector('.today-screen').children];
  assert.equal(sections[0].classList.contains('today-welcome'),true);
- assert.equal(sections[1],panel,'Your People must appear immediately after the greeting');
- assert.equal(sections[2].classList.contains('dashboard-twins'),true,'Up Next and Team share the second dashboard row');
- assert.ok(sections[2].querySelector('.up-next'));
- assert.ok(sections[2].querySelector('.dashboard-team'));
+ assert.equal(sections[1].classList.contains('pa-today-hero'),true,'Photo-led Premium Hybrid hero follows greeting');
+ assert.equal(sections[2].classList.contains('pa-people-rail'),true,'ALIVE-style circle rail follows the hero');
+ assert.equal(sections[3].classList.contains('pa-companion'),true,'Companion prompt has its own contextual action');
+ assert.equal(sections[4],panel,'Existing local conversation is preserved beneath the new modules');
+ assert.equal(sections[5].classList.contains('dashboard-twins'),true,'Original gathering/team actions remain');
+ assert.ok(sections[5].querySelector('.up-next'));
+ assert.ok(sections[5].querySelector('.dashboard-team'));
  assert.equal(panel.querySelectorAll('.today-people-avatar').length,4);
  assert.equal(panel.querySelector('.today-people-message-author').textContent,'Anna L.');
  assert.match(panel.querySelector('.today-people-message-text').textContent,/Looking forward to seeing everyone Wednesday/);
@@ -112,7 +115,9 @@ test('Your People adapts to authorized leaders and group discovery without inven
  app.action('demo-controls');
  app.click('[data-action="scenario"][data-value="no-memberships"]');
  assert.ok(app.d.querySelector('.today-people--discover'));
- assert.equal(app.d.querySelector('.today-screen').children[1].classList.contains('today-people--discover'),true);
+ assert.equal(app.d.querySelector('.pa-people-rail'),null,'No fictional personal network without a demo group membership');
+ assert.ok(app.d.querySelector('.today-screen .pa-today-hero'));
+ assert.ok(app.d.querySelector('.today-screen .pa-companion'));
  assert.equal(app.d.querySelector('.today-people-avatar'),null);
  assert.equal(app.d.querySelector('.today-people-message'),null);
  assert.equal(app.d.querySelector('.today-people-leader'),null);
