@@ -89,7 +89,7 @@ img{display:block;max-width:100%}
 .rhythm-bottom>b{width:40px;height:40px;border-radius:50%;font-size:25px;display:grid;place-items:center;flex:none}
 .rhythm-scripture{background:#fba442;color:#211d1f;box-shadow:0 5px 0 #df702f}
 .rhythm-scripture:before{content:'✳';position:absolute;top:34px;right:-31px;color:#ffdb9d;font-size:175px;line-height:1;transform:rotate(-25deg)}
-.big-interlude{font-weight:950;letter-spacing:-.08em;font-size:73px;line-height:.78;color:#eb5536;transform:rotate(-8deg) translate(-11px,10px);opacity:.65}
+.big-interlude{font-weight:950;letter-spacing:-.08em;font-size:73px;line-height:.78;color:#64252c;transform:rotate(-8deg) translate(-11px,10px);opacity:.94}
 .rhythm-scripture .rhythm-bottom>b{background:#211d1f;color:#fff}
 .rhythm-prayer{background:#25434b;color:#fff5e9;box-shadow:0 5px 0 #142428}
 .rhythm-prayer:before{content:'';position:absolute;top:58px;right:-47px;width:188px;height:188px;border:25px solid #518a8a;border-radius:50%;opacity:.6}
@@ -99,7 +99,7 @@ img{display:block;max-width:100%}
 .serve-scribble{position:absolute;right:-3px;top:59px;color:#adc550;font-weight:950;font-size:47px;letter-spacing:-.11em;line-height:.83;transform:rotate(-12deg)}
 .rhythm-serving .rhythm-bottom>b{background:#192427;color:#fff}
 .people-moment{background:#e1ebe3;padding:25px 19px 20px;border-top:1px solid #cad4c6;border-bottom:1px solid #cad4c6}
-.moment-overline{display:flex;align-items:center;gap:7px;color:#68776d;font-size:9px;letter-spacing:.13em;font-weight:950}
+.moment-overline{display:flex;align-items:center;gap:7px;color:#43554c;font-size:9px;letter-spacing:.13em;font-weight:950}
 .moment-overline span{color:var(--red)}
 .moment-body{display:grid;grid-template-columns:1fr 124px;gap:13px;margin-top:19px;align-items:start}
 .moment-body h2{font-size:30px;line-height:1.01;letter-spacing:-.08em;margin:0;font-weight:950}
