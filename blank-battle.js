@@ -3,10 +3,10 @@
   'use strict';
   const M = window.RallyMemory;
   function mountGame(root) {
-    const mount = root?.querySelector('#bb-screen');
+    const mount = root?.querySelector?.('#bb-screen') || document.getElementById('bb-screen');
     if (!root || !mount || !M) return;
-    if (root.dataset.blankBattleReady === 'true') return;
-    root.dataset.blankBattleReady = 'true';
+    if (root.dataset?.blankBattleReady === 'true') return;
+    if (root.dataset) root.dataset.blankBattleReady = 'true';
   const STORAGE_KEY = 'rallypoint-blank-battle-v1';
   const verseIds = ['romans', 'sermon', 'study', 'year'];
   const validId = value => verseIds.includes(value);
