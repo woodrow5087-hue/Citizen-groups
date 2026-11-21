@@ -55,6 +55,7 @@ try{
    assert.match(await page.locator('.phone-slot.is-mobile-active').innerText(),/1 follow-up to review/);
    await page.locator('.phone-slot.is-mobile-active .phone-bottom [data-view="read"]').click();
    assert.ok(await page.locator('.phone-slot.is-mobile-active .reading-plan-hero').isVisible(),'approved Read plan hero');
+   assert.equal(await page.locator('.phone-slot.is-mobile-active .reading-plan-image').evaluate(async img=>{try{await img.decode();return img.naturalWidth>0}catch{return false}}),true,'local reading landscape loads');
    await page.screenshot({path:path.join(out,'studio-concept-read-mobile.png'),fullPage:true});
    await page.locator('.phone-slot.is-mobile-active [data-action="readpane"][data-pane="study"]').click();
    assert.ok(await page.locator('.phone-slot.is-mobile-active [data-action="game"]').isVisible(),'game linked from Study');
