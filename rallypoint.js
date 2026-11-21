@@ -131,7 +131,7 @@ function today(){
       <div class="reading-actions">
         <button type="button" class="read-primary" data-go="read" data-reading="scripture">${s.read?icon('check'):icon('read')} ${s.read?'Read today':'Read'}</button>
         <button type="button" data-go="read" data-reading="questions">${icon('message')} Reflect</button>
-        <button type="button" class="read-play-cta" data-go="read" data-reading="memorize">${icon('check')} Play</button>
+        <button type="button" class="read-play-cta" data-go="play" aria-label="Play the new Blank Battle Scripture game">${icon('check')} Memorize</button>
       </div>
       <p class="reading-caption">${todayUI.memberships.group?'Your group’s selection':'Daily Scripture'} · Fictional reading fixture${s.read?' · Read today':''}</p>
     </div>
@@ -300,6 +300,14 @@ function read(){
  const plan=currentReading();
  return `<section class="read-screen-v09">
    <div class="read-v09-hero"><div class="read-v09-overline">READ · REFLECT · REMEMBER</div><h1>In the<br>Word<span>.</span></h1><p>Your daily rhythm in Scripture, connected to your community.</p></div>
+   <section class="rp-game-entry" aria-label="VersePlay Blank Battle">
+      <div class="rp-game-entry-top"><span>VERSEPLAY · FEATURED GAME</span><span aria-hidden="true">✳</span></div>
+      <h2>Make the words<br><em>click.</em></h2>
+      <p>Five missing words. One verse to remember. Play a quick round of Blank Battle.</p>
+      <button type="button" class="rp-game-entry-play" data-go="play" aria-label="Play Blank Battle">${icon('check')} PLAY BLANK BATTLE ${icon('arrow')}</button>
+      <small>Private, on-device puzzle · No online opponents</small>
+   </section>
+   <div class="rp-game-classic-label"><strong>MORE WAYS TO PRACTICE</strong><span>Classic &amp; two-player pass-and-play</span></div>
    ${VP.render(s,e,icon)}
    <div class="read-focus-card">
      <div class="read-focus-head"><span>YOUR READING PATH · SAMPLE</span>${icon('read')}</div>
@@ -331,21 +339,58 @@ function read(){
    </div>${footer()}
  </section>`;
 }
+function play(){
+ return `<section class="rp-play-screen" aria-label="VersePlay Blank Battle game">
+   <div class="rp-play-toolbar"><button type="button" class="rp-play-back" data-go="read" data-reading="memorize" aria-label="Back to Read">← Back to Read</button><span>VERSEPLAY · SOLO GAME</span></div>
+   <div id="rp-blankbattle-host" class="rp-blankbattle-host"></div>
+   <p class="rp-play-note">This is a local game preview. Your puzzle progress is saved in this browser, separately from church activity.</p>
+ </section>`;
+}
+function mountBlankBattle(){
+ const host=$('rp-blankbattle-host');
+ if(!host||!window.RallyBlankBattle)return;
+ const shadow=host.attachShadow({mode:'open'});
+ shadow.innerHTML=`<link rel="stylesheet" href="blank-battle.css">
+ <style>
+ :host{display:block;--night:#111219;--panel:#171922;--cream:#f9f7eb;--lime:#dfff00;--aqua:#24bcae;--muted:#a6a9b5;--line:#46515b;--red:#ed2850;color:var(--cream);font-family:Manrope,system-ui,-apple-system,sans-serif}
+ .bb-app{font-family:Manrope,system-ui,-apple-system,sans-serif;color:var(--cream);background:transparent;padding:3px 0 20px;min-width:0;max-width:none}
+ .bb-heading{margin:13px 0 14px}
+ .bb-heading h1{font-size:clamp(36px,9.2vw,53px)}
+ .bb-reset{font-size:11px;padding:7px 10px}
+ .bb-identity{margin-bottom:13px}
+ .bb-board{padding:17px 12px 19px;border-radius:22px}
+ .bb-verse{font-size:clamp(16px,4.5vw,21px);line-height:2.75}
+ .bb-slot{min-width:58px;min-height:41px;padding:4px 8px}
+ .bb-ref{gap:6px;margin-bottom:12px;font-size:13px}
+ .bb-ref strong{font-size:15px;padding:7px 12px}
+ .bb-tiles{gap:12px 8px}
+ .bb-tile{min-width:66px;min-height:48px;font-size:15px;padding:10px 14px}
+ .bb-bank{margin-top:21px}
+ .bb-actions{margin-top:21px}
+ .bb-hint{min-width:83px;font-size:11px}
+ .bb-footer{margin-bottom:0}
+ @media(max-width:350px){.bb-verse{font-size:15px}.bb-tile{font-size:14px;padding:10px 11px;min-width:59px}.bb-slot{min-width:54px}.bb-heading h1{font-size:37px}}
+ </style>
+ <div class="bb-app" id="bb-app"><div class="bb-heading"><div><div class="bb-eyebrow"><span class="bb-live"></span> THE MEMORY ARCADE</div><h1>Memorize<span>.</span></h1></div><button type="button" class="bb-reset" data-action="reset" aria-label="Restart this round"><span aria-hidden="true">↺</span> Reset</button></div><div class="bb-identity" aria-label="Game mode"><strong>BLANK BATTLE</strong><span class="bb-identity-rule" aria-hidden="true"></span><span>WORD PUZZLE</span></div><section class="bb-game" aria-label="Fill in the Scripture"><div id="bb-screen"></div></section><p class="bb-footer">LOCAL PUZZLE · BEREAN STANDARD BIBLE</p></div>`;
+ window.RallyBlankBattle.mount(shadow.querySelector('#bb-app'));
+}
 function footer(){return `<p class="disclaimer">RallyPoint Phase 1 · Interactive sample data only. Nothing is sent to other people, church systems, or notifications.</p>`}
 function render(){
 const view=$('view'),position=view.scrollTop;
 view.querySelectorAll('textarea').forEach(field=>{drafts[field.id]=field.value});
-if(!['today','group','team','read'].includes(s.view))s.view='today';
+if(!['today','group','team','read','play'].includes(s.view))s.view='today';
 if(s.view==='group'&&todayUI.memberships.group&&['chat','prayer'].includes(s.groupPane))todayUI.seenGroupSignature=T.signature(s);
 if(s.role!=='leader'){if(s.groupPane==='leader')s.groupPane='chat';if(s.teamPane==='leader')s.teamPane='schedule';}
 save();
 document.querySelector('.phone-inner').classList.toggle('is-fluid-today',s.view==='today');
  document.querySelector('.phone-inner').classList.toggle('is-groups-v07',s.view==='group');
  document.querySelector('.phone-inner').classList.toggle('is-team-v08',s.view==='team');
- document.querySelector('.phone-inner').classList.toggle('is-read-v09',s.view==='read');
- view.innerHTML=(storageWarning?`<p class="storage-notice" role="status">${e(storageWarning)}</p>`:'')+(s.view==='today'?today():s.view==='group'?group():s.view==='team'?team():read());
+ document.querySelector('.phone-inner').classList.toggle('is-read-v09',s.view==='read'||s.view==='play');
+ document.querySelector('.phone-inner').classList.toggle('is-play-v08',s.view==='play');
+ view.innerHTML=(storageWarning?`<p class="storage-notice" role="status">${e(storageWarning)}</p>`:'')+(s.view==='today'?today():s.view==='group'?group():s.view==='team'?team():s.view==='play'?play():read());
+if(s.view==='play')mountBlankBattle();
 view.querySelectorAll('textarea').forEach(field=>{if(drafts[field.id]!==undefined)field.value=drafts[field.id]});
-$('nav').innerHTML=[['today','Today','home'],['group','Groups','group'],['team','Team','team'],['read','Read','read']].map(([id,label,glyph])=>`<button type="button" class="${s.view===id?'active':''}" data-go="${id}" ${s.view===id?'aria-current="page"':''}>${icon(glyph)}<small>${label}</small></button>`).join('');
+$('nav').innerHTML=[['today','Today','home'],['group','Groups','group'],['team','Team','team'],['read','Read','read']].map(([id,label,glyph])=>`<button type="button" class="${s.view===id||(s.view==='play'&&id==='read')?'active':''}" data-go="${id}" ${s.view===id||(s.view==='play'&&id==='read')?'aria-current="page"':''}>${icon(glyph)}<small>${label}</small></button>`).join('');
  if(s.view==='today')$('nav').children[1].insertAdjacentHTML('afterend',`<button type="button" class="fluid-quick" data-action="quick-actions" aria-label="Quick actions">${icon('plus')}<small>Quick</small></button>`);
 $('profile-initials').textContent=(todayUI.name||'Jonathan').split(/\s+/).map(v=>v[0]).join('').slice(0,2).toUpperCase();
 const snapshot=T.snapshot(s,todayUI);$('activity-dot').hidden=!snapshot.attention&&!snapshot.leader;
