@@ -108,7 +108,7 @@
     '<button type="button" class="read-action game" data-action="game"><strong>VERSEPLAY · BLANK BATTLE →</strong><small>Play the polished memory game from the current prototype</small></button>'+
   '</div>';
  }
- const contents={today,people,team,care,read};
+ const contents={today,people,team,care:leader,read};
  function draw(){
   slots.forEach((slot,i)=>{
    const article=slot.querySelector('.phone');
