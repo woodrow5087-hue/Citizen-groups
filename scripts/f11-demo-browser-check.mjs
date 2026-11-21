@@ -40,6 +40,10 @@ try{
   assert.match(sample,/Sample:/);
   await page.locator('[data-action="send"][data-value="group"]').click();
   assert.ok((await page.locator('#view').textContent()).includes(sample),'only intentional sample message appears');
+  // Review capture: show staff testers the actual guided composer and safety note.
+  await page.locator('.rp-demo-example').scrollIntoViewIfNeeded();
+  const captureDir=path.join(root,'test-results');fs.mkdirSync(captureDir,{recursive:true});
+  await page.screenshot({path:path.join(captureDir,'f11-sample-composer-390.png'),animations:'disabled'});
 
   await page.locator('#group-input').fill('My contact is private.person@example.com');
   await page.locator('[data-action="send"][data-value="group"]').click();
@@ -59,6 +63,8 @@ try{
   await page.locator('.profile-avatar').click();
   await page.locator('[data-action="reset-demo"]').click();
   assert.match(await page.locator('#dialog-root').textContent(),/This cannot be undone/);
+  // Review capture: the deliberate two-step destructive reset confirmation.
+  await page.screenshot({path:path.join(root,'test-results','f11-reset-confirm-390.png'),animations:'disabled'});
   await page.locator('#dialog-root [data-action="demo-controls"]').click();
   assert.ok(await page.locator('[data-action="reset-demo"]').isVisible(),'cancel retains demo');
   await page.locator('[data-action="reset-demo"]').click();
