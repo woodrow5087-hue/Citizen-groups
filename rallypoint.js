@@ -413,7 +413,7 @@ function closeDialog(restore=true){
 if(!dialog)return;dialog=null;$('dialog-root').innerHTML='';document.querySelector('.phone-inner').inert=false;
 if(restore){if(dialogTrigger?.isConnected)dialogTrigger.focus({preventScroll:true});else $('view').focus({preventScroll:true});}
 }
-function showDialog(type,trigger=document.activeElement){dialogTrigger=trigger;dialog=type;renderDialog();}
+function showDialog(type,trigger=document.activeElement){const toast=$('toast');if(toast){toast.hidden=true;clearTimeout(notify.timer);}dialogTrigger=trigger;dialog=type;renderDialog();}
 function renderDialog(){
 let title='',body='';const snapshot=T.snapshot(s,todayUI);
 if(dialog==='demo-controls'){
