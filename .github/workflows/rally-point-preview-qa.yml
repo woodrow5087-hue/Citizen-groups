@@ -33,6 +33,14 @@ jobs:
         run: npx playwright install --with-deps chromium
       - name: Run Studio Concept four-screen preview QA
         run: npm run test:studio
+      - name: Save approved four-screen QA snapshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: rally-point-approved-visuals
+          path: test-results/studio-concept-*.png
+          if-no-files-found: ignore
+          retention-days: 7
       - name: Run mobile, accessibility, source navigation and VersePlay regression
         run: npm run test:browser
       - name: Run animated onboarding → dashboard integration regression
