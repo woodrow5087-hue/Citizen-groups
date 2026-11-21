@@ -287,3 +287,32 @@
 @media(prefers-reduced-motion:reduce){
   .premium-alive .pa-today-hero,.premium-alive .pa-person-trigger,.premium-alive .pa-companion-link{transition:none!important;animation:none!important}
 }
+
+/* Companion v0.2: action → optional follow-up → remembered completion.
+ * Scoped to the approved Premium ALIVE card and existing cream group surface. */
+.premium-alive .pa-care-later{
+  display:block;width:100%;min-height:44px;margin:6px 0 0;
+  padding:9px 12px;background:transparent;border:1px solid #BAA293;
+  border-radius:13px;color:#463E3B;text-align:center;font-size:11px;font-weight:800;
+}
+.premium-alive .pa-care-memory{
+  display:flex;align-items:center;margin:12px 0 0;padding:10px 12px;
+  border-radius:12px;background:#E0EDE5;border:1px solid #B2CCBF;
+  color:#244D41;font-size:10px;line-height:1.5;font-weight:800;
+}
+.premium-alive .pa-care-context{
+  padding:13px 14px;margin:0 0 15px;border-left:4px solid #E3002B;
+  border-radius:0 15px 15px 0;background:#FFF1E2;color:#242322;
+}
+.premium-alive .pa-care-context strong{display:block;font-size:14px;letter-spacing:-.03em}
+.premium-alive .pa-care-context p{
+  margin:7px 0 10px;font-size:12px;line-height:1.5;color:#5E504A;
+}
+.premium-alive .pa-care-starter{
+  min-height:44px;border:1px solid #E3002B;color:#B80029;
+  border-radius:13px;background:transparent;padding:9px 14px;
+  font-size:12px;font-weight:850;
+}
+@media(prefers-reduced-motion:reduce){
+  .premium-alive .pa-care-later,.premium-alive .pa-care-starter{transition:none!important;animation:none!important}
+}
