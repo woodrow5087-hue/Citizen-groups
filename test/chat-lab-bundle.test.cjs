@@ -15,6 +15,7 @@ test('browser bundle uses the actual reviewed F-02 contracts and repository',()=
  assert.equal(api.SCHEMA_VERSION,1);
  assert.equal(typeof api.assertConversationSnapshot,'function');
  assert.equal(typeof api.createMockConversationRepository,'function');
+ assert.equal(typeof api.createMockAccessPolicy,'function');
  const empty=api.emptyConversationSnapshot();
  const repo=api.createMockConversationRepository({seed:empty});
  assert.equal(repo.schemaVersion,1);
@@ -23,7 +24,7 @@ test('browser bundle uses the actual reviewed F-02 contracts and repository',()=
  assert.ok(source.includes('readCursors'));
 });
 
-test('lab is standalone and preserves app entrypoint, CSS, browser storage, and build assets',()=>{
+test('shared controller powers both standalone lab and in-app Groups without legacy-storage writes',()=>{
  const app=fs.readFileSync(path.join(root,'rallypoint.js'),'utf8');
  const html=fs.readFileSync(path.join(root,'index.html'),'utf8');
  const lab=fs.readFileSync(path.join(root,'wednesday-chat-lab.html'),'utf8');
@@ -32,9 +33,14 @@ test('lab is standalone and preserves app entrypoint, CSS, browser storage, and 
  const css=fs.readFileSync(path.join(root,'wednesday-chat-lab.css'),'utf8');
  for(const key of ['wednesday-chat-lab.js','rallypoint-chat-domain.browser.js','wednesday-chat-lab.css']){
    assert.ok(lab.includes(key),'expected lab asset '+key);
-   assert.equal(html.includes(key),false,'lab must not alter existing app entrypoint');
-   assert.equal(app.includes(key),false,'lab must not alter running app controller');
  }
+ assert.ok(html.includes('wednesday-chat-lab.js'),'shared controller must be in actual Groups app');
+ assert.ok(html.includes('rallypoint-chat-domain.browser.js'),'shared F-02/F-03 runtime must load');
+ assert.ok(html.includes('rallypoint-wednesday-integrated.css'),'embedded styles are scoped');
+ assert.equal(html.includes('wednesday-chat-lab.css'),false,'standalone CSS must not affect original screens');
+ assert.ok(app.includes('G.integratedGroupChat('));
+ assert.ok(app.includes('Chat.mount(root,{authorize})'));
+ assert.ok(logic.includes('window.RallyWednesdayChat=Object.freeze({mount})'));
  assert.ok(build.includes('wednesday-chat-lab.html'));
  assert.ok(build.includes("require('./build-chat-lab.cjs').buildChatDomainBundle(out)"));
  assert.ok(logic.includes("'rallypoint-wednesday-chat-lab-v1'"));
