@@ -190,7 +190,7 @@ if(!todayUI.memberships.group)return groupBrowse();
 if(s.discover)return groupBrowse();
 const opts=[['chat','Conversation'],['people','People'],...(s.groupPane==='direct'?[['direct','Direct message']]:[]),['gather','Gathering'],['prayer','Prayer'],...(canLead('group')?[['leader','Leader tools']]:[])];
 let body='';
-if(s.groupPane==='chat')body=G.legacyGroupChat({messages:s.groupMessages,escape:e});
+if(s.groupPane==='chat')body=G.integratedGroupChat({messages:s.groupMessages,escape:e});
 if(s.groupPane==='people')body=`<div class="card group-people-card">
   <div class="kicker">YOUR PEOPLE · SAMPLE COMMUNITY</div>
   <h2>Stay connected.</h2>
@@ -402,6 +402,25 @@ document.querySelector('.phone-inner').classList.toggle('is-fluid-today',s.view=
  view.innerHTML=(storageWarning?`<p class="storage-notice" role="status">${e(storageWarning)}</p>`:'')+(s.view==='today'?today():s.view==='group'?group():s.view==='team'?team():s.view==='play'?play():read());
 if(s.view==='play')mountBlankBattle();
 view.querySelectorAll('textarea').forEach(field=>{if(drafts[field.id]!==undefined)field.value=drafts[field.id]});
+if(s.view==='group'&&s.groupPane==='chat'&&todayUI.memberships.group&&$('rpx-chat')){
+  const root=$('rpx-chat'),Chat=window.RallyWednesdayChat,Domain=window.RallyChatDomain;
+  if(Chat&&Domain&&typeof Domain.createMockAccessPolicy==='function'){
+    // This is a demo-only access-policy fixture; NO production authentication.
+    const policy=Domain.createMockAccessPolicy({
+      actors:[{id:'u_you',organizationId:'citizen_demo',role:'member',fixtureVerified:true}],
+      groupMemberships:[{userId:'u_you',organizationId:'citizen_demo',
+        scopeId:'wed',status:todayUI.memberships.group?'active':'revoked'}]
+    });
+    const authorize=action=>!!todayUI.memberships.group&&policy.evaluate({
+      actorId:'u_you',resource:{id:'group_wednesday',kind:'group_thread',
+        organizationId:'citizen_demo',groupId:'wed'},action
+    }).allowed===true;
+    Chat.mount(root,{authorize});
+  }else{
+    const note=root.querySelector('#lab-error');
+    if(note){note.hidden=false;note.textContent='The new fictional conversation could not load. Your earlier saved messages remain available below.';}
+  }
+}
 $('nav').innerHTML=[['today','Today','home'],['group','Groups','group'],['team','Team','team'],['read','Read','read']].map(([id,label,glyph])=>`<button type="button" class="${s.view===id||(s.view==='play'&&id==='read')?'active':''}" data-go="${id}" ${s.view===id||(s.view==='play'&&id==='read')?'aria-current="page"':''}>${icon(glyph)}<small>${label}</small></button>`).join('');
 
 $('profile-initials').textContent=(todayUI.name||'Jonathan').split(/\s+/).map(v=>v[0]).join('').slice(0,2).toUpperCase();
