@@ -46,7 +46,7 @@
       title='You showed up today.';desc='Small moments add up. There’s no streak to protect.';action='Explore my reading';dest='read';
     }
     return '<section class="pa-companion" aria-label="Personalized companion suggestion">'+
-      '<div class="pa-companion-top"><span class="pa-pulse" aria-hidden="true"></span>'+overline+'<span class="pa-companion-mark" aria-hidden="true">✳</span></div>'+
+      '<div class="pa-companion-top"><span class="pa-pulse" aria-hidden="true"></span>'+overline+'<button type="button" class="pa-companion-more" data-action="quick-actions" title="More ways to connect" aria-label="Open companion quick actions">✳</button></div>'+
       '<h2>'+title+'</h2><p>'+desc+'</p>'+
       '<button type="button" class="pa-companion-link" data-go="'+dest+'"'+(pane?' data-pane="'+pane+'"':'')+'>'+action+' <span aria-hidden="true">↗</span></button>'+
       '</section>';
