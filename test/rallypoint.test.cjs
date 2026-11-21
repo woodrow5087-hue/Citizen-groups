@@ -595,3 +595,55 @@ test('F-07 withheld for non-members and corrupted modern data keeps legacy intac
   assert.equal(app.d.querySelector('.group-pulse'),null);
   assert.equal(app.d.getElementById('rpx-chat'),null);
 });
+
+test('F-08 companion explains actual modern unread, then advances to unanswered group RSVP',t=>{
+  const app=open(t,{saved:{prayers:[],teamStatus:'confirmed',rsvp:'',read:true,prayed:true}});
+  const panel=()=>app.d.querySelector('.pa-companion');
+  assert.equal(panel().dataset.suggestion,'group-unread');
+  assert.match(panel().querySelector('.pa-companion-why').textContent,/modern group read cursor/);
+  assert.match(panel().textContent,/3 unread fictional group messages/);
+  assert.equal(app.d.querySelectorAll('.pa-companion').length,1);
+  const prior=app.saved().groupMessages;
+  app.click('.pa-companion [data-go="group"][data-pane="chat"]');
+  assert.equal(app.saved().groupPane,'chat');
+  app.go('today');
+  assert.equal(panel().dataset.suggestion,'group-rsvp');
+  assert.match(panel().querySelector('.pa-companion-why').textContent,/no saved response/);
+  app.click('.pa-companion [data-go="group"][data-pane="gather"]');
+  app.click('[data-action="rsvp"][data-value="going"]');
+  app.go('today');
+  assert.equal(panel().dataset.suggestion,'group-people');
+  assert.deepEqual(app.saved().groupMessages,prior,'F-08 does not rewrite older group messages');
+});
+test('F-08 local deferral preserves read cursors, messages and serving response; restores after reload',t=>{
+  const app=open(t,{saved:{prayers:[],teamStatus:'pending',rsvp:'going',read:true,prayed:true},now:'2026-11-23T12:00:00'});
+  assert.equal(app.d.querySelector('.pa-companion').dataset.suggestion,'serve-response');
+  const before=app.saved();
+  const priorModern=app.w.localStorage.getItem('rallypoint-wednesday-chat-lab-v1');
+  app.click('.pa-companion [data-action="companion-later"]');
+  assert.equal(app.d.querySelector('.pa-companion').dataset.suggestion,'group-unread');
+  assert.equal(app.saved().teamStatus,'pending','deferring suggestion cannot auto-confirm serving');
+  assert.deepEqual(app.saved().groupMessages,before.groupMessages);
+  assert.deepEqual(app.saved().prayers,before.prayers);
+  assert.equal(app.w.localStorage.getItem('rallypoint-wednesday-chat-lab-v1'),priorModern,
+    'deferral never advances modern read cursor');
+  assert.ok(Date.parse(app.saved().companionChoices.snoozedUntil['serve-response'])>new Date('2026-11-23T12:00:00').getTime());
+  const next=open(t,{saved:app.saved(),ui:app.ui(),modern:app.w.localStorage.getItem('rallypoint-wednesday-chat-lab-v1')??undefined,
+    now:'2026-11-23T13:00:00'});
+  assert.equal(next.d.querySelector('.pa-companion').dataset.suggestion,'group-unread');
+  const expired=open(t,{saved:app.saved(),ui:app.ui(),now:'2026-11-25T13:00:00'});
+  assert.equal(expired.d.querySelector('.pa-companion').dataset.suggestion,'serve-response');
+});
+test('F-08 refuses to invent a read state on corrupt modern store and hides group-private detail for guests',t=>{
+  const app=open(t,{saved:{prayers:[],teamStatus:'confirmed',rsvp:'going',read:true,prayed:true},
+    modern:'{bad-unmodified'});
+  assert.equal(app.d.querySelector('.pa-companion').dataset.suggestion,'group-unavailable');
+  assert.match(app.d.querySelector('.pa-companion-why').textContent,/no read status is assumed/);
+  app.click('.pa-companion [data-go="group"]');
+  assert.equal(app.w.localStorage.getItem('rallypoint-wednesday-chat-lab-v1'),'{bad-unmodified');
+  app.go('today');
+  app.action('demo-controls');app.click('[data-action="scenario"][data-value="no-memberships"]');
+  assert.equal(app.d.querySelector('.pa-companion').dataset.suggestion,'explore-reading');
+  assert.doesNotMatch(app.d.querySelector('.pa-companion').textContent,/group thread could not|Earlier saved messages/);
+  assert.equal(app.d.querySelector('.pa-care-memory'),null);
+});
