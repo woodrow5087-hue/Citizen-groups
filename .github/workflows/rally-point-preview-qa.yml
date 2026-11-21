@@ -40,6 +40,8 @@ jobs:
         run: npm run build
       - name: Install Playwright Chromium
         run: npx playwright install --with-deps chromium
+      - name: Run F-11 demo privacy and complete reset browser regression
+        run: npm run test:f11
       - name: Run mobile, accessibility, source navigation and VersePlay regression
         run: npm run test:browser
       - name: Run animated onboarding → dashboard integration regression
@@ -47,8 +49,6 @@ jobs:
       - name: Run Blank Battle mobile gameplay and screenshot QA
         run: npm run test:blank-battle
 
-      - name: Run F-11 demo privacy and complete reset browser regression
-        run: npm run test:f11
 
       # The user-approved v0.8 revision is a fixed visual specification.
       # Building from the commit (rather than comparing two moving branches)
