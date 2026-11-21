@@ -35,24 +35,6 @@ jobs:
         run: npx playwright install --with-deps chromium
       - name: Exercise Today, Groups, interactions and accessibility
         run: npm run test:alive
-      - name: Check the Netlify PR preview link (non-blocking)
-        continue-on-error: true
-        env:
-          PREVIEW_URL: https://deploy-preview-${{ github.event.pull_request.number }}--citizen-connect-test.netlify.app/alive-lab.html
-        run: |
-          mkdir -p test-results/alive-lab
-          echo "Expected PR preview: $PREVIEW_URL" | tee test-results/alive-lab/preview-status.txt
-          for attempt in 1 2 3 4 5; do
-            status=$(curl --location --silent --output /tmp/alive-page --write-out '%{http_code}' --connect-timeout 5 --max-time 12 "$PREVIEW_URL" || true)
-            echo "Attempt $attempt: HTTP $status" | tee -a test-results/alive-lab/preview-status.txt
-            if [ "$status" = "200" ] && grep -q 'Rally Point.*ALIVE concept lab' /tmp/alive-page; then
-              echo "VERIFIED: The interactive lab is reachable at $PREVIEW_URL" | tee -a test-results/alive-lab/preview-status.txt
-              exit 0
-            fi
-            sleep 8
-          done
-          echo "NOT VERIFIED YET: Use the Netlify preview link inside GitHub PR checks." | tee -a test-results/alive-lab/preview-status.txt
-          exit 1
       - name: Save lab screenshots and results
         if: always()
         uses: actions/upload-artifact@v4
