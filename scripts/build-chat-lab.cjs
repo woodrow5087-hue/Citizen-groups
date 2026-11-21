@@ -12,11 +12,13 @@ const root = path.resolve(__dirname, '..');
 function makeChatDomainBundle() {
   const contracts = fs.readFileSync(path.join(root,'lib/conversation-contracts.cjs'),'utf8');
   const repository = fs.readFileSync(path.join(root,'lib/mock-conversation-repository.cjs'),'utf8');
+  const accessPolicy = fs.readFileSync(path.join(root,'lib/mock-access-policy.cjs'),'utf8');
   // Functions are concatenated rather than serialized or eval'd at runtime.
   const source = `(function(root){'use strict';
   const modules = {
     './conversation-contracts.cjs': function(module,require){\n${contracts}\n},
-    './mock-conversation-repository.cjs': function(module,require){\n${repository}\n}
+    './mock-conversation-repository.cjs': function(module,require){\n${repository}\n},
+    './mock-access-policy.cjs': function(module,require){\n${accessPolicy}\n}
   };
   const cache = Object.create(null);
   function localRequire(id){
@@ -30,7 +32,8 @@ function makeChatDomainBundle() {
   }
   root.RallyChatDomain = Object.freeze({
     ...localRequire('./conversation-contracts.cjs'),
-    ...localRequire('./mock-conversation-repository.cjs')
+    ...localRequire('./mock-conversation-repository.cjs'),
+    ...localRequire('./mock-access-policy.cjs')
   });
 })(window);
 `;
