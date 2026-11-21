@@ -329,10 +329,15 @@ test('empty and caught-up fixture controls keep messages, RSVP and reading choic
  app.go('group');assert.match(app.text(),/Browse a few sample group options/);app.go('team');assert.match(app.text(),/No team or assignment/);app.action('team-preview');assert.match(app.d.querySelector('#dialog-root [role="dialog"]').textContent,/later-phase work/);app.action('close-dialog');
  app.action('demo-controls');app.click('[data-action="scenario"][data-value="caught-up"]');assert.match(app.text(),/You’re all caught up/);assert.deepEqual(app.saved().groupMessages,messages);
 });
-test('Memorize is a real accessible word game reached from Today',t=>{
+test('Today Memorize opens the unified Blank Battle route and preserves classic Pass & Play',t=>{
  const app=open(t);app.click('.read-play-cta');
+ assert.equal(app.saved().view,'play');
+ assert.ok(app.d.querySelector('.rp-play-screen'));
+ assert.ok(app.d.querySelector('.rp-play-back'));
+ assert.equal(app.d.querySelector('#nav [data-go="read"]').getAttribute('aria-current'),'page');
+ app.click('.rp-play-back');
  assert.equal(app.saved().view,'read');
- assert.equal(app.d.activeElement.id,'reading-memorize');
+ assert.ok(app.d.querySelector('.rp-game-entry-play'));
  assert.ok(app.d.querySelector('.verseplay'));
  assert.equal(app.d.querySelectorAll('.vp-blank').length,5);
  assert.equal(app.d.querySelectorAll('.vp-tile').length,7);
@@ -341,6 +346,8 @@ test('Memorize is a real accessible word game reached from Today',t=>{
  app.click('[data-action="memory-hint"]');
  assert.equal(app.saved().memoryGames['sermon:solo'].hints,1);
  assert.match(app.d.querySelector('.vp-count').textContent,/1/);
+ app.click('.rp-game-entry-play');
+ assert.equal(app.saved().view,'play');
 });
 test('demo name is escaped, saved independently and modal keyboard dismissal restores focus',t=>{
  const app=open(t);app.click('.profile-avatar');assert.equal(app.d.querySelector('.phone-inner').inert,true);app.type('demo-name','<img src=x>');app.click('form button[type="submit"]');assert.equal(app.d.querySelector('img[src="x"]'),null);assert.match(app.text(),/<img src=x>/);assert.equal(app.ui().name,'<img src=x>');
