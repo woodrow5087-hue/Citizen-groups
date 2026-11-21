@@ -31,25 +31,32 @@ try{
   assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),true,'no horizontal overflow at '+width);
   if(width===390){
    assert.equal(await page.locator('.phone-slot:visible').count(),1);
+   assert.equal(await page.locator('.phone').first().evaluate(e=>Math.abs(e.getBoundingClientRect().width-innerWidth)<2),true,'native full-width mobile canvas');
+   assert.equal(await page.locator('.proposal-heading').isVisible(),false,'no marketing wrapper');
    assert.match(await page.locator('.phone-slot.is-mobile-active').innerText(),/Your people/);
    await page.screenshot({path:path.join(out,'studio-concept-today-mobile.png'),fullPage:true});
-   await page.locator('[data-mobile-screen="people"]').click();
+   await page.locator('.phone-slot.is-mobile-active .phone-bottom [data-view="people"]').click();
    assert.equal(await page.locator('.phone-slot.is-mobile-active .people-head').count(),1);
    await page.locator('.phone-slot.is-mobile-active [data-action="checkin"]').click();
    assert.match(await page.locator('.phone-slot.is-mobile-active').innerText(),/CHECKED IN/);
    await page.screenshot({path:path.join(out,'studio-concept-people-mobile.png'),fullPage:true});
-   await page.locator('[data-mobile-screen="team"]').click();
+   const headChevron=await page.locator('.phone-slot.is-mobile-active .section-chevron svg').evaluate(e=>e.getBoundingClientRect().width);
+   assert.ok(headChevron<=30,'group header arrow must not overwhelm card');
+   await page.locator('.phone-slot.is-mobile-active .phone-bottom [data-view="team"]').click();
    await page.locator('.phone-slot.is-mobile-active [data-action="confirm"]').click();
    assert.match(await page.locator('.phone-slot.is-mobile-active').innerText(),/Response needed/);
-   await page.locator('[data-mobile-screen="care"]').click();
+   await page.locator('.phone-slot.is-mobile-active .phone-bottom [data-view="today"]').click();
+   await page.locator('.phone-slot.is-mobile-active .top-avatar').click();
    await page.locator('.phone-slot.is-mobile-active [data-action="review"][data-id="jake"]').click();
    assert.match(await page.locator('.phone-slot.is-mobile-active').innerText(),/1 follow-up to review/);
    await page.screenshot({path:path.join(out,'studio-concept-care-mobile.png'),fullPage:true});
    await page.reload({waitUntil:'domcontentloaded'});
-   await page.locator('[data-mobile-screen="care"]').click();
+   await page.locator('.phone-slot.is-mobile-active .top-avatar').click();
    assert.match(await page.locator('.phone-slot.is-mobile-active').innerText(),/1 follow-up to review/);
   }else{
    assert.equal(await page.locator('.phone-slot:visible').count(),4);
+   assert.equal(await page.locator('.proposal-heading').isVisible(),false,'the approved four-phone board is the presentation');
+   assert.equal(await page.locator('.studio-decisions').isVisible(),false,'no unrelated marketing panels');
    await page.screenshot({path:path.join(out,'studio-concept-four-screens-desktop.png'),fullPage:true});
   }
   const accessibility=await new AxeBuilder({page}).withTags(['wcag2a','wcag2aa']).analyze();
