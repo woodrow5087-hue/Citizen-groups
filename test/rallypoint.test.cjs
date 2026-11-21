@@ -80,31 +80,53 @@ test('Connected Dashboard uses source state for side-by-side schedule and team w
  assert.ok(app.d.querySelector('.today-people-message'));
  assert.equal(app.d.querySelector('.reading-actions [data-reading="questions"]').textContent.includes('Reflect'),true);
 });
-test('Your People shows the actual latest local group conversation and routes to its source',t=>{
- const app=open(t);
- const panel=app.d.querySelector('.today-people');
- assert.ok(panel);
- const sections=[...app.d.querySelector('.today-screen').children];
- assert.equal(sections[0].classList.contains('today-welcome'),true);
- assert.equal(sections[1].classList.contains('pa-today-hero'),true,'Photo-led Premium Hybrid hero follows greeting');
- assert.equal(sections[2].classList.contains('pa-people-rail'),true,'ALIVE-style circle rail follows the hero');
- assert.equal(sections[3].classList.contains('pa-companion'),true,'Companion prompt has its own contextual action');
- assert.equal(sections[4],panel,'Existing local conversation is preserved beneath the new modules');
- assert.equal(sections[5].classList.contains('dashboard-twins'),true,'Original gathering/team actions remain');
- assert.ok(sections[5].querySelector('.up-next'));
- assert.ok(sections[5].querySelector('.dashboard-team'));
- assert.equal(panel.querySelectorAll('.today-people-avatar').length,4);
- assert.equal(panel.querySelector('.today-people-message-author').textContent,'Anna L.');
- assert.match(panel.querySelector('.today-people-message-text').textContent,/Looking forward to seeing everyone Wednesday/);
- app.click('.today-people-message');
- assert.equal(app.saved().view,'group');
- assert.equal(app.saved().groupPane,'chat');
- app.type('group-input','An updated thought from our group.');
- app.click('[data-action="send"][data-value="group"]');
- app.go('today');
- assert.equal(app.d.querySelector('.today-people-message-author').textContent,'You');
- assert.match(app.d.querySelector('.today-people-message-text').textContent,/An updated thought from our group/);
- assert.equal(app.d.querySelector('.today-people-avatars [aria-label="Jess W."]').textContent,'JW');
+test('Your People reads the modern conversation, not the preserved writable legacy archive',t=>{
+  const app=open(t);
+  const panel=app.d.querySelector('.today-people');
+  assert.ok(panel);
+  const sections=[...app.d.querySelector('.today-screen').children];
+  assert.equal(sections[0].classList.contains('today-welcome'),true);
+  assert.equal(sections[1].classList.contains('pa-today-hero'),true);
+  assert.equal(sections[2].classList.contains('pa-people-rail'),true);
+  assert.equal(sections[3].classList.contains('pa-companion'),true);
+  assert.equal(sections[4],panel);
+  assert.equal(sections[5].classList.contains('dashboard-twins'),true);
+  assert.equal(panel.querySelectorAll('.today-people-avatar').length,4);
+  assert.equal(panel.querySelector('.today-people-message-author').textContent,'You');
+  assert.match(panel.querySelector('.today-people-message-text').textContent,/Love that. Looking forward/);
+  assert.match(panel.querySelector('.today-people-message-action').textContent,/3 UNREAD/);
+  app.click('.today-people-message');
+  assert.equal(app.saved().view,'group');
+  assert.equal(app.saved().groupPane,'chat');
+  assert.ok(app.d.getElementById('rpx-chat'),'modern conversation is opened');
+  app.type('group-input','A preserved legacy thought.');
+  app.click('[data-action="send"][data-value="group"]');
+  app.go('today');
+  assert.equal(app.d.querySelector('.today-people-message-author').textContent,'You');
+  assert.match(app.d.querySelector('.today-people-message-text').textContent,/Love that. Looking forward/);
+  assert.ok(app.saved().groupMessages.some(m=>m.text==='A preserved legacy thought.'));
+  assert.doesNotMatch(app.d.querySelector('.today-people-message-text').textContent,/preserved legacy/);
+  assert.equal(app.d.querySelector('.attention-tile[data-go="group"]'),null);
+  assert.equal(app.d.querySelector('.today-people-avatars [aria-label="Jess W."]').textContent,'JW');
+
+  // The same F-02 store receives another fictional member's sent message.
+  const key='rallypoint-wednesday-chat-lab-v1',saved=JSON.parse(app.w.localStorage.getItem(key));
+  const repo=app.w.RallyChatDomain.createMockConversationRepository({
+    seed:saved.snapshot,clock:()=>new Date('2026-11-23T12:00:01.000Z')
+  });
+  const message=repo.sendMessage({conversationId:'group_wednesday',userId:'u_anna',
+    body:'A fresh modern conversation update.'});
+  repo.setDeliveryStatus({messageId:message.id,userId:'u_anna',status:'sent'});
+  saved.snapshot=repo.getSnapshot();
+  app.w.localStorage.setItem(key,JSON.stringify(saved));
+  app.go('team');app.go('today');
+  assert.equal(app.d.querySelector('.today-people-message-author').textContent,'Anna L.');
+  assert.match(app.d.querySelector('.today-people-message-text').textContent,/fresh modern conversation/);
+  assert.match(app.d.querySelector('.today-people-message-action').textContent,/1 UNREAD/);
+  app.click('.today-people-message');app.go('today');
+  assert.equal(app.d.querySelector('.attention-tile[data-go="group"]'),null);
+  assert.equal(app.w.RallyConversationRead.peek({storage:app.w.localStorage,
+    domain:app.w.RallyChatDomain}).unreadCount,0);
 });
 test('Your People adapts to authorized leaders and group discovery without inventing membership',t=>{
  const app=open(t);
@@ -128,12 +150,19 @@ test('Your People adapts to authorized leaders and group discovery without inven
  assert.equal(app.saved().view,'group');
  assert.match(app.text(),/Browse a few sample group options/);
 });
-test('Your People safely escapes local conversation preview content',t=>{
- const app=open(t,{saved:{groupMessages:[{name:'<img src=x>',time:'Today',text:'<script>not markup</script>'}]}});
- const preview=app.d.querySelector('.today-people-message');
- assert.equal(preview.textContent.includes('<script>not markup</script>'),true);
- assert.equal(preview.querySelector('script'),null);
- assert.equal(preview.querySelector('img'),null);
+test('Your People safely escapes the modern message body and preserves legacy HTML-looking text',t=>{
+  const app=open(t,{saved:{groupMessages:[{name:'<img src=x>',time:'Today',text:'Legacy <b>record</b>'}]}});
+  const modern=app.w.RallyConversationRead.fixture(app.w.RallyChatDomain);
+  modern.messages.at(-1).body='<script>not markup</script>';
+  app.w.localStorage.setItem('rallypoint-wednesday-chat-lab-v1',
+    JSON.stringify({schemaVersion:1,snapshot:modern,draft:'',replyTo:null}));
+  app.go('team');app.go('today');
+  const preview=app.d.querySelector('.today-people-message');
+  assert.equal(preview.textContent.includes('<script>not markup</script>'),true);
+  assert.equal(preview.querySelector('script'),null);
+  app.click('.today-people-message');
+  assert.match(app.d.querySelector('.rpx-legacy-records').textContent,/Legacy <b>record<\/b>/);
+  assert.equal(app.d.querySelector('.rpx-legacy-records img'),null);
 });
 test('Today settles into a real caught-up state after opening the source and confirming serving',t=>{
  const app=open(t);app.click('.attention-tile[data-go="group"]');app.go('today');app.click('.availability-action');app.click('[data-action="shift"][data-value="confirmed"]');app.go('today');assert.match(app.text(),/You’re all caught up/);assert.equal(app.d.querySelector('.attention-tile'),null);
