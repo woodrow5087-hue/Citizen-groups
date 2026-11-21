@@ -9,7 +9,7 @@
  const mobileNav=document.querySelector('.mobile-screen-nav');
  const toast=document.getElementById('studio-toast');
  const KEY='rally-point-studio-concept-v09';
- const initial=()=>({checkIn:false,prayed:false,teamConfirmed:true,helpOffered:false,readDone:false,messagesSent:0,reviewed:[],noticeCount:2});
+ const initial=()=>({checkIn:false,prayed:false,teamConfirmed:true,helpOffered:false,readDone:false,readPane:'plan',messagesSent:0,reviewed:[],noticeCount:2});
  const views=['today','people','team','care'];
  let state=initial();
  try {
@@ -104,12 +104,19 @@
    '<div style="font-size:9px;color:#75635a;line-height:1.6;padding:4px 4px 10px">Illustrative, permissioned leader view. Attendance context requires human review; it does not determine personal or spiritual well-being.</div></div></div>';
  }
  function read(){
-  return '<div class="page-hero wave-hero"><h1>Grow<br>together.</h1><p>Scripture · Reflection · VersePlay</p></div><div class="read-body">'+
-    '<section class="read-hero"><span>THIS WEEK’S PASSAGE</span><h2>John 15:9–12</h2><p>Remain in my love. Reflect and share with your group.</p>'+
-    '<button type="button" class="cta-red" data-action="read">'+ico('check')+(state.readDone?'MARKED AS READ':'MARK AS READ')+'</button></section>'+
-    '<button type="button" class="read-action" data-action="nav" data-view="people"><strong>Reflect together →</strong><small>What does loving one another look like this week?</small></button>'+
-    '<button type="button" class="read-action game" data-action="game"><strong>VERSEPLAY · BLANK BATTLE →</strong><small>Play the polished memory game from the current prototype</small></button>'+
-  '</div>';
+  const pane=['plan','study','discuss'].includes(state.readPane)?state.readPane:'plan';
+  const tabs=['plan','study','discuss'].map(id=>'<button type="button" role="tab" aria-selected="'+String(pane===id)+'" data-action="readpane" data-pane="'+id+'" class="'+(pane===id?'current':'')+'">'+id[0].toUpperCase()+id.slice(1)+'</button>').join('');
+  const plan='<section class="reading-plan-hero"><div class="plan-art-label">FEATURED READING PLAN</div><div class="reading-plan-content"><h2>The Way of Jesus</h2><p>A 7-Day Reading Plan</p><div class="plan-progress"><div class="plan-fill"></div></div><small>Day 3 of 7</small></div></section>'+
+    '<button class="studio-read-tile" type="button" data-action="read"><span>'+ico('book')+' <strong>Today’s Passage</strong></span><b>John 15:9–12</b><small>'+(state.readDone?'✓ Marked as read':'Tap to mark as read')+'</small></button>'+
+    '<button class="studio-read-tile" type="button" data-action="readpane" data-pane="discuss"><span>'+ico('chat')+' <strong>Reflection Question</strong></span><p>How does Jesus’ love shape the way you treat others today?</p></button>';
+  const study='<section class="studio-read-tile read-study"><span>'+ico('book')+' <strong>STUDY THE PASSAGE</strong></span><h2>John 15:9–12</h2><p>“As the Father has loved Me, so have I loved you.”</p><p>Read the full passage in the existing Rally Point Scripture experience, then reflect on Jesus’ command to love one another.</p></section>'+
+  '<button class="studio-read-tile" type="button" data-action="game"><span>'+ico('game')+' <strong>VERSEPLAY</strong></span><p>Practice remembering the passage with Blank Battle.</p></button>';
+  const discuss='<section class="studio-read-tile read-discuss"><span>'+ico('chat')+' <strong>DISCUSS TOGETHER</strong></span><h2>What does love look like?</h2><p>How can your group put John 15:12 into practice this week?</p></section>'+
+   '<button class="cta-red" data-action="nav" data-view="people">'+ico('people')+' Wednesday Group conversation</button>';
+  return '<section class="studio-read"><div class="studio-read-heading"><h1>Read</h1><span>GROW TOGETHER</span></div>'+
+   '<div class="studio-read-tabs" role="tablist" aria-label="Scripture navigation">'+tabs+'</div>'+
+   '<div class="studio-read-content" role="tabpanel">'+(pane==='plan'?plan:pane==='study'?study:discuss)+'</div>'+
+   '</section>';
  }
  const contents={today,people,team,care:leader,read};
  function draw(){
@@ -154,6 +161,11 @@
     persist();draw();notify('Demo leader follow-up marked. No member was contacted.');return;
   }
   if(a==='reach'){notify('Demo only — no message sent to '+action.dataset.person+'.');return}
+  if(a==='readpane'){
+    const pane=action.dataset.pane;
+    if(['plan','study','discuss'].includes(pane)){state.readPane=pane;persist();draw()}
+    return;
+  }
   if(a==='read'){state.readDone=!state.readDone;persist();draw();notify('Sample reading state updated.');return}
   if(a==='notice'){notify('Notifications, group search and permissions require real integrations.');return}
  });
