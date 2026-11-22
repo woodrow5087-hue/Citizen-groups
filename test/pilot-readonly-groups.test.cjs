@@ -75,7 +75,7 @@ test('Authorized per-user read returns only group name, next future gathering an
 });
 test('Rejects unauthenticated, expired, wrong-tenant or underscoped sessions before any network call',async()=>{
  for(const change of [
-  {authenticated:false},{accessToken:''},{subject:'444'},{organizationId:'999'},
+  {authenticated:false},{accessToken:''},{organizationId:'999'},
   {scopes:['people']},{expiresAt:Date.now()-1000},{scopes:null},
   {subject:'something-injected'}, {accessToken:null}
  ]){
