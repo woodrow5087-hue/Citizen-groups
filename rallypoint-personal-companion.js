@@ -172,9 +172,14 @@ const followKeys=Object.freeze({
  'next':'What needs my attention?',
  'group':'My group',
  'serve':'Serving',
- 'scripture':'Scripture'
+ 'scripture':'Scripture',
+ 'goal-group':'Help me get ready for Wednesday',
+ 'goal-serve':'Help me prepare for serving Sunday',
+ 'goal-connect':'How can I get connected?',
+ 'goal-check':'Do I need to take care of anything?'
 });
 const followIds=new Set(Object.keys(followKeys));
+const goalIds=new Set(['goal-group','goal-serve','goal-connect','goal-check']);
 const topicOf=(r,board)=>{
  if(r?.topic)return r.topic;
  if(r?.intent==='group')return 'group';
@@ -199,14 +204,64 @@ const suggestions=(topic,model={})=>{
  if(topic==='scripture')return ['next',...(group?['group-time']:[]),...(team?['serve-time']:[])];
  return ['why-first',...(group?['group-time']:[]),...(team?['serve-time']:[])].slice(0,3);
 };
+
+/* F-10.3: current-source goal plans, never inferred commitments or silent actions. */
+function goalPlan(goal,sources,d,b,now){
+ const items=[],push=(a,v,why,action=null)=>items.push(item(a,v,why,action));
+ if(goal==='goal-group'){
+  if(!d.member){push('Explore groups','No joined group is recorded for this sample profile.','Membership gates private details.',go('group','','Explore groups'));
+   return {heading:'Start with a group.',intro:'Exploring does not enroll you.',items,topic:'community'};}
+  const upcoming=safeDate(d.groupDate,now);
+  push('Wednesday Group',upcoming?formatDate(d.groupDate)+' · '+(d.groupLocation||'Location unavailable'):'No upcoming sample gathering date is available.',
+   'The authorized current group fixture supplies date and place.',go('group','gather','See gathering'));
+  if(upcoming&&!d.rsvp)push('RSVP remains open','You can choose Going using this separate button.','No response is saved. Asking never changes it.',direct('rsvp','RSVP · I’m in'));
+  else push('Your RSVP',d.rsvp==='going'?'Going is saved.':d.rsvp?'Your response is saved.':'No upcoming RSVP is available.',
+   'Current sample RSVP and date are checked.',go('group','gather','Review RSVP'));
+  if(d.conversationStatus==='unavailable')push('Group conversation unavailable','Check the conversation in Groups; an unread count cannot be assumed.','Modern conversation source unavailable.',go('group','chat','Open conversation'));
+  else if(d.conversationStatus==='ok'&&Number.isFinite(d.unread)&&d.unread>0)push('Group updates',d.unread+' unread sample '+(d.unread===1?'message':'messages')+'.','Modern authorized read cursor only; this answer does not mark anything read.',go('group','chat','Open conversation'));
+  return {heading:'Get ready for Wednesday.',intro:'Your current sample gathering details and optional next steps. Nothing has been completed for you.',items,topic:'group'};
+ }
+ if(goal==='goal-serve'){
+  if(!d.team){push('Explore serving','No team assignment is linked to your sample profile.','Team membership gates private shifts.',go('team','','Explore teams'));
+   return {heading:'Explore serving.',intro:'Browsing cannot accept a shift.',items,topic:'community'};}
+  const upcoming=safeDate(d.serveDate,now);
+  push('Welcome Team',upcoming?formatDate(d.serveDate)+' · '+(d.serveLocation||'Location unavailable'):'No upcoming sample shift date is available.',
+   'Authorized team fixture supplies schedule and location.',go('team','schedule','See schedule'));
+  const status=d.serveStatus==='confirmed'?'Confirmed':d.serveStatus==='declined'?'Declined':d.serveStatus==='pending'?'Response pending':'No response available';
+  push('Your serving response',status,'Current saved response; a typed yes cannot commit a shift.',
+   upcoming&&d.serveStatus==='pending'?direct('serve','Confirm serving'):go('team','schedule','Review schedule'));
+  return {heading:'Get ready to serve.',intro:'Review your sample assignment before choosing any action.',items,topic:'serve'};
+ }
+ if(goal==='goal-connect'){
+  push(d.member?'Your group':'Find a group',d.member?'Reconnect with your own group.':'Explore sample groups without joining automatically.',
+   'Current membership determines what you can open.',go('group','',d.member?'Open group':'Explore groups'));
+  if(!d.team)push('Explore serving','Learn about sample teams at your own pace.','No team assignment is created.',go('team','','Explore teams'));
+  push('Scripture, at your pace','Reading is optional, never a spiritual score.','Existing reading content only.',go('read','','Open Scripture'));
+  return {heading:'Find your next connection.',intro:'Pick one useful place to begin, without pressure or invented obligations.',items,topic:'community'};
+ }
+ const current=answer('next',sources);
+ return {heading:b.taskCount>0?'Here’s what needs attention.':'You’re caught up on required responses.',
+  intro:current.intro,items:current.items,topic:'week'};
+}
+function goalSuggestions(topic,d){
+ if(topic==='group'&&d.member)return ['goal-group','group-time','group-confirm'];
+ if(topic==='serve'&&d.team)return ['goal-serve','serve-time','serve-confirm'];
+ if(topic==='week'||topic===''||topic==='community')return [
+   d.member?'goal-group':d.team?'goal-serve':'goal-connect',
+   d.member&&d.team?'goal-serve':'goal-connect','goal-check'];
+ return ['goal-check',...suggestions(topic,d)].slice(0,3);
+}
+
 function respond(raw,sources={},prior={}){
  const query=String(raw||'').trim().slice(0,160);
  const d=sources.model||{},b=sources.board||{},now=sources.now instanceof Date?sources.now:new Date();
  const previous=prior&&typeof prior==='object'?prior:{};
+ const goalMode=sources.goalMode===true;
+ const recommend=topic=>goalMode?goalSuggestions(topic,d):suggestions(topic,d);
  // F-10.2: flexible wording over a fixed, source-backed intent allowlist.
  // Language can select a topic; it can never directly perform an action.
  const lower=query.toLowerCase().replace(/[‘’]/g,"'").replace(/\s+/g,' ').trim();
- const key=followIds.has(query)?query:null;
+ const key=followIds.has(query)&&(!goalIds.has(query)||goalMode)?query:null;
  const shorthand=/^\s*(and|what about|how about)\s+(sunday|wednesday)(?:\s+too)?[!?\.]*$/i.exec(query);
  const known=key?followKeys[key]:shorthand?(shorthand[2].toLowerCase()==='sunday'?'Serving':'My group'):query;
  const subject=key?.startsWith('group-')?'group':key?.startsWith('serve-')?'serve':'';
@@ -239,7 +294,7 @@ function respond(raw,sources={},prior={}){
     items:Object.freeze(items),note:source,topic,...extra});
   return Object.freeze({query:known,response,
     context:Object.freeze({intent:response.intent,focus:topic||''}),
-    suggestions:Object.freeze(suggestions(topic||'week',d))});
+    suggestions:Object.freeze(recommend(topic||'week'))});
  }
  // Do not extrapolate recurring schedules from one fictional fixture date.
  if(/\b(next week|following week|week after next|two weeks from now)\b/.test(lower)){
@@ -248,6 +303,26 @@ function respond(raw,sources={},prior={}){
     [itemFor('Current sample schedule','See only the dated commitments actually available.',
       'No additional meeting or shift is inferred from an earlier sample date.',
       go('group','','Explore current schedule'))],'week',{limited:true});
+ }
+
+ if(goalMode){
+  const prep=/\b(prepare|preparing|get ready|getting ready|ready for|help me plan|plan for|checklist)\b/.test(lower)||/\bbefore (?:my|the|wednesday|sunday)\b/.test(lower);
+  const connect=/\b(new here|new to church|first time|meet people|find a group|get connected|make friends|start connecting|where do i start|feel connected)\b/.test(lower);
+  const caught=/\b(am i all caught up|anything left|all set|anything i need to do|anything else i need|am i done)\b/.test(lower);
+  if(goalIds.has(key)||prep||connect||caught){
+   if(prep&&mixedSubjects){
+    const candidates=[];
+    if(d.member)candidates.push(itemFor('Wednesday Group','Review your sample gathering.','Current group membership required.',go('group','gather','Group details')));
+    if(d.team)candidates.push(itemFor('Sunday serving','Review your sample shift.','Current team membership required.',go('team','schedule','Team details')));
+    if(!candidates.length)candidates.push(itemFor('Explore groups','Choose a starting point first.','No sample memberships.',go('group','','Explore groups')));
+    return result('Which one should we prepare for?','We can tackle one commitment at a time; nothing was changed.',candidates,'week',{clarify:true,goal:true});
+   }
+   const goal=goalIds.has(key)?key:connect?'goal-connect':caught?'goal-check':
+     explicitGroup?'goal-group':explicitServe?'goal-serve':
+     inherited==='group'?'goal-group':inherited==='serve'?'goal-serve':'goal-connect';
+   const plan=goalPlan(goal,sources,d,b,now);
+   return result(plan.heading,plan.intro,plan.items,plan.topic,{goal:true});
+  }
  }
  // A week-wide question can have two commitments. Clarify a pronoun.
  if(isFollowup&&!focus&&(d.member||d.team)){
@@ -337,7 +412,7 @@ function respond(raw,sources={},prior={}){
  focus=response.intent==='unknown'?'':subject||topicOf(response,b)||focus;
  return Object.freeze({query:known,response,
   context:Object.freeze({intent:response.intent,focus}),
-  suggestions:Object.freeze(suggestions(focus||response.intent,d))});
+  suggestions:Object.freeze(recommend(focus||response.intent))});
 }
 
 function render(response,asked='',notice='',history=[],suggested=[]){
