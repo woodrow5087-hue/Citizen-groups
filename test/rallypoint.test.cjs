@@ -722,3 +722,60 @@ test('F-09 preview gate never reveals group-private cards for a guest',t=>{
  assert.equal(app.d.querySelector('.f09-task[data-task="serve"]'),null);
  assert.equal(app.d.querySelector('.f09-mini-faces'),null);
 });
+
+test('F-09 Smart Priority Board is separately gated; original Today and the Smart Stack remain unchanged',t=>{
+ const classic=open(t);assert.equal(classic.d.querySelector('.f09-board'),null);
+ const stacked=open(t,{f09:true});assert.ok(stacked.d.querySelector('.f09-stack-controls'));
+ assert.equal(stacked.d.querySelector('.f09-board'),null);
+ const app=open(t,{f09:'board'});
+ assert.ok(app.d.querySelector('.phone-inner.is-f09-board'),'new board is explicit opt-in');
+ assert.ok(app.d.querySelector('.f09-board'));
+ assert.equal(app.d.querySelector('.f09-stack-controls'),null,'no hidden carousel');
+ assert.equal(app.d.querySelectorAll('.f09b-row').length,3);
+ assert.equal(app.d.querySelectorAll('.f09b-agenda-row').length,3);
+ assert.ok(app.d.querySelector('.pa-people-rail--today'),'same approved fictional people rail');
+ assert.ok(app.d.querySelector('.f09b-mission'));
+ assert.deepEqual([...app.d.querySelectorAll('#nav button small')].map(x=>x.textContent),
+   ['Today','Groups','Team','Read']);
+ app.go('team');assert.equal(app.d.querySelector('.phone-inner').classList.contains('is-f09-board'),false);
+ app.go('today');assert.ok(app.d.querySelector('.phone-inner.is-f09-board'));
+});
+test('F-09 board leads with real Wednesday RSVP, immediately updates agenda and other actions',t=>{
+ const app=open(t,{f09:'board',now:'2026-11-25T12:00:00',saved:{
+   role:'member',prayers:[],teamStatus:'pending',rsvp:'',read:false,prayed:false
+ }});
+ assert.equal(app.d.querySelector('.f09b-hero').dataset.priority,'group-rsvp');
+ assert.match(app.d.querySelector('.f09b-hero').textContent,/Group tonight/);
+ const before=structuredClone(app.saved().groupMessages);
+ const modern=app.w.localStorage.getItem('rallypoint-wednesday-chat-lab-v1');
+ app.click('.f09b-primary[data-action="f09-rsvp"]');
+ assert.equal(app.saved().rsvp,'going');
+ assert.equal(app.d.querySelector('.f09b-hero').dataset.priority,'group-unread');
+ assert.equal(app.d.querySelector('.f09b-agenda-row[data-agenda="group"] .f09b-agenda-cta').textContent,'Going');
+ assert.equal(app.d.querySelector('.f09b-row[data-row="group-rsvp"]'),null);
+ app.click('.f09b-row[data-row="serve-response"] [data-action="f09-serve"]');
+ assert.equal(app.saved().teamStatus,'confirmed');
+ assert.equal(app.d.querySelector('.f09b-row[data-row="serve-response"]'),null);
+ assert.equal(app.d.querySelector('.f09b-agenda-row[data-agenda="serve"] .f09b-agenda-cta').textContent,'Confirmed');
+ assert.deepEqual(app.saved().groupMessages,before);
+ assert.equal(app.w.localStorage.getItem('rallypoint-wednesday-chat-lab-v1'),modern);
+ app.click('.f09b-hero .f09b-primary[data-go="group"]');
+ assert.equal(app.saved().groupPane,'chat');
+ app.go('today');
+ assert.equal(app.d.querySelector('.f09b-row[data-row="group-unread"]'),null);
+ assert.match(app.d.querySelector('.f09-board').textContent,/Your people|Your serving|Carry it into the week/);
+ const saved=app.saved();
+ const restored=open(t,{f09:'board',saved,ui:app.ui()});
+ assert.equal(restored.saved().rsvp,'going');
+ assert.equal(restored.saved().teamStatus,'confirmed');
+});
+test('F-09 board guest view never exposes gated group conversation, prayer or serving',t=>{
+ const app=open(t,{f09:'board',saved:{role:'member',prayers:[{name:'Marcus C.',text:'Private'}],teamStatus:'pending'}});
+ app.action('demo-controls');app.click('[data-action="scenario"][data-value="no-memberships"]');
+ assert.equal(app.d.querySelector('.f09b-faces'),null);
+ assert.doesNotMatch(app.d.querySelector('.f09-board').textContent,/Marcus|Private|3 new messages|RSVP for Wednesday Group/);
+ assert.equal(app.d.querySelector('.f09b-agenda-row[data-agenda="group"] .f09b-agenda-copy strong').textContent,'Find a group');
+ assert.equal(app.d.querySelector('.f09b-agenda-row[data-agenda="serve"] .f09b-agenda-copy strong').textContent,'Serving');
+ assert.equal(app.d.querySelector('.f09b-row[data-row="group-rsvp"]'),null);
+ assert.equal(app.d.querySelector('.f09b-row[data-row="serve-response"]'),null);
+});
