@@ -6,7 +6,7 @@ const {createReadOnlyGroupClient,PilotReadError}=require('../pilot/planning-cent
 const org='111',group='222',person='333';
 const frozen=new Date('2026-11-22T12:00:00Z');
 const validSession=()=>({authenticated:true,organizationId:org,subject:person,
- accessToken:'secret-should-never-appear',scopes:['groups'],
+ accessToken:'secret-should-never-appear',scopes:['groups','openid'],
  expiresAt:Date.now()+60000});
 const reply=(data,status=200)=>({
  status,headers:{get:()=>null},text:async()=>JSON.stringify(data)
@@ -31,14 +31,14 @@ const standard={
  '/oauth/userinfo':{sub:person,organization_id:org,email:'private@example.test'},
  '/groups/v2/groups/222/my_membership':membership(),
  '/groups/v2/groups/222':groupRecord,
- '/groups/v2/events':events
+ '/groups/v2/groups/222/events':events
 };
 function harness(overrides={}){
  const calls=[];
  const request=async(url,opts)=>{
   const u=new URL(url);
   calls.push({url,method:opts.method,headers:opts.headers,cache:opts.cache,redirect:opts.redirect});
-  const key=u.pathname==='/groups/v2/events'?u.pathname:u.pathname;
+  const key=u.pathname;
   const result=Object.hasOwn(overrides,key)?overrides[key]:standard[key];
   if(result instanceof Error)throw result;
   if(typeof result==='number')return reply({errors:[{title:'permission'}]},result);
@@ -62,12 +62,14 @@ test('Authorized per-user read returns only group name, next future gathering an
  });
  assert.deepEqual(calls.map(c=>new URL(c.url).pathname),[
   '/oauth/userinfo','/groups/v2/groups/222/my_membership',
-  '/groups/v2/groups/222','/groups/v2/events'
+  '/groups/v2/groups/222','/groups/v2/groups/222/events'
  ]);
  assert.ok(calls.every(c=>c.method==='GET'&&c.cache==='no-store'&&c.redirect==='error'));
  const eventRequest=new URL(calls[3].url);
- assert.equal(eventRequest.searchParams.get('filter'),'group,upcoming,not_canceled');
- assert.equal(eventRequest.searchParams.get('group_id'),group);
+ assert.equal(eventRequest.searchParams.get('filter'),'not_canceled');
+ assert.equal(eventRequest.pathname,'/groups/v2/groups/222/events');
+ assert.equal(eventRequest.searchParams.get('group_id'),null);
+ assert.ok(calls.every(c=>c.headers['User-Agent'].includes('Rally Point Pilot')));
  const output=JSON.stringify(actual);
  for(const secret of ['secret-should-never-appear','private@example.test','Private leader plans',
   'Private other group','Historic event','Canceled event','notes','leader'])
@@ -76,7 +78,7 @@ test('Authorized per-user read returns only group name, next future gathering an
 test('Rejects unauthenticated, expired, wrong-tenant or underscoped sessions before any network call',async()=>{
  for(const change of [
   {authenticated:false},{accessToken:''},{organizationId:'999'},
-  {scopes:['people']},{expiresAt:Date.now()-1000},{scopes:null},
+  {scopes:['people']},{scopes:['groups']},{expiresAt:Date.now()-1000},{scopes:null},
   {subject:'something-injected'}, {accessToken:null}
  ]){
   const {client,calls}=harness();
@@ -120,13 +122,13 @@ test('Upstream 401 and 403 never fall back to fixture data or disclose details',
 });
 test('Source timeout, rate limit and malformed JSON fail closed without a retry or cached payload',async()=>{
  for(const result of [429,500,new Error('Network failed'),{wrong:'shape'}]){
-  const {client,calls}=harness({'/groups/v2/events':result});
+  const {client,calls}=harness({'/groups/v2/groups/222/events':result});
   await failure(client.readForServerSession(validSession()),'source-unavailable');
   assert.equal(calls.length,4);
  }
 });
 test('No future gathering is distinct from no group membership; never invents weekly recurrence',async()=>{
- const {client}=harness({'/groups/v2/events':{data:[
+ const {client}=harness({'/groups/v2/groups/222/events':{data:[
   {type:'Event',id:'1',attributes:{name:'Old',starts_at:'2025-11-25T18:00:00Z'},relationships:{group:{data:{id:group}}}}
  ]}});
  const snapshot=await client.readForServerSession(validSession());
@@ -146,4 +148,22 @@ test('Provider-returned markup is removed from the presentation-safe allowlisted
  assert.equal(view.group.name,'alert(1) Wednesday Group');
  assert.equal(view.nextGathering.title,'Welcome');
  assert.doesNotMatch(JSON.stringify(view),/[<>]/);
+});
+
+test('Pagination is not silently misreported as no future events',async()=>{
+ const {client}=harness({'/groups/v2/groups/222/events':{
+  data:[],links:{next:'https://api.planningcenteronline.com/groups/v2/groups/222/events?offset=100'}
+ }});
+ await failure(client.readForServerSession(validSession()),'source-unavailable');
+});
+test('Group-only request, current membership and OIDC scope remain mandatory in adapter',async()=>{
+ const {client,calls}=harness();
+ await client.readForServerSession(validSession());
+ const paths=calls.map(c=>new URL(c.url).pathname);
+ assert.ok(paths.every(p=>p==='/oauth/userinfo'||p.startsWith('/groups/v2/groups/222')));
+ assert.ok(!paths.includes('/groups/v2/events'),'never read organization-wide events');
+ assert.ok(!paths.includes('/groups/v2/groups/222/memberships'),'never read the entire group roster');
+ const denied=harness();
+ await failure(denied.client.readForServerSession({...validSession(),scopes:['groups']}),'access-denied');
+ assert.equal(denied.calls.length,0);
 });
