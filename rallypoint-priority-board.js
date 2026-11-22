@@ -33,79 +33,114 @@ const svg=type=>{
  return '<svg class="f09b-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">'+(paths[type]||paths.people)+'</svg>';
 };
 const millis=d=>d instanceof Date&&!Number.isNaN(d.valueOf())?d.valueOf():Infinity;
+const asCount=n=>Number.isSafeInteger(n)&&n>0?Math.min(n,99):0;
 function derive(d,now=new Date()){
+ // Read-only adaptive ranking: explicit fixture responsibilities have priority;
+ // Scripture and relationship invitations never masquerade as deadlines.
+ // Do not alter the F-08 companion's own recommendation or snooze behavior.
  const features=Array.isArray(d?.allPriorities)?d.allPriorities:Array.isArray(d?.stack)?d.stack:[];
  const find=id=>features.find(f=>f.id===id);
- const whenGroup=millis(d?.groupDate)-now.getTime();
- const whenServe=millis(d?.serveDate)-now.getTime();
+ const upcoming=(date,hours)=>{
+   const remaining=millis(date)-now.getTime();
+   return remaining>=0&&remaining<=hours*3600000;
+ };
  const pendingGroup=!!d?.member&&!d.rsvp;
  const pendingServe=!!d?.team&&d.serveStatus==='pending';
- const hasUnread=!!d?.member&&d.unread>0;
+ const hasUnread=!!d?.member&&asCount(d?.unread)>0;
  const isUnavailable=!!d?.member&&d.conversationStatus==='unavailable';
- // Time-sensitive action ranking belongs to this board, not the optional F-08
- // care invitation. A fixture event is shown as "tonight" only on its actual date.
- const candidates=[
-  {id:'group-rsvp',when:pendingGroup&&whenGroup>=0&&whenGroup<=24*3600000,score:100},
-  {id:'serve-response',when:pendingServe&&whenServe>=0&&whenServe<=48*3600000,score:95},
-  {id:'group-unavailable',when:isUnavailable,score:80},
-  {id:'group-unread',when:hasUnread,score:75},
-  {id:'group-rsvp',when:pendingGroup,score:70},
-  {id:'serve-response',when:pendingServe,score:65},
-  {id:'scripture-step',when:!!d?.rhythmDue,score:55},
-  {id:'scripture-read',when:!d?.readToday,score:45}
- ];
- const choice=candidates.filter(x=>x.when).sort((a,b)=>b.score-a.score).find(x=>find(x.id));
- const hero=choice?find(choice.id):features[0]||Object.freeze({
-   id:'explore-reading',title:'Your next step.',subtitle:'Continue your Scripture rhythm.',
-   primary:{name:'read',verb:'go'},primaryLabel:'Open reading',hasPeople:false,why:'A reading is available.'
- });
- const route=a=>a?.verb==='action'?act(a.name):go(a?.name||'read',a?.pane||'');
- const primary=route(hero.primary);
- const heroType=hero.id==='group-rsvp'?'calendar':hero.id==='serve-response'?'team':
-   hero.id==='group-unread'||hero.id==='group-unavailable'?'message':
-   hero.id==='scripture-read'||hero.id==='scripture-step'?'read':'people';
- const heroDetail=hero.id==='group-rsvp'&&d?.groupDate instanceof Date?
-   'Wednesday Group · '+d.groupDate.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'}):
-   hero.subtitle;
- const heroLabel=hero.id==='group-rsvp'?'RSVP · I’m in':
-   hero.id==='serve-response'?'Confirm':
-   hero.id==='group-unread'?'View messages':
-   hero.id==='group-unavailable'?'Review conversation':
-   hero.id==='care-marcus'?'Reach out':hero.primaryLabel||'Open';
- const rows=[];
- const add=(id,tone,icon,title,detail,action,label,requiresResponse=true)=>{
-   if(rows.some(r=>r.id===id)||id===hero.id)return;
-   rows.push(Object.freeze({id,tone,icon,title,detail,action,label,requiresResponse}));
+ const leaderCount=d?.member&&d?.audience==='leader'?asCount(d?.leaderRemaining):0;
+ const rhythmDue=!!d?.rhythmDue;
+ const words=n=>n===1?'1 new message':n+' new messages';
+ const task=(id,score,tone,icon,title,detail,action,label,why,family=id)=>{
+   return Object.freeze({id,score,tone,icon,title,detail,action,label,why,
+     family,requiresResponse:true});
  };
- if(d?.member){
-  if(isUnavailable)add('group-unavailable','rose','message','Check your messages','Local conversation needs review',go('group','chat'),'Review');
-  else if(hasUnread)add('group-unread','rose','message',d.unread===1?'1 new message':d.unread+' new messages','Your group is talking.',go('group','chat'),'View messages');
-  if(pendingGroup)add('group-rsvp','rose','calendar','Wednesday Group','Your RSVP is still open',act('f09-rsvp'),'RSVP');
+ const pending=[];
+ if(pendingGroup)pending.push(task('group-rsvp',upcoming(d.groupDate,24)?100:70,
+   'rose','calendar',upcoming(d.groupDate,24)?'Group tonight.':'Your Wednesday Group.',
+   d?.groupDate instanceof Date?'Wednesday Group · '+d.groupDate.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'}):
+   'Respond to the next sample gathering',act('f09-rsvp'),'RSVP · I’m in',
+   'Your saved group RSVP is still open; the gathering is from the fictional schedule.','gather'));
+ if(pendingServe)pending.push(task('serve-response',upcoming(d.serveDate,48)?95:65,
+   'gold','team','Serve this Sunday?','Welcome Team · availability needed',
+   act('f09-serve'),'Confirm','Your sample Welcome Team availability has not been saved.','serve'));
+ if(isUnavailable)pending.push(task('group-unavailable',88,'rose','message',
+   'Review your conversation.','The saved sample thread needs review',
+   go('group','chat'),'Review','The modern conversation could not be read. An unread count is not assumed.','messages'));
+ else if(hasUnread)pending.push(task('group-unread',75,'rose','message',words(asCount(d.unread))+'.',
+   'Wednesday Group is talking.',go('group','chat'),'View messages',
+   'The local modern conversation has '+asCount(d.unread)+' unread messages. Opening the thread marks them read.','messages'));
+ if(leaderCount>0)pending.push(task('leader-checkins',74,'lilac','people',
+   leaderCount===1?'A check-in to review.':leaderCount+' leader check-ins.',
+   'Fictional group leader follow-ups',go('group','leader'),'Review',
+   'You are viewing the authorized leader fixture; these are unreviewed sample check-ins, not engagement scores.','leader'));
+ if(rhythmDue)pending.push(task('scripture-step',55,'blue','read','Carry it into the week.',
+   'Review your saved Scripture intention',go('read'),'Review',
+   'A Scripture step you saved on this device has reached its follow-up date.','reading'));
+ // Tie-break consistently; do not reorder cards based on clicks or viewing time.
+ pending.sort((a,b)=>b.score-a.score||a.id.localeCompare(b.id));
+ const lead=pending[0];
+ const hasCommunity=!!d?.member,hasTeam=!!d?.team;
+ const guest=!hasCommunity&&!hasTeam;
+ let hero;
+ if(lead){
+   const source=find(lead.id);
+   hero=Object.freeze({id:lead.id,title:lead.title,subtitle:lead.detail,
+     primary:lead.action,heroType:lead.icon,heroLabel:lead.label,
+     eyebrow:lead.score>=90?'NEXT UP':lead.id==='leader-checkins'?'LEADER FOLLOW-UP':'YOUR NEXT ACTION',
+     why:lead.why||source?.why||'Based on your saved fictional activity.',
+     hasPeople:hasCommunity&&['group-rsvp','group-unread','leader-checkins'].includes(lead.id),
+     calm:false});
+ }else if(guest){
+   hero=Object.freeze({id:'welcome-community',title:'There’s room for you.',
+     subtitle:'Explore the sample church community at your own pace.',
+     primary:go('group'),heroType:'people',heroLabel:'Find your people',
+     eyebrow:'WELCOME TO RALLY POINT',why:'No group or team is selected in your local demo.',
+     hasPeople:false,calm:false});
+ }else{
+   hero=Object.freeze({id:'caught-up',title:'You’re all caught up.',
+     subtitle:'Nothing in your sample commitments needs a response right now.',
+     primary:go('read'),heroType:'read',heroLabel:'Explore Scripture',
+     eyebrow:'A MOMENT TO BREATHE',
+     why:'No unanswered sample RSVP, team confirmation, unread group message, leader follow-up, or due saved Scripture step remains.',
+     hasPeople:false,calm:true});
  }
- if(pendingServe)add('serve-response','gold','team','Serve Sunday?','Welcome Team · response needed',act('f09-serve'),'Confirm');
- if(d?.rhythmDue)add('scripture-step','blue','read','Carry it into the week','Your saved step is due',go('read'),'Review');
- else if(!d?.readToday)add('scripture-read','blue','read','Today’s Scripture',d?.passage||'Read today',go('read'),'Read');
- if(d?.member&&find('care-marcus'))add('care-marcus','rose','people','Someone to encourage','Fictional prayer note from Marcus',act('companion-encourage'),'Reach out',false);
- // Fill the remaining visual slots with *clearly optional* navigation,
- // not fabricated deadlines or duplicate "to-do" records.
- if(d?.member&&d?.unread===0&&!isUnavailable)add('community','rose','message','Your people','Open your group conversation',go('group','chat'),'Open',false);
- if(d?.team&&!pendingServe)add('serving-overview','gold','team','Your serving','Review the Welcome Team schedule',go('team','schedule'),'Open',false);
- add('scripture-overview','blue','read','Carry it into the week',d?.passage||'Explore the reading',go('read'),'Review',false);
- add('this-week','lilac','calendar','This week','See what’s coming up',d?.member?go('group','gather'):go('group'),'Explore',false);
- if(!d?.member)add('find-people','rose','people','Find your people','Explore fictional groups',go('group'),'Explore',false);
- if(!d?.team)add('find-team','gold','team','Find a place to serve','See serving possibilities',go('team'),'Explore',false);
- // Need three *distinct* visible items; don't accidentally show a pending
- // task twice when the same source also appears in the hero.
- const displayed=Object.freeze(rows.slice(0,3));
- // The priority area owns ALL action buttons. At a Glance is an informational
- // schedule/status digest, never a second set of competing controls.
+ const rows=[];
+ const usedFamilies=new Set(lead?[lead.family]:[]);
+ function add(r){
+   if(rows.length>=3||!r||r.id===hero.id||usedFamilies.has(r.family))return;
+   usedFamilies.add(r.family);rows.push(Object.freeze({...r}));
+ }
+ // Show the actual next commitments, not three duplicated versions of the hero.
+ for(const r of pending.slice(1))add(r);
+ const optional=(id,family,tone,icon,title,detail,action,label)=>{
+   add(Object.freeze({id,family,tone,icon,title,detail,action,label,requiresResponse:false}));
+ };
+ // Optional paths are clearly labeled, not counted as "to do".
+ if(hasCommunity&&!hasUnread&&!isUnavailable)optional('community','messages','rose','message',
+   'Your people','Your sample group is here when you need them',go('group','chat'),'Open');
+ if(hasTeam&&!pendingServe)optional('serving-overview','serve','gold','team',
+   'Your team','Review the Welcome Team schedule',go('team','schedule'),'See team');
+ if(!d?.readToday&&!rhythmDue)optional('scripture-read','reading','blue','read',
+   'Today’s Scripture',d?.passage||'Your local reading',go('read'),'Read');
+ if(!hasCommunity)optional('find-people','community','rose','people',
+   'Find your people','Explore fictional community groups',go('group'),'Explore');
+ if(!hasTeam)optional('find-team','serve','gold','team',
+   'Find a place to serve','Explore serving in the sample app',go('team'),'Explore');
+ if(rows.length<3)optional('scripture-overview','reading','blue','read',
+   'Carry it into the week',d?.passage||'Explore a Scripture reading',go('read'),'Review');
+ if(rows.length<3&&hasCommunity)optional('this-week','week','lilac','calendar',
+   'This week','See the sample group gathering',go('group','gather'),'Details');
+ if(rows.length<3&&!hasCommunity)optional('explore-groups','week','lilac','calendar',
+   'Community life','See what sample groups are like',go('group'),'Explore');
+ // Existing schedule/status digest deliberately never duplicates a button.
  const agenda=[];
  const schedule=(date,fallback)=>{
    if(!(date instanceof Date)||!Number.isFinite(date.valueOf()))return fallback;
    return date.toLocaleDateString('en-US',{weekday:'short'})+' · '+
      date.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'});
  };
- if(d?.member)agenda.push(Object.freeze({
+ if(hasCommunity)agenda.push(Object.freeze({
     id:'group',icon:'calendar',tone:'rose',title:'Wednesday Group',
     detail:schedule(d.groupDate,'Next gathering')+(d.groupLocation?' · '+d.groupLocation:''),
     status:pendingGroup?'RSVP open':d.rsvp==='going'?'Going':'Maybe',
@@ -115,7 +150,7 @@ function derive(d,now=new Date()){
     id:'group',icon:'people',tone:'rose',title:'Community',
     detail:'No sample group membership',status:'Explore',statusTone:'neutral'
  }));
- if(d?.team)agenda.push(Object.freeze({
+ if(hasTeam)agenda.push(Object.freeze({
     id:'serve',icon:'team',tone:'gold',title:'Welcome Team',
     detail:millis(d.serveDate)<Infinity?
       schedule(d.serveDate,'Upcoming shift')+(d.serveLocation?' · '+d.serveLocation:''):
@@ -130,16 +165,15 @@ function derive(d,now=new Date()){
  }));
  agenda.push(Object.freeze({
    id:'scripture',icon:'read',tone:'blue',title:'Scripture rhythm',
-   detail:d?.rhythmDue?'Saved step · '+(d?.passage||'Reading'):
-     (d?.passage||'Daily reading'),
-   status:d?.rhythmDue?'Step due':d?.readToday?'Read':'To read',
-   statusTone:d?.rhythmDue?'attention':d?.readToday?'complete':'neutral'
+   detail:rhythmDue?'Saved step · '+(d?.passage||'Reading'):(d?.passage||'Daily reading'),
+   status:rhythmDue?'Step due':d?.readToday?'Read':'To read',
+   statusTone:rhythmDue?'attention':d?.readToday?'complete':'neutral'
  }));
- return Object.freeze({hero:Object.freeze({
-   ...hero,subtitle:heroDetail,primary:primary,heroType,heroLabel,eyebrow:choice?.score>=90?'NEXT UP':'YOUR NEXT ACTION'
- }),rows:displayed,agenda:Object.freeze(agenda),
-   taskCount:rows.filter(r=>r.requiresResponse).length+Number(choice&&choice.score>=45),
-   hasPeople:!!d?.member,summary:d?.source||'fictional local data'
+ return Object.freeze({hero,rows:Object.freeze(rows),
+   agenda:Object.freeze(agenda),taskCount:pending.length,
+   hasPeople:hasCommunity,audience:d?.audience||'newcomer',
+   caughtUp:hero.id==='caught-up',
+   summary:d?.source||'fictional local data'
  });
 }
 function render(d,peopleRail='',portraits=[],now=new Date()){
