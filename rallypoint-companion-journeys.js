@@ -99,12 +99,12 @@
     ].filter(Boolean).join(' · '),'This comes from the current gathering fixture.',go('group','gather','See gathering'));
   }
 
-  function groupResponse(f){
+  function groupResponse(f,link=true){
     if(eligible(f,'rsvp'))return row('Your RSVP is open','Save Going on this device, or open the gathering to choose Maybe.',
       'Only an explicit button tap can save a response.',confirm('rsvp','Save Going'));
     const saved=f.group.rsvp==='going'?'Going':f.group.rsvp==='maybe'?'Maybe':null;
     return row('Your RSVP',saved?saved+' is saved on this device.':'An upcoming RSVP is unavailable.',
-      'Groups contains the saved response.',go('group','gather','Review RSVP'));
+      'Groups contains the saved response.',link?go('group','gather','Review RSVP'):null);
   }
 
   function groupConversation(f){
@@ -131,7 +131,7 @@
     if(intent==='group-status')return plan('Your Wednesday RSVP.','Review the saved response or choose an available action.',
       [groupResponse(f),...(eligible(f,'rsvp')?[groupSchedule(f)]:[])],'group',f.group.rsvp==='none'&&!f.groupDate);
     return plan('Get ready for Wednesday.','Check the gathering, your RSVP, and any updates you’d like to read.',
-      [groupSchedule(f),groupResponse(f),groupConversation(f)],'group',!f.groupDate||f.unread===null);
+      [groupSchedule(f),groupResponse(f,false),groupConversation(f)],'group',!f.groupDate||f.unread===null);
   }
 
   function serveSchedule(f){
@@ -141,14 +141,14 @@
     return row('Welcome Team',detail,'This comes from your current sample schedule.',go('team','schedule','See schedule'));
   }
 
-  function serveResponse(f){
+  function serveResponse(f,link=true){
     if(eligible(f,'serve'))return row('Availability requested','Confirm only if you’re able to take the sample shift.',
       'A typed reply leaves your serving response as it is.',confirm('serve','Confirm availability'));
     const detail={
       confirmed:'Confirmed on this device.',declined:'Declined on this device.',
       pending:'Your response is pending. An upcoming shift date is unavailable.'
     }[f.serving.response]||'The saved serving response is unavailable.';
-    return row('Your serving response',detail,'Team contains your saved availability.',go('team','schedule','Review schedule'));
+    return row('Your serving response',detail,'Team contains your saved availability.',link?go('team','schedule','Review schedule'):null);
   }
 
   function serving(f,intent){
@@ -163,7 +163,7 @@
       [serveResponse(f),...(eligible(f,'serve')?[serveSchedule(f)]:[])],
       'serve',f.serving.response==='unknown'||(f.serving.response==='pending'&&!f.serveDate));
     return plan('Get ready to serve.','Review your sample assignment before choosing a response.',
-      [serveSchedule(f),serveResponse(f)],'serve',!f.serveDate&&f.serving.response!=='declined');
+      [serveSchedule(f),serveResponse(f,false)],'serve',!f.serveDate&&f.serving.response!=='declined');
   }
 
   function checkIn(f){
