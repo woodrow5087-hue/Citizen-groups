@@ -372,6 +372,48 @@ try{
    await geometry(companion,'F-10 board after actions '+width);
    await companionContext.close();
  }
+
+ // F-10.3 opt-in goal guidance preserves the original F-10.2 comparator.
+ const goalUrl=new URL(boardUrl);goalUrl.searchParams.set('f103','1');
+ for(const width of [320,390,430]){
+  const gc=await browser.newContext({viewport:{width,height:width===320?568:width===390?844:932},
+   isMobile:true,hasTouch:true,reducedMotion:'reduce'});
+  const gp=await gc.newPage();
+  await gp.clock.install({time:new Date('2026-11-25T12:00:00')});
+  await gp.addInitScript(()=>localStorage.setItem('rallypoint-phase1-2026',JSON.stringify({
+    role:'member',view:'today',prayers:[],teamStatus:'pending',rsvp:'',read:false,prayed:false,
+    groupMessages:[{name:'Jess',text:'Original archive unchanged.'}]
+  })));
+  await gp.goto(goalUrl.toString());
+  assert.equal(await gp.locator('#nav button').count(),4);
+  assert.equal(await gp.locator('.f09b-row').count(),3);
+  await geometry(gp,'F-10.3 goal board '+width);
+  const original=await gp.evaluate(()=>localStorage.getItem('rallypoint-phase1-2026'));
+  const keys=await gp.evaluate(()=>Object.keys(localStorage).sort());
+  await gp.locator('.f10-entry-button').click();
+  assert.equal(await gp.locator('.f10-chip').count(),6);
+  assert.equal(await gp.locator('.f10-followup[data-value="goal-group"]').count(),1);
+  await gp.locator('.f10-followup[data-value="goal-group"]').click();
+  assert.ok((await gp.locator('.f10-response').textContent()).includes('Get ready for Wednesday'));
+  assert.equal(await gp.locator('.f10-route[data-action="f10-confirm"][data-value="rsvp"]').count(),1);
+  await gp.locator('#f10-query').fill('And Sunday?');
+  await gp.locator('.f10-query-form button[type="submit"]').click();
+  await gp.locator('#f10-query').fill('Help me prepare for that');
+  await gp.locator('.f10-query-form button[type="submit"]').click();
+  assert.ok((await gp.locator('.f10-response').textContent()).includes('Get ready to serve'));
+  assert.equal(await gp.locator('.f10-route[data-action="f10-confirm"][data-value="serve"]').count(),1);
+  await gp.locator('#f10-query').fill('Am I all caught up?');
+  await gp.locator('.f10-query-form button[type="submit"]').click();
+  assert.ok((await gp.locator('.f10-response').textContent()).includes('needs attention'));
+  assert.equal(await gp.evaluate(()=>localStorage.getItem('rallypoint-phase1-2026')),original);
+  assert.deepEqual(await gp.evaluate(()=>Object.keys(localStorage).sort()),keys);
+  await audit(gp,'F-10.3 goal companion '+width);
+  if(width===390)await gp.screenshot({path:path.join(out,'f103-goal-companion-390.png'),fullPage:false});
+  await gp.locator('[data-action="close-dialog"]').click();
+  await gp.locator('.f10-entry-button').click();
+  assert.equal(await gp.locator('.f10-earlier-turn').count(),0);
+  await gc.close();
+ }
  const guestCompanion=await browser.newContext({viewport:{width:390,height:844},isMobile:true,hasTouch:true,reducedMotion:'reduce'});
  const guestAsk=await guestCompanion.newPage();
  await guestAsk.clock.install({time:new Date('2026-11-25T12:00:00')});
