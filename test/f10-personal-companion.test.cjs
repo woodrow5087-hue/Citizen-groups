@@ -119,3 +119,81 @@ test('Unknown or HTML-looking questions return limited explanation, escaped outp
  assert.equal((html.match(/data-action="f10-confirm"/g)||[]).length,0);
  assert.deepEqual(s,orig);
 });
+
+test('F-10.1 vague time question clarifies two separate current commitments',()=>{
+ const sources=context();
+ const week=Companion.respond('week',sources);
+ assert.equal(week.response.intent,'week');
+ assert.equal(week.context.focus,'');
+ const ambiguous=Companion.respond('What time?',sources,week.context);
+ assert.equal(ambiguous.response.heading,'Which one do you mean?');
+ assert.equal(ambiguous.response.clarify,true);
+ assert.equal(ambiguous.response.items.length,2);
+ assert.ok(ambiguous.suggestions.includes('group-time'));
+ assert.ok(ambiguous.suggestions.includes('serve-time'));
+ assert.ok(!ambiguous.response.items.some(x=>x.action?.kind==='confirm'));
+ const chose=Companion.respond('group-time',sources,ambiguous.context);
+ assert.equal(chose.context.focus,'group');
+ assert.equal(chose.response.heading,'Your Wednesday gathering.');
+ assert.match(chose.response.intro,/Wed, Nov 25 · 6:30 PM/);
+ assert.match(JSON.stringify(chose.response.items),/North Commons/);
+});
+test('F-10.1 Sunday follow-up can change topic, then confirmation is offered but never automatically committed',()=>{
+ const s=state(),before=structuredClone(s),sources=context(s);
+ const initial=Companion.respond('week',sources);
+ const sunday=Companion.respond('And Sunday?',sources,initial.context);
+ assert.equal(sunday.context.focus,'serve');
+ assert.match(sunday.response.heading,/serving rhythm/);
+ assert.match(JSON.stringify(sunday.response),/Sun, Nov 29 · 9:00 AM/);
+ const next=Companion.respond('Can I confirm that?',sources,sunday.context);
+ assert.equal(next.response.heading,'Your serving response.');
+ assert.equal(next.response.items[0].action.kind,'confirm');
+ assert.equal(next.response.items[0].action.id,'serve');
+ const yes=Companion.respond('Yes',sources,next.context);
+ assert.match(yes.response.intro,/typed “yes” is not enough/);
+ assert.equal(yes.response.items[0].action.id,'serve');
+ assert.deepEqual(s,before,'asking or agreeing cannot change source state');
+ const saved=context({...s,teamStatus:'confirmed'});
+ const after=Companion.respond('Can I confirm that?',saved,sunday.context);
+ assert.equal(after.response.items[0].action.kind,'go');
+ assert.match(after.response.intro,/already confirmed/);
+});
+test('F-10.1 short subject references honor context, and a new session forgets previous subject',()=>{
+ const src=context();
+ const group=Companion.respond('My group',src);
+ const where=Companion.respond('Where?',src,group.context);
+ assert.equal(where.context.focus,'group');
+ assert.match(where.response.intro,/North Commons/);
+ const why=Companion.respond('Why?',src,where.context);
+ assert.match(why.response.heading,/Why your group/);
+ const withoutHistory=Companion.respond('Where?',src,{});
+ assert.equal(withoutHistory.response.heading,'Which one do you mean?');
+ assert.equal(withoutHistory.context.focus,'week');
+});
+test('F-10.1 short input cannot cross guest membership boundaries or invoke a command',()=>{
+ const s=state(),sources=context(s,ui(false,true),{status:'ok',unreadCount:77});
+ const prior={intent:'group',focus:'group'};
+ for(const word of ['What time?','Where?','Can I RSVP for my group?','Yes']){
+  const a=Companion.respond(word,sources,prior);
+  assert.equal(a.response.items.some(x=>x.action?.kind==='confirm'&&x.action.id==='rsvp'),false,word);
+  assert.doesNotMatch(JSON.stringify(a),/Private sample|Marcus|77 unread|North Commons/);
+ }
+ const noTeam=context(s,ui(false,false),{status:'ok',unreadCount:5});
+ const sunday=Companion.respond('And Sunday?',noTeam,prior);
+ assert.doesNotMatch(JSON.stringify(sunday),/9:00 AM|Welcome Team · Response needed|Confirm serving/);
+ assert.equal(sunday.response.items[0].action.kind,'go');
+});
+test('F-10.1 transcript rendering escapes all prior user messages and bounds history and follow-up controls',()=>{
+ const s=context();
+ const now=Companion.respond('serve-time',s);
+ const history=Array.from({length:11},(_,i)=>({asked:i===8?'<img src=x onerror=alert(1)>':'Turn '+i,
+  heading:'Answer '+i,intro:'Local result '+i}));
+ const html=Companion.render(now.response,now.query,'',history,[
+  'serve-where','serve-confirm','serve-time','serve-where','<script>']);
+ assert.equal((html.match(/class="f10-earlier-turn"/g)||[]).length,3);
+ assert.equal((html.match(/data-action="f10-followup"/g)||[]).length,3);
+ assert.equal((html.match(/data-action="f10-ask"/g)||[]).length,6);
+ assert.doesNotMatch(html,/<img src=x|<script>|data-value="<script>/);
+ assert.match(html,/class="f10-topics"/);
+ assert.match(html,/class="f10-conversation"/);
+});
