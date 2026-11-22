@@ -224,6 +224,9 @@ try{
    assert.equal(await board.locator('.f09-stack-controls').count(),0,'No hidden stack controls');
    assert.equal(await board.locator('.f09b-row').count(),3);
    assert.equal(await board.locator('.f09b-agenda-row').count(),3);
+   assert.equal(await board.locator('.f09b-glance button').count(),0,'At a Glance must not repeat actions');
+   assert.ok((await board.locator('.f09b-glance').textContent()).includes('SCHEDULE & STATUS'));
+   assert.ok((await board.locator('.f09b-agenda-row[data-agenda="group"]').textContent()).includes('North Commons'));
    assert.equal(await board.locator('#nav button').count(),4);
    assert.equal(await board.locator('.f09b-hero').getAttribute('data-priority'),'group-rsvp');
    assert.ok((await board.locator('.f09b-hero').textContent()).includes('Group tonight.'));
@@ -232,10 +235,10 @@ try{
    if(width===390)await board.screenshot({path:path.join(out,'f09-priority-board-390.png'),fullPage:false});
    const modern=await board.evaluate(()=>localStorage.getItem('rallypoint-wednesday-chat-lab-v1'));
    await board.locator('.f09b-primary[data-action="f09-rsvp"]').click();
-   assert.equal(await board.locator('.f09b-agenda-row[data-agenda="group"] .f09b-agenda-cta').textContent(),'Going');
+   assert.equal(await board.locator('.f09b-agenda-row[data-agenda="group"] .f09b-status').textContent(),'Going');
    assert.equal(await board.locator('.f09b-row[data-row="group-rsvp"]').count(),0);
    await board.locator('.f09b-row[data-row="serve-response"] [data-action="f09-serve"]').click();
-   assert.equal(await board.locator('.f09b-agenda-row[data-agenda="serve"] .f09b-agenda-cta').textContent(),'Confirmed');
+   assert.equal(await board.locator('.f09b-agenda-row[data-agenda="serve"] .f09b-status').textContent(),'Confirmed');
    assert.equal(await board.evaluate(()=>localStorage.getItem('rallypoint-wednesday-chat-lab-v1')),modern);
    await board.locator('.f09b-hero [data-go="group"][data-pane="chat"]').click();
    assert.ok(await board.locator('#rpx-chat').isVisible());
