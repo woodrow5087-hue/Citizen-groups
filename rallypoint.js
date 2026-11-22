@@ -2,7 +2,8 @@
 'use strict';
 const key='rallypoint-phase1-2026';
 // F-09 is an isolated, explicit preview URL switch, never a saved preference.
-const f10Preview=new URLSearchParams(window.location.search).get('f10')==='1';
+const f103Preview=new URLSearchParams(window.location.search).get('f103')==='1';
+const f10Preview=f103Preview||new URLSearchParams(window.location.search).get('f10')==='1';
 const f09Mode=f10Preview?'board':new URLSearchParams(window.location.search).get('f09');
 const f09Board=f09Mode==='board';
 const f09Preview=f09Mode==='1'||f09Board;
@@ -531,7 +532,7 @@ if(dialog==='f10-companion'&&f10Preview){
    companion:window.RallyCompanionDecision,passage:currentReading().passage
  });
  const board=window.RallyPriorityBoard.derive(model,now);
- f10Active=window.RallyPersonalCompanion.respond(f10Prompt,{model,board,now},f10Prior);
+ f10Active=window.RallyPersonalCompanion.respond(f10Prompt,{model,board,now,goalMode:f103Preview},f10Prior);
  body=window.RallyPersonalCompanion.render(
    f10Active.response,f10Asked,f10Notice,f10Turns,f10Active.suggestions
  );

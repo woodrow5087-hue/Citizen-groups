@@ -279,3 +279,95 @@ test('F-10.2 former subject is never an authorization source',()=>{
  assert.equal(shift.response.items.some(x=>x.action?.kind==='confirm'),false);
  assert.doesNotMatch(JSON.stringify(shift),/Sun, Nov 29|North Campus/);
 });
+
+test('F-10.3 is opt-in and suggests actual goals only inside the isolated preview',()=>{
+ const src=context();
+ const baseline=Companion.respond('week',src);
+ const preview=Companion.respond('week',{...src,goalMode:true});
+ assert.ok(!baseline.suggestions.some(x=>x.startsWith('goal-')));
+ assert.deepEqual(preview.suggestions,['goal-group','goal-serve','goal-check']);
+ assert.notEqual(Companion.respond('goal-group',src).response.goal,true,'F-10.2 cannot enter goal mode');
+});
+test('F-10.3 preparing for group uses current fixture, upcoming RSVP and modern unread only',()=>{
+ const s=state(),original=structuredClone(s),src={...context(s),goalMode:true};
+ const plan=Companion.respond('Help me get ready for Wednesday',src);
+ assert.equal(plan.response.goal,true);
+ assert.equal(plan.context.focus,'group');
+ assert.match(plan.response.heading,/Get ready for Wednesday/);
+ assert.match(JSON.stringify(plan.response.items),/Wed, Nov 25 · 6:30 PM|North Commons/);
+ assert.equal(plan.response.items.find(x=>x.action?.id==='rsvp')?.action.kind,'confirm');
+ assert.ok(plan.response.items.some(x=>/3 unread sample/.test(x.detail)));
+ assert.deepEqual(s,original);
+ const saved={...context({...s,rsvp:'going'},ui(true,true),{status:'ok',unreadCount:0}),goalMode:true};
+ const after=Companion.respond('goal-group',saved,plan.context);
+ assert.doesNotMatch(JSON.stringify(after.response),/RSVP remains open|3 unread/);
+ assert.equal(after.response.items.some(x=>x.action?.kind==='confirm'),false);
+});
+test('F-10.3 serving preparation is response-aware and never makes a commitment',()=>{
+ const s=state(),original=structuredClone(s),src={...context(s),goalMode:true};
+ const first=Companion.respond('Can you help me prepare for my Sunday serving shift?',src);
+ assert.equal(first.context.focus,'serve');
+ assert.match(first.response.heading,/Get ready to serve/);
+ assert.match(JSON.stringify(first.response.items),/Sun, Nov 29 · 9:00 AM|North Campus/);
+ assert.equal(first.response.items.find(x=>x.action?.id==='serve')?.action.kind,'confirm');
+ assert.deepEqual(s,original);
+ for(const status of ['confirmed','declined']){
+  const changed={...context({...s,teamStatus:status}),goalMode:true};
+  const output=Companion.respond('goal-serve',changed);
+  assert.equal(output.response.items.some(x=>x.action?.kind==='confirm'),false,status);
+  assert.match(output.response.items[1].detail,status==='confirmed'?/Confirmed/:/Declined/);
+ }
+});
+test('F-10.3 guest and revoked membership do not reveal private group or team fixture details',()=>{
+ const s=state(),src={...context(s,ui(false,false),{status:'ok',unreadCount:61}),goalMode:true};
+ for(const q of ['goal-group','goal-serve','goal-connect','goal-check',
+  'Help me get ready for Wednesday','Can you prepare me for Sunday serving?']){
+  const p=Companion.respond(q,src,{focus:'group'});
+  assert.equal(p.response.items.some(x=>x.action?.kind==='confirm'),false,q);
+  assert.doesNotMatch(JSON.stringify(p.response),/North Commons|North Campus|Wed, Nov 25|Sun, Nov 29|61 unread|private sample request/i,q);
+ }
+ const partial={...context(s,ui(false,true),{status:'ok',unreadCount:61}),goalMode:true};
+ const group=Companion.respond('goal-group',partial,{focus:'group'});
+ assert.equal(group.response.items[0].action.id,'group');
+ assert.doesNotMatch(JSON.stringify(group.response),/North Commons|61 unread/);
+});
+test('F-10.3 no future fixture means no proposed direct confirmation',()=>{
+ const s=state(),date=new Date('2026-12-16T12:00:00');
+ const base=context(s,ui(true,true),{status:'ok',unreadCount:0},date);
+ const src={...base,model:{...base.model,groupDate:null,serveDate:null},goalMode:true};
+ for(const key of ['goal-group','goal-serve']){
+  const p=Companion.respond(key,src);
+  assert.ok(p.response.goal);
+  assert.equal(p.response.items.some(x=>x.action?.kind==='confirm'),false,key);
+  assert.match(p.response.items[0].detail,/No upcoming sample/);
+ }
+ const later=Companion.respond('Help me prepare for Sunday next week',src);
+ assert.equal(later.response.limited,true);
+ assert.doesNotMatch(JSON.stringify(later.response),/Sun, Dec/);
+});
+test('F-10.3 recognizes connection and caught-up goals without spiritual-health scoring',()=>{
+ const quiet={...state(),rsvp:'going',teamStatus:'confirmed',read:false,prayed:false};
+ const src={...context(quiet,ui(true,true),{status:'ok',unreadCount:0}),goalMode:true};
+ const connection=Companion.respond('I am new here; how do I get connected?',src);
+ assert.equal(connection.response.goal,true);
+ assert.match(connection.response.heading,/next connection/);
+ assert.ok(connection.response.items.some(x=>x.action?.id==='group'));
+ const caught=Companion.respond('Am I all caught up?',src);
+ assert.match(caught.response.heading,/caught up on required responses/);
+ assert.equal(quiet.read,false);
+ assert.equal(quiet.prayed,false);
+ assert.doesNotMatch(JSON.stringify(caught.response),/engagement score|spiritual health assessment/);
+});
+test('F-10.3 mixed preparations clarify and goal context shifts safely',()=>{
+ const src={...context(),goalMode:true};
+ const group=Companion.respond('goal-group',src);
+ const serve=Companion.respond('Help me prepare for that',src,{...group.context,focus:'serve'});
+ assert.equal(serve.context.focus,'serve');
+ assert.match(serve.response.heading,/Get ready to serve/);
+ const mixed=Companion.respond('Help me prepare for Wednesday Group and Sunday serving',src,serve.context);
+ assert.equal(mixed.response.clarify,true);
+ assert.equal(mixed.response.items.some(x=>x.action?.kind==='confirm'),false);
+ const text=Companion.render(group.response,'<img src=x onerror=alert(1)>','',[],group.suggestions);
+ assert.doesNotMatch(text,/<img src=x onerror/);
+ assert.match(text,/data-value="goal-group"/);
+});
