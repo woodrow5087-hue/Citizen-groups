@@ -34,7 +34,7 @@ const svg=type=>{
 };
 const millis=d=>d instanceof Date&&!Number.isNaN(d.valueOf())?d.valueOf():Infinity;
 function derive(d,now=new Date()){
- const features=Array.isArray(d?.stack)?d.stack:[];
+ const features=Array.isArray(d?.allPriorities)?d.allPriorities:Array.isArray(d?.stack)?d.stack:[];
  const find=id=>features.find(f=>f.id===id);
  const whenGroup=millis(d?.groupDate)-now.getTime();
  const whenServe=millis(d?.serveDate)-now.getTime();
