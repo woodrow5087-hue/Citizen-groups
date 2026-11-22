@@ -210,11 +210,13 @@ function interpretNatural(query,sources={},prior={}){
  const g=/\b(wednesday|group|gathering|rsvp)\b/.test(text);
  const t=/\b(sunday|serv(?:e|ing|ice)|shift|volunteer|welcome team)\b/.test(text);
  const negative=/\b(can'?t|cannot|won'?t|unable|unavailable|decline|not able|miss(?:ing)?|not coming)\b/.test(text);
- const preparation=/\b(prepare|preparation|get ready|before|checklist)\b/.test(text);
+ const oldFocus=['group','serve'].includes(prior?.focus)?prior.focus:'';
+ const implicitUnavailability=negative&&!g&&!t&&oldFocus&&/\b(make it|be there|come|available|attend|this)\b/.test(text);
+ const preparation=/\b(prep|prepare|preparation|get ready|getting ready|before|checklist)\b/.test(text);
  const compound=g&&t&&/\b(and|plus|both|also|together)\b/.test(text);
  const remaining=/\b(what(?:'s| is)? left|anything else|what now|what remains|still need|what else)\b/.test(text);
  const overload=/\b(one thing at a time|what can wait|what matters most|where (?:do|should) i start|overwhelm(?:ed|ing)?|on my plate)\b/.test(text);
- const decline=negative&&(g||t);
+ const decline=negative&&(g||t||implicitUnavailability);
  const prep=(preparation&&(g||t))||/\b(help me (?:plan|prepare) (?:for )?(?:this |my )?week)\b/.test(text);
  if(!decline&&!compound&&!prep&&!remaining&&!overload)return null;
  const selected=decline?'availability':compound?'combined':prep?'prepare':overload?'focus':'remaining';
@@ -244,18 +246,18 @@ function interpretNatural(query,sources={},prior={}){
  };
  let heading='',intro='',focus='';
  if(selected==='availability'){
-  focus=t&&!g?'serve':g&&!t?'group':'';
+  focus=t&&!g?'serve':g&&!t?'group':implicitUnavailability?oldFocus:'';
   heading='Let’s look at your options.';
   intro='I won’t change a commitment based on a message. You can review the current response and make any changes in the relevant section.';
-  if(g&&group)add('Wednesday Group',d.rsvp==='going'?'You are marked Going in this demo.':'Your sample RSVP is '+(d.rsvp||'open')+'.',
+  if((g||implicitUnavailability&&oldFocus==='group')&&group)add('Wednesday Group',d.rsvp==='going'?'You are marked Going in this demo.':'Your sample RSVP is '+(d.rsvp||'open')+'.',
    'Changing a response requires an explicit action in Groups.',go('group','gather','Review RSVP'));
-  if(t&&team)add('Welcome Team',d.serveStatus==='confirmed'?'Your sample shift is currently confirmed.':
+  if((t||implicitUnavailability&&oldFocus==='serve')&&team)add('Welcome Team',d.serveStatus==='confirmed'?'Your sample shift is currently confirmed.':
     d.serveStatus==='declined'?'You already declined the sample shift.':'Your sample shift still needs a response.',
    'Open Team to review availability or decline, rather than silently changing it here.',
    go('team','schedule','Review serving'));
   if(!items.length){
    add('Nothing to change','No matching group or team commitment is assigned to this sample profile.',
-    'Membership is required before any private commitment can be shown.',go(g?'group':'team','','Explore'));
+    'Membership is required before any private commitment can be shown.',go(g||oldFocus==='group'?'group':'team','','Explore'));
   }
  }else if(selected==='combined'){
   heading='Here’s both, together.';
@@ -346,8 +348,10 @@ function respond(raw,sources={},prior={}){
     context:Object.freeze({intent:response.intent,focus:topic||''}),
     suggestions:Object.freeze(suggestions(topic||'week',d))});
  }
- const guided=interpretNatural(query,sources,previous);
- if(guided)return guided;
+ if(sources.enableIntelligence===true){
+  const guided=interpretNatural(query,sources,previous);
+  if(guided)return guided;
+ }
  // A week-wide question can have two commitments. Clarify a pronoun.
  if(isFollowup&&!focus&&(d.member||d.team)){
   const candidates=[];
@@ -426,7 +430,14 @@ function respond(raw,sources={},prior={}){
   suggestions:Object.freeze(suggestions(focus||response.intent,d))});
 }
 
-function render(response,asked='',notice='',history=[],suggested=[]){
+const intelligenceGuides=Object.freeze({
+ 'get-ready-group':'Help me get ready for Wednesday group',
+ 'get-ready-sunday':'Help me prepare for serving Sunday',
+ 'both-schedules':'When is my group and my Sunday shift?',
+ 'what-remains':'What’s still left?',
+ 'what-can-wait':'What can wait?'
+});
+function render(response,asked='',notice='',history=[],suggested=[],options={}){
  const r=response||answer('unknown');
  const chips=prompts.map(p=>
   '<button type="button" class="f10-chip" data-action="f10-ask" data-value="'+esc(p.id)+'">'+esc(p.label)+'</button>'
@@ -440,6 +451,13 @@ function render(response,asked='',notice='',history=[],suggested=[]){
   '<p class="f10-earlier-reply">'+esc(String(turn.heading||'').slice(0,100))+
    (turn.intro?' · '+esc(String(turn.intro).slice(0,120)):'')+'</p></div>'
  ).join('');
+ const guideButtons=options?.enableIntelligence===true?
+  '<div class="f10-guides" aria-label="Natural questions to try"><span>TRY ASKING NATURALLY</span><div>'+
+   Object.entries(intelligenceGuides).filter(([id])=>!id.includes('sunday')||options?.team!==false)
+   .filter(([id])=>!id.includes('group')||options?.group!==false)
+   .slice(0,3).map(([id,label])=>
+     '<button type="button" class="f10-guide" data-action="f10-guide" data-value="'+esc(id)+'">'+esc(label)+'</button>'
+   ).join('')+'</div></div>':'';
  const notes=notice?'<p class="f10-notice" role="status" aria-live="polite">'+esc(notice.slice(0,180))+'</p>':'';
  const question=asked?'<p class="f10-question"><span>You asked</span>'+esc(asked.slice(0,160))+'</p>':'';
  const cards=r.items.map(x=>{
@@ -455,7 +473,9 @@ function render(response,asked='',notice='',history=[],suggested=[]){
  }).join('');
  return '<div class="f10-panel f10-conversation" aria-label="Ask Rally local companion">'+
   '<div class="f10-intro"><div class="f10-local-dot" aria-hidden="true"></div><span>ASK RALLY · LOCAL PREVIEW</span></div>'+
-  '<p class="f10-helper">We can stay on the same topic. Try “What time?” or “And Sunday?” after a question.</p>'+
+  '<p class="f10-helper">'+(options?.enableIntelligence===true?
+     'Ask naturally about preparing, schedules or what’s still left. I’ll use only your saved sample activities.':
+     'We can stay on the same topic. Try “What time?” or “And Sunday?” after a question.')+'</p>'+guideButtons+
   (older?'<div class="f10-earlier" role="region" tabindex="0" aria-label="Earlier messages in this session">'+older+'</div>':'')+
   notes+question+
   '<section class="f10-response" aria-live="polite" aria-label="Companion answer">'+
@@ -472,5 +492,5 @@ function render(response,asked='',notice='',history=[],suggested=[]){
   '<p class="f10-disclosure">'+esc(r.note)+'</p>'+
   '</div>';
 }
-return Object.freeze({prompts,classify,answer,respond,interpretNatural,followKeys,render});
+return Object.freeze({prompts,classify,answer,respond,interpretNatural,intelligenceGuides,followKeys,render});
 });
