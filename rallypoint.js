@@ -129,7 +129,7 @@ function rallyOneToday(){
  const people=['anna','jess','marcus','taylor'];
  const portrait=id=>`<img alt="" src="assets/today-priority/${id}.webp">`;
  const group=todayUI.memberships.group,team=todayUI.memberships.team;
- const unread=conversation().unread;
+ const unread=conversation().unreadCount;
  return `<section class="one-page"><header><b>RALLY <em>ONE.</em></b><button data-action="f10-open">${icon('message')} Ask Rally</button></header>
  <h1>Good morning, <em>Jonathan.</em></h1><div class="one-grid">
  <article class="one-lead">${icon('calendar')}<h2>${group?'Group tonight':'Find a group'}</h2><p>${group?'Wednesday Group · 6:30 PM':'Meet people at your campus'}</p>
