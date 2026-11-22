@@ -3,6 +3,8 @@
   "private": true,
   "scripts": {
     "test": "node --test test/*.test.cjs",
+    "test:companion": "node --test test/f10-personal-companion.test.cjs test/rallypoint.test.cjs",
+    "verify:companion": "npm run test:companion && npm run build",
     "build": "node scripts/build.cjs",
     "dev": "python3 -m http.server 8000",
     "test:browser": "npm run build && node scripts/phase1-browser-check.mjs",
