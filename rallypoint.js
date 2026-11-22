@@ -2,7 +2,8 @@
 'use strict';
 const key='rallypoint-phase1-2026';
 // F-09 is an isolated, explicit preview URL switch, never a saved preference.
-const f103Preview=new URLSearchParams(window.location.search).get('f103')==='1';
+const f104Preview=new URLSearchParams(window.location.search).get('f104')==='1';
+const f103Preview=f104Preview||new URLSearchParams(window.location.search).get('f103')==='1';
 const f10Preview=f103Preview||new URLSearchParams(window.location.search).get('f10')==='1';
 const f09Mode=f10Preview?'board':new URLSearchParams(window.location.search).get('f09');
 const f09Board=f09Mode==='board';
@@ -10,10 +11,10 @@ const f09Preview=f09Mode==='1'||f09Board;
 let f09Index=0;
 let f09Feedback='';
 let f10Prompt='week',f10Asked='',f10Notice='';
-let f10Turns=[],f10Prior={},f10Active=null;
+let f10Turns=[],f10Prior={},f10Active=null,f10AfterAction='';
 // No transcripts, contextual focus, or typed questions are written to storage.
 function f10ClearSession(){
- f10Prompt='week';f10Asked='';f10Notice='';f10Turns=[];f10Prior={};f10Active=null;
+ f10Prompt='week';f10Asked='';f10Notice='';f10Turns=[];f10Prior={};f10Active=null;f10AfterAction='';
 }
 const defaults=()=>({role:'member',groupPane:'chat',directPerson:'anna',directMessages:{},teamPane:'schedule',view:'today',discover:false,groupMessages:[{name:'Jess W.',time:'Yesterday',text:'What stood out to you in John 15 this week?'},{name:'Anna L.',time:'Today',text:'Looking forward to seeing everyone Wednesday.'}],teamMessages:[{name:'Sam R.',time:'Yesterday',text:'Welcome team — thank you for helping people feel at home!'}],prayers:[{name:'Marcus C.',time:'Yesterday',text:'Praying for wisdom with an upcoming decision.'}],rsvp:'',teamStatus:'pending',coverage:false,attendance:{anna:'here',jess:'here',marcus:'unknown',taylor:'unknown'},reached:[],interest:[],plan:'sermon',planQuestions:{},memoryTextRevision:'BSB-2026-1',memoryGames:{},memoryMode:'solo',memoryActive:null,memoryPassTurn:1,memoryTarget:null,question:'How can we love one another as Jesus has loved us?',read:false,prayed:false,companionCare:{},companionChoices:{snoozedUntil:{}},rhythm:{}});
 let s;try{s={...defaults(),...JSON.parse(localStorage.getItem(key)||'null')}}catch(_){s=defaults()}
@@ -532,7 +533,8 @@ if(dialog==='f10-companion'&&f10Preview){
    companion:window.RallyCompanionDecision,passage:currentReading().passage
  });
  const board=window.RallyPriorityBoard.derive(model,now);
- f10Active=window.RallyPersonalCompanion.respond(f10Prompt,{model,board,now,goalMode:f103Preview},f10Prior);
+ f10Active=window.RallyPersonalCompanion.respond(f10Prompt,{model,board,now,goalMode:f103Preview,
+   followThroughMode:f104Preview,followThrough:f10AfterAction},f10Prior);
  body=window.RallyPersonalCompanion.render(
    f10Active.response,f10Asked,f10Notice,f10Turns,f10Active.suggestions
  );
@@ -569,7 +571,7 @@ function f10Ask(question){
    f10Turns=f10Turns.slice(-3);
  }
  f10Prior=f10Active?.context||{};
- f10Prompt=text;f10Asked=window.RallyPersonalCompanion.followKeys[text]||text;f10Notice='';
+ f10AfterAction='';f10Prompt=text;f10Asked=window.RallyPersonalCompanion.followKeys[text]||text;f10Notice='';
  renderDialog();
 }
 function notify(text){const x=$('toast');x.textContent=text;x.hidden=false;clearTimeout(notify.timer);notify.timer=setTimeout(()=>x.hidden=true,2600)}
@@ -612,12 +614,15 @@ if(f10Preview&&dialog==='f10-companion'&&a==='f10-followup'){
  f10Ask(v);return;
 }
 if(f10Preview&&dialog==='f10-companion'&&a==='f10-confirm'&&s.view==='today'){
+ f10AfterAction='';
  if(v==='rsvp'&&todayUI.memberships.group&&!s.rsvp){
    s.rsvp='going';f10Notice='Your sample RSVP is now Going. Nothing was sent to a church system.';
+   if(f104Preview)f10AfterAction='rsvp'; // Only after the already-guarded tap.
  }else if(v==='serve'&&todayUI.memberships.team&&s.teamStatus==='pending'){
    s.teamStatus='confirmed';s.coverage=false;
    s.teamMessages=s.teamMessages.filter(x=>!x.coverage);
    f10Notice='Your sample serving availability is now Confirmed on this device.';
+   if(f104Preview)f10AfterAction='serve';
  }else{f10Notice='That sample action is already handled or unavailable for this profile.';}
  f09Feedback='';render();renderDialog();return;
 }

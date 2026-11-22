@@ -371,3 +371,60 @@ test('F-10.3 mixed preparations clarify and goal context shifts safely',()=>{
  assert.doesNotMatch(text,/<img src=x onerror/);
  assert.match(text,/data-value="goal-group"/);
 });
+
+
+test('F-10.4 group follow-through occurs only after a verified saved RSVP and authorized group membership',()=>{
+ const s={...state(),rsvp:'going'},before=structuredClone(s),src={...context(s),goalMode:true,followThroughMode:true,followThrough:'rsvp'};
+ const out=Companion.respond('goal-group',src,{focus:'group'});
+ assert.equal(out.response.followThrough,true);
+ assert.match(out.response.heading,/in for Wednesday/);
+ assert.match(out.response.intro,/Nothing was sent to a church system/);
+ assert.match(out.response.items[0].detail,/Wed, Nov 25 · 6:30 PM · North Commons/);
+ assert.equal(out.response.items[0].action.kind,'go');
+ assert.equal(out.response.items[0].action.id,'group');
+ assert.deepEqual(out.suggestions,['group-where','group-time','goal-check']);
+ assert.equal(out.response.items.some(x=>x.action?.kind==='confirm'),false);
+ assert.deepEqual(s,before,'follow-through must be read-only');
+ const legacy=Companion.respond('goal-group',{...src,followThroughMode:false});
+ assert.equal(legacy.response.followThrough,undefined,'F-10.3 comparator must remain unchanged');
+ const pending=Companion.respond('goal-group',{...src,model:{...src.model,rsvp:''}});
+ assert.equal(pending.response.followThrough,undefined,'event alone cannot claim completion');
+ assert.equal(pending.response.items.some(x=>x.action?.kind==='confirm'),true);
+});
+test('F-10.4 serving follow-through requires current team membership and saved confirmed response',()=>{
+ const s={...state(),teamStatus:'confirmed'},src={...context(s),goalMode:true,followThroughMode:true,followThrough:'serve'};
+ const out=Companion.respond('goal-serve',src,{focus:'serve'});
+ assert.equal(out.response.followThrough,true);
+ assert.match(out.response.heading,/confirmed for Sunday/);
+ assert.match(out.response.items[0].detail,/Sun, Nov 29 · 9:00 AM · North Campus/);
+ assert.equal(out.response.items[0].action.kind,'go');
+ assert.equal(out.response.items[0].action.id,'team');
+ assert.deepEqual(out.suggestions,['serve-where','serve-time','goal-check']);
+ const declined=Companion.respond('goal-serve',{...src,model:{...src.model,serveStatus:'declined'}});
+ assert.equal(declined.response.followThrough,undefined,'changed response is authoritative');
+ assert.equal(declined.response.items.some(x=>x.action?.kind==='confirm'),false);
+});
+test('F-10.4 forged action context never grants membership or reveals private details',()=>{
+ const s={...state(),rsvp:'going',teamStatus:'confirmed'},src=context(s,ui(false,false),{status:'ok',unreadCount:63});
+ for(const action of ['rsvp','serve','malicious','']){
+  const answer=Companion.respond('goal-check',{...src,goalMode:true,followThroughMode:true,followThrough:action},{focus:'group'});
+  assert.equal(answer.response.followThrough,undefined,action);
+  assert.equal(answer.response.items.some(x=>x.action?.kind==='confirm'),false,action);
+  assert.doesNotMatch(JSON.stringify(answer.response),/North Commons|North Campus|Wed, Nov 25|Sun, Nov 29|63 unread/i,action);
+ }
+ const groupOnly=context(s,ui(true,false));
+ const mismatch=Companion.respond('goal-serve',{...groupOnly,goalMode:true,followThroughMode:true,followThrough:'serve'});
+ assert.equal(mismatch.response.followThrough,undefined);
+ assert.doesNotMatch(JSON.stringify(mismatch.response),/North Campus|9:00 AM/);
+});
+test('F-10.4 post-action wording refuses to invent a future event when its date is absent',()=>{
+ const s={...state(),rsvp:'going',teamStatus:'confirmed'},base=context(s);
+ for(const [action,field] of [['rsvp','groupDate'],['serve','serveDate']]){
+  const src={...base,model:{...base.model,[field]:null},goalMode:true,followThroughMode:true,followThrough:action};
+  const response=Companion.respond('goal-check',src).response;
+  assert.equal(response.followThrough,true);
+  assert.match(response.items[0].detail,/no verified upcoming sample|no upcoming sample/i);
+  assert.doesNotMatch(JSON.stringify(response),/Wed, Nov 25|Sun, Nov 29/);
+  assert.equal(response.items[0].action.kind,'go');
+ }
+});

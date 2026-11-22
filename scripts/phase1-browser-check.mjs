@@ -414,6 +414,51 @@ try{
   assert.equal(await gp.locator('.f10-earlier-turn').count(),0);
   await gc.close();
  }
+
+ // F-10.4: actual tap -> verified response -> optional next step, no background activity.
+ const continuationUrl=new URL(boardUrl);continuationUrl.searchParams.set('f104','1');
+ for(const width of [320,390,430]){
+  const ctx=await browser.newContext({viewport:{width,height:width===320?568:width===390?844:932},
+   isMobile:true,hasTouch:true,reducedMotion:'reduce'});
+  const pg=await ctx.newPage();
+  await pg.clock.install({time:new Date('2026-11-25T12:00:00')});
+  await pg.addInitScript(()=>localStorage.setItem('rallypoint-phase1-2026',JSON.stringify({
+    role:'member',view:'today',prayers:[],teamStatus:'pending',rsvp:'',read:false,prayed:false,
+    groupMessages:[{name:'Jess',text:'Original historical archive unchanged.'}]
+  })));
+  await pg.goto(continuationUrl.toString());
+  assert.equal(await pg.locator('#nav button').count(),4);
+  assert.equal(await pg.locator('.f09b-row').count(),3);
+  const existingKeys=await pg.evaluate(()=>Object.keys(localStorage).sort());
+  const existingChat=await pg.evaluate(()=>localStorage.getItem('rallypoint-wednesday-chat-lab-v1'));
+  await pg.locator('.f10-entry-button').click();
+  await pg.locator('.f10-followup[data-value="goal-group"]').click();
+  await pg.locator('.f10-route[data-action="f10-confirm"][data-value="rsvp"]').click();
+  assert.ok((await pg.locator('.f10-response h3').textContent()).includes('You’re in for Wednesday'));
+  assert.equal(await pg.locator('.f10-route[data-action="f10-confirm"]').count(),0);
+  assert.equal(await pg.locator('.f10-route[data-go="group"][data-pane="gather"]').count(),1);
+  assert.equal(await pg.locator('.f10-followup[data-value="group-where"]').count(),1);
+  await pg.locator('#f10-query').fill('Help me prepare for Sunday serving');
+  await pg.locator('.f10-query-form button[type="submit"]').click();
+  assert.ok((await pg.locator('.f10-response').textContent()).includes('Get ready to serve'));
+  await pg.locator('.f10-route[data-action="f10-confirm"][data-value="serve"]').click();
+  assert.ok((await pg.locator('.f10-response h3').textContent()).includes('You’re confirmed for Sunday'));
+  assert.equal(await pg.locator('.f10-route[data-action="f10-confirm"]').count(),0);
+  assert.equal(await pg.locator('.f10-route[data-go="team"][data-pane="schedule"]').count(),1);
+  const saved=await pg.evaluate(()=>JSON.parse(localStorage.getItem('rallypoint-phase1-2026')));
+  assert.equal(saved.rsvp,'going');assert.equal(saved.teamStatus,'confirmed');
+  assert.equal(saved.view,'today');assert.equal(saved.read,false);assert.equal(saved.prayed,false);
+  assert.equal(saved.groupMessages[0].text,'Original historical archive unchanged.');
+  assert.equal(await pg.evaluate(()=>localStorage.getItem('rallypoint-wednesday-chat-lab-v1')),existingChat);
+  assert.deepEqual(await pg.evaluate(()=>Object.keys(localStorage).sort()),existingKeys);
+  await audit(pg,'F-10.4 confirmed follow-through '+width);
+  if(width===390)await pg.screenshot({path:path.join(out,'f104-post-confirmation-390.png'),fullPage:false});
+  await pg.locator('[data-action="close-dialog"]').click();
+  await pg.locator('.f10-entry-button').click();
+  assert.equal(await pg.locator('.f10-earlier-turn').count(),0);
+  assert.ok(!(await pg.locator('.f10-response h3').textContent()).includes('You’re confirmed'));
+  await ctx.close();
+ }
  const guestCompanion=await browser.newContext({viewport:{width:390,height:844},isMobile:true,hasTouch:true,reducedMotion:'reduce'});
  const guestAsk=await guestCompanion.newPage();
  await guestAsk.clock.install({time:new Date('2026-11-25T12:00:00')});
