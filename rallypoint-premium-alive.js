@@ -91,5 +91,5 @@
     return '<button type="button" class="pa-group-summary" data-go="group" data-pane="gather" aria-label="View next fictional Wednesday Group gathering">'+
       '<span class="pa-summary-mark" aria-hidden="true">♧</span><span class="pa-summary-body"><strong>Wednesday Group</strong><small>8 fictional members · Next gathering Wednesday at 6:30 PM</small></span><span class="pa-summary-arrow" aria-hidden="true">›</span></button>';
   }
-  window.RallyHybrid=Object.freeze({peopleRail,todayHero,todayPrompt,groupSummary,rhythmEditor,rhythmFollowup});
+  window.RallyHybrid=Object.freeze({peopleRail,todayHero,todayPrompt,groupSummary,rhythmEditor,rhythmFollowup,portraits:Object.freeze(portraits.map(person=>Object.freeze({...person})))});
 })();

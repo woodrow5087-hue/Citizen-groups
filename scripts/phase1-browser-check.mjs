@@ -156,6 +156,154 @@ try{
    new Date('2026-11-23T12:00:00').getTime());
  await audit(smartPage,'Companion deferred suggestion and RSVP');
  await smartContext.close();
+ // F-09: opt-in Smart Dashboard never overwrites the approved Today,
+ // all actions read/write the same F-08/F-07 source state.
+ const f09Url=new URL(todayUrl);f09Url.searchParams.set('f09','1');
+ for(const width of [320,390,430]){
+   const height=width===320?568:width===390?844:932;
+   const f09Context=await browser.newContext({viewport:{width,height},isMobile:true,hasTouch:true,reducedMotion:'reduce'});
+   const f09=await f09Context.newPage();
+   await f09.clock.install({time:new Date('2026-11-23T12:00:00')});
+   await f09.addInitScript(()=>{
+     localStorage.setItem('rallypoint-phase1-2026',JSON.stringify({
+       role:'member',view:'today',prayers:[],teamStatus:'pending',rsvp:'',
+       read:true,prayed:true,groupMessages:[{name:'Jess',time:'Yesterday',text:'Protected legacy archive.'}]
+     }));
+   });
+   await f09.goto(f09Url.toString());
+   assert.ok(await f09.locator('.is-f09-dashboard .f09-dashboard').isVisible());
+   assert.equal(await f09.locator('#nav button').count(),4);
+   assert.equal(await f09.locator('.f09-module').count(),4);
+   assert.equal(await f09.locator('.f09-hero').getAttribute('data-active-card'),'serve-response');
+   assert.ok((await f09.locator('.f09-gold').textContent()).includes('Confirm your availability'));
+   await geometry(f09,'F-09 phone '+width);
+   await audit(f09,'F-09 priorities '+width);
+   if(width===390)await f09.screenshot({path:path.join(out,'f09-smart-dashboard-390.png'),fullPage:false});
+   // Pager must show actual F-08 alternatives, without a faux read receipt.
+   const chatBefore=await f09.evaluate(()=>localStorage.getItem('rallypoint-wednesday-chat-lab-v1'));
+   await f09.locator('[data-action="f09-stack"][data-value="next"]').click();
+   assert.equal(await f09.locator('.f09-hero').getAttribute('data-active-card'),'group-unread');
+   await f09.locator('[data-action="f09-stack"][data-value="prev"]').click();
+   assert.equal(await f09.locator('.f09-hero').getAttribute('data-active-card'),'serve-response');
+   assert.equal(await f09.evaluate(()=>localStorage.getItem('rallypoint-wednesday-chat-lab-v1')),chatBefore);
+   await f09.locator('.f09-task[data-task="rsvp"] [data-action="f09-rsvp"]').click();
+   assert.equal(await f09.locator('.f09-task[data-task="rsvp"]').count(),0);
+   await f09.locator('.f09-task[data-task="serve"] [data-action="f09-serve"]').click();
+   assert.equal(await f09.locator('.f09-task[data-task="serve"]').count(),0);
+   assert.ok((await f09.locator('.f09-gold').textContent()).includes('Confirmed on this device'));
+   assert.equal(await f09.locator('.f09-hero').getAttribute('data-active-card'),'group-unread');
+   await f09.locator('.f09-rose').click();
+   assert.ok(await f09.locator('#rpx-chat').isVisible());
+   await f09.locator('#nav [data-go="today"]').click();
+   assert.equal(await f09.locator('.f09-rose .f09-unread').count(),0);
+   assert.ok((await f09.locator('.f09-glance').textContent()).includes('caught up'));
+   const journal=await f09.evaluate(()=>JSON.parse(localStorage.getItem('rallypoint-phase1-2026')));
+   assert.equal(journal.rsvp,'going');
+   assert.equal(journal.teamStatus,'confirmed');
+   assert.equal(journal.groupMessages[0].text,'Protected legacy archive.');
+   await geometry(f09,'F-09 after actions '+width);
+   await audit(f09,'F-09 completed '+width);
+   await f09Context.close();
+ }
+ // F-09.1: selected Smart Priority Board: no scroll-to-discover stack cards.
+ // Same live fixture sources and original F-09 comparator remain available.
+ const boardUrl=new URL(todayUrl);boardUrl.searchParams.set('f09','board');
+ for(const width of [320,390,430]){
+   const height=width===320?568:width===390?844:932;
+   const boardContext=await browser.newContext({viewport:{width,height},isMobile:true,hasTouch:true,reducedMotion:'reduce'});
+   const board=await boardContext.newPage();
+   await board.clock.install({time:new Date('2026-11-25T12:00:00')});
+   await board.addInitScript(()=>{
+     localStorage.setItem('rallypoint-phase1-2026',JSON.stringify({
+       role:'member',view:'today',prayers:[],teamStatus:'pending',rsvp:'',
+       read:false,prayed:false,groupMessages:[{name:'Jess',time:'Yesterday',text:'Original archive stays.'}]
+     }));
+   });
+   await board.goto(boardUrl.toString());
+   assert.ok(await board.locator('.is-f09-board .f09-board').isVisible());
+   assert.equal(await board.locator('.f09-stack-controls').count(),0,'No hidden stack controls');
+   assert.equal(await board.locator('.f09b-row').count(),3);
+   assert.equal(await board.locator('.f09b-agenda-row').count(),3);
+   assert.equal(await board.locator('.f09b-glance button').count(),0,'At a Glance must not repeat actions');
+   assert.ok((await board.locator('.f09b-glance').textContent()).includes('SCHEDULE & STATUS'));
+   assert.ok((await board.locator('.f09b-agenda-row[data-agenda="group"]').textContent()).includes('North Commons'));
+   assert.equal(await board.locator('#nav button').count(),4);
+   assert.equal(await board.locator('.f09b-hero').getAttribute('data-priority'),'group-rsvp');
+   assert.ok((await board.locator('.f09b-hero').textContent()).includes('Group tonight.'));
+   await geometry(board,'F-09 board '+width);
+   await audit(board,'F-09 board initial '+width);
+   if(width===390)await board.screenshot({path:path.join(out,'f09-priority-board-390.png'),fullPage:false});
+   const modern=await board.evaluate(()=>localStorage.getItem('rallypoint-wednesday-chat-lab-v1'));
+   await board.locator('.f09b-primary[data-action="f09-rsvp"]').click();
+   assert.equal(await board.locator('.f09b-agenda-row[data-agenda="group"] .f09b-status').textContent(),'Going');
+   assert.equal(await board.locator('.f09b-row[data-row="group-rsvp"]').count(),0);
+   await board.locator('.f09b-row[data-row="serve-response"] [data-action="f09-serve"]').click();
+   assert.equal(await board.locator('.f09b-agenda-row[data-agenda="serve"] .f09b-status').textContent(),'Confirmed');
+   assert.equal(await board.evaluate(()=>localStorage.getItem('rallypoint-wednesday-chat-lab-v1')),modern);
+   await board.locator('.f09b-hero [data-go="group"][data-pane="chat"]').click();
+   assert.ok(await board.locator('#rpx-chat').isVisible());
+   await board.locator('#nav [data-go="today"]').click();
+   assert.equal(await board.locator('.f09b-row[data-row="group-unread"]').count(),0);
+   assert.equal(await board.locator('.f09b-hero').getAttribute('data-priority'),'caught-up');
+   assert.equal(await board.locator('.f09-board').getAttribute('data-caught-up'),'true');
+   assert.ok((await board.locator('.f09b-agenda-row[data-agenda="scripture"]').textContent()).includes('To read'),
+     'a quiet hero never marks optional Scripture completed');
+   assert.equal(await board.locator('.f09b-feedback').count(),0,'transient confirmation clears on navigation');
+   if(width===390)await board.screenshot({path:path.join(out,'f09-adaptive-caught-up-390.png'),fullPage:false});
+   const state=await board.evaluate(()=>JSON.parse(localStorage.getItem('rallypoint-phase1-2026')));
+   assert.equal(state.rsvp,'going');
+   assert.equal(state.teamStatus,'confirmed');
+   assert.equal(state.groupMessages[0].text,'Original archive stays.');
+   await geometry(board,'F-09 board updated '+width);
+   await audit(board,'F-09 board updated '+width);
+   await boardContext.close();
+ }
+ // F-09.3 scenario matrix in a browser (separate from the pure policy tests).
+ // Roles remain fictional and membership gated; no leader authority is inferred.
+ const roleOptions={viewport:{width:390,height:844},isMobile:true,hasTouch:true,reducedMotion:'reduce'};
+ const guestContext=await browser.newContext(roleOptions),guest=await guestContext.newPage();
+ await guest.clock.install({time:new Date('2026-11-23T12:00:00')});
+ await guest.addInitScript(()=>{
+   localStorage.setItem('rallypoint-phase1-2026',JSON.stringify({
+     role:'member',view:'today',teamStatus:'pending',rsvp:'',read:false,prayed:false,
+     groupMessages:[],prayers:[{name:'Marcus C.',text:'Private fictional sample'}]
+   }));
+   localStorage.setItem('rallypoint-today-ui-v1',JSON.stringify({
+     name:'Newcomer',memberships:{group:false,team:false}
+   }));
+ });
+ await guest.goto(boardUrl.toString());
+ assert.equal(await guest.locator('.f09-board').getAttribute('data-audience'),'newcomer');
+ assert.equal(await guest.locator('.f09b-hero').getAttribute('data-priority'),'welcome-community');
+ assert.ok(!(await guest.locator('.f09-board').textContent()).includes('Private fictional sample'));
+ assert.equal(await guest.locator('.f09b-row[data-row="serve-response"]').count(),0);
+ await geometry(guest,'F-09.3 newcomer');
+ await audit(guest,'F-09.3 newcomer');
+ await guestContext.close();
+ const leaderContext=await browser.newContext(roleOptions),leader=await leaderContext.newPage();
+ await leader.clock.install({time:new Date('2026-11-23T12:00:00')});
+ await leader.addInitScript(()=>{
+   localStorage.setItem('rallypoint-phase1-2026',JSON.stringify({
+     role:'leader',view:'today',teamStatus:'confirmed',rsvp:'going',read:true,prayed:true,
+     groupMessages:[],prayers:[],reached:[]
+   }));
+ });
+ await leader.goto(boardUrl.toString());
+ // Visit the actual modern thread to acknowledge its cursor. Today alone must not.
+ await leader.locator('#nav [data-go="group"]').click();
+ await leader.locator('#nav [data-go="today"]').click();
+ assert.equal(await leader.locator('.f09-board').getAttribute('data-audience'),'leader');
+ assert.equal(await leader.locator('.f09b-hero').getAttribute('data-priority'),'leader-checkins');
+ await leader.locator('.f09b-primary[data-go="group"][data-pane="leader"]').click();
+ for(const id of ['marcus','taylor']){
+   await leader.locator('[data-action="reached"][data-person="'+id+'"]').click();
+ }
+ await leader.locator('#nav [data-go="today"]').click();
+ assert.equal(await leader.locator('.f09b-hero').getAttribute('data-priority'),'caught-up');
+ assert.equal(await leader.locator('.f09-board').getAttribute('data-caught-up'),'true');
+ await geometry(leader,'F-09.3 leader reviewed');
+ await audit(leader,'F-09.3 leader reviewed');
+ await leaderContext.close();
  const fallback=await browser.newContext({viewport:{width:375,height:812},reducedMotion:'reduce'});await fallback.addInitScript(()=>Object.defineProperty(window,'localStorage',{get(){throw Error('Blocked');}}));const fp=await fallback.newPage();await fp.goto(todayUrl);assert.ok((await fp.locator('#view').textContent()).includes('could not save'));await fp.locator('#nav [data-go="read"]').click();await fp.locator('[data-action="read"]').click();assert.ok((await fp.locator('#view').textContent()).includes('Read today'));await fallback.close();
  fs.writeFileSync(path.join(out,'phase1-browser-results.json'),JSON.stringify({cases:results,flows:'Source links, original messages/prayers, RSVP, serving, role/leader tools, reading/question, empty states, focus, persistence and storage fallback passed.',axe:'No detected WCAG A/AA violations on tested views/dialogs.'},null,2));console.log('All Phase 1 mobile, accessibility, persistence and source-flow checks passed.');
 }finally{await browser.close();if(server)await new Promise(r=>server.close(r));}

@@ -6,8 +6,8 @@ const {JSDOM}=require('jsdom');
 const T=require('../rallypoint-today.js');
 const {makeChatDomainBundle}=require('../scripts/build-chat-lab.cjs');
 const root=path.resolve(__dirname,'..'),key='rallypoint-phase1-2026';
-function open(t,{saved,ui,modern,blocked=false,now='2026-11-23T12:00:00'}={}){
- const dom=new JSDOM(fs.readFileSync(path.join(root,'index.html'),'utf8'),{url:'https://rally.test',runScripts:'outside-only',pretendToBeVisual:true});t.after(()=>dom.window.close());const w=dom.window,d=w.document;
+function open(t,{saved,ui,modern,blocked=false,f09=false,now='2026-11-23T12:00:00'}={}){
+ const dom=new JSDOM(fs.readFileSync(path.join(root,'index.html'),'utf8'),{url:f09?'https://rally.test/?f09='+(f09==='board'?'board':'1'):'https://rally.test',runScripts:'outside-only',pretendToBeVisual:true});t.after(()=>dom.window.close());const w=dom.window,d=w.document;
  const NativeDate=w.Date;w.Date=class extends NativeDate{constructor(...args){super(...(args.length?args:[now]));}static now(){return new NativeDate(now).getTime();}};
  w.HTMLElement.prototype.scrollIntoView=function(){};
  if(saved)w.localStorage.setItem(key,JSON.stringify(saved));if(ui)w.localStorage.setItem(T.UI_KEY,JSON.stringify(ui));
@@ -16,7 +16,7 @@ function open(t,{saved,ui,modern,blocked=false,now='2026-11-23T12:00:00'}={}){
  if(blocked)Object.defineProperty(w,'localStorage',{get(){throw Error('Blocked storage');}});
  w.structuredClone=structuredClone;
   w.eval(makeChatDomainBundle());
-  for(const name of ['rallypoint-today.js','rallypoint-ui.js','rallypoint-memorize.js','rallypoint-verseplay-ui.js','rallypoint-companion-decision.js','rallypoint-premium-alive.js','rallypoint-group-view.js','rallypoint-group-experience.js','rallypoint-storage-guard.js','rallypoint-conversation-read-model.js','wednesday-chat-lab.js','rallypoint.js'])w.eval(fs.readFileSync(path.join(root,name),'utf8'));
+  for(const name of ['rallypoint-today.js','rallypoint-ui.js','rallypoint-memorize.js','rallypoint-verseplay-ui.js','rallypoint-companion-decision.js','rallypoint-premium-alive.js','rallypoint-smart-dashboard.js','rallypoint-priority-board.js','rallypoint-group-view.js','rallypoint-group-experience.js','rallypoint-storage-guard.js','rallypoint-conversation-read-model.js','wednesday-chat-lab.js','rallypoint.js'])w.eval(fs.readFileSync(path.join(root,name),'utf8'));
  const click=selector=>{const el=d.querySelector(selector);assert.ok(el,selector);el.click();};
  const type=(id,value)=>{const el=d.getElementById(id);assert.ok(el,id);el.value=value;el.dispatchEvent(new w.Event('input',{bubbles:true}));};
  return {w,d,click,type,action:a=>click('[data-action="'+a+'"]'),go:v=>click('#nav [data-go="'+v+'"]'),saved:()=>JSON.parse(w.localStorage.getItem(key)),ui:()=>JSON.parse(w.localStorage.getItem(T.UI_KEY)),text:()=>d.getElementById('view').textContent,other};
@@ -646,4 +646,195 @@ test('F-08 refuses to invent a read state on corrupt modern store and hides grou
   assert.equal(app.d.querySelector('.pa-companion').dataset.suggestion,'find-community');
   assert.doesNotMatch(app.d.querySelector('.pa-companion').textContent,/group thread could not|Earlier saved messages/);
   assert.equal(app.d.querySelector('.pa-care-memory'),null);
+});
+
+test('F-09 opt-in preview preserves original Today visual path and the four-tab shell',t=>{
+ const classic=open(t);
+ assert.ok(classic.d.querySelector('.today-screen.dashboard-v06'));
+ assert.equal(classic.d.querySelector('.f09-dashboard'),null);
+ const app=open(t,{f09:true});
+ assert.ok(app.d.querySelector('.phone-inner').classList.contains('is-f09-dashboard'));
+ assert.equal(app.d.querySelectorAll('#nav button').length,4);
+ assert.deepEqual([...app.d.querySelectorAll('#nav button small')].map(x=>x.textContent),
+   ['Today','Groups','Team','Read']);
+ assert.ok(app.d.querySelector('.f09-hero'));
+ assert.equal(app.d.querySelectorAll('.f09-module').length,4);
+ assert.ok(app.d.querySelector('.f09-glance'));
+ assert.ok(app.d.querySelector('.f09-mission'));
+ assert.ok(app.d.querySelector('.pa-people-rail--today'),'preserves approved circular people presentation');
+ assert.equal(app.d.querySelector('.pa-companion'),null,'F-09 does not duplicate old Today cards');
+ app.go('group');assert.ok(app.d.querySelector('.group-screen-v07'));
+ assert.equal(app.d.querySelector('.phone-inner').classList.contains('is-f09-dashboard'),false);
+ app.go('today');assert.ok(app.d.querySelector('.f09-dashboard'));
+});
+test('F-09 RSVP and serving buttons update the shared source once and immediately remove pending tasks',t=>{
+ const app=open(t,{f09:true,saved:{prayers:[],teamStatus:'pending',rsvp:'',read:true,prayed:true}});
+ const old=structuredClone(app.saved().groupMessages);
+ const oldTeam=structuredClone(app.saved().teamMessages);
+ const oldChat=app.w.localStorage.getItem('rallypoint-wednesday-chat-lab-v1');
+ assert.equal(app.d.querySelector('.f09-hero').dataset.activeCard,'serve-response');
+ assert.ok(app.d.querySelector('.f09-task[data-task="rsvp"]'));
+ assert.ok(app.d.querySelector('.f09-task[data-task="serve"]'));
+ app.click('.f09-glance [data-action="f09-rsvp"]');
+ assert.equal(app.saved().rsvp,'going');
+ assert.equal(app.d.querySelector('.f09-task[data-task="rsvp"]'),null);
+ assert.ok(app.d.querySelector('.f09-task[data-task="serve"]'));
+ app.click('.f09-glance [data-action="f09-serve"]');
+ assert.equal(app.saved().teamStatus,'confirmed');
+ assert.equal(app.d.querySelector('.f09-task[data-task="serve"]'),null);
+ assert.match(app.d.querySelector('.f09-gold').textContent,/Confirmed on this device/);
+ assert.deepEqual(app.saved().groupMessages,old);
+ assert.deepEqual(app.saved().teamMessages,oldTeam);
+ assert.equal(app.w.localStorage.getItem('rallypoint-wednesday-chat-lab-v1'),oldChat);
+ app.click('.f09-rose');
+ assert.equal(app.saved().view,'group');
+ assert.equal(app.saved().groupPane,'chat');
+ app.go('today');
+ assert.equal(app.d.querySelector('.f09-rose .f09-unread'),null);
+ assert.match(app.d.querySelector('.f09-glance').textContent,/caught up/);
+ const restored=open(t,{f09:true,saved:app.saved(),ui:app.ui()});
+ assert.equal(restored.saved().rsvp,'going');
+ assert.equal(restored.saved().teamStatus,'confirmed');
+});
+test('F-09 priority paging is reversible, accessible and never snoozes F-08 suggestions',t=>{
+ const app=open(t,{f09:true});
+ const before=app.saved().companionChoices;
+ const first=app.d.querySelector('.f09-hero').dataset.activeCard;
+ assert.equal(first,'care-marcus');
+ const nav=app.d.querySelector('.f09-stack-controls');
+ assert.ok(nav);
+ app.click('[data-action="f09-stack"][data-value="next"]');
+ assert.notEqual(app.d.querySelector('.f09-hero').dataset.activeCard,first);
+ app.click('[data-action="f09-stack"][data-value="prev"]');
+ assert.equal(app.d.querySelector('.f09-hero').dataset.activeCard,first);
+ assert.deepEqual(app.saved().companionChoices,before);
+ app.click('.f09-why summary');
+ assert.match(app.d.querySelector('.f09-why').textContent,/named fictional group prayer/);
+});
+test('F-09 preview gate never reveals group-private cards for a guest',t=>{
+ const app=open(t,{f09:true,saved:{prayers:[{name:'Marcus C.',text:'Private sample prayer'}],teamStatus:'pending'}});
+ app.action('demo-controls');
+ app.click('[data-action="scenario"][data-value="no-memberships"]');
+ assert.ok(app.d.querySelector('.f09-dashboard'));
+ assert.doesNotMatch(app.d.querySelector('.f09-dashboard').textContent,/Marcus|3 new messages|Confirm Sunday serving/);
+ assert.equal(app.d.querySelector('.f09-task[data-task="chat-unread"]'),null);
+ assert.equal(app.d.querySelector('.f09-task[data-task="rsvp"]'),null);
+ assert.equal(app.d.querySelector('.f09-task[data-task="serve"]'),null);
+ assert.equal(app.d.querySelector('.f09-mini-faces'),null);
+});
+
+test('F-09 Smart Priority Board is separately gated; original Today and the Smart Stack remain unchanged',t=>{
+ const classic=open(t);assert.equal(classic.d.querySelector('.f09-board'),null);
+ const stacked=open(t,{f09:true});assert.ok(stacked.d.querySelector('.f09-stack-controls'));
+ assert.equal(stacked.d.querySelector('.f09-board'),null);
+ const app=open(t,{f09:'board'});
+ assert.ok(app.d.querySelector('.phone-inner.is-f09-board'),'new board is explicit opt-in');
+ assert.ok(app.d.querySelector('.f09-board'));
+ assert.equal(app.d.querySelector('.f09-stack-controls'),null,'no hidden carousel');
+ assert.equal(app.d.querySelectorAll('.f09b-row').length,3);
+ assert.equal(app.d.querySelectorAll('.f09b-agenda-row').length,3);
+ assert.equal(app.d.querySelectorAll('.f09b-glance button').length,0,'glance displays read-only status instead of repeating controls');
+ assert.match(app.d.querySelector('.f09b-glance').textContent,/SCHEDULE & STATUS/);
+ assert.ok(app.d.querySelector('.pa-people-rail--today'),'same approved fictional people rail');
+ assert.ok(app.d.querySelector('.f09b-mission'));
+ assert.deepEqual([...app.d.querySelectorAll('#nav button small')].map(x=>x.textContent),
+   ['Today','Groups','Team','Read']);
+ app.go('team');assert.equal(app.d.querySelector('.phone-inner').classList.contains('is-f09-board'),false);
+ app.go('today');assert.ok(app.d.querySelector('.phone-inner.is-f09-board'));
+});
+test('F-09 board leads with real Wednesday RSVP, immediately updates agenda and other actions',t=>{
+ const app=open(t,{f09:'board',now:'2026-11-25T12:00:00',saved:{
+   role:'member',prayers:[],teamStatus:'pending',rsvp:'',read:false,prayed:false
+ }});
+ assert.equal(app.d.querySelector('.f09b-hero').dataset.priority,'group-rsvp');
+ assert.match(app.d.querySelector('.f09b-hero').textContent,/Group tonight/);
+ const before=structuredClone(app.saved().groupMessages);
+ const modern=app.w.localStorage.getItem('rallypoint-wednesday-chat-lab-v1');
+ app.click('.f09b-primary[data-action="f09-rsvp"]');
+ assert.equal(app.saved().rsvp,'going');
+ assert.equal(app.d.querySelector('.f09b-hero').dataset.priority,'group-unread');
+ assert.equal(app.d.querySelector('.f09b-agenda-row[data-agenda="group"] .f09b-status').textContent,'Going');
+ assert.equal(app.d.querySelector('.f09b-row[data-row="group-rsvp"]'),null);
+ app.click('.f09b-row[data-row="serve-response"] [data-action="f09-serve"]');
+ assert.equal(app.saved().teamStatus,'confirmed');
+ assert.equal(app.d.querySelector('.f09b-row[data-row="serve-response"]'),null);
+ assert.equal(app.d.querySelector('.f09b-agenda-row[data-agenda="serve"] .f09b-status').textContent,'Confirmed');
+ assert.deepEqual(app.saved().groupMessages,before);
+ assert.equal(app.w.localStorage.getItem('rallypoint-wednesday-chat-lab-v1'),modern);
+ app.click('.f09b-hero .f09b-primary[data-go="group"]');
+ assert.equal(app.saved().groupPane,'chat');
+ app.go('today');
+ assert.equal(app.d.querySelector('.f09b-row[data-row="group-unread"]'),null);
+ assert.match(app.d.querySelector('.f09-board').textContent,/Your people|Your serving|Carry it into the week/);
+ const saved=app.saved();
+ const restored=open(t,{f09:'board',saved,ui:app.ui()});
+ assert.equal(restored.saved().rsvp,'going');
+ assert.equal(restored.saved().teamStatus,'confirmed');
+});
+test('F-09 board guest view never exposes gated group conversation, prayer or serving',t=>{
+ const app=open(t,{f09:'board',saved:{role:'member',prayers:[{name:'Marcus C.',text:'Private'}],teamStatus:'pending'}});
+ app.action('demo-controls');app.click('[data-action="scenario"][data-value="no-memberships"]');
+ assert.equal(app.d.querySelector('.f09b-faces'),null);
+ assert.doesNotMatch(app.d.querySelector('.f09-board').textContent,/Marcus|Private|3 new messages|RSVP for Wednesday Group/);
+ assert.equal(app.d.querySelector('.f09b-agenda-row[data-agenda="group"] .f09b-agenda-copy strong').textContent,'Community');
+ assert.equal(app.d.querySelector('.f09b-agenda-row[data-agenda="serve"] .f09b-agenda-copy strong').textContent,'Serving');
+ assert.equal(app.d.querySelector('.f09b-row[data-row="group-rsvp"]'),null);
+ assert.equal(app.d.querySelector('.f09b-row[data-row="serve-response"]'),null);
+});
+
+test('F-09.3 novice fixture gets welcoming, private-data-free discovery with unchanged tabs',t=>{
+ const app=open(t,{f09:'board',saved:{role:'member',prayers:[{name:'Marcus C.',text:'Private request'}],teamStatus:'pending'},
+  ui:{...T.initial(),name:'Newcomer',memberships:{group:false,team:false}}});
+ assert.equal(app.d.querySelector('.f09-board').dataset.audience,'newcomer');
+ assert.equal(app.d.querySelector('.f09b-hero').dataset.priority,'welcome-community');
+ assert.match(app.d.querySelector('.f09b-hero').textContent,/There.s room for you/);
+ assert.equal(app.d.querySelectorAll('.f09b-row').length,3);
+ assert.doesNotMatch(app.d.querySelector('.f09-board').textContent,/Marcus|Private request|leader check-ins/);
+ assert.equal(app.d.querySelector('.f09b-row[data-row="serve-response"]'),null);
+ assert.equal(app.d.querySelectorAll('#nav button').length,4);
+ app.click('.f09b-primary[data-go="group"]');assert.equal(app.saved().view,'group');
+});
+test('F-09.3 leader uses authorized review only, and naturally becomes caught-up after source review',t=>{
+ const app=open(t,{f09:'board',saved:{role:'leader',rsvp:'going',teamStatus:'confirmed',read:true,prayed:true,prayers:[]}});
+ // Opening and acknowledging the existing conversation is not an unrelated task completion.
+ app.go('group');app.go('today');
+ assert.equal(app.d.querySelector('.f09-board').dataset.audience,'leader');
+ assert.equal(app.d.querySelector('.f09b-hero').dataset.priority,'leader-checkins');
+ assert.equal(app.d.querySelector('.f09b-hero [data-go="group"]').dataset.pane,'leader');
+ app.click('.f09b-primary[data-go="group"][data-pane="leader"]');
+ assert.equal(app.saved().groupPane,'leader');
+ app.click('[data-action="reached"][data-person="marcus"]');
+ app.click('[data-action="reached"][data-person="taylor"]');
+ app.go('today');
+ assert.equal(app.d.querySelector('.f09b-hero').dataset.priority,'caught-up');
+ assert.equal(app.d.querySelector('.f09-board').dataset.caughtUp,'true');
+ assert.match(app.d.querySelector('.f09b-hero').textContent,/Nothing in your sample commitments needs a response/);
+ assert.deepEqual(app.saved().reached.sort(),['marcus','taylor']);
+});
+test('F-09.3 confirms source actions with transient live feedback and no extra browser state',t=>{
+ const app=open(t,{f09:'board',saved:{role:'member',rsvp:'',teamStatus:'pending',read:true,prayed:true,prayers:[]},
+  now:'2026-11-25T12:00:00'});
+ const archived=structuredClone(app.saved().groupMessages);
+ const modern=app.w.localStorage.getItem('rallypoint-wednesday-chat-lab-v1');
+ app.click('.f09b-hero [data-action="f09-rsvp"]');
+ assert.match(app.d.querySelector('.f09b-feedback[role="status"]').textContent,/Sample group RSVP saved/);
+ assert.equal(app.saved().f09Feedback,undefined);
+ app.click('.f09b-row [data-action="f09-serve"]');
+ assert.match(app.d.querySelector('.f09b-feedback').textContent,/Sample serving response saved/);
+ assert.equal(app.saved().teamStatus,'confirmed');
+ assert.deepEqual(app.saved().groupMessages,archived);
+ assert.equal(app.w.localStorage.getItem('rallypoint-wednesday-chat-lab-v1'),modern);
+ app.go('read');app.go('today');
+ assert.equal(app.d.querySelector('.f09b-feedback'),null,'feedback does not survive navigation');
+});
+test('F-09.3 volunteer-only member sees team priority, not group-private content',t=>{
+ const app=open(t,{f09:'board',now:'2026-11-21T12:00:00',
+ saved:{role:'member',prayers:[{name:'Marcus C.',text:'Not for a volunteer without group'}],teamStatus:'pending',rsvp:''},
+ ui:{...T.initial(),name:'Volunteer',memberships:{group:false,team:true}}});
+ assert.equal(app.d.querySelector('.f09-board').dataset.audience,'volunteer');
+ assert.equal(app.d.querySelector('.f09b-hero').dataset.priority,'serve-response');
+ assert.doesNotMatch(app.d.querySelector('.f09-board').textContent,/Marcus|Not for a volunteer|3 new group messages/);
+ app.click('.f09b-primary[data-action="f09-serve"]');
+ assert.equal(app.saved().teamStatus,'confirmed');
+ assert.equal(app.d.querySelector('.f09b-hero').dataset.priority,'caught-up');
 });
