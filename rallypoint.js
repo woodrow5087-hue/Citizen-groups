@@ -1,10 +1,12 @@
 (function rallyApp(){
 'use strict';
 const key='rallypoint-phase1-2026';
-// F-09 is an isolated, explicit preview URL switch, never a saved preference.
-const f103Preview=new URLSearchParams(window.location.search).get('f103')==='1';
-const f10Preview=f103Preview||new URLSearchParams(window.location.search).get('f10')==='1';
-const f09Mode=f10Preview?'board':new URLSearchParams(window.location.search).get('f09');
+// Preview builds choose the default layout. Experiments remain explicit URL choices.
+const previewParams=new URLSearchParams(window.location.search);
+const f103Preview=previewParams.get('f103')==='1';
+const f10Preview=f103Preview||previewParams.get('f10')==='1';
+const defaultToday=document.documentElement.dataset.defaultToday;
+const f09Mode=f10Preview?'board':(previewParams.get('f09')??defaultToday);
 const f09Board=f09Mode==='board';
 const f09Preview=f09Mode==='1'||f09Board;
 let f09Index=0;

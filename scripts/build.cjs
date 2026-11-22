@@ -7,6 +7,12 @@ for(const file of files){const source=fs.readFileSync(path.join(root,file),'utf8
 for(const asset of ['assets/citizen-flag.svg','assets/spotify.svg','assets/welcome-flow.svg','assets/campuses/central.jpg','assets/campuses/north.jpg','assets/campuses/maui.jpg','assets/campuses/online.jpg','assets/f09-mountain.svg','assets/paper-grain.svg','assets/fonts/Manrope.ttf','assets/fonts/OFL-Manrope.txt','docs/assets/visual_reference_warm_editorial_v1.png','docs/assets/citizen_church_logo_reference.png'])if(!fs.existsSync(path.join(root,asset)))throw Error('Missing approved/runtime asset: '+asset);
 fs.rmSync(out,{recursive:true,force:true});fs.mkdirSync(out,{recursive:true});
 for(const file of files)fs.copyFileSync(path.join(root,file),path.join(out,file));
+// Only Netlify PR and branch previews receive the new default.
+if(['deploy-preview','branch-deploy'].includes(process.env.CONTEXT)){
+ const entry=path.join(out,'index.html');
+ const html=fs.readFileSync(entry,'utf8').replace('<html lang="en">','<html lang="en" data-default-today="board">');
+ fs.writeFileSync(entry,html);
+}
 for(const folder of ['assets','docs'])fs.cpSync(path.join(root,folder),path.join(out,folder),{recursive:true});
 require('./build-chat-lab.cjs').buildChatDomainBundle(out);
 console.log('Built the Rally Point preview in dist, including approved references and the unchanged Citizen Connect archive.');
