@@ -838,3 +838,82 @@ test('F-09.3 volunteer-only member sees team priority, not group-private content
  assert.equal(app.saved().teamStatus,'confirmed');
  assert.equal(app.d.querySelector('.f09b-hero').dataset.priority,'caught-up');
 });
+
+test('F-10 opt-in Ask Rally sheet keeps the approved Today, Stack and four-tab interface unchanged',t=>{
+ const classic=open(t);assert.equal(classic.d.querySelector('.f10-entry'),null);
+ const board=open(t,{f09:'board'});assert.equal(board.d.querySelector('.f10-entry'),null);
+ const lab=open(t,{f10:true});
+ assert.ok(lab.d.querySelector('.phone-inner.is-f10-lab'));
+ assert.ok(lab.d.querySelector('.f10-entry'));
+ assert.equal(lab.d.querySelectorAll('.f09b-row').length,3);
+ assert.equal(lab.d.querySelectorAll('#nav button').length,4);
+ lab.click('.f10-entry-button');
+ assert.ok(lab.d.querySelector('.f10-panel'));
+ assert.equal(lab.d.querySelectorAll('[data-action="f10-ask"]').length,6);
+ assert.match(lab.d.querySelector('.f10-response').textContent,/Your week, at a glance/);
+ assert.match(lab.d.querySelector('.f10-disclosure').textContent,/No church accounts/);
+ lab.click('[data-action="close-dialog"]');
+ assert.equal(lab.d.querySelector('.f10-panel'),null);
+ lab.go('team');assert.equal(lab.d.querySelector('.phone-inner').classList.contains('is-f10-lab'),false);
+ lab.go('today');assert.ok(lab.d.querySelector('.f10-entry'));
+});
+test('F-10 Ask Rally answers questions from shared fixtures without marking messages as read',t=>{
+ const app=open(t,{f10:true,now:'2026-11-25T12:00:00',saved:{
+  role:'member',rsvp:'',teamStatus:'pending',read:false,prayed:false,
+  groupMessages:[{name:'Jess',text:'Archived content must survive'}],prayers:[]
+ }});
+ const original=structuredClone(app.saved().groupMessages);
+ const modern=app.w.localStorage.getItem('rallypoint-wednesday-chat-lab-v1');
+ const keysBefore=Array.from({length:app.w.localStorage.length},(_,i)=>app.w.localStorage.key(i)).sort();
+ app.click('.f10-entry-button');
+ app.click('.f10-chip[data-value="next"]');
+ assert.match(app.d.querySelector('.f10-response').textContent,/What needs your attention/);
+ assert.ok(app.d.querySelector('[data-action="f10-confirm"][data-value="rsvp"]'));
+ assert.ok(app.d.querySelector('[data-action="f10-confirm"][data-value="serve"]'));
+ assert.equal(app.w.localStorage.getItem('rallypoint-wednesday-chat-lab-v1'),modern,
+   'opening the companion does not mark source messages read');
+ app.click('[data-action="f10-confirm"][data-value="rsvp"]');
+ assert.equal(app.saved().rsvp,'going');
+ assert.match(app.d.querySelector('.f10-notice').textContent,/sample RSVP is now Going/);
+ assert.equal(app.d.querySelectorAll('[data-action="f10-confirm"][data-value="rsvp"]').length,0);
+ app.click('[data-action="f10-confirm"][data-value="serve"]');
+ assert.equal(app.saved().teamStatus,'confirmed');
+ assert.match(app.d.querySelector('.f10-notice').textContent,/serving availability is now Confirmed/);
+ assert.deepEqual(app.saved().groupMessages,original);
+ assert.equal(app.w.localStorage.getItem('rallypoint-wednesday-chat-lab-v1'),modern);
+ const keysAfter=Array.from({length:app.w.localStorage.length},(_,i)=>app.w.localStorage.key(i)).sort();
+ assert.deepEqual(keysAfter,keysBefore,'no new companion transcript or persistent preferences');
+ app.click('.f10-chip[data-value="next"]');
+ assert.match(app.d.querySelector('.f10-response').textContent,/still|unread|caught up/i);
+});
+test('F-10 handwritten question is supported only for stated intents and escaped in UI',t=>{
+ const app=open(t,{f10:true});app.click('.f10-entry-button');
+ const el=app.d.getElementById('f10-query');
+ el.value='What is my serving schedule?';
+ el.form.dispatchEvent(new app.w.Event('submit',{bubbles:true,cancelable:true}));
+ assert.match(app.d.querySelector('.f10-response').textContent,/Your serving rhythm/);
+ assert.match(app.d.querySelector('.f10-question').textContent,/What is my serving schedule/);
+ app.d.getElementById('f10-query').value='<img src=x onerror=alert(1)>';
+ app.d.querySelector('[data-form="f10-query"]').dispatchEvent(new app.w.Event('submit',{bubbles:true,cancelable:true}));
+ assert.match(app.d.querySelector('.f10-response').textContent,/prototype understands a few specific questions/);
+ assert.equal(app.d.querySelector('.f10-question img'),null);
+ assert.ok(!app.saved().f10Prompt);
+});
+test('F-10 guest sees only discovery; no private chat, RSVP, team response or leader access',t=>{
+ const app=open(t,{f10:true,saved:{
+  role:'leader',rsvp:'',teamStatus:'pending',prayers:[{name:'Marcus C.',text:'Confidential fictional prayer'}],
+  groupMessages:[{name:'Jess',text:'Older private archive'}],reached:[]
+ },ui:{...T.initial(),name:'Guest',memberships:{group:false,team:false}}});
+ app.click('.f10-entry-button');
+ for(const id of ['week','next','group','serve','why']){
+   app.click('.f10-chip[data-value="'+id+'"]');
+   const txt=app.d.querySelector('.f10-response').textContent;
+   assert.doesNotMatch(txt,/Marcus|Confidential|Older private archive|leader check-ins|3 unread/i,id);
+   assert.equal(app.d.querySelector('[data-action="f10-confirm"]'),null);
+ }
+ assert.match(app.d.querySelector('.f10-response').textContent,/local demo|local/i);
+ app.click('.f10-chip[data-value="group"]');
+ app.click('.f10-route[data-go="group"]');
+ assert.equal(app.saved().view,'group');
+ assert.equal(app.d.querySelector('.f10-panel'),null);
+});
