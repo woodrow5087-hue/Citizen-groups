@@ -232,9 +232,8 @@ function today(){
       <span class="today-watermark" aria-hidden="true"></span>
     </div>
     ${H.todayHero(todayUI)}
-    ${rc1?RC.entry(rcSnapshot(now,chat),{sampleWeek}):''}
     ${H.peopleRail(todayUI,'today')}
-    ${rc1?'':H.todayPrompt(s,todayUI,chat)}
+    ${rc1?RC.entry(rcSnapshot(now,chat),{sampleWeek}):H.todayPrompt(s,todayUI,chat)}
     ${renderPeople(snapshot,chat)}
     <div class="dashboard-twins" role="group" aria-label="Upcoming gathering and serving">${nextWidget}${teamWidget}</div>
     <div class="today-reading">
