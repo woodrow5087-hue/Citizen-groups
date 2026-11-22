@@ -131,6 +131,7 @@ function model({state,ui,conversation,now=new Date(),today,companion,passage='Jo
    stack,allPriorities,modules,tasks:Object.freeze(tasks.slice(0,4)),
    member,team,unread,meetingLabel,meetingText,
    groupDate:gathered?.date||null,serveDate:serving?.date||null,
+   groupLocation:gathered?.location||'',serveLocation:serving?.location||'',
    serveDateLabel:serving?'Welcome Team · '+today.dateLabel(serving.date,now):'Explore serving',
    serveStatus:team?s.teamStatus||'unknown':'none',
    readToday:!!s.read,rhythmDue:!!due,
