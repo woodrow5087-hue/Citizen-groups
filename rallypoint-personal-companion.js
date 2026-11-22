@@ -199,6 +199,119 @@ const suggestions=(topic,model={})=>{
  if(topic==='scripture')return ['next',...(group?['group-time']:[]),...(team?['serve-time']:[])];
  return ['why-first',...(group?['group-time']:[]),...(team?['serve-time']:[])].slice(0,3);
 };
+/* F-10.2 · constrained intent planning, never speculative AI.
+ * Intent selection reads the request. All answer facts are pulled from the
+ * current role-gated F-09 model; no historical words become permissions.
+ */
+function interpretNatural(query,sources={},prior={}){
+ const text=String(query||'').trim().slice(0,160).toLowerCase();
+ const d=sources.model||{},b=sources.board||{},now=sources.now instanceof Date?sources.now:new Date();
+ const group=!!d.member,team=!!d.team;
+ const g=/\b(wednesday|group|gathering|rsvp)\b/.test(text);
+ const t=/\b(sunday|serv(?:e|ing|ice)|shift|volunteer|welcome team)\b/.test(text);
+ const negative=/\b(can'?t|cannot|won'?t|unable|unavailable|decline|not able|miss(?:ing)?|not coming)\b/.test(text);
+ const preparation=/\b(prepare|preparation|get ready|before|checklist)\b/.test(text);
+ const compound=g&&t&&/\b(and|plus|both|also|together)\b/.test(text);
+ const remaining=/\b(what(?:'s| is)? left|anything else|what now|what remains|still need|what else)\b/.test(text);
+ const overload=/\b(one thing at a time|what can wait|what matters most|where (?:do|should) i start|overwhelm(?:ed|ing)?|on my plate)\b/.test(text);
+ const decline=negative&&(g||t);
+ const prep=(preparation&&(g||t))||/\b(help me (?:plan|prepare) (?:for )?(?:this |my )?week)\b/.test(text);
+ if(!decline&&!compound&&!prep&&!remaining&&!overload)return null;
+ const selected=decline?'availability':compound?'combined':prep?'prepare':overload?'focus':'remaining';
+ const items=[];
+ const add=(title,detail,reason,action=null)=>items.push(item(title,detail,reason,action));
+ const when=date=>safeDate(date,now)?formatDate(date):'No upcoming sample date is available';
+ const meeting=()=>{
+  if(!group)return add('Find a group','No group membership is enabled in your sample profile.',
+   'No private group or RSVP details are available.',go('group','','Explore groups'));
+  add('Wednesday Group · '+when(d.groupDate),
+   (d.groupLocation||'Location not available')+' · '+
+   (!d.rsvp?'RSVP still open':d.rsvp==='going'?'Going':'Maybe'),
+   'From the fictional gathering and your saved RSVP.',
+   !d.rsvp?direct('rsvp','RSVP · I’m in'):go('group','gather','Group details'));
+ };
+ const serving=()=>{
+  if(!team)return add('Explore serving','No assigned sample shift is available for this profile.',
+   'This person has no team membership.',go('team','','Explore teams'));
+  add('Welcome Team · '+when(d.serveDate),
+   (d.serveLocation||'Location not available')+' · '+
+    (d.serveStatus==='pending'?'Response needed':
+     d.serveStatus==='confirmed'?'Confirmed':
+     d.serveStatus==='declined'?'Declined':'See details'),
+   'From the fictional team schedule and your saved response.',
+   d.serveStatus==='pending'?direct('serve','Confirm serving'):
+     go('team','schedule','See team schedule'));
+ };
+ let heading='',intro='',focus='';
+ if(selected==='availability'){
+  focus=t&&!g?'serve':g&&!t?'group':'';
+  heading='Let’s look at your options.';
+  intro='I won’t change a commitment based on a message. You can review the current response and make any changes in the relevant section.';
+  if(g&&group)add('Wednesday Group',d.rsvp==='going'?'You are marked Going in this demo.':'Your sample RSVP is '+(d.rsvp||'open')+'.',
+   'Changing a response requires an explicit action in Groups.',go('group','gather','Review RSVP'));
+  if(t&&team)add('Welcome Team',d.serveStatus==='confirmed'?'Your sample shift is currently confirmed.':
+    d.serveStatus==='declined'?'You already declined the sample shift.':'Your sample shift still needs a response.',
+   'Open Team to review availability or decline, rather than silently changing it here.',
+   go('team','schedule','Review serving'));
+  if(!items.length){
+   add('Nothing to change','No matching group or team commitment is assigned to this sample profile.',
+    'Membership is required before any private commitment can be shown.',go(g?'group':'team','','Explore'));
+  }
+ }else if(selected==='combined'){
+  heading='Here’s both, together.';
+  intro='I checked your sample Wednesday Group and Sunday serving details. These are separate commitments, and neither has been changed.';
+  meeting();serving();
+ }else if(selected==='prepare'){
+  focus=t&&!g?'serve':g&&!t?'group':'';
+  heading='Here’s a simple way to get ready.';
+  intro='I’m only listing what’s actually in your sample activity. Optional preparation stays optional.';
+  if(g||!g&&!t){
+   meeting();
+   if(group){
+    if(d.conversationStatus==='unavailable')
+     add('Review your group conversation','The saved conversation is unavailable; no unread count is assumed.',
+      'Opening the existing Groups thread is the safe recovery path.',go('group','chat','Review conversation'));
+    else if(d.unread>0)
+     add('Read '+d.unread+' sample '+(d.unread===1?'message':'messages'),
+       'You can catch up with your group before Wednesday.',
+       'Unread counts come from the modern conversation cursor; opening the thread acknowledges messages.',
+       go('group','chat','Open messages'));
+   }
+  }
+  if(t||!g&&!t)serving();
+  if(items.length<3&&group){
+   add('Scripture, if useful',d.passage||'Your existing reading is available.',
+    'A voluntary reading invitation, not a required step or engagement score.',
+    go('read','','Open Scripture'));
+  }
+ }else if(selected==='focus'){
+  heading='Start with the next real decision.';
+  const next=answer('next',sources);
+  intro=b.taskCount>0?
+   'You have '+b.taskCount+' sample '+(b.taskCount===1?'item':'items')+' awaiting a response. Here’s what the existing Priority Board puts first; the rest can wait until you choose.':
+   'Nothing is currently asking for a response. You can explore people or Scripture at your own pace.';
+  const first=next.items.find(x=>x.action?.kind==='confirm')||next.items[0];
+  if(first)add(first.title,first.detail,first.reason,first.action);
+ }else{
+  heading='Here’s what’s still open.';
+  const next=answer('next',sources);
+  intro=b.taskCount>0?
+   'This checks your current sample state, including responses you’ve already handled.':
+   'You’re caught up on the sample requests that need a response. Optional reading and community are still available.';
+  for(const r of next.items.slice(0,3))add(r.title,r.detail,r.reason,r.action);
+ }
+ const topic=focus||'week';
+ const response=Object.freeze({
+  intent:'guided',mode:selected,heading,intro,items:Object.freeze(items),
+  note:sourceNote,topic
+ });
+ return Object.freeze({
+  query:String(query||'').trim().slice(0,160),response,
+  context:Object.freeze({intent:'guided',focus}),
+  suggestions:Object.freeze(suggestions(topic,d))
+ });
+}
+
 function respond(raw,sources={},prior={}){
  const query=String(raw||'').trim().slice(0,160);
  const d=sources.model||{},b=sources.board||{},now=sources.now instanceof Date?sources.now:new Date();
@@ -233,6 +346,8 @@ function respond(raw,sources={},prior={}){
     context:Object.freeze({intent:response.intent,focus:topic||''}),
     suggestions:Object.freeze(suggestions(topic||'week',d))});
  }
+ const guided=interpretNatural(query,sources,previous);
+ if(guided)return guided;
  // A week-wide question can have two commitments. Clarify a pronoun.
  if(isFollowup&&!focus&&(d.member||d.team)){
   const candidates=[];
@@ -357,5 +472,5 @@ function render(response,asked='',notice='',history=[],suggested=[]){
   '<p class="f10-disclosure">'+esc(r.note)+'</p>'+
   '</div>';
 }
-return Object.freeze({prompts,classify,answer,respond,followKeys,render});
+return Object.freeze({prompts,classify,answer,respond,interpretNatural,followKeys,render});
 });
