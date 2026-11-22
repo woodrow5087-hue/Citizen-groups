@@ -68,7 +68,7 @@ function derive(d,now=new Date()){
    act('f09-serve'),'Confirm','Your sample Welcome Team availability has not been saved.','serve'));
  if(isUnavailable)pending.push(task('group-unavailable',88,'rose','message',
    'Review your conversation.','The saved sample thread needs review',
-   go('group','chat'),'Review','The modern conversation could not be read. An unread count is not assumed.','messages'));
+   go('group','chat'),'Review conversation','The modern conversation could not be read. An unread count is not assumed.','messages'));
  else if(hasUnread)pending.push(task('group-unread',75,'rose','message',words(asCount(d.unread))+'.',
    'Wednesday Group is talking.',go('group','chat'),'View messages',
    'The local modern conversation has '+asCount(d.unread)+' unread messages. Opening the thread marks them read.','messages'));
