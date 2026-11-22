@@ -150,7 +150,7 @@ function glyph(kind){
  };
  return '<svg viewBox="0 0 24 24" class="f09-icon" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">'+(path[kind]||path.calendar)+'</svg>';
 }
-function render(d,position=0,peopleRail=''){
+function render(d,position=0,peopleRail='',portraits=[]){
  const stack=d.stack.length?d.stack:[],index=stack.length?Math.min(Math.max(0,position),stack.length-1):0,
    active=stack[index]||{},p=d.member;
  const dots=stack.length>1?
@@ -163,8 +163,12 @@ function render(d,position=0,peopleRail=''){
  const secondary=active.secondary?
    '<button type="button" class="f09-hero-secondary" '+attr(active.secondary)+'>'+escape(active.secondaryLabel)+
     ' <span aria-hidden="true">›</span></button>':'';
+ const avatarList=Array.isArray(portraits)?portraits.slice(0,3):[];
  const faces=active.hasPeople?
-  '<div class="f09-mini-faces" aria-label="Fictional Wednesday Group members"><span>AL</span><span>JW</span><span>MC</span></div>':'';
+  '<div class="f09-mini-faces" aria-label="Fictional Wednesday Group members">'+
+  (avatarList.length?avatarList.map(person=>
+    '<img src="'+escape(person.image)+'" alt="'+escape(person.name)+'" referrerpolicy="no-referrer" decoding="async">').join(''):
+    '<span>AL</span><span>JW</span><span>MC</span>')+'</div>':'';
  const moduleHtml=d.modules.map(m=>'<button type="button" class="f09-module f09-'+escape(m.kind)+'" '+
    attr(m.action)+' aria-label="'+escape(m.title+': '+m.detail)+'">'+
    '<span class="f09-module-icon">'+glyph(m.icon)+'</span>'+
