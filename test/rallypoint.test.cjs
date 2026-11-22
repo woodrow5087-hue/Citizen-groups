@@ -647,3 +647,78 @@ test('F-08 refuses to invent a read state on corrupt modern store and hides grou
   assert.doesNotMatch(app.d.querySelector('.pa-companion').textContent,/group thread could not|Earlier saved messages/);
   assert.equal(app.d.querySelector('.pa-care-memory'),null);
 });
+
+test('F-09 opt-in preview preserves original Today visual path and the four-tab shell',t=>{
+ const classic=open(t);
+ assert.ok(classic.d.querySelector('.today-screen.dashboard-v06'));
+ assert.equal(classic.d.querySelector('.f09-dashboard'),null);
+ const app=open(t,{f09:true});
+ assert.ok(app.d.querySelector('.phone-inner').classList.contains('is-f09-dashboard'));
+ assert.equal(app.d.querySelectorAll('#nav button').length,4);
+ assert.deepEqual([...app.d.querySelectorAll('#nav button small')].map(x=>x.textContent),
+   ['Today','Groups','Team','Read']);
+ assert.ok(app.d.querySelector('.f09-hero'));
+ assert.equal(app.d.querySelectorAll('.f09-module').length,4);
+ assert.ok(app.d.querySelector('.f09-glance'));
+ assert.ok(app.d.querySelector('.f09-mission'));
+ assert.ok(app.d.querySelector('.pa-people-rail--today'),'preserves approved circular people presentation');
+ assert.equal(app.d.querySelector('.pa-companion'),null,'F-09 does not duplicate old Today cards');
+ app.go('group');assert.ok(app.d.querySelector('.group-screen-v07'));
+ assert.equal(app.d.querySelector('.phone-inner').classList.contains('is-f09-dashboard'),false);
+ app.go('today');assert.ok(app.d.querySelector('.f09-dashboard'));
+});
+test('F-09 RSVP and serving buttons update the shared source once and immediately remove pending tasks',t=>{
+ const app=open(t,{f09:true,saved:{prayers:[],teamStatus:'pending',rsvp:'',read:true,prayed:true}});
+ const old=structuredClone(app.saved().groupMessages);
+ const oldTeam=structuredClone(app.saved().teamMessages);
+ const oldChat=app.w.localStorage.getItem('rallypoint-wednesday-chat-lab-v1');
+ assert.equal(app.d.querySelector('.f09-hero').dataset.activeCard,'serve-response');
+ assert.ok(app.d.querySelector('.f09-task[data-task="rsvp"]'));
+ assert.ok(app.d.querySelector('.f09-task[data-task="serve"]'));
+ app.click('.f09-glance [data-action="f09-rsvp"]');
+ assert.equal(app.saved().rsvp,'going');
+ assert.equal(app.d.querySelector('.f09-task[data-task="rsvp"]'),null);
+ assert.ok(app.d.querySelector('.f09-task[data-task="serve"]'));
+ app.click('.f09-glance [data-action="f09-serve"]');
+ assert.equal(app.saved().teamStatus,'confirmed');
+ assert.equal(app.d.querySelector('.f09-task[data-task="serve"]'),null);
+ assert.match(app.d.querySelector('.f09-gold').textContent,/Confirmed on this device/);
+ assert.deepEqual(app.saved().groupMessages,old);
+ assert.deepEqual(app.saved().teamMessages,oldTeam);
+ assert.equal(app.w.localStorage.getItem('rallypoint-wednesday-chat-lab-v1'),oldChat);
+ app.click('.f09-rose');
+ assert.equal(app.saved().view,'group');
+ assert.equal(app.saved().groupPane,'chat');
+ app.go('today');
+ assert.equal(app.d.querySelector('.f09-rose .f09-unread'),null);
+ assert.match(app.d.querySelector('.f09-glance').textContent,/caught up/);
+ const restored=open(t,{f09:true,saved:app.saved(),ui:app.ui()});
+ assert.equal(restored.saved().rsvp,'going');
+ assert.equal(restored.saved().teamStatus,'confirmed');
+});
+test('F-09 priority paging is reversible, accessible and never snoozes F-08 suggestions',t=>{
+ const app=open(t,{f09:true});
+ const before=app.saved().companionChoices;
+ const first=app.d.querySelector('.f09-hero').dataset.activeCard;
+ assert.equal(first,'care-marcus');
+ const nav=app.d.querySelector('.f09-stack-controls');
+ assert.ok(nav);
+ app.click('[data-action="f09-stack"][data-value="next"]');
+ assert.notEqual(app.d.querySelector('.f09-hero').dataset.activeCard,first);
+ app.click('[data-action="f09-stack"][data-value="prev"]');
+ assert.equal(app.d.querySelector('.f09-hero').dataset.activeCard,first);
+ assert.deepEqual(app.saved().companionChoices,before);
+ app.click('.f09-why summary');
+ assert.match(app.d.querySelector('.f09-why').textContent,/named fictional group prayer/);
+});
+test('F-09 preview gate never reveals group-private cards for a guest',t=>{
+ const app=open(t,{f09:true,saved:{prayers:[{name:'Marcus C.',text:'Private sample prayer'}],teamStatus:'pending'}});
+ app.action('demo-controls');
+ app.click('[data-action="scenario"][data-value="no-memberships"]');
+ assert.ok(app.d.querySelector('.f09-dashboard'));
+ assert.doesNotMatch(app.d.querySelector('.f09-dashboard').textContent,/Marcus|3 new messages|Confirm Sunday serving/);
+ assert.equal(app.d.querySelector('.f09-task[data-task="chat-unread"]'),null);
+ assert.equal(app.d.querySelector('.f09-task[data-task="rsvp"]'),null);
+ assert.equal(app.d.querySelector('.f09-task[data-task="serve"]'),null);
+ assert.equal(app.d.querySelector('.f09-mini-faces'),null);
+});
