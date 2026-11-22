@@ -51,7 +51,8 @@ function createReadOnlyGroupClient({fetchImpl,organizationId,groupId,now=()=>new
   try {
    response=await fetchImpl(url.toString(),{
     method:'GET',
-    headers:{Authorization:'Bearer '+token,Accept:'application/json'},
+    headers:{Authorization:'Bearer '+token,Accept:'application/json',
+     'User-Agent':'Rally Point Pilot (https://github.com/woodrow5087-hue/Citizen-groups)'},
     redirect:'error',
     cache:'no-store',
     signal:AbortSignal.timeout(7000)
@@ -77,7 +78,7 @@ function createReadOnlyGroupClient({fetchImpl,organizationId,groupId,now=()=>new
   if(!session||session.authenticated!==true||typeof session.accessToken!=='string'||
    !session.accessToken.trim()||!idOk(String(session.subject??''))||
    !sameId(session.organizationId,org)||
-   !Array.isArray(session.scopes)||!session.scopes.includes('groups')||
+   !Array.isArray(session.scopes)||!session.scopes.includes('groups')||!session.scopes.includes('openid')||
    !Number.isFinite(session.expiresAt)||session.expiresAt<=Date.now())
    deny('access-denied');
   const current=now();
@@ -95,10 +96,14 @@ function createReadOnlyGroupClient({fetchImpl,organizationId,groupId,now=()=>new
    !['member','leader'].includes(membership.attributes?.role))deny('access-denied');
   const [groupDocument,eventDocument]=await Promise.all([
    get('/groups/v2/groups/'+group,token),
-   get('/groups/v2/events?filter=group,upcoming,not_canceled&group_id='+group+'&order=starts_at&per_page=25',token)
+   get('/groups/v2/groups/'+group+'/events?filter=not_canceled&order=starts_at&per_page=100',token)
   ]);
   const groupRecord=bodyData(groupDocument);
   if(!groupRecord||groupRecord.type!=='Group'||!sameId(groupRecord.id,group))deny('source-unavailable');
+  // Never silently claim "no event" when the provider paginates a group calendar.
+  // Future iteration will implement bounded pagination once the actual tenant is approved.
+  if(eventDocument?.links?.next||eventDocument?.meta?.next||eventDocument?.meta?.total_count>eventDocument.data?.length)
+   deny('source-unavailable');
   const eventRecords=bodyData(eventDocument,'many');
   const event=pickNext(eventRecords,group,current);
   // Explicit small allowlist: never return any raw API objects, roster,
