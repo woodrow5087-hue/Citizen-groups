@@ -150,7 +150,7 @@ function render(d,peopleRail='',portraits=[],now=new Date()){
   '<section class="f09b-hero" aria-labelledby="f09b-hero-title" data-priority="'+esc(h.id)+'">'+
    '<div class="f09b-hero-symbol">'+svg(h.heroType)+'</div>'+
    '<div class="f09b-hero-main">'+
-    '<span class="f09b-overline">'+esc(h.eyebrow)+'</span>'+
+    '<span class="f09b-overline"><svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"><path d="M13.4 1.5 4.8 12h6.7l-1 10.5L20 10.2h-7.1L13.4 1.5Z"/></svg>'+esc(h.eyebrow)+'</span>'+
     '<h2 id="f09b-hero-title">'+esc(h.title)+'</h2>'+
     '<p>'+esc(h.subtitle)+'</p>'+
     '<div class="f09b-hero-bottom">'+faces+
@@ -174,7 +174,7 @@ function render(d,peopleRail='',portraits=[],now=new Date()){
     esc(row.status)+'</span>'+
   '</div>').join('');
  return '<section class="f09-dashboard f09-board" aria-label="F-09 Smart Priority Board preview">'+
-  '<header class="f09-greeting"><span class="f09-preview-label">TODAY · PRIORITY BOARD LAB</span>'+
+  '<header class="f09-greeting"><span class="f09-preview-label">TODAY · YOUR PRIORITIES</span>'+
     '<h1>'+esc(d.greeting||'Welcome back')+',<br><em>'+esc(d.name||'Friend')+'.</em></h1>'+
     '<span class="f09-date">'+esc(d.nowLabel||'')+'</span></header>'+
   '<div class="f09b-priorities" aria-label="Visible priorities">'+hero+
