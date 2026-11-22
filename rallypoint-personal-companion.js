@@ -30,7 +30,7 @@ function classify(value){
  const text=String(value||'').trim().slice(0,160).toLowerCase();
  if(ids.has(text))return text;
  if(/\b(why|reason|priorit|first|shown|recommend)/.test(text))return 'why';
- if(/\b(serv|shift|volunteer|welcome team)/.test(text))return 'serve';
+ if(/\b(serv\w*|shift|volunteer|welcome team)/.test(text))return 'serve';
  if(/\b(scripture|bible|reading|verse|prayer|pray|intention)/.test(text))return 'scripture';
  if(/\b(group|people|community|message|conversation|rsvp)/.test(text))return 'group';
  if(/\b(week|schedule|calendar|upcoming|event|when)/.test(text))return 'week';
