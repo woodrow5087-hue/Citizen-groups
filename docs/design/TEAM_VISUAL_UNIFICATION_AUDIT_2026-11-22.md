@@ -3,7 +3,7 @@
 **Audit date:** November 22, 2026  
 **Starting checkpoint:** `rally-point/develop` at `bacab6f534654eef9e79099830c63bbe78404bab` (approved Groups F-11 / PR #94).  
 **Status:** DESIGN AUDIT ONLY. This document makes no application styling, markup, logic, or build changes.  
-**Reference:** [F-11 original four-screen audit](VISUAL_UNIFICATION_AUDIT_2026-11-22.md) (available in separate unmerged draft PR #93); approved Today F-09/F-10 and approved Groups F-11.
+**Reference:** [F-11 original four-screen audit (draft PR #93)](https://github.com/woodrow5087-hue/Citizen-groups/pull/93) (available in separate unmerged draft PR #93); approved Today F-09/F-10 and approved Groups F-11.
 
 ## Goal
 
