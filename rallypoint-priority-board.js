@@ -94,28 +94,43 @@ function derive(d,now=new Date()){
  // Need three *distinct* visible items; don't accidentally show a pending
  // task twice when the same source also appears in the hero.
  const displayed=Object.freeze(rows.slice(0,3));
+ // The priority area owns ALL action buttons. At a Glance is an informational
+ // schedule/status digest, never a second set of competing controls.
  const agenda=[];
+ const schedule=(date,fallback)=>{
+   if(!(date instanceof Date)||!Number.isFinite(date.valueOf()))return fallback;
+   return date.toLocaleDateString('en-US',{weekday:'short'})+' · '+
+     date.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'});
+ };
  if(d?.member)agenda.push(Object.freeze({
-    id:'group',icon:'calendar',tone:'rose',title:'Group Gathering',
-    detail:d.meetingText||'Next Wednesday',
-    cta:pendingGroup?'RSVP':d.rsvp==='going'?'Going':'Maybe',
-    action:pendingGroup?act('f09-rsvp'):go('group','gather'),
-    done:!pendingGroup
+    id:'group',icon:'calendar',tone:'rose',title:'Wednesday Group',
+    detail:schedule(d.groupDate,'Next gathering')+(d.groupLocation?' · '+d.groupLocation:''),
+    status:pendingGroup?'RSVP open':d.rsvp==='going'?'Going':'Maybe',
+    statusTone:pendingGroup?'attention':'complete'
  }));
- else agenda.push(Object.freeze({id:'group',icon:'people',tone:'rose',
-   title:'Find a group',detail:'Explore community',cta:'Explore',action:go('group'),done:false}));
+ else agenda.push(Object.freeze({
+    id:'group',icon:'people',tone:'rose',title:'Community',
+    detail:'No sample group membership',status:'Explore',statusTone:'neutral'
+ }));
  if(d?.team)agenda.push(Object.freeze({
-    id:'serve',icon:'team',tone:'gold',title:'Serve',
-    detail:d.serveDateLabel||'Welcome Team',
-    cta:pendingServe?'Confirm':d.serveStatus==='confirmed'?'Confirmed':d.serveStatus==='declined'?'Declined':'Details',
-    action:pendingServe?act('f09-serve'):go('team','schedule'),done:!pendingServe
+    id:'serve',icon:'team',tone:'gold',title:'Welcome Team',
+    detail:millis(d.serveDate)<Infinity?
+      schedule(d.serveDate,'Upcoming shift')+(d.serveLocation?' · '+d.serveLocation:''):
+      'Sample serving schedule',
+    status:pendingServe?'Needs reply':d.serveStatus==='confirmed'?'Confirmed':
+      d.serveStatus==='declined'?'Declined':'View schedule',
+    statusTone:pendingServe?'attention':d.serveStatus==='confirmed'?'complete':'neutral'
  }));
- else agenda.push(Object.freeze({id:'serve',icon:'team',tone:'gold',
-   title:'Serving',detail:'Explore how to serve',cta:'Explore',action:go('team'),done:false}));
+ else agenda.push(Object.freeze({
+    id:'serve',icon:'team',tone:'gold',title:'Serving',
+    detail:'No sample team membership',status:'Explore',statusTone:'neutral'
+ }));
  agenda.push(Object.freeze({
-   id:'scripture',icon:'read',tone:'blue',title:'Scripture',
-   detail:d?.rhythmDue?'Your step is ready':d?.passage||'Daily reading',
-   cta:d?.readToday&&!d?.rhythmDue?'Read':'Review',action:go('read'),done:!!d?.readToday&&!d?.rhythmDue
+   id:'scripture',icon:'read',tone:'blue',title:'Scripture rhythm',
+   detail:d?.rhythmDue?'Saved step · '+(d?.passage||'Reading'):
+     (d?.passage||'Daily reading'),
+   status:d?.rhythmDue?'Step due':d?.readToday?'Read':'To read',
+   statusTone:d?.rhythmDue?'attention':d?.readToday?'complete':'neutral'
  }));
  return Object.freeze({hero:Object.freeze({
    ...hero,primary:primary,heroType,heroLabel,eyebrow:choice?.score>=90?'NEXT UP':'YOUR NEXT ACTION'
@@ -155,8 +170,8 @@ function render(d,peopleRail='',portraits=[],now=new Date()){
   '<div class="f09b-agenda-row" data-agenda="'+esc(row.id)+'">'+
    '<span class="f09b-agenda-icon f09b-'+esc(row.tone)+'">'+svg(row.icon)+'</span>'+
    '<div class="f09b-agenda-copy"><strong>'+esc(row.title)+'</strong><small>'+esc(row.detail)+'</small></div>'+
-   '<button type="button" class="f09b-agenda-cta f09b-'+esc(row.tone)+(row.done?' is-done':'')+'" '+
-    attr(row.action)+' aria-label="'+esc(row.cta+' · '+row.title)+'">'+esc(row.cta)+'</button>'+
+   '<span class="f09b-status '+esc(row.statusTone)+'" aria-label="'+esc(row.title+': '+row.status)+'">'+
+    esc(row.status)+'</span>'+
   '</div>').join('');
  return '<section class="f09-dashboard f09-board" aria-label="F-09 Smart Priority Board preview">'+
   '<header class="f09-greeting"><span class="f09-preview-label">TODAY · PRIORITY BOARD LAB</span>'+
@@ -166,7 +181,7 @@ function render(d,peopleRail='',portraits=[],now=new Date()){
    '<div class="f09b-row-stack">'+rows+'</div></div>'+
   '<section class="f09b-glance" aria-label="Today at a Glance">'+
    '<div class="f09b-glance-heading"><h2>Today at a Glance</h2>'+
-    '<span>'+ (b.hasPeople?'YOUR RHYTHM':'GET CONNECTED')+'</span></div>'+
+    '<span>SCHEDULE &amp; STATUS</span></div>'+
    glance+'</section>'+
   (peopleRail||'')+
   '<button class="f09b-mission" type="button" data-go="group" '+(d.member?'data-pane="people"':'')+
