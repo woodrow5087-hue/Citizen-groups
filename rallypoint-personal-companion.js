@@ -29,6 +29,9 @@ const sourceNote='Fictional sample activity on this device only. No church accou
 function classify(value){
  const text=String(value||'').trim().slice(0,160).toLowerCase();
  if(ids.has(text))return text;
+ // “Take care of this week” asks for decisions, not just calendar entries.
+ if(/\b(need to|take care of|must|should|tasks?|action items?|handle|to do)\b/.test(text)&&
+    /\b(week|today|tomorrow|next)\b/.test(text))return 'next';
  if(/\b(why|reason|priorit|first|shown|recommend)/.test(text))return 'why';
  if(/\b(serv\w*|shift|volunteer|welcome team)/.test(text))return 'serve';
  if(/\b(scripture|bible|reading|verse|prayer|pray|intention)/.test(text))return 'scripture';
