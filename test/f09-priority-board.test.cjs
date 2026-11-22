@@ -54,7 +54,7 @@ test('Board displays three distinct compact actions without duplicate hero task'
  assert.match(html,/Today at a Glance/);
  assert.match(html,/SCHEDULE &amp; STATUS/);
  assert.equal((html.match(/class="f09b-status /g)||[]).length,3);
- const glance=html.slice(html.indexOf('<section class="f09b-glance"'),html.indexOf('class="pa-people-rail'));
+ const glance=html.match(/<section class="f09b-glance"[\s\S]*?<\/section>/)?.[0]||'';
  assert.doesNotMatch(glance,/<button|data-action=|data-go=/,'at-a-glance has zero duplicate CTAs');
  assert.match(html,/Compare Smart Stack/);
 });
