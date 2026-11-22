@@ -166,7 +166,7 @@ function render(d,position=0,peopleRail='',portraits=[]){
     ' <span aria-hidden="true">›</span></button>':'';
  const avatarList=Array.isArray(portraits)?portraits.slice(0,3):[];
  const faces=active.hasPeople?
-  '<div class="f09-mini-faces" aria-label="Fictional Wednesday Group members">'+
+  '<div class="f09-mini-faces" role="group" aria-label="Fictional Wednesday Group members">'+
   (avatarList.length?avatarList.map(person=>
     '<img src="'+escape(person.image)+'" alt="'+escape(person.name)+'" referrerpolicy="no-referrer" decoding="async">').join(''):
     '<span>AL</span><span>JW</span><span>MC</span>')+'</div>':'';
@@ -185,7 +185,7 @@ function render(d,position=0,peopleRail='',portraits=[]){
   '<div class="f09-greeting"><span class="f09-preview-label">TODAY · SMART DASHBOARD LAB</span>'+
   '<h1>'+escape(d.greeting||'Welcome back')+',<br><em>'+escape(d.name)+'.</em></h1><span class="f09-date">'+escape(d.nowLabel)+'</span></div>'+
   '<div class="f09-hero-frame"><div class="f09-hero" data-active-card="'+escape(active.id)+'" '+
-   'aria-roledescription="stacked card" aria-label="Priority '+(index+1)+' of '+stack.length+'">'+
+   'role="group" aria-roledescription="stacked card" aria-label="Priority '+(index+1)+' of '+stack.length+'">'+
    '<div class="f09-hero-content"><div class="f09-hero-overline">'+escape(active.eyebrow)+'</div>'+
    '<h2>'+escape(active.title)+'</h2><p>'+escape(active.subtitle)+'</p>'+faces+
    '<div class="f09-hero-actions">'+primary+secondary+'</div></div>'+dots+
