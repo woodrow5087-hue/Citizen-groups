@@ -15,7 +15,7 @@ const go=(id,pane='')=>call('go',id,pane);
 const act=id=>call('action',id);
 const face=(id,name,src)=>{
  const safe=String(src||'');
- return safe&&(/^(?:assets\/|data:image\/(?:png|jpeg|webp);base64,)/).test(safe)?
+ return safe&&(/^(?:assets\/|https:\/\/images\.unsplash\.com\/photo-[A-Za-z0-9-]+\?|data:image\/(?:png|jpeg|webp);base64,)/).test(safe)?
   '<img src="'+esc(safe)+'" alt="'+esc(name)+'" loading="lazy" decoding="async">':
   '<span aria-label="'+esc(name)+'">'+esc(String(name||'').split(/\s+/).map(s=>s[0]).join('').slice(0,2).toUpperCase())+'</span>';
 };
