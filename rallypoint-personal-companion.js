@@ -205,7 +205,8 @@ function respond(raw,sources={},prior={}){
  const previous=prior&&typeof prior==='object'?prior:{};
  const lower=query.toLowerCase();
  const key=followIds.has(query)?query:null;
- const known=key?followKeys[key]:query;
+ const shorthand=/^\s*(and|what about|how about)\s+(sunday|wednesday)(?:\s+too)?[!?\.]*$/i.exec(query);
+ const known=key?followKeys[key]:shorthand?(shorthand[2].toLowerCase()==='sunday'?'Serving':'My group'):query;
  const subject=key?.startsWith('group-')?'group':key?.startsWith('serve-')?'serve':'';
  const explicitGroup=/\b(group|wednesday|rsvp|gathering)\b/.test(lower);
  const explicitServe=/\b(sunday|serv(?:e|ing|ice)|shift|volunteer|welcome team)\b/.test(lower);
@@ -310,9 +311,20 @@ function respond(raw,sources={},prior={}){
   suggestions:Object.freeze(suggestions(focus||response.intent,d))});
 }
 
-function render(response,asked='',notice=''){
+function render(response,asked='',notice='',history=[],suggested=[]){
  const r=response||answer('unknown');
- const chips=prompts.map(p=>'<button type="button" class="f10-chip" data-action="f10-ask" data-value="'+esc(p.id)+'">'+esc(p.label)+'</button>').join('');
+ const chips=prompts.map(p=>
+  '<button type="button" class="f10-chip" data-action="f10-ask" data-value="'+esc(p.id)+'">'+esc(p.label)+'</button>'
+ ).join('');
+ const followups=(Array.isArray(suggested)?suggested:[])
+  .filter((id,i,arr)=>followIds.has(id)&&arr.indexOf(id)===i).slice(0,3)
+  .map(id=>'<button type="button" class="f10-followup" data-action="f10-followup" data-value="'+esc(id)+'">'+
+    esc(followKeys[id])+'</button>').join('');
+ const older=(Array.isArray(history)?history:[]).slice(-3).map(turn=>
+  '<div class="f10-earlier-turn"><p class="f10-earlier-question">'+esc(String(turn.asked||'').slice(0,160))+'</p>'+
+  '<p class="f10-earlier-reply">'+esc(String(turn.heading||'').slice(0,100))+
+   (turn.intro?' · '+esc(String(turn.intro).slice(0,120)):'')+'</p></div>'
+ ).join('');
  const notes=notice?'<p class="f10-notice" role="status" aria-live="polite">'+esc(notice.slice(0,180))+'</p>':'';
  const question=asked?'<p class="f10-question"><span>You asked</span>'+esc(asked.slice(0,160))+'</p>':'';
  const cards=r.items.map(x=>{
@@ -326,17 +338,22 @@ function render(response,asked='',notice=''){
   return '<div class="f10-result-card"><div><strong>'+esc(x.title)+'</strong>'+
    '<p>'+esc(x.detail)+'</p><details><summary>Why this?</summary><p>'+esc(x.reason)+'</p></details></div>'+control+'</div>';
  }).join('');
- return '<div class="f10-panel" aria-label="Ask Rally local companion">'+
-  '<div class="f10-intro"><div class="f10-local-dot" aria-hidden="true"></div><span>PERSONAL COMPANION · LOCAL PREVIEW</span></div>'+
-  '<p class="f10-helper">Ask about your week, people, serving or next step.</p>'+
-  '<form data-form="f10-query" class="f10-query-form">'+
-  '<label for="f10-query">Your question</label><div class="f10-input-line">'+
-  '<input id="f10-query" name="question" type="text" maxlength="160" autocomplete="off" placeholder="What do I need to do this week?">'+
-  '<button type="submit">Ask</button></div></form>'+
-  '<div class="f10-chips" aria-label="Suggested questions">'+chips+'</div>'+notes+question+
+ return '<div class="f10-panel f10-conversation" aria-label="Ask Rally local companion">'+
+  '<div class="f10-intro"><div class="f10-local-dot" aria-hidden="true"></div><span>ASK RALLY · LOCAL PREVIEW</span></div>'+
+  '<p class="f10-helper">We can stay on the same topic. Try “What time?” or “And Sunday?” after a question.</p>'+
+  (older?'<div class="f10-earlier" aria-label="Earlier messages in this session">'+older+'</div>':'')+
+  notes+question+
   '<section class="f10-response" aria-live="polite" aria-label="Companion answer">'+
    '<h3>'+esc(r.heading)+'</h3><p class="f10-response-intro">'+esc(r.intro)+'</p>'+
    '<div class="f10-results">'+cards+'</div></section>'+
+  (followups?'<div class="f10-followups" aria-label="Possible follow-up questions">'+
+   '<span>YOU CAN ASK NEXT</span><div class="f10-followup-list">'+followups+'</div></div>':'')+
+  '<form data-form="f10-query" class="f10-query-form">'+
+  '<label for="f10-query">Your next question</label><div class="f10-input-line">'+
+  '<input id="f10-query" name="question" type="text" maxlength="160" autocomplete="off" placeholder="Ask a follow-up...">'+
+  '<button type="submit">Ask</button></div></form>'+
+  '<details class="f10-topics"><summary>Explore other topics</summary>'+
+   '<div class="f10-chips" aria-label="Suggested questions">'+chips+'</div></details>'+
   '<p class="f10-disclosure">'+esc(r.note)+'</p>'+
   '</div>';
 }
