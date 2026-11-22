@@ -214,7 +214,7 @@ function interpretNatural(query,sources={},prior={}){
  const implicitUnavailability=negative&&!g&&!t&&oldFocus&&/\b(make it|be there|come|available|attend|this)\b/.test(text);
  const preparation=/\b(prep|prepare|preparation|get ready|getting ready|before|checklist)\b/.test(text);
  const compound=g&&t&&/\b(and|plus|both|also|together)\b/.test(text);
- const remaining=/\b(what(?:'s| is)? left|anything else|what now|what remains|still need|what else)\b/.test(text);
+ const remaining=/\b(what(?:'s| is)? (?:still )?left|anything else|what now|what remains|still need|what else)\b/.test(text);
  const overload=/\b(one thing at a time|what can wait|what matters most|where (?:do|should) i start|overwhelm(?:ed|ing)?|on my plate)\b/.test(text);
  const decline=negative&&(g||t||implicitUnavailability);
  const prep=(preparation&&(g||t))||/\b(help me (?:plan|prepare) (?:for )?(?:this |my )?week)\b/.test(text);
