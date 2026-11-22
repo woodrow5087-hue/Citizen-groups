@@ -225,7 +225,8 @@ function respond(raw,sources={},prior={}){
  const isConfirm=!!(key&&key.endsWith('-confirm'))||
     /\b(confirm|confirmation|rsvp|sign me up|signed up|respond|response|replied|reply|say yes)\b/.test(lower)||
     /^(yes|sure|okay|ok|yep|let's do it)[.!?]*$/.test(lower);
- const isShortWhy=/^(why\b|how come\b|what makes (?:that|this) important\b)/.test(lower);
+ const isBoardWhy=key==='why-first'||(/\b(first|priorit|ranked|top of)\b/.test(lower)&&!explicitGroup&&!explicitServe);
+ const isShortWhy=!isBoardWhy&&/^(why\b|how come\b|what makes (?:that|this) important\b)/.test(lower);
  const isNextStep=/\b(what (?:should|can|do) i do|what now|next step|how (?:can|do) i (?:handle|respond))\b/.test(lower)&&
     (explicitGroup||explicitServe||/\b(that|this|it|there|now)\b/.test(lower));
  const isFollowup=isTime||isWhere||isConfirm||isShortWhy||isNextStep;
