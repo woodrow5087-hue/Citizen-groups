@@ -33,7 +33,7 @@ function bodyData(payload,mode='one'){
 }
 function pickNext(events,groupId,now) {
  return events
-  .filter(e=>e&&e.type==='Event'&&sameId(relationship(e,'group'),groupId))
+  .filter(e=>e&&e.type==='Event'&&(!relationship(e,'group')||sameId(relationship(e,'group'),groupId)))
   .filter(e=>e.attributes?.canceled!==true&&!e.attributes?.canceled_at)
   .map(e=>({id:e.id,title:clean(e.attributes?.name),start:e.attributes?.starts_at}))
   .filter(e=>typeof e.start==='string'&&Number.isFinite(Date.parse(e.start))&&Date.parse(e.start)>now.getTime())
