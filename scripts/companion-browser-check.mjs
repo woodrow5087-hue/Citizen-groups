@@ -232,6 +232,18 @@ async function scenario(browser, width, height, ids, options, run) {
 async function connected(page) {
   const width = page.viewportSize().width;
   assert.equal(await page.locator('.pa-people-rail--today').count(), 1, 'approved Today people rail');
+  assert.equal(await page.locator('.today-screen > .pa-companion').count(), 1,
+    'approved personalized assistant card remains prominent in RC1');
+  assert.equal(await page.locator('.today-screen > .rc1-entry').count(), 0,
+    'do not replace approved assistant with a small generic launch strip');
+  assert.equal(await page.locator('.pa-companion .pa-companion-link[data-action="rc1-open"]').count(), 1,
+    'the original-style assistant opens the new RC1 conversation');
+  assert.equal(await page.evaluate(() => {
+    const items = [...document.querySelector('.today-screen').children];
+    const rail = items.findIndex(item => item.classList.contains('pa-people-rail'));
+    const assistant = items.findIndex(item => item.classList.contains('pa-companion'));
+    return rail >= 0 && assistant === rail + 1;
+  }), true, 'assistant appears immediately after the approved circular people rail');
   assert.deepEqual((await page.locator('#nav button').allTextContents()).map(label => label.trim()),
     ['Today', 'Groups', 'Team', 'Read']);
   await geometry(page, 'connected Today');
