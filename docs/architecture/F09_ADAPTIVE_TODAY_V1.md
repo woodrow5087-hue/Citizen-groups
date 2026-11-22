@@ -1,6 +1,6 @@
 # F-09.3 — Adaptive Today, review-only policy and QA contract
 
-**Status:** Experimental addition to draft F-09 PR #72 (depends on unmerged F-08 PR #71). **Route:** `/?f09=board&skipWelcome=1`. No changes to approved default Today, the independent `?f09=1` Smart Stack experiment, or `main`. No merge without explicit owner approval.
+**Status:** F-09 PR #72 is based on F-08 PR #71, now squash-merged into `rally-point/develop`. **Route:** `/?f09=board&skipWelcome=1`. No changes to approved default Today, the independent `?f09=1` Smart Stack experiment, or `main`. No merge without explicit owner approval.
 
 ## Product principle: responses versus invitations
 
@@ -41,5 +41,5 @@ The `audience` and `leaderRemaining` model fields derive solely from existing `t
 
 1. All unit, build, JSDOM, mobile, accessibility, onboarding, gameplay, group privacy/identity and integrated conversation QA green; Netlify preview successful.
 2. Owner reviews the actual iPhone visual hierarchy and adaptive newcomer/leader/caught-up behavior.
-3. If approved, merge **F-08 PR #71** into `rally-point/develop` first, then verify F-09 PR #72 diff and recheck CI before merging **F-09** into Develop. **Production `main` is not touched.**
-4. No deploy, merge, or church-system integration from this experimental branch without explicit approval.
+3. **F-08 PR #71 was merged into `rally-point/develop` first.** F-09's ancestry was reconciled with the resulting squash commit without changing the feature tree. Verify the F-09-only diff and fresh CI before merging **F-09** into Develop. **Production `main` is not touched.**
+4. The owner approved integrating F-08 then F-09 into **Develop only**. No production release or real church-system integration is authorized.
