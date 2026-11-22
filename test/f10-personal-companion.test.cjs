@@ -197,3 +197,85 @@ test('F-10.1 transcript rendering escapes all prior user messages and bounds his
  assert.match(html,/class="f10-topics"/);
  assert.match(html,/class="f10-panel f10-conversation"/);
 });
+
+test('F-10.2 accepts natural time and location phrasing without generic category answers',()=>{
+ const src=context();
+ for(const text of ['When is Wednesday Group?','When does my group start?','What day is my small group?']){
+  const r=Companion.respond(text,src);
+  assert.equal(r.context.focus,'group',text);
+  assert.equal(r.response.heading,'Your Wednesday gathering.',text);
+  assert.match(r.response.intro,/6:30 PM/);
+ }
+ for(const text of ['Where is Sunday serving?','What campus is my shift at?','What is the location for my serving shift?']){
+  const r=Companion.respond(text,src);
+  assert.equal(r.context.focus,'serve',text);
+  assert.equal(r.response.heading,'Your serving location.',text);
+  assert.match(r.response.intro,/North Campus/);
+ }
+});
+test('F-10.2 status questions give guarded actions, never an implicit RSVP or confirmation',()=>{
+ const s=state(),before=structuredClone(s),src=context(s);
+ const group=Companion.respond('Did I already RSVP for Wednesday Group?',src);
+ assert.equal(group.context.focus,'group');
+ assert.equal(group.response.items[0].action.kind,'confirm');
+ assert.equal(group.response.items[0].action.id,'rsvp');
+ const shift=Companion.respond('Have I replied to my Sunday serving shift?',src,group.context);
+ assert.equal(shift.context.focus,'serve');
+ assert.equal(shift.response.items[0].action.kind,'confirm');
+ assert.equal(shift.response.items[0].action.id,'serve');
+ assert.deepEqual(s,before);
+ const saved=context({...s,rsvp:'going',teamStatus:'confirmed'});
+ assert.equal(Companion.respond('Did I RSVP for my group?',saved).response.items[0].action.kind,'go');
+ assert.equal(Companion.respond('Did I confirm Sunday?',saved).response.items[0].action.kind,'go');
+});
+test('F-10.2 action guidance retains current subject, live response guards, and consent',()=>{
+ const src=context();
+ const group=Companion.respond('My group',src);
+ const action=Companion.respond('What should I do about that?',src,group.context);
+ assert.equal(action.response.heading,'Your next group step.');
+ assert.equal(action.response.items[0].action.id,'rsvp');
+ const team=Companion.respond('And Sunday?',src,action.context);
+ const follow=Companion.respond('What can I do about that?',src,team.context);
+ assert.equal(follow.response.heading,'Your next serving step.');
+ assert.equal(follow.response.items[0].action.id,'serve');
+ const confirmed=context({...state(),teamStatus:'confirmed',rsvp:'going'});
+ const after=Companion.respond('What now?',confirmed,team.context);
+ assert.equal(after.response.items[0].action.kind,'go');
+});
+test('F-10.2 explicitly mixed subjects do not inherit a stale referent',()=>{
+ const src=context();
+ const prior=Companion.respond('My group',src).context;
+ const mixed=Companion.respond('What time are Wednesday Group and Sunday serving?',src,prior);
+ assert.equal(mixed.response.heading,'Which one do you mean?');
+ assert.equal(mixed.response.clarify,true);
+ assert.equal(mixed.response.items.length,2);
+ assert.ok(!mixed.response.items.some(x=>x.action?.kind==='confirm'));
+});
+test('F-10.2 refuses to invent future recurring schedule and resets context after unsupported requests',()=>{
+ const src=context();
+ for(const q of ['Am I serving next week?','What about the following week?','What happens the week after next?']){
+  const r=Companion.respond(q,src,{focus:'serve'});
+  assert.equal(r.response.limited,true,q);
+  assert.match(r.response.intro,/not a recurring church schedule/);
+  assert.doesNotMatch(JSON.stringify(r.response),/Dec \d|Sun, Dec|Wed, Dec/);
+ }
+ const prior=Companion.respond('My group',src).context;
+ const unsupported=Companion.respond('Call a taxi',src,prior);
+ assert.equal(unsupported.response.intent,'unknown');
+ assert.equal(unsupported.context.focus,'');
+ const ambiguous=Companion.respond('Where?',src,unsupported.context);
+ assert.equal(ambiguous.response.clarify,true);
+});
+test('F-10.2 former subject is never an authorization source',()=>{
+ const s=state(),src=context(s,ui(false,true),{status:'ok',unreadCount:42});
+ const previous={intent:'group',focus:'group'};
+ for(const q of ['When does my group start?','Did I RSVP for Wednesday Group?','What should I do about my group?']){
+  const out=Companion.respond(q,src,previous);
+  assert.equal(out.response.items.some(x=>x.action?.kind==='confirm'&&x.action.id==='rsvp'),false);
+  assert.doesNotMatch(JSON.stringify(out),/North Commons|42 unread|private sample request/i);
+ }
+ const noMembership=context(s,ui(false,false),{status:'ok',unreadCount:99});
+ const shift=Companion.respond('Did I confirm my serving shift?',noMembership,{focus:'serve'});
+ assert.equal(shift.response.items.some(x=>x.action?.kind==='confirm'),false);
+ assert.doesNotMatch(JSON.stringify(shift),/Sun, Nov 29|North Campus/);
+});

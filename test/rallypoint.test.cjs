@@ -975,3 +975,30 @@ test('F-10.1 changed membership never grants historical conversational context t
  assert.match(guest.d.querySelector('.f10-response').textContent,/no sample group membership|no group membership/i);
  assert.equal(guest.saved().rsvp,'');
 });
+
+test('F-10.2 typed natural questions keep session context, visible guardrails and saved state intact',t=>{
+ const app=open(t,{f10:true,now:'2026-11-25T12:00:00',saved:{
+  role:'member',rsvp:'',teamStatus:'pending',read:false,prayed:false,
+  prayers:[],reached:[],groupMessages:[{name:'Jess',text:'Archive unchanged'}]
+ }});
+ const initial=JSON.stringify(app.saved());
+ app.click('.f10-entry-button');
+ function ask(q){
+  const input=app.d.getElementById('f10-query');
+  input.value=q;input.form.dispatchEvent(new app.w.Event('submit',{bubbles:true,cancelable:true}));
+  return app.d.querySelector('.f10-response').textContent;
+ }
+ assert.match(ask('When does Wednesday Group start?'),/Wed, Nov 25 · 6:30 PM/);
+ assert.match(ask('What should I do about that?'),/RSVP is still open/);
+ assert.equal(app.saved().rsvp,'','answering never accepts an RSVP');
+ assert.match(ask('When is my Sunday serving shift?'),/Sun, Nov 29 · 9:00 AM/);
+ assert.match(ask('Did I reply to my serving shift?'),/typed “yes” is not enough/);
+ assert.equal(app.saved().teamStatus,'pending');
+ assert.match(ask('When is Wednesday Group and Sunday serving?'),/Which one do you mean/);
+ assert.match(ask('What about next week?'),/does not have a recurring church schedule|not a recurring church schedule/);
+ assert.equal(app.d.querySelector('.f10-route[data-action="f10-confirm"]'),null);
+ assert.equal(JSON.stringify(app.saved()),initial,'F-10.2 questions must not mutate any local record');
+ app.click('[data-action="close-dialog"]');
+ app.click('.f10-entry-button');
+ assert.equal(app.d.querySelectorAll('.f10-earlier-turn').length,0);
+});

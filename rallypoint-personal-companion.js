@@ -203,27 +203,35 @@ function respond(raw,sources={},prior={}){
  const query=String(raw||'').trim().slice(0,160);
  const d=sources.model||{},b=sources.board||{},now=sources.now instanceof Date?sources.now:new Date();
  const previous=prior&&typeof prior==='object'?prior:{};
- const lower=query.toLowerCase();
+ // F-10.2: flexible wording over a fixed, source-backed intent allowlist.
+ // Language can select a topic; it can never directly perform an action.
+ const lower=query.toLowerCase().replace(/[‘’]/g,"'").replace(/\s+/g,' ').trim();
  const key=followIds.has(query)?query:null;
  const shorthand=/^\s*(and|what about|how about)\s+(sunday|wednesday)(?:\s+too)?[!?\.]*$/i.exec(query);
  const known=key?followKeys[key]:shorthand?(shorthand[2].toLowerCase()==='sunday'?'Serving':'My group'):query;
  const subject=key?.startsWith('group-')?'group':key?.startsWith('serve-')?'serve':'';
- const explicitGroup=/\b(group|wednesday|rsvp|gathering)\b/.test(lower);
+ const explicitGroup=/\b(group|wednesday|rsvp|gathering|small group)\b/.test(lower);
  const explicitServe=/\b(sunday|serv(?:e|ing|ice)|shift|volunteer|welcome team)\b/.test(lower);
  const explicitScripture=/\b(scripture|bible|reading|verse)\b/.test(lower);
- let focus=subject||(explicitServe&&!explicitGroup?'serve':explicitGroup&&!explicitServe?'group':
+ const mixedSubjects=explicitGroup&&explicitServe;
+ let focus=mixedSubjects?'':subject||(explicitServe?'serve':explicitGroup?'group':
    explicitScripture?'scripture':'');
  const inherited=previous.focus&&['group','serve','scripture'].includes(previous.focus)?previous.focus:'';
  const isTime=!!(key&&key.endsWith('-time'))||
-    /\b(what time|what hour|when is it|when does it|when am i|what's the time)\b/.test(lower);
+    /\b(what time|what hour|what day|which day|when(?: is| does| do| am| are)|start(?:s)?|begin(?:s)?|what(?:'s| is) the date)\b/.test(lower)||
+    /^(?:and )?when[!?.]*$/.test(lower);
  const isWhere=!!(key&&key.endsWith('-where'))||
-    /\b(where|what location|which campus|what campus)\b/.test(lower);
+    /\b(where|location|which campus|what campus|what address|whereabouts)\b/.test(lower);
  const isConfirm=!!(key&&key.endsWith('-confirm'))||
-    /\b(confirm|rsvp|sign me up|respond|say yes)\b/.test(lower)||
+    /\b(confirm|confirmation|rsvp|sign me up|signed up|respond|response|replied|reply|say yes)\b/.test(lower)||
     /^(yes|sure|okay|ok|yep|let's do it)[.!?]*$/.test(lower);
- const isShortWhy=/^(why|how come|why that|why this)[.!?]*$/.test(lower);
- const isFollowup=isTime||isWhere||isConfirm||isShortWhy;
- if(!focus&&isFollowup)focus=inherited;
+ const isBoardWhy=key==='why-first'||(/\b(first|priorit|ranked|top of)\b/.test(lower)&&!explicitGroup&&!explicitServe);
+ const isShortWhy=!isBoardWhy&&/^(why\b|how come\b|what makes (?:that|this) important\b)/.test(lower);
+ const isNextStep=/\b(what (?:should|can|do) i do|what now|next step|how (?:can|do) i (?:handle|respond))\b/.test(lower)&&
+    (explicitGroup||explicitServe||/\b(that|this|it|there|now)\b/.test(lower));
+ const isFollowup=isTime||isWhere||isConfirm||isShortWhy||isNextStep;
+ // Mentioning both commitments beats any previous focus.
+ if(!focus&&isFollowup&&!mixedSubjects)focus=inherited;
  const source=sourceNote;
  const itemFor=(title,detail,reason,action=null)=>item(title,detail,reason,action);
  function result(heading,intro,items,topic='',extra={}){
@@ -232,6 +240,14 @@ function respond(raw,sources={},prior={}){
   return Object.freeze({query:known,response,
     context:Object.freeze({intent:response.intent,focus:topic||''}),
     suggestions:Object.freeze(suggestions(topic||'week',d))});
+ }
+ // Do not extrapolate recurring schedules from one fictional fixture date.
+ if(/\b(next week|following week|week after next|two weeks from now)\b/.test(lower)){
+  return result('I can’t verify that week yet.',
+    'This demo knows currently dated sample commitments, not a recurring church schedule or future-week events.',
+    [itemFor('Current sample schedule','See only the dated commitments actually available.',
+      'No additional meeting or shift is inferred from an earlier sample date.',
+      go('group','','Explore current schedule'))],'week',{limited:true});
  }
  // A week-wide question can have two commitments. Clarify a pronoun.
  if(isFollowup&&!focus&&(d.member||d.team)){
@@ -265,6 +281,12 @@ function respond(raw,sources={},prior={}){
       d.rsvp?'No additional action is needed.':'This confirms Going on this device only.',
       'A spoken or typed “yes” never completes an RSVP.',
       d.rsvp?go('group','gather','See RSVP'):direct('rsvp','RSVP · I’m in'))],'group');
+  if(isNextStep)return result('Your next group step.',
+     d.rsvp?'Your sample RSVP is already saved. You can review the gathering below.':
+       'Your RSVP is still open. You can choose Going using the separate button below.',
+     [itemFor('Wednesday Group',d.rsvp?'RSVP: '+(d.rsvp==='going'?'Going':'Maybe'):'RSVP not yet saved',
+       'This reflects the current saved RSVP; asking alone does not change it.',
+       d.rsvp?go('group','gather','Review RSVP'):direct('rsvp','RSVP · I’m in'))],'group');
   if(isShortWhy)return result('Why your group was mentioned.',
     'The board considers an unanswered sample RSVP and unread modern messages when ranking actions.',
     [itemFor('Your group status',d.rsvp?'RSVP: '+d.rsvp:'RSVP is open',
@@ -293,6 +315,12 @@ function respond(raw,sources={},prior={}){
       'Confirm means “I can serve” in this local demo. To decline, open Team.',
       'Only a deliberate tap can change this saved response.',
       d.serveStatus==='pending'?direct('serve','Confirm serving'):go('team','schedule','See schedule'))],'serve');
+  if(isNextStep)return result('Your next serving step.',
+     d.serveStatus==='pending'?'Your sample serving response is still pending. Confirm only if you choose to serve.':
+       'Your current team response is '+(d.serveStatus||'not available')+'. No new confirmation is required.',
+     [itemFor('Welcome Team',d.serveStatus||'No response found',
+       'The saved response is authoritative; a conversational reply cannot change it.',
+       d.serveStatus==='pending'?direct('serve','Confirm serving'):go('team','schedule','Review schedule'))],'serve');
   if(isShortWhy)return result('Why serving appeared.',
     'A sample shift needs a response only while your saved availability is pending.',
     [itemFor('Welcome Team',d.serveStatus||'No response found',
@@ -305,7 +333,8 @@ function respond(raw,sources={},prior={}){
     base.items,'scripture');
  }
  const response=answer(known,sources);
- focus=subject||topicOf(response,b)||focus;
+ // Unsupported prompts do not preserve an unrelated conversational referent.
+ focus=response.intent==='unknown'?'':subject||topicOf(response,b)||focus;
  return Object.freeze({query:known,response,
   context:Object.freeze({intent:response.intent,focus}),
   suggestions:Object.freeze(suggestions(focus||response.intent,d))});
