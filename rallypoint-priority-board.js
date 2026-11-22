@@ -121,6 +121,8 @@ function derive(d,now=new Date()){
    'Your people','Your sample group is here when you need them',go('group','chat'),'Open');
  if(hasTeam&&!pendingServe)optional('serving-overview','serve','gold','team',
    'Your team','Review the Welcome Team schedule',go('team','schedule'),'See team');
+ if(hasCommunity&&find('care-marcus'))optional('care-marcus','care','rose','people',
+   'Someone to encourage','A fictional group prayer note',act('companion-encourage'),'Reach out');
  if(!d?.readToday&&!rhythmDue)optional('scripture-read','reading','blue','read',
    'Today’s Scripture',d?.passage||'Your local reading',go('read'),'Read');
  if(!hasCommunity)optional('find-people','community','rose','people',
@@ -184,7 +186,7 @@ function render(d,peopleRail='',portraits=[],now=new Date()){
    (Array.isArray(portraits)&&portraits.length>3?'<span aria-label="'+(portraits.length-3)+' additional fictional group member">+'+(portraits.length-3)+'</span>':'')+
   '</div>':'';
  const hero=
-  '<section class="f09b-hero" aria-labelledby="f09b-hero-title" data-priority="'+esc(h.id)+'">'+
+  '<section class="f09b-hero'+(h.calm?' is-settled':'')+'" aria-labelledby="f09b-hero-title" data-priority="'+esc(h.id)+'">'+
    '<div class="f09b-hero-symbol">'+svg(h.heroType)+'</div>'+
    '<div class="f09b-hero-main">'+
     '<span class="f09b-overline"><svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"><path d="M13.4 1.5 4.8 12h6.7l-1 10.5L20 10.2h-7.1L13.4 1.5Z"/></svg>'+esc(h.eyebrow)+'</span>'+
@@ -197,7 +199,7 @@ function render(d,peopleRail='',portraits=[],now=new Date()){
    (h.why?'<details class="f09b-explain"><summary>Why this?</summary><p>'+esc(h.why)+'</p></details>':'')+
   '</section>';
  const rows=b.rows.map(r=>
-  '<div class="f09b-row f09b-'+esc(r.tone)+'" data-row="'+esc(r.id)+'">'+
+  '<div class="f09b-row f09b-'+esc(r.tone)+(r.requiresResponse?' is-actionable':' is-invitation')+'" data-row="'+esc(r.id)+'">'+
     '<span class="f09b-row-icon">'+svg(r.icon)+'</span>'+
     '<div class="f09b-row-copy"><strong>'+esc(r.title)+'</strong><small>'+esc(r.detail)+'</small></div>'+
     '<button type="button" class="f09b-row-cta" '+attr(r.action)+
@@ -210,10 +212,12 @@ function render(d,peopleRail='',portraits=[],now=new Date()){
    '<span class="f09b-status '+esc(row.statusTone)+'" aria-label="'+esc(row.title+': '+row.status)+'">'+
     esc(row.status)+'</span>'+
   '</div>').join('');
- return '<section class="f09-dashboard f09-board" aria-label="F-09 Smart Priority Board preview">'+
+ const feedback=typeof d?.feedback==='string'&&d.feedback.trim()?
+  '<div class="f09b-feedback" role="status" aria-live="polite">'+esc(d.feedback.slice(0,120))+'</div>':'';
+ return '<section class="f09-dashboard f09-board" data-audience="'+esc(b.audience)+'" data-caught-up="'+b.caughtUp+'" aria-label="F-09 Smart Priority Board preview">'+
   '<header class="f09-greeting"><span class="f09-preview-label">TODAY · YOUR PRIORITIES</span>'+
     '<h1>'+esc(d.greeting||'Welcome back')+',<br><em>'+esc(d.name||'Friend')+'.</em></h1>'+
-    '<span class="f09-date">'+esc(d.nowLabel||'')+'</span></header>'+
+    '<span class="f09-date">'+esc(d.nowLabel||'')+'</span></header>'+feedback+
   '<div class="f09b-priorities" aria-label="Visible priorities">'+hero+
    '<div class="f09b-row-stack">'+rows+'</div></div>'+
   '<section class="f09b-glance" aria-label="Today at a Glance">'+
