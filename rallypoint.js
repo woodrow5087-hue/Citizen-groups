@@ -6,6 +6,7 @@ const f09Mode=new URLSearchParams(window.location.search).get('f09');
 const f09Board=f09Mode==='board';
 const f09Preview=f09Mode==='1'||f09Board;
 let f09Index=0;
+let f09Feedback='';
 const defaults=()=>({role:'member',groupPane:'chat',directPerson:'anna',directMessages:{},teamPane:'schedule',view:'today',discover:false,groupMessages:[{name:'Jess W.',time:'Yesterday',text:'What stood out to you in John 15 this week?'},{name:'Anna L.',time:'Today',text:'Looking forward to seeing everyone Wednesday.'}],teamMessages:[{name:'Sam R.',time:'Yesterday',text:'Welcome team — thank you for helping people feel at home!'}],prayers:[{name:'Marcus C.',time:'Yesterday',text:'Praying for wisdom with an upcoming decision.'}],rsvp:'',teamStatus:'pending',coverage:false,attendance:{anna:'here',jess:'here',marcus:'unknown',taylor:'unknown'},reached:[],interest:[],plan:'sermon',planQuestions:{},memoryTextRevision:'BSB-2026-1',memoryGames:{},memoryMode:'solo',memoryActive:null,memoryPassTurn:1,memoryTarget:null,question:'How can we love one another as Jesus has loved us?',read:false,prayed:false,companionCare:{},companionChoices:{snoozedUntil:{}},rhythm:{}});
 let s;try{s={...defaults(),...JSON.parse(localStorage.getItem(key)||'null')}}catch(_){s=defaults()}
 if(!s||!s.groupMessages||!Array.isArray(s.groupMessages))s=defaults();
@@ -106,7 +107,7 @@ function f09Today(){
    companion:window.RallyCompanionDecision,passage:currentReading().passage
  });
  f09Index=Math.max(0,Math.min(f09Index,model.stack.length-1));
- if(f09Board)return window.RallyPriorityBoard.render(model,H.peopleRail(todayUI,'today'),H.portraits,now);
+ if(f09Board)return window.RallyPriorityBoard.render({...model,feedback:f09Feedback},H.peopleRail(todayUI,'today'),H.portraits,now);
  return window.RallySmartDashboard.render(model,f09Index,H.peopleRail(todayUI,'today'),H.portraits);
 }
 function today(){
@@ -497,6 +498,7 @@ view.scrollTop=position;
 function navigate(view,pane,reading){
 closeDialog(false);
 s.view=view;
+if(view!=='today')f09Feedback='';
 if(view==='today'&&f09Preview)f09Index=0;
 if(view==='group'){
 s.discover=false;if(pane)s.groupPane=pane;
@@ -550,20 +552,21 @@ if(f09Preview&&!f09Board&&s.view==='today'&&a==='f09-stack'){
 }
 if(f09Preview&&s.view==='today'&&a==='f09-rsvp'){
  if(!todayUI.memberships.group)return;
- s.rsvp='going';f09Index=0;render();
+ s.rsvp='going';f09Index=0;if(f09Board)f09Feedback='Sample group RSVP saved. The board has updated.';render();
  notify('Sample RSVP saved on this device.');return;
 }
 if(f09Preview&&s.view==='today'&&a==='f09-serve'){
  if(!todayUI.memberships.team)return;
  s.teamStatus='confirmed';s.coverage=false;
  s.teamMessages=s.teamMessages.filter(x=>!x.coverage);
- f09Index=0;render();
+ f09Index=0;if(f09Board)f09Feedback='Sample serving response saved. The board has updated.';render();
  notify('Sample serving availability confirmed locally.');return;
 }
 if(a==='memorize-preview'){navigate('read',null,'memorize');return}
 if(['notifications','demo-controls','team-preview','quick-actions'].includes(a)){showDialog(a,b);return}
 if(a==='close-dialog'){closeDialog();return}
 if(a==='scenario'){
+f09Feedback='';
 todayUI.memberships={group:v!=='no-memberships',team:v!=='no-memberships'};
 if(v==='connected'){s.teamStatus='pending';}
 if(v==='caught-up'){s.teamStatus='confirmed';s.coverage=false;s.teamMessages=s.teamMessages.filter(m=>!m.coverage);
