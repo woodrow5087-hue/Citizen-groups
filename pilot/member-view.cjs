@@ -13,7 +13,7 @@ const freeze=obj=>Object.freeze(obj);
 const unavailable=()=>freeze({state:'unavailable',group:null,nextGathering:null,checkedAt:null,source:null});
 const restricted=()=>freeze({state:'restricted',group:null,nextGathering:null,checkedAt:null,source:null});
 const text=value=>typeof value==='string'&&value.length<=100&&value.trim().length>0&&!/[<>\x00-\x1f]/.test(value);
-const iso=value=>typeof value==='string'&&Number.isFinite(Date.parse(value))&&new Date(value).toISOString()===value;
+const iso=value=>typeof value==='string'&&/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{1,3})?(?:Z|[+-]\d{2}:\d{2})$/.test(value)&&Number.isFinite(Date.parse(value));
 function createPilotMemberView({readForServerSession,now=()=>new Date(),maximumAgeMs=60_000}={}){
  if(typeof readForServerSession!=='function')throw new TypeError('Server-only provider read required');
  if(!Number.isInteger(maximumAgeMs)||maximumAgeMs<=0||maximumAgeMs>300_000)
