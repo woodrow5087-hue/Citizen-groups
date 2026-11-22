@@ -31,13 +31,75 @@
       {id:'check',hint:'See what needs your attention.'};
   }
 
+  // Restore the approved F-08 Premium ALIVE assistant card; the RC1 engine
+  // supplies current, authorized content and opens the new conversational sheet.
+  function entryStory(snapshot,id){
+    const {group,serving,leadership,sources,board}=snapshot||{};
+    if(id==='start')return {
+      title:'Your people. Your next step.',
+      detail:'Find a place to connect, explore serving, or open Scripture. You choose where to begin.',
+      why:'Your current sample profile has no linked group or serving team.',
+      action:'Help me get connected'
+    };
+    if(id==='group'){
+      if(group?.nextDate&&group.rsvp==='none')return {
+        title:'Wednesday is coming up.',
+        detail:'Your sample group gathering is scheduled. Your RSVP is still open.',
+        why:'Your current group membership and the dated sample gathering are available.',
+        action:'Help me prepare for Wednesday'
+      };
+      return {
+        title:'Your group has something new.',
+        detail:group?.unreadCount>0?
+          group.unreadCount+' unread sample '+(group.unreadCount===1?'message':'messages')+' to review.':
+          'Check what matters to your Wednesday Group.',
+        why:'This comes from your currently authorized group and modern conversation status.',
+        action:'Check in with my group'
+      };
+    }
+    if(id==='serve')return {
+      title:'Your serving team needs a reply.',
+      detail:'You have a sample shift coming up. You can review it before deciding.',
+      why:'Your current team membership and an upcoming pending shift are verified in the fixture.',
+      action:'Help me get ready to serve'
+    };
+    if(id==='leader')return {
+      title:'People first. Always.',
+      detail:leadership?.groupCheckIns+' sample group '+(leadership?.groupCheckIns===1?'check-in':'check-ins')+' to review.',
+      why:'Only an authorized group leader can see this aggregate sample count.',
+      action:'Show my leader check-ins'
+    };
+    if(sources?.conversation==='unavailable'&&group)return {
+      title:'Let’s check what’s current.',
+      detail:'Your sample group conversation is unavailable. Other details may still be available.',
+      why:'Unknown message status is not treated as zero unread.',
+      action:'Help me find my next step'
+    };
+    if(board?.taskCount===0)return {
+      title:'You’re caught up. What’s next?',
+      detail:'Nothing requires a response right now. Explore what matters at your own pace.',
+      why:'No required response is currently identified in your authorized sample activity.',
+      action:'Talk through my week'
+    };
+    return {
+      title:'What matters today?',
+      detail:'I can help you review your group, serving, or next meaningful step.',
+      why:'Rally uses only the current authorized fictional profile; unavailable facts stay unknown.',
+      action:'Ask Rally'
+    };
+  }
+
   function entry(snapshot,{sampleWeek=false}={}){
-    const {id,hint}=entryPrompt(snapshot);
-    return '<button type="button" class="rc1-entry" data-action="rc1-open" data-value="'+id+
-      '" aria-haspopup="dialog" aria-labelledby="rc1-entry-label" aria-describedby="rc1-entry-hint">'+
-      '<span class="rc1-entry-copy"><strong id="rc1-entry-label">Ask Rally</strong>'+
-      '<span id="rc1-entry-hint">'+escape(hint)+(sampleWeek?' Sample week.':'')+'</span></span>'+
-      '<span class="rc1-entry-arrow" aria-hidden="true">↗</span></button>';
+    const {id}=entryPrompt(snapshot),story=entryStory(snapshot,id);
+    return '<section class="pa-companion rc1-assistant-card" aria-label="Personalized companion suggestion" data-suggestion="'+escape(id)+'">'+
+      '<div class="pa-companion-top"><span class="pa-pulse" aria-hidden="true"></span>'+
+      'YOUR RALLY COMPANION'+(sampleWeek?' · SAMPLE WEEK':' · LOCAL DEMO')+
+      '<button type="button" class="pa-companion-more" data-action="quick-actions" title="More ways to connect" aria-label="Open companion quick actions">✳</button></div>'+
+      '<h2>'+escape(story.title)+'</h2><p>'+escape(story.detail)+'</p>'+
+      '<button type="button" class="pa-companion-link" data-action="rc1-open" data-value="'+escape(id)+'" aria-haspopup="dialog">'+
+      escape(story.action)+' <span aria-hidden="true">↗</span></button>'+
+      '<p class="pa-companion-why"><strong>WHY THIS?</strong> '+escape(story.why)+'</p>'+
+      '</section>';
   }
 
   function route(action){
