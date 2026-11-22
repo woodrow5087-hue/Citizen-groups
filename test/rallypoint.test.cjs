@@ -1062,6 +1062,38 @@ function rcAsk(app,question){
  return app.d.querySelector('.rc1-response')?.textContent;
 }
 
+test('RC1 restores approved Premium ALIVE assistant card under the circular people rail',t=>{
+ const app=open(t,{rc1:true});
+ const today=app.d.querySelector('.today-screen');
+ const children=[...today.children];
+ const hero=children.findIndex(x=>x.classList.contains('pa-today-hero'));
+ const rail=children.findIndex(x=>x.classList.contains('pa-people-rail'));
+ const assistant=children.findIndex(x=>x.classList.contains('pa-companion'));
+ assert.ok(hero>=0&&hero<rail&&rail<assistant,'Hero, circular people rail, assistant card use approved order');
+ assert.equal(app.d.querySelectorAll('.pa-companion').length,1,'one prominent personalized assistant card');
+ assert.equal(app.d.querySelectorAll('.rc1-entry').length,0,'no competing compact generic assistant entry');
+ const card=app.d.querySelector('.pa-companion');
+ assert.match(card.querySelector('h2').textContent,/Wednesday is coming up/);
+ assert.match(card.querySelector('.pa-companion-why').textContent,/current group membership/);
+ assert.ok(card.querySelector('.pa-pulse'));
+ assert.ok(card.querySelector('.pa-companion-more[data-action="quick-actions"]'));
+ assert.ok(card.querySelector('.pa-companion-link[data-action="rc1-open"]'));
+ app.click('.pa-companion-link[data-action="rc1-open"]');
+ assert.match(app.d.querySelector('.rc1-response').textContent,/Wednesday/i);
+ assert.equal(app.saved().rsvp,'','opening the companion card is not an RSVP');
+});
+test('RC1 assistant card changes for a visitor without exposing private membership details',t=>{
+ const app=open(t,{rc1:true,ui:{...T.initial(),memberships:{group:false,team:false}},
+  saved:{role:'leader',rsvp:'',teamStatus:'pending',prayers:[{name:'Marcus C.',text:'Private prayer'}]}});
+ const card=app.d.querySelector('.today-screen .pa-companion');
+ assert.ok(card,'approved assistant card is present for an unjoined visitor');
+ assert.match(card.textContent,/Your people\. Your next step/);
+ assert.doesNotMatch(card.textContent,/North Commons|North Campus|Marcus C\.|Private prayer/);
+ app.click('.pa-companion-link[data-action="rc1-open"]');
+ assert.match(app.d.querySelector('.rc1-response').textContent,/connect|group|start/i);
+ assert.equal(app.d.querySelector('[data-action="rc1-confirm"]'),null);
+});
+
 test('RC1 carries Today relevance into a bounded conversation and saves responses only on deliberate clicks',t=>{
  const app=open(t,{rc1:true,saved:{groupMessages:[{text:'Preserve this archive'}]}});
  const {d,w,click}=app;
