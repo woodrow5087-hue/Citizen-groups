@@ -52,6 +52,10 @@ test('Board displays three distinct compact actions without duplicate hero task'
  assert.match(html,/data-action="f09-rsvp"/);
  assert.match(html,/data-action="f09-serve"/);
  assert.match(html,/Today at a Glance/);
+ assert.match(html,/SCHEDULE &amp; STATUS/);
+ assert.equal((html.match(/class="f09b-status /g)||[]).length,3);
+ const glance=html.slice(html.indexOf('<section class="f09b-glance"'),html.indexOf('class="pa-people-rail'));
+ assert.doesNotMatch(glance,/<button|data-action=|data-go=/,'at-a-glance has zero duplicate CTAs');
  assert.match(html,/Compare Smart Stack/);
 });
 test('Source-backed RSVP and serving status never claim ongoing tasks after completion',()=>{
@@ -59,8 +63,8 @@ test('Source-backed RSVP and serving status never claim ongoing tasks after comp
  const s={...base,teamStatus:'confirmed',rsvp:'going',read:true,prayed:true};
  const d=projection(date,s,ui,{status:'ok',unreadCount:0});
  const b=Board.derive(d,date);
- assert.equal(b.agenda.find(x=>x.id==='group').cta,'Going');
- assert.equal(b.agenda.find(x=>x.id==='serve').cta,'Confirmed');
+ assert.equal(b.agenda.find(x=>x.id==='group').status,'Going');
+ assert.equal(b.agenda.find(x=>x.id==='serve').status,'Confirmed');
  assert.ok(b.rows.every(x=>!x.requiresResponse));
  assert.ok(!['group-rsvp','serve-response','group-unread'].includes(b.hero.id));
  assert.match(Board.render(d,'',[],date),/No live church activity/i);
@@ -85,7 +89,7 @@ test('No membership: no group-private faces, RSVP, serving, or care prompts can 
  assert.equal(b.hasPeople,false);
  assert.notEqual(b.hero.id,'group-rsvp');
  assert.ok(b.rows.every(x=>!['group-unread','group-rsvp','serve-response','care-marcus'].includes(x.id)));
- assert.deepEqual(b.agenda.map(x=>x.title),['Find a group','Serving','Scripture']);
+ assert.deepEqual(b.agenda.map(x=>x.title),['Community','Serving','Scripture rhythm']);
  const html=Board.render(d,'',[{name:'Secret',image:'https://images.unsplash.com/photo-123'}],date);
  assert.doesNotMatch(html,/Marcus|Private sample prayer|Secret|3 new messages|RSVP for Wednesday Group/);
 });
@@ -96,4 +100,20 @@ test('User-controlled names, source details and portrait URLs are escaped before
  assert.doesNotMatch(html,/<script>|src="javascript:|onerror=1>/);
  assert.match(html,/&lt;img/);
  assert.match(html,/&lt;script&gt;/);
+});
+
+test('At a Glance remains source-backed schedule/status only, while actions live in the priority board',()=>{
+ const wed=new Date('2026-11-25T12:00:00');
+ const d=projection(wed);
+ const b=Board.derive(d,wed);
+ const group=b.agenda.find(x=>x.id==='group'),serve=b.agenda.find(x=>x.id==='serve'),scripture=b.agenda.find(x=>x.id==='scripture');
+ assert.match(group.detail,/Wed · 6:30 PM · North Commons/);
+ assert.equal(group.status,'RSVP open');
+ assert.match(serve.detail,/Sun · 9:00 AM · North Campus/);
+ assert.equal(serve.status,'Needs reply');
+ assert.equal(scripture.status,'To read');
+ assert.ok(b.agenda.every(x=>!('action' in x)&&!('cta' in x)));
+ const after=Board.derive(projection(wed,{...base,rsvp:'going',teamStatus:'confirmed',read:true,prayed:true},ui,{status:'ok',unreadCount:0}),wed);
+ assert.deepEqual(after.agenda.map(x=>x.status),['Going','Confirmed','Read']);
+ assert.equal(after.agenda.length,3);
 });
