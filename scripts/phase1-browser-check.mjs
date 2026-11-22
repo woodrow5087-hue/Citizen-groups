@@ -326,6 +326,20 @@ try{
    await audit(companion,'F-10 board '+width);
    const oldChat=await companion.evaluate(()=>localStorage.getItem('rallypoint-wednesday-chat-lab-v1'));
    const oldKeys=await companion.evaluate(()=>Object.keys(localStorage).sort());
+   if(width===390){
+     const source=await companion.evaluate(()=>{
+       const now=new Date();
+       const state=JSON.parse(localStorage.getItem('rallypoint-phase1-2026'));
+       const ui=window.RallyToday.load(localStorage);
+       const conversation=window.RallyConversationRead.peek({storage:localStorage,domain:window.RallyChatDomain,member:ui.memberships.group});
+       const model=window.RallySmartDashboard.model({state,ui,conversation,now,today:window.RallyToday});
+       return window.RallyCompanionSource.snapshot({model,now});
+     });
+     assert.equal(source.sources.conversation,'available');
+     assert.deepEqual(source.group,{nextDate:null,location:'North Commons',rsvp:'none',unreadCount:3});
+     assert.equal(source.serving.nextDate,null);
+     assert.equal(await companion.evaluate(()=>localStorage.getItem('rallypoint-wednesday-chat-lab-v1')),oldChat);
+   }
    await companion.locator('.f10-entry-button').click();
    assert.ok(await companion.locator('.f10-panel').isVisible());
    assert.equal(await companion.locator('.f10-chip').count(),6);
