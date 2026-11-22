@@ -289,12 +289,37 @@ function respond(raw,sources={},prior={}){
  if(!focus&&isFollowup&&!mixedSubjects)focus=inherited;
  const source=sourceNote;
  const itemFor=(title,detail,reason,action=null)=>item(title,detail,reason,action);
- function result(heading,intro,items,topic='',extra={}){
+ function result(heading,intro,items,topic='',extra={},suggested=null){
   const response=Object.freeze({intent:'followup',heading,intro,
     items:Object.freeze(items),note:source,topic,...extra});
   return Object.freeze({query:known,response,
     context:Object.freeze({intent:response.intent,focus:topic||''}),
-    suggestions:Object.freeze(recommend(topic||'week'))});
+    suggestions:Object.freeze(Array.isArray(suggested)?suggested.slice(0,3):recommend(topic||'week'))});
+ }
+ // F-10.4: a bounded continuation ONLY after an explicit, guarded button tap.
+ // The event is ephemeral UI context; current profile and saved state remain authoritative.
+ // A forged/stale event cannot disclose restricted details or trigger another action.
+ if(sources.followThroughMode===true&&sources.followThrough==='rsvp'&&d.member&&d.rsvp==='going'){
+  const upcoming=safeDate(d.groupDate,now);
+  const details=upcoming?formatDate(d.groupDate)+' · '+(d.groupLocation||'Location not available'):
+    'Your RSVP is Going; there is no verified upcoming sample gathering date.';
+  return result(upcoming?'You’re in for Wednesday.':'Your group RSVP is saved.',
+    'Your sample RSVP is now Going on this device. Nothing was sent to a church system. You can stop here or review the details.',
+    [itemFor('Wednesday Group',details,
+      'The current RSVP, group membership and dated fixture were rechecked after your tap.',
+      go('group','gather','Review gathering'))],
+    'group',{followThrough:true},['group-where','group-time','goal-check']);
+ }
+ if(sources.followThroughMode===true&&sources.followThrough==='serve'&&d.team&&d.serveStatus==='confirmed'){
+  const upcoming=safeDate(d.serveDate,now);
+  const details=upcoming?formatDate(d.serveDate)+' · '+(d.serveLocation||'Location not available'):
+    'Your response is Confirmed; no upcoming sample shift date is verified.';
+  return result(upcoming?'You’re confirmed for Sunday.':'Your serving response is saved.',
+    'Your sample serving response is Confirmed on this device. No church roster was changed. You can stop here or review the schedule.',
+    [itemFor('Welcome Team',details,
+      'The current team membership, saved response and fixture schedule were rechecked after your tap.',
+      go('team','schedule','Review schedule'))],
+    'serve',{followThrough:true},['serve-where','serve-time','goal-check']);
  }
  // Do not extrapolate recurring schedules from one fictional fixture date.
  if(/\b(next week|following week|week after next|two weeks from now)\b/.test(lower)){
