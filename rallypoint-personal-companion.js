@@ -199,6 +199,121 @@ const suggestions=(topic,model={})=>{
  if(topic==='scripture')return ['next',...(group?['group-time']:[]),...(team?['serve-time']:[])];
  return ['why-first',...(group?['group-time']:[]),...(team?['serve-time']:[])].slice(0,3);
 };
+/* F-10.2 · constrained intent planning, never speculative AI.
+ * Intent selection reads the request. All answer facts are pulled from the
+ * current role-gated F-09 model; no historical words become permissions.
+ */
+function interpretNatural(query,sources={},prior={}){
+ const text=String(query||'').trim().slice(0,160).toLowerCase();
+ const d=sources.model||{},b=sources.board||{},now=sources.now instanceof Date?sources.now:new Date();
+ const group=!!d.member,team=!!d.team;
+ const g=/\b(wednesday|group|gathering|rsvp)\b/.test(text);
+ const t=/\b(sunday|serv(?:e|ing|ice)|shift|volunteer|welcome team)\b/.test(text);
+ const negative=/\b(can'?t|cannot|won'?t|unable|unavailable|decline|not able|miss(?:ing)?|not coming)\b/.test(text);
+ const oldFocus=['group','serve'].includes(prior?.focus)?prior.focus:'';
+ const implicitUnavailability=negative&&!g&&!t&&oldFocus&&/\b(make it|be there|come|available|attend|this)\b/.test(text);
+ const preparation=/\b(prep|prepare|preparation|get ready|getting ready|before|checklist)\b/.test(text);
+ const compound=g&&t&&/\b(and|plus|both|also|together)\b/.test(text);
+ const remaining=/\b(what(?:'s| is)? (?:still )?left|anything else|what now|what remains|still need|what else)\b/.test(text);
+ const overload=/\b(one thing at a time|what can wait|what matters most|where (?:do|should) i start|overwhelm(?:ed|ing)?|on my plate)\b/.test(text);
+ const decline=negative&&(g||t||implicitUnavailability);
+ const prep=(preparation&&(g||t))||/\b(help me (?:plan|prepare) (?:for )?(?:this |my )?week)\b/.test(text);
+ if(!decline&&!compound&&!prep&&!remaining&&!overload)return null;
+ const selected=decline?'availability':compound?'combined':prep?'prepare':overload?'focus':'remaining';
+ const items=[];
+ const add=(title,detail,reason,action=null)=>items.push(item(title,detail,reason,action));
+ const when=date=>safeDate(date,now)?formatDate(date):'No upcoming sample date is available';
+ const meeting=()=>{
+  if(!group)return add('Find a group','No group membership is enabled in your sample profile.',
+   'No private group or RSVP details are available.',go('group','','Explore groups'));
+  add('Wednesday Group · '+when(d.groupDate),
+   (d.groupLocation||'Location not available')+' · '+
+   (!d.rsvp?'RSVP still open':d.rsvp==='going'?'Going':'Maybe'),
+   'From the fictional gathering and your saved RSVP.',
+   !d.rsvp?direct('rsvp','RSVP · I’m in'):go('group','gather','Group details'));
+ };
+ const serving=()=>{
+  if(!team)return add('Explore serving','No assigned sample shift is available for this profile.',
+   'This person has no team membership.',go('team','','Explore teams'));
+  add('Welcome Team · '+when(d.serveDate),
+   (d.serveLocation||'Location not available')+' · '+
+    (d.serveStatus==='pending'?'Response needed':
+     d.serveStatus==='confirmed'?'Confirmed':
+     d.serveStatus==='declined'?'Declined':'See details'),
+   'From the fictional team schedule and your saved response.',
+   d.serveStatus==='pending'?direct('serve','Confirm serving'):
+     go('team','schedule','See team schedule'));
+ };
+ let heading='',intro='',focus='';
+ if(selected==='availability'){
+  focus=t&&!g?'serve':g&&!t?'group':implicitUnavailability?oldFocus:'';
+  heading='Let’s look at your options.';
+  intro='I won’t change a commitment based on a message. You can review the current response and make any changes in the relevant section.';
+  if((g||implicitUnavailability&&oldFocus==='group')&&group)add('Wednesday Group',d.rsvp==='going'?'You are marked Going in this demo.':'Your sample RSVP is '+(d.rsvp||'open')+'.',
+   'Changing a response requires an explicit action in Groups.',go('group','gather','Review RSVP'));
+  if((t||implicitUnavailability&&oldFocus==='serve')&&team)add('Welcome Team',d.serveStatus==='confirmed'?'Your sample shift is currently confirmed.':
+    d.serveStatus==='declined'?'You already declined the sample shift.':'Your sample shift still needs a response.',
+   'Open Team to review availability or decline, rather than silently changing it here.',
+   go('team','schedule','Review serving'));
+  if(!items.length){
+   add('Nothing to change','No matching group or team commitment is assigned to this sample profile.',
+    'Membership is required before any private commitment can be shown.',go(g||oldFocus==='group'?'group':'team','','Explore'));
+  }
+ }else if(selected==='combined'){
+  heading='Here’s both, together.';
+  intro='I checked your sample Wednesday Group and Sunday serving details. These are separate commitments, and neither has been changed.';
+  meeting();serving();
+ }else if(selected==='prepare'){
+  focus=t&&!g?'serve':g&&!t?'group':'';
+  heading='Here’s a simple way to get ready.';
+  intro='I’m only listing what’s actually in your sample activity. Optional preparation stays optional.';
+  if(g||!g&&!t){
+   meeting();
+   if(group){
+    if(d.conversationStatus==='unavailable')
+     add('Review your group conversation','The saved conversation is unavailable; no unread count is assumed.',
+      'Opening the existing Groups thread is the safe recovery path.',go('group','chat','Review conversation'));
+    else if(d.unread>0)
+     add('Read '+d.unread+' sample '+(d.unread===1?'message':'messages'),
+       'You can catch up with your group before Wednesday.',
+       'Unread counts come from the modern conversation cursor; opening the thread acknowledges messages.',
+       go('group','chat','Open messages'));
+   }
+  }
+  if(t||!g&&!t)serving();
+  if(items.length<3&&group){
+   add('Scripture, if useful',d.passage||'Your existing reading is available.',
+    'A voluntary reading invitation, not a required step or engagement score.',
+    go('read','','Open Scripture'));
+  }
+ }else if(selected==='focus'){
+  heading='Start with the next real decision.';
+  const next=answer('next',sources);
+  intro=b.taskCount>0?
+   'You have '+b.taskCount+' sample '+(b.taskCount===1?'item':'items')+' awaiting a response. Here’s what the existing Priority Board puts first; the rest can wait until you choose.':
+   'Nothing is currently asking for a response. You can explore people or Scripture at your own pace.';
+  const first=next.items.find(x=>x.action?.kind==='confirm')||next.items[0];
+  if(first)add(first.title,first.detail,first.reason,first.action);
+ }else{
+  heading='Here’s what’s still open.';
+  const next=answer('next',sources);
+  intro=b.taskCount>0?
+   'This checks your current sample state, including responses you’ve already handled.':
+   'You’re caught up on the sample requests that need a response. Optional reading and community are still available.';
+  for(const r of next.items.slice(0,3))add(r.title,r.detail,r.reason,r.action);
+ }
+ const topic=focus||'week';
+ const response=Object.freeze({
+  intent:'guided',mode:selected,heading,intro,items:Object.freeze(items),
+  note:sourceNote,topic
+ });
+ return Object.freeze({
+  query:String(query||'').trim().slice(0,160),response,
+  context:Object.freeze({intent:'guided',focus}),
+  suggestions:Object.freeze(suggestions(topic,d))
+ });
+}
+
 function respond(raw,sources={},prior={}){
  const query=String(raw||'').trim().slice(0,160);
  const d=sources.model||{},b=sources.board||{},now=sources.now instanceof Date?sources.now:new Date();
@@ -232,6 +347,10 @@ function respond(raw,sources={},prior={}){
   return Object.freeze({query:known,response,
     context:Object.freeze({intent:response.intent,focus:topic||''}),
     suggestions:Object.freeze(suggestions(topic||'week',d))});
+ }
+ if(sources.enableIntelligence===true){
+  const guided=interpretNatural(query,sources,previous);
+  if(guided)return guided;
  }
  // A week-wide question can have two commitments. Clarify a pronoun.
  if(isFollowup&&!focus&&(d.member||d.team)){
@@ -311,7 +430,14 @@ function respond(raw,sources={},prior={}){
   suggestions:Object.freeze(suggestions(focus||response.intent,d))});
 }
 
-function render(response,asked='',notice='',history=[],suggested=[]){
+const intelligenceGuides=Object.freeze({
+ 'get-ready-group':'Help me get ready for Wednesday group',
+ 'get-ready-sunday':'Help me prepare for serving Sunday',
+ 'both-schedules':'When is my group and my Sunday shift?',
+ 'what-remains':'What’s still left?',
+ 'what-can-wait':'What can wait?'
+});
+function render(response,asked='',notice='',history=[],suggested=[],options={}){
  const r=response||answer('unknown');
  const chips=prompts.map(p=>
   '<button type="button" class="f10-chip" data-action="f10-ask" data-value="'+esc(p.id)+'">'+esc(p.label)+'</button>'
@@ -325,6 +451,13 @@ function render(response,asked='',notice='',history=[],suggested=[]){
   '<p class="f10-earlier-reply">'+esc(String(turn.heading||'').slice(0,100))+
    (turn.intro?' · '+esc(String(turn.intro).slice(0,120)):'')+'</p></div>'
  ).join('');
+ const guideButtons=options?.enableIntelligence===true?
+  '<div class="f10-guides" aria-label="Natural questions to try"><span>TRY ASKING NATURALLY</span><div>'+
+   Object.entries(intelligenceGuides).filter(([id])=>!id.includes('sunday')||options?.team!==false)
+   .filter(([id])=>!id.includes('group')||options?.group!==false)
+   .slice(0,3).map(([id,label])=>
+     '<button type="button" class="f10-guide" data-action="f10-guide" data-value="'+esc(id)+'">'+esc(label)+'</button>'
+   ).join('')+'</div></div>':'';
  const notes=notice?'<p class="f10-notice" role="status" aria-live="polite">'+esc(notice.slice(0,180))+'</p>':'';
  const question=asked?'<p class="f10-question"><span>You asked</span>'+esc(asked.slice(0,160))+'</p>':'';
  const cards=r.items.map(x=>{
@@ -340,7 +473,9 @@ function render(response,asked='',notice='',history=[],suggested=[]){
  }).join('');
  return '<div class="f10-panel f10-conversation" aria-label="Ask Rally local companion">'+
   '<div class="f10-intro"><div class="f10-local-dot" aria-hidden="true"></div><span>ASK RALLY · LOCAL PREVIEW</span></div>'+
-  '<p class="f10-helper">We can stay on the same topic. Try “What time?” or “And Sunday?” after a question.</p>'+
+  '<p class="f10-helper">'+(options?.enableIntelligence===true?
+     'Ask naturally about preparing, schedules or what’s still left. I’ll use only your saved sample activities.':
+     'We can stay on the same topic. Try “What time?” or “And Sunday?” after a question.')+'</p>'+guideButtons+
   (older?'<div class="f10-earlier" role="region" tabindex="0" aria-label="Earlier messages in this session">'+older+'</div>':'')+
   notes+question+
   '<section class="f10-response" aria-live="polite" aria-label="Companion answer">'+
@@ -357,5 +492,5 @@ function render(response,asked='',notice='',history=[],suggested=[]){
   '<p class="f10-disclosure">'+esc(r.note)+'</p>'+
   '</div>';
 }
-return Object.freeze({prompts,classify,answer,respond,followKeys,render});
+return Object.freeze({prompts,classify,answer,respond,interpretNatural,intelligenceGuides,followKeys,render});
 });

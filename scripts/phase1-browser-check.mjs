@@ -396,6 +396,79 @@ try{
  }
  await audit(guestAsk,'F-10 guest privacy modal');
  await guestCompanion.close();
+ // F-10.2: opt-in natural guidance. All source data stays fictional/local.
+ const intelligenceUrl=new URL(companionUrl);intelligenceUrl.searchParams.set('f10','2');
+ const intelligenceContext=await browser.newContext({viewport:{width:390,height:844},
+   isMobile:true,hasTouch:true,reducedMotion:'reduce'});
+ const smart=await intelligenceContext.newPage();
+ await smart.clock.install({time:new Date('2026-11-25T12:00:00')});
+ await smart.addInitScript(()=>{
+   localStorage.setItem('rallypoint-phase1-2026',JSON.stringify({
+     role:'member',view:'today',teamStatus:'pending',rsvp:'',read:false,prayed:false,
+     groupMessages:[{name:'Jess',text:'Fictional archive persists.'}],prayers:[]
+   }));
+ });
+ await smart.goto(intelligenceUrl.toString());
+ assert.equal(await smart.locator('.f10-entry').count(),1);
+ assert.equal(await smart.locator('#nav button').count(),4);
+ await geometry(smart,'F-10.2 intelligent board 390');
+ const archive=await smart.evaluate(()=>JSON.parse(localStorage.getItem('rallypoint-phase1-2026')).groupMessages);
+ const keys=await smart.evaluate(()=>Object.keys(localStorage).sort());
+ await smart.locator('.f10-entry-button').click();
+ assert.ok(await smart.locator('.f10-panel').isVisible());
+ assert.ok(await smart.locator('.f10-guide').count()>=2);
+ await smart.locator('.f10-guide[data-value="get-ready-group"]').click();
+ assert.ok((await smart.locator('.f10-response').textContent()).includes('simple way to get ready'));
+ await smart.locator('#f10-query').fill('When is my group and my Sunday shift?');
+ await smart.locator('.f10-query-form button[type="submit"]').click();
+ assert.ok((await smart.locator('.f10-response').textContent()).includes('both, together'));
+ assert.equal(await smart.locator('.f10-route[data-action="f10-confirm"]').count(),2);
+ const before=await smart.evaluate(()=>JSON.parse(localStorage.getItem('rallypoint-phase1-2026')));
+ assert.equal(before.rsvp,'');assert.equal(before.teamStatus,'pending');
+ await smart.locator('.f10-route[data-action="f10-confirm"][data-value="rsvp"]').click();
+ assert.equal(await smart.evaluate(()=>JSON.parse(localStorage.getItem('rallypoint-phase1-2026')).rsvp),'going');
+ await smart.locator('#f10-query').fill("What's still left?");
+ await smart.locator('.f10-query-form button[type="submit"]').click();
+ assert.ok((await smart.locator('.f10-response').textContent()).includes('still open'));
+ assert.equal(await smart.locator('.f10-route[data-action="f10-confirm"][data-value="rsvp"]').count(),0);
+ await smart.locator('#f10-query').fill("I can't make it Sunday");
+ await smart.locator('.f10-query-form button[type="submit"]').click();
+ assert.ok((await smart.locator('.f10-response').textContent()).includes('won’t change a commitment'));
+ assert.ok(await smart.locator('.f10-route[data-go="team"]').isVisible());
+ assert.equal(await smart.evaluate(()=>JSON.parse(localStorage.getItem('rallypoint-phase1-2026')).teamStatus),'pending');
+ await audit(smart,'F-10.2 390 guided conversation');
+ await smart.screenshot({path:path.join(out,'f10-2-intelligence-390.png'),fullPage:false});
+ assert.deepEqual(await smart.evaluate(()=>Object.keys(localStorage).sort()),keys);
+ assert.deepEqual(await smart.evaluate(()=>JSON.parse(localStorage.getItem('rallypoint-phase1-2026')).groupMessages),archive);
+ await smart.locator('[data-action="close-dialog"]').click();
+ assert.equal(await smart.locator('.f10-panel').count(),0);
+ await intelligenceContext.close();
+ const smartGuestContext=await browser.newContext({viewport:{width:390,height:844},
+   isMobile:true,hasTouch:true,reducedMotion:'reduce'});
+ const smartGuest=await smartGuestContext.newPage();
+ await smartGuest.clock.install({time:new Date('2026-11-25T12:00:00')});
+ await smartGuest.addInitScript(()=>{
+   localStorage.setItem('rallypoint-phase1-2026',JSON.stringify({
+     role:'leader',view:'today',teamStatus:'pending',rsvp:'',
+     prayers:[{name:'Marcus C.',text:'Private fictional sample'}]
+   }));
+   localStorage.setItem('rallypoint-today-ui-v1',JSON.stringify({
+     name:'Guest',memberships:{group:false,team:false}
+   }));
+ });
+ await smartGuest.goto(intelligenceUrl.toString());
+ await smartGuest.locator('.f10-entry-button').click();
+ for(const q of ['When is my group and my Sunday shift?',
+                 'Help me get ready for Wednesday group',
+                 "I can't make it Sunday"]){
+   await smartGuest.locator('#f10-query').fill(q);
+   await smartGuest.locator('.f10-query-form button[type="submit"]').click();
+   const body=await smartGuest.locator('.f10-response').textContent();
+   assert.ok(!/Marcus|Private fictional sample|North Commons|North Campus|6:30 PM|9:00 AM/.test(body));
+   assert.equal(await smartGuest.locator('.f10-route[data-action="f10-confirm"]').count(),0);
+ }
+ await audit(smartGuest,'F-10.2 newcomer private boundary');
+ await smartGuestContext.close();
  const fallback=await browser.newContext({viewport:{width:375,height:812},reducedMotion:'reduce'});await fallback.addInitScript(()=>Object.defineProperty(window,'localStorage',{get(){throw Error('Blocked');}}));const fp=await fallback.newPage();await fp.goto(todayUrl);assert.ok((await fp.locator('#view').textContent()).includes('could not save'));await fp.locator('#nav [data-go="read"]').click();await fp.locator('[data-action="read"]').click();assert.ok((await fp.locator('#view').textContent()).includes('Read today'));await fallback.close();
  fs.writeFileSync(path.join(out,'phase1-browser-results.json'),JSON.stringify({cases:results,flows:'Source links, original messages/prayers, RSVP, serving, role/leader tools, reading/question, empty states, focus, persistence and storage fallback passed.',axe:'No detected WCAG A/AA violations on tested views/dialogs.'},null,2));console.log('All Phase 1 mobile, accessibility, persistence and source-flow checks passed.');
 }finally{await browser.close();if(server)await new Promise(r=>server.close(r));}
