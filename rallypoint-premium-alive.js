@@ -10,9 +10,9 @@
     {id:'marcus', name:'Marcus', initials:'MC', image:'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=200&q=78',ring:'blue'},
     {id:'taylor', name:'Taylor', initials:'TD', image:'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=200&q=78',ring:'amber'}
   ];
-  function peopleRail(ui, placement){
+  function peopleRail(ui, placement, people=portraits, groupImage='https://images.unsplash.com/photo-1543269865-cbf427effbad?auto=format&fit=crop&w=220&q=78'){
     if(!ui || !ui.memberships || !ui.memberships.group) return '';
-    const items=portraits.map(function(person){
+    const items=people.map(function(person){
       return '<li class="pa-person"><button type="button" class="pa-person-trigger" data-action="hybrid-person" data-person="'+person.id+'" aria-label="Open fictional private demo conversation with '+person.name+'">'+
         '<span class="pa-story-ring pa-ring-'+person.ring+'"><span class="pa-story-initials">'+person.initials+'</span><img src="'+person.image+'" alt="" loading="lazy" referrerpolicy="no-referrer"></span>'+
         '<span class="pa-person-name">'+person.name+'</span></button></li>';
@@ -21,7 +21,7 @@
       '<div class="pa-people-heading"><h2>Your people<span class="pa-star" aria-hidden="true">✳</span></h2><span>YOUR CIRCLE · DEMO</span></div>'+
       '<ul class="pa-people-scroll" aria-label="Fictional group members"><li class="pa-person">'+
       '<button type="button" class="pa-person-trigger" data-go="group" data-pane="chat" aria-label="Open fictional Wednesday Group conversation">'+
-      '<span class="pa-story-ring pa-ring-primary"><img src="https://images.unsplash.com/photo-1543269865-cbf427effbad?auto=format&fit=crop&w=220&q=78" alt="" loading="lazy" referrerpolicy="no-referrer"></span><span class="pa-person-name">My group</span></button></li>'+items+'</ul>'+
+      '<span class="pa-story-ring pa-ring-primary"><img src="'+groupImage+'" alt="" loading="lazy" referrerpolicy="no-referrer"></span><span class="pa-person-name">My group</span></button></li>'+items+'</ul>'+
       '</section>';
   }
   function todayHero(ui){

@@ -115,7 +115,11 @@ function f09Today(){
    companion:window.RallyCompanionDecision,passage:currentReading().passage
  });
  f09Index=Math.max(0,Math.min(f09Index,model.stack.length-1));
- if(f09Board)return window.RallyPriorityBoard.render({...model,feedback:f09Feedback,f10Enabled:f10Preview},H.peopleRail(todayUI,'today'),H.portraits,now);
+ if(f09Board){
+   const portraits=H.portraits.map(person=>({...person,image:`assets/today-priority/${person.id}.webp`}));
+   const peopleRail=H.peopleRail(todayUI,'today',portraits,'assets/today-priority/group.webp');
+   return window.RallyPriorityBoard.render({...model,feedback:f09Feedback,f10Enabled:f10Preview},peopleRail,portraits,now);
+ }
  return window.RallySmartDashboard.render(model,f09Index,H.peopleRail(todayUI,'today'),H.portraits);
 }
 function today(){

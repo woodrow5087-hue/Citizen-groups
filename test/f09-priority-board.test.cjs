@@ -27,6 +27,13 @@ test('Visible board uses actual calendar urgency while never truncating relevant
  assert.deepEqual(source,base,'ranking does not modify the stored fixture');
  assert.equal(d.stack.length,4,'the earlier Smart Stack comparator remains limited to four cards');
 });
+test('The group RSVP can lead the night before without labeling tomorrow as tonight',()=>{
+ const tuesday=new Date('2026-11-24T19:00:00');
+ const b=Board.derive(projection(tuesday),tuesday);
+ assert.equal(b.hero.id,'group-rsvp');
+ assert.equal(b.hero.title,'Your Wednesday Group.');
+ assert.match(b.agenda.find(x=>x.id==='group').detail,/Wed · 6:30 PM/);
+});
 test('Saturday approaching Sunday uses serving action as hero, not fictional Group tonight',()=>{
  const saturday=new Date('2026-11-21T12:00:00');
  const d=projection(saturday);
