@@ -142,7 +142,7 @@ test('Unexpected scope and malicious configuration values fail before any networ
 test('Provider-returned markup is removed from the presentation-safe allowlisted fields',async()=>{
  const {client}=harness({
   '/groups/v2/groups/222':{data:{id:group,type:'Group',attributes:{name:'<script>alert(1)</script> Wednesday Group'}}},
-  '/groups/v2/events':{data:[{id:'1',type:'Event',attributes:{name:'<img onerror=x>Welcome',starts_at:'2026-11-30T18:00:00Z'},relationships:{group:{data:{id:group}}}}]}
+  '/groups/v2/groups/222/events':{data:[{id:'1',type:'Event',attributes:{name:'<img onerror=x>Welcome',starts_at:'2026-11-30T18:00:00Z'},relationships:{group:{data:{id:group}}}}]}
  });
  const view=await client.readForServerSession(validSession());
  assert.equal(view.group.name,'alert(1) Wednesday Group');
