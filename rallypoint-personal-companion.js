@@ -156,6 +156,160 @@ function answer(query,{model,board,now=new Date()}={}){
  }
  return Object.freeze({intent,heading,intro,items:Object.freeze(items),note});
 }
+/* F-10.1: short source-scoped follow-ups within the OPEN sheet only.
+ * Prior conversation helps interpret words, never grants access.
+ * Every answer is derived from CURRENT profile and fixtures.
+ */
+const followKeys=Object.freeze({
+ 'group-time':'What time is Wednesday Group?',
+ 'serve-time':'What time am I serving Sunday?',
+ 'group-where':'Where does my group meet?',
+ 'serve-where':'Where am I serving?',
+ 'group-confirm':'Can I RSVP for my group?',
+ 'serve-confirm':'Can I confirm my serving shift?',
+ 'why-first':'Why is this first?',
+ 'week':'What’s happening this week?',
+ 'next':'What needs my attention?',
+ 'group':'My group',
+ 'serve':'Serving',
+ 'scripture':'Scripture'
+});
+const followIds=new Set(Object.keys(followKeys));
+const topicOf=(r,board)=>{
+ if(r?.topic)return r.topic;
+ if(r?.intent==='group')return 'group';
+ if(r?.intent==='serve')return 'serve';
+ if(r?.intent==='scripture')return 'scripture';
+ if(r?.intent==='next'||r?.intent==='why'){
+  const id=String(board?.hero?.id||'');
+  if(id==='group-rsvp'||id.startsWith('group-'))return 'group';
+  if(id==='serve-response')return 'serve';
+ }
+ return '';
+};
+const suggestions=(topic,model={})=>{
+ const group=!!model.member,team=!!model.team;
+ if(topic==='group'&&group)return ['group-time','group-where','group-confirm'];
+ if(topic==='serve'&&team)return ['serve-time','serve-where','serve-confirm'];
+ if(topic==='week'||topic==='')return [
+  ...(group?['group-time']:[]),
+  ...(team?['serve-time']:[]),
+  'next'
+ ].slice(0,3);
+ if(topic==='scripture')return ['next',...(group?['group-time']:[]),...(team?['serve-time']:[])];
+ return ['why-first',...(group?['group-time']:[]),...(team?['serve-time']:[])].slice(0,3);
+};
+function respond(raw,sources={},prior={}){
+ const query=String(raw||'').trim().slice(0,160);
+ const d=sources.model||{},b=sources.board||{},now=sources.now instanceof Date?sources.now:new Date();
+ const previous=prior&&typeof prior==='object'?prior:{};
+ const lower=query.toLowerCase();
+ const key=followIds.has(query)?query:null;
+ const known=key?followKeys[key]:query;
+ const subject=key?.startsWith('group-')?'group':key?.startsWith('serve-')?'serve':'';
+ const explicitGroup=/\b(group|wednesday|rsvp|gathering)\b/.test(lower);
+ const explicitServe=/\b(sunday|serv(?:e|ing|ice)|shift|volunteer|welcome team)\b/.test(lower);
+ const explicitScripture=/\b(scripture|bible|reading|verse)\b/.test(lower);
+ let focus=subject||(explicitServe&&!explicitGroup?'serve':explicitGroup&&!explicitServe?'group':
+   explicitScripture?'scripture':'');
+ const inherited=previous.focus&&['group','serve','scripture'].includes(previous.focus)?previous.focus:'';
+ const isTime=!!(key&&key.endsWith('-time'))||
+    /\b(what time|what hour|when is it|when does it|when am i|what's the time)\b/.test(lower);
+ const isWhere=!!(key&&key.endsWith('-where'))||
+    /\b(where|what location|which campus|what campus)\b/.test(lower);
+ const isConfirm=!!(key&&key.endsWith('-confirm'))||
+    /\b(confirm|rsvp|sign me up|respond|say yes)\b/.test(lower)||
+    /^(yes|sure|okay|ok|yep|let's do it)[.!?]*$/.test(lower);
+ const isShortWhy=/^(why|how come|why that|why this)[.!?]*$/.test(lower);
+ const isFollowup=isTime||isWhere||isConfirm||isShortWhy;
+ if(!focus&&isFollowup)focus=inherited;
+ const source=sourceNote;
+ const itemFor=(title,detail,reason,action=null)=>item(title,detail,reason,action);
+ function result(heading,intro,items,topic='',extra={}){
+  const response=Object.freeze({intent:'followup',heading,intro,
+    items:Object.freeze(items),note:source,topic,...extra});
+  return Object.freeze({query:known,response,
+    context:Object.freeze({intent:response.intent,focus:topic||''}),
+    suggestions:Object.freeze(suggestions(topic||'week',d))});
+ }
+ // A week-wide question can have two commitments. Clarify a pronoun.
+ if(isFollowup&&!focus&&(d.member||d.team)){
+  const candidates=[];
+  if(d.member)candidates.push(itemFor('Wednesday Group','Ask about your sample gathering time or RSVP.',
+    'This is a separate sample gathering.',go('group','gather','See gathering')));
+  if(d.team)candidates.push(itemFor('Sunday Welcome Team','Ask about your sample serving time or confirmation.',
+    'This is a separate sample commitment.',go('team','schedule','See schedule')));
+  if(candidates.length>1)return result('Which one do you mean?',
+    'I can help with Wednesday Group or Sunday serving. Choose a follow-up below; nothing has been changed.',
+    candidates,'week',{clarify:true});
+  focus=d.member?'group':'serve';
+ }
+ if(isFollowup&&focus==='group'){
+  if(!d.member)return result('Your group isn’t linked in this demo.',
+    'There is no sample group membership for your current profile.',
+    [itemFor('Explore sample groups','No group RSVP or private conversation is available.',
+      'This profile has no group membership.',go('group','','Find a group'))],'group');
+  if(isTime||isWhere)return result(isTime?'Your Wednesday gathering.':'Where your group meets.',
+    isTime?'Your next fictional Wednesday Group gathering is '+(d.groupDate instanceof Date&&d.groupDate>=now?formatDate(d.groupDate):'not scheduled')+'.':
+      'Your sample group meets at '+(d.groupLocation||'the location shown in Groups')+'.',
+    [itemFor('Wednesday Group',
+      (d.groupDate instanceof Date&&d.groupDate>=now?formatDate(d.groupDate):'No upcoming fixture date')+
+      ' · '+(d.groupLocation||'Location not available'),
+      'This comes from the local group fixture, not a live church calendar.',
+      go('group','gather','Group details'))],'group');
+  if(isConfirm)return result('Your group RSVP.',
+    d.rsvp?'You already have a sample RSVP response: '+(d.rsvp==='going'?'Going':'Maybe')+'.':
+      'You can mark yourself Going, but only by tapping the RSVP button below.',
+    [itemFor(d.rsvp?'RSVP already saved':'RSVP for Wednesday Group',
+      d.rsvp?'No additional action is needed.':'This confirms Going on this device only.',
+      'A spoken or typed “yes” never completes an RSVP.',
+      d.rsvp?go('group','gather','See RSVP'):direct('rsvp','RSVP · I’m in'))],'group');
+  if(isShortWhy)return result('Why your group was mentioned.',
+    'The board considers an unanswered sample RSVP and unread modern messages when ranking actions.',
+    [itemFor('Your group status',d.rsvp?'RSVP: '+d.rsvp:'RSVP is open',
+      'These are explicit fixture records, not a judgment about you.',go('group','gather','Group details'))],'group');
+ }
+ if(isFollowup&&focus==='serve'){
+  if(!d.team)return result('You have no sample serving assignment.',
+    'Your current profile does not include a team membership.',
+    [itemFor('Explore serving','There is nothing to confirm.',
+      'No sample shift has been assigned.',go('team','','Explore serving'))],'serve');
+  if(isTime||isWhere)return result(isTime?'Your Sunday shift.':'Your serving location.',
+    isTime?'Your sample Welcome Team shift is '+(d.serveDate instanceof Date&&d.serveDate>=now?formatDate(d.serveDate):'not scheduled')+'.':
+      'The sample shift is at '+(d.serveLocation||'the campus shown on Team')+'.',
+    [itemFor('Welcome Team',
+      (d.serveDate instanceof Date&&d.serveDate>=now?formatDate(d.serveDate):'No upcoming fixture date')+
+      ' · '+(d.serveLocation||'Location not available'),
+      'This comes from your fictional team fixture, not a live roster.',
+      go('team','schedule','See schedule'))],'serve');
+  if(isConfirm)return result('Your serving response.',
+    d.serveStatus==='pending'?
+      'You can confirm the sample shift by tapping the button below. A typed “yes” is not enough.':
+      d.serveStatus==='confirmed'?'Your sample shift is already confirmed.':
+      d.serveStatus==='declined'?'You declined this sample shift.':
+      'There is no open sample confirmation for this shift.',
+    [itemFor('Welcome Team · '+(d.serveStatus==='pending'?'Response open':d.serveStatus||'Schedule'),
+      'Confirm means “I can serve” in this local demo. To decline, open Team.',
+      'Only a deliberate tap can change this saved response.',
+      d.serveStatus==='pending'?direct('serve','Confirm serving'):go('team','schedule','See schedule'))],'serve');
+  if(isShortWhy)return result('Why serving appeared.',
+    'A sample shift needs a response only while your saved availability is pending.',
+    [itemFor('Welcome Team',d.serveStatus||'No response found',
+      'This is sourced from your saved team status.',go('team','schedule','Team details'))],'serve');
+ }
+ if(isShortWhy&&focus==='scripture'){
+  const base=answer('scripture',sources);
+  return result('Why Scripture was mentioned.',
+    'Scripture suggestions reflect only your saved reading state or follow-through intention.',
+    base.items,'scripture');
+ }
+ const response=answer(known,sources);
+ focus=subject||topicOf(response,b)||focus;
+ return Object.freeze({query:known,response,
+  context:Object.freeze({intent:response.intent,focus}),
+  suggestions:Object.freeze(suggestions(focus||response.intent,d))});
+}
+
 function render(response,asked='',notice=''){
  const r=response||answer('unknown');
  const chips=prompts.map(p=>'<button type="button" class="f10-chip" data-action="f10-ask" data-value="'+esc(p.id)+'">'+esc(p.label)+'</button>').join('');
@@ -186,5 +340,5 @@ function render(response,asked='',notice=''){
   '<p class="f10-disclosure">'+esc(r.note)+'</p>'+
   '</div>';
 }
-return Object.freeze({prompts,classify,answer,render});
+return Object.freeze({prompts,classify,answer,respond,followKeys,render});
 });
