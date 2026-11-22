@@ -9,6 +9,11 @@ const f09Preview=f09Mode==='1'||f09Board;
 let f09Index=0;
 let f09Feedback='';
 let f10Prompt='week',f10Asked='',f10Notice='';
+let f10Turns=[],f10Prior={},f10Active=null;
+// No transcripts, contextual focus, or typed questions are written to storage.
+function f10ClearSession(){
+ f10Prompt='week';f10Asked='';f10Notice='';f10Turns=[];f10Prior={};f10Active=null;
+}
 const defaults=()=>({role:'member',groupPane:'chat',directPerson:'anna',directMessages:{},teamPane:'schedule',view:'today',discover:false,groupMessages:[{name:'Jess W.',time:'Yesterday',text:'What stood out to you in John 15 this week?'},{name:'Anna L.',time:'Today',text:'Looking forward to seeing everyone Wednesday.'}],teamMessages:[{name:'Sam R.',time:'Yesterday',text:'Welcome team — thank you for helping people feel at home!'}],prayers:[{name:'Marcus C.',time:'Yesterday',text:'Praying for wisdom with an upcoming decision.'}],rsvp:'',teamStatus:'pending',coverage:false,attendance:{anna:'here',jess:'here',marcus:'unknown',taylor:'unknown'},reached:[],interest:[],plan:'sermon',planQuestions:{},memoryTextRevision:'BSB-2026-1',memoryGames:{},memoryMode:'solo',memoryActive:null,memoryPassTurn:1,memoryTarget:null,question:'How can we love one another as Jesus has loved us?',read:false,prayed:false,companionCare:{},companionChoices:{snoozedUntil:{}},rhythm:{}});
 let s;try{s={...defaults(),...JSON.parse(localStorage.getItem(key)||'null')}}catch(_){s=defaults()}
 if(!s||!s.groupMessages||!Array.isArray(s.groupMessages))s=defaults();
@@ -513,7 +518,7 @@ const focus=reading?$('reading-'+reading):$('view').querySelector('h1');
 if(focus){focus.tabIndex=-1;focus.focus({preventScroll:true});if(reading)focus.scrollIntoView?.({block:'start',behavior:'auto'});}
 }
 function closeDialog(restore=true){
-if(!dialog)return;dialog=null;$('dialog-root').innerHTML='';document.querySelector('.phone-inner').inert=false;
+if(!dialog)return;if(dialog==='f10-companion')f10ClearSession();dialog=null;$('dialog-root').innerHTML='';document.querySelector('.phone-inner').inert=false;
 if(restore){if(dialogTrigger?.isConnected)dialogTrigger.focus({preventScroll:true});else $('view').focus({preventScroll:true});}
 }
 function showDialog(type,trigger=document.activeElement){dialogTrigger=trigger;dialog=type;renderDialog();}
@@ -526,9 +531,9 @@ if(dialog==='f10-companion'&&f10Preview){
    companion:window.RallyCompanionDecision,passage:currentReading().passage
  });
  const board=window.RallyPriorityBoard.derive(model,now);
+ f10Active=window.RallyPersonalCompanion.respond(f10Prompt,{model,board,now},f10Prior);
  body=window.RallyPersonalCompanion.render(
-   window.RallyPersonalCompanion.answer(f10Prompt,{model,board,now}),
-   f10Asked,f10Notice
+   f10Active.response,f10Asked,f10Notice,f10Turns,f10Active.suggestions
  );
 }
 if(dialog==='demo-controls'){
@@ -546,8 +551,25 @@ title='Memorize · Phase 2 preview';body=`<p>The memorization exercise is not pa
 if(dialog==='team-preview'){
 title='A place on a team';body=`<p>This fixture has no team membership or serving assignments. Team discovery and joining are later-phase work; no sign-up or request is sent here.</p><button type="button" class="btn red" data-go="today">Back to Today</button><p class="fine-note">Switch to the Connected fixture in Demo controls to try the existing schedule and team conversation.</p>`;
 }
+const wasConversation=dialog==='f10-companion'&&!!$('dialog-root').querySelector('.f10-panel');
 $('dialog-root').innerHTML=`<div class="rp-backdrop" data-dismiss="dialog"><section class="rp-sheet" role="dialog" aria-modal="true" aria-labelledby="dialog-title" tabindex="-1"><div class="rp-sheet-top"><h2 id="dialog-title">${title}</h2><button type="button" class="rp-close" data-action="close-dialog" aria-label="Close dialog">${icon('close')}</button></div>${body}</section></div>`;
-document.querySelector('.phone-inner').inert=true;$('dialog-root').querySelector('[data-action="close-dialog"]').focus({preventScroll:true});
+document.querySelector('.phone-inner').inert=true;
+if(wasConversation){
+ const heading=$('dialog-root').querySelector('.f10-response h3');
+ if(heading){heading.tabIndex=-1;heading.focus({preventScroll:true});heading.scrollIntoView?.({block:'nearest',behavior:'auto'});}
+}else $('dialog-root').querySelector('[data-action="close-dialog"]').focus({preventScroll:true});
+}
+function f10Ask(question){
+ if(!f10Preview||dialog!=='f10-companion'||s.view!=='today')return;
+ const text=String(question||'').trim().slice(0,160);
+ if(!text){f10Notice='Enter a question or select one of the suggestions.';renderDialog();return;}
+ if(f10Active&&f10Asked){
+   f10Turns.push({asked:f10Asked,heading:f10Active.response.heading,intro:f10Active.response.intro});
+   f10Turns=f10Turns.slice(-3);
+ }
+ f10Prior=f10Active?.context||{};
+ f10Prompt=text;f10Asked=window.RallyPersonalCompanion.followKeys[text]||text;f10Notice='';
+ renderDialog();
 }
 function notify(text){const x=$('toast');x.textContent=text;x.hidden=false;clearTimeout(notify.timer);notify.timer=setTimeout(()=>x.hidden=true,2600)}
 document.addEventListener('click',ev=>{
@@ -578,14 +600,15 @@ if(f09Preview&&s.view==='today'&&a==='f09-serve'){
  notify('Sample serving availability confirmed locally.');return;
 }
 if(f10Preview&&s.view==='today'&&a==='f10-open'){
- f10Prompt='week';f10Asked='';f10Notice='';
- showDialog('f10-companion',b);return;
+ f10ClearSession();showDialog('f10-companion',b);return;
 }
 if(f10Preview&&dialog==='f10-companion'&&a==='f10-ask'){
- const choices=window.RallyPersonalCompanion.prompts;
- if(!choices.some(x=>x.id===v))return;
- f10Prompt=v;f10Asked=choices.find(x=>x.id===v).label;f10Notice='';
- renderDialog();return;
+ if(!window.RallyPersonalCompanion.prompts.some(x=>x.id===v))return;
+ f10Ask(v);return;
+}
+if(f10Preview&&dialog==='f10-companion'&&a==='f10-followup'){
+ if(!Object.prototype.hasOwnProperty.call(window.RallyPersonalCompanion.followKeys,v))return;
+ f10Ask(v);return;
 }
 if(f10Preview&&dialog==='f10-companion'&&a==='f10-confirm'&&s.view==='today'){
  if(v==='rsvp'&&todayUI.memberships.group&&!s.rsvp){
@@ -765,9 +788,7 @@ if(ev.target.dataset.form==='f10-query'){
  ev.preventDefault();
  if(!f10Preview||dialog!=='f10-companion'||s.view!=='today')return;
  const query=String(new FormData(ev.target).get('question')||'').trim().slice(0,160);
- if(!query){f10Notice='Enter a question or choose one of the suggestions.';renderDialog();return;}
- f10Prompt=query;f10Asked=query;f10Notice='';
- renderDialog();return;
+ f10Ask(query);return;
 }
 if(ev.target.dataset.form!=='demo-name')return;ev.preventDefault();const value=String(new FormData(ev.target).get('name')||'').trim();
 if(!value){notify('Add a first name for this local demo.');return;}todayUI.name=value.slice(0,20);render();closeDialog();notify('Your demo name is saved locally.');
