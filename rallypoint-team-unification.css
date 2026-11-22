@@ -1,0 +1,319 @@
+/*
+ * F-12 · Team visual unification with approved Today + Groups.
+ * STRICTLY scoped to the Team route; no changes to any other screen.
+ * The Serve Together hero, serving state, chat, coverage, leader tools,
+ * fixture content and all actual actions are preserved.
+ */
+.premium-alive.is-team-v08{
+  --tu-paper:#FDF7F1;
+  --tu-ink:#292624;
+  --tu-red:#E3002B;
+  --tu-muted:#6D5A53;
+}
+
+/* Match the approved light application shell, never the other routes. */
+.premium-alive.is-team-v08 .header{
+  background:var(--tu-paper);
+  color:var(--tu-ink);
+  border:0;
+  box-shadow:none;
+  min-height:68px;
+  padding:calc(10px + var(--safe-top,0px)) 18px 6px;
+}
+.premium-alive.is-team-v08 .header::before{display:none}
+.premium-alive.is-team-v08 .brand-home,
+.premium-alive.is-team-v08 .brand-home span{color:var(--tu-ink)}
+.premium-alive.is-team-v08 .brand-home img{filter:none}
+.premium-alive.is-team-v08 .brand-home span{
+  font-size:17px;line-height:.96;letter-spacing:-.055em;font-weight:950;
+}
+.premium-alive.is-team-v08 .header-controls{gap:7px}
+.premium-alive.is-team-v08 .header-button,
+.premium-alive.is-team-v08 .profile-avatar,
+.premium-alive.is-team-v08 .spotify-link{
+  display:grid;place-items:center;
+  background:#FFFEFC;
+  color:var(--tu-ink);
+  border:1px solid #FFFFFF;
+  border-radius:50%;
+  box-shadow:0 5px 14px #6B47311A;
+}
+.premium-alive.is-team-v08 .header-button,
+.premium-alive.is-team-v08 .profile-avatar{
+  min-width:42px;width:42px;height:42px;
+}
+.premium-alive.is-team-v08 .profile-avatar{color:#BC0029}
+.premium-alive.is-team-v08 .header-button i{
+  background:var(--tu-red);box-shadow:0 0 0 2px #FFF6F0;
+}
+.premium-alive.is-team-v08 .spotify-link img{
+  filter:brightness(0);
+  opacity:.84;
+}
+.premium-alive.is-team-v08 .header button:focus-visible,
+.premium-alive.is-team-v08 .header a:focus-visible{
+  outline:3px solid #B9002D;outline-offset:2px;
+}
+
+/* Make the surrounding Team page consistent without deflating its red hero. */
+.premium-alive.is-team-v08 main{background:var(--tu-paper);padding:0}
+.premium-alive.is-team-v08 .team-screen-v08{
+  background:var(--tu-paper);
+  color:var(--tu-ink);
+  overflow-x:clip;
+}
+.premium-alive.is-team-v08 .team-v08-hero{
+  background:#E3002B;
+  color:#FFFFFF;
+  border-radius:0 0 29px 10px;
+  margin-bottom:18px;
+  box-shadow:0 11px 23px #AE21431B;
+}
+.premium-alive.is-team-v08 .team-v08-hero:before{
+  background:#F32247;opacity:.67;
+}
+.premium-alive.is-team-v08 .team-v08-hero:after{
+  background:#A70028;opacity:.36;
+}
+.premium-alive.is-team-v08 .team-v08-hero h1{
+  color:#FFFFFF;
+  font-size:clamp(37px,10.5vw,46px);
+  line-height:.96;
+  margin:14px 0 18px;
+}
+.premium-alive.is-team-v08 .team-v08-hero h1 span{color:#FFE2E7}
+.premium-alive.is-team-v08 .team-v08-kicker{
+  color:#FFF4F5;
+  font-size:9px;
+  font-weight:900;
+}
+.premium-alive.is-team-v08 .team-v08-hero-row{
+  background:#A7002F65;
+  border:1px solid #FFCFD895;
+  border-radius:20px;
+}
+.premium-alive.is-team-v08 .team-v08-hero-row small{color:#FFF1F0}
+
+/* Tab selection carries exactly the same light/active treatment as Groups. */
+.premium-alive.is-team-v08 .team-screen-v08 .tabs{
+  margin:3px 0 13px;
+  padding:4px 2px 12px;
+}
+.premium-alive.is-team-v08 .team-screen-v08 .tabs button{
+  background:#FFFDF9;
+  color:#554842;
+  border:1px solid #E9DAD0;
+  border-radius:999px;
+  min-height:44px;
+  box-shadow:0 2px 5px #6E4A4110;
+}
+.premium-alive.is-team-v08 .team-screen-v08 .tabs button.selected{
+  color:#A9002B;
+  background:#FBE0E4;
+  border:1px solid #EDB3BB;
+  box-shadow:0 2px 6px #E3002B16;
+}
+.premium-alive.is-team-v08 .team-screen-v08 .card{
+  background:#FFFCF7;
+  color:#292523;
+  border:1px solid #EFE0D5;
+  border-radius:24px;
+  box-shadow:0 6px 17px #73584A16;
+}
+.premium-alive.is-team-v08 .team-screen-v08 .card .kicker{
+  color:#AD002C;
+}
+.premium-alive.is-team-v08 .team-screen-v08 .card h2,
+.premium-alive.is-team-v08 .team-screen-v08 .card h3{color:#282523}
+.premium-alive.is-team-v08 .team-screen-v08 .card p{color:#64574F}
+
+/* Schedule: preserve source fixture, response buttons and status words. */
+.premium-alive.is-team-v08 .team-schedule-card .team-card-overline{
+  color:#A7002B;
+}
+.premium-alive.is-team-v08 .team-card-overline .pill{
+  background:#FBE2E5;
+  color:#8A0025;
+  border:1px solid #EDCDD0;
+}
+.premium-alive.is-team-v08 .team-schedule-card h2{
+  color:#292523;
+  letter-spacing:-.065em;
+}
+.premium-alive.is-team-v08 .team-shift{
+  background:#FFF5EB;
+  border:1px solid #EBD9C8;
+  border-radius:20px;
+}
+.premium-alive.is-team-v08 .team-shift-date{
+  background:#E3002B;
+  color:#FFFFFF;
+}
+.premium-alive.is-team-v08 .team-shift-info strong{color:#282523}
+.premium-alive.is-team-v08 .team-shift-info span{color:#4C423C}
+.premium-alive.is-team-v08 .team-shift-info small{color:#685950}
+.premium-alive.is-team-v08 .team-shift-response{
+  background:#F5E8D7;
+  border:1px solid #EAD9C5;
+  border-radius:18px;
+}
+.premium-alive.is-team-v08 .team-response-caption{color:#8E0025}
+.premium-alive.is-team-v08 .team-shift-response strong{color:#302823}
+.premium-alive.is-team-v08 .team-shift-response p{color:#5C4E46}
+.premium-alive.is-team-v08 .team-shift-actions .btn{
+  border-radius:15px;
+  min-height:46px;
+}
+.premium-alive.is-team-v08 .team-shift-actions .btn.red{
+  background:#E3002B;
+  border-color:#E3002B;
+  color:#FFFFFF;
+}
+.premium-alive.is-team-v08 .team-shift-actions .btn.chosen{
+  background:#282523;
+  border-color:#282523;
+  color:#FFFFFF;
+}
+.premium-alive.is-team-v08 .team-shift-actions .btn.outline{
+  background:#FFFCF8;
+  border-color:#B59C8D;
+  color:#362D27;
+}
+.premium-alive.is-team-v08 .team-schedule-card .tinted{
+  background:#FAEDE2;
+  border:1px solid #EAD2C0;
+  border-radius:18px;
+}
+
+/* Photo-backed conversation is an intentional contrast feature, not a new app. */
+.premium-alive.is-team-v08 .team-message-preview{
+  border:1px solid #4C4441;
+  border-radius:25px;
+  box-shadow:0 8px 19px #63514324;
+  color:#FFFFFF;
+}
+.premium-alive.is-team-v08 .team-message-preview-top{
+  color:#FFEAE9;
+}
+.premium-alive.is-team-v08 .team-message-preview-text{
+  color:#FFF0E6;
+}
+.premium-alive.is-team-v08 .team-message-preview-action{
+  color:#FFF4ED;
+}
+.premium-alive.is-team-v08 .team-screen-v08 .card.team-huddle{
+  background:#343030;
+  border:1px solid #514944;
+  border-radius:23px;
+  box-shadow:0 7px 18px #604A4420;
+  color:#FFF8EF;
+}
+.premium-alive.is-team-v08 .team-screen-v08 .card.team-huddle h3{color:#FFFFFF}
+.premium-alive.is-team-v08 .team-screen-v08 .card.team-huddle p{color:#F8EDE4}
+.premium-alive.is-team-v08 .team-screen-v08 .card.team-huddle .kicker{color:#FFB2C2}
+.premium-alive.is-team-v08 .team-screen-v08 .card.team-huddle .text-button{color:#FFE7E8}
+
+/* Team chat, leader tools and their actual permissions remain unchanged. */
+.premium-alive.is-team-v08 .team-chat-card,
+.premium-alive.is-team-v08 .team-leader-card{
+  background:#FFFCF8;
+}
+.premium-alive.is-team-v08 .team-leader-status{
+  background:#F9E8DC;
+  border-color:#E7D2C1;
+}
+.premium-alive.is-team-v08 .team-screen-v08 .composer textarea{
+  background:#FFFFFF;
+  border-color:#BFA99C;
+  color:#282523;
+}
+.premium-alive.is-team-v08 .team-screen-v08 .btn.red{
+  background:#E3002B;
+  color:#FFFFFF;
+  border-color:#E3002B;
+}
+
+/* Crucial no-team discovery variant: keep readable copy outside red hero. */
+.premium-alive.is-team-v08 .team-empty-hero{
+  background:#E3002B;
+  border-radius:0 0 29px 10px;
+}
+.premium-alive.is-team-v08 .team-empty-hero .team-empty-intro{color:#FFF5F0}
+.premium-alive.is-team-v08 .team-empty-hero-strip{
+  color:#FFFFFF;
+  background:#A7002D75;
+  border:1px solid #FFC4D3A3;
+}
+.premium-alive.is-team-v08 .team-screen-v08 .card.team-empty-discover{
+  background:#FFFCF7;
+  border:1px solid #EEDCCF;
+  border-radius:24px;
+  box-shadow:0 7px 18px #6B514520;
+}
+.premium-alive.is-team-v08 .team-empty-discover .kicker{color:#AE002B}
+.premium-alive.is-team-v08 .team-screen-v08 .team-empty-discover h2{color:#252220}
+.premium-alive.is-team-v08 .team-screen-v08 .team-empty-discover>p{color:#62534B}
+.premium-alive.is-team-v08 .team-empty-sample{
+  background:#343131;
+  border-color:#6B5D57;
+  border-radius:19px;
+}
+.premium-alive.is-team-v08 .team-empty-sample small{color:#F7E6D7}
+.premium-alive.is-team-v08 .team-empty-v08 .disclaimer{color:#63574F}
+.premium-alive.is-team-v08 .team-empty-try{
+  background:#E3002B;
+  border-color:#E3002B;
+  color:#FFFFFF;
+}
+.premium-alive.is-team-v08 .team-empty-about{
+  background:#FFF7F0;
+  border-color:#D9BDAF;
+  color:#3A302C;
+}
+
+/* Warm selected navigation: exact four current destinations preserved. */
+.premium-alive.is-team-v08 .bottom{
+  background:#FFF9F4FA;
+  color:#514842;
+  border:1px solid #FFFFFF;
+  border-radius:27px 27px 0 0;
+  box-shadow:0 -10px 26px #8D655D1C;
+  padding:7px 7px max(10px,env(safe-area-inset-bottom));
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  backdrop-filter:blur(18px);
+  -webkit-backdrop-filter:blur(18px);
+}
+.premium-alive.is-team-v08 .bottom button{
+  min-width:0;
+  min-height:48px;
+  color:#605652;
+  border-radius:22px;
+  gap:3px;
+}
+.premium-alive.is-team-v08 .bottom button.active{
+  color:#C9002B;
+  background:linear-gradient(145deg,#FFE2E6,#FFF5F4);
+  box-shadow:inset 0 1px 0 #FFFFFF,0 3px 11px #E3002B12;
+}
+.premium-alive.is-team-v08 .bottom button:focus-visible,
+.premium-alive.is-team-v08 .team-screen-v08 button:focus-visible{
+  outline:3px solid #B9002D;outline-offset:2px;
+}
+.premium-alive.is-team-v08 .team-v08-hero button:focus-visible{
+  outline:3px solid #FFFFFF;outline-offset:2px;
+}
+
+@media(max-width:350px){
+  .premium-alive.is-team-v08 .team-v08-hero{
+    padding:17px 16px 17px;
+  }
+  .premium-alive.is-team-v08 .team-v08-hero h1{font-size:36px}
+  .premium-alive.is-team-v08 .team-v08-hero-row{gap:7px}
+  .premium-alive.is-team-v08 .team-screen-v08 .tabs button{min-width:90px}
+}
+@media(prefers-reduced-motion:reduce){
+  .premium-alive.is-team-v08 .team-screen-v08 *,
+  .premium-alive.is-team-v08 .bottom *{
+    animation:none;transition:none;
+  }
+}
