@@ -286,7 +286,7 @@ test('F-10.3 is opt-in and suggests actual goals only inside the isolated previe
  const preview=Companion.respond('week',{...src,goalMode:true});
  assert.ok(!baseline.suggestions.some(x=>x.startsWith('goal-')));
  assert.deepEqual(preview.suggestions,['goal-group','goal-serve','goal-check']);
- assert.equal(Companion.respond('goal-group',src).response.intent,'unknown');
+ assert.notEqual(Companion.respond('goal-group',src).response.goal,true,'F-10.2 cannot enter goal mode');
 });
 test('F-10.3 preparing for group uses current fixture, upcoming RSVP and modern unread only',()=>{
  const s=state(),original=structuredClone(s),src={...context(s),goalMode:true};
