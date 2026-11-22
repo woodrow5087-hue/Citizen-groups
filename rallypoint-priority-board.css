@@ -246,3 +246,54 @@
 @media(prefers-reduced-motion:reduce){
  .is-f09-board .f09-board *{animation:none!important;transition:none!important;scroll-behavior:auto!important}
 }
+
+/* F-09.3: when the member has no outstanding sample responses, the hero
+ * settles into warm editorial color instead of manufacturing another alert. */
+.f09b-hero.is-settled{
+ background:linear-gradient(126deg,#FFF3E9 0%,#F9E4E4 58%,#F2D7D9 100%);
+ color:#292222;border-color:#EACBC8;
+ box-shadow:0 8px 20px #6E4A431A,inset 0 1px 0 #FFFFFF;
+}
+.f09b-hero.is-settled::after{background:linear-gradient(100deg,#FFFFFFB8 0%,#FFFFFF16 77%)}
+.f09b-hero.is-settled::before{opacity:.23;filter:saturate(.8)}
+.f09b-hero.is-settled h2{color:#2B2725}
+.f09b-hero.is-settled .f09b-hero-main>p{color:#5C4A48}
+.f09b-hero.is-settled .f09b-hero-symbol{
+ background:#FFFFFFC7;border-color:#FFFFFF;color:#C7002B;
+ box-shadow:0 3px 12px #9D6E6030
+}
+.f09b-hero.is-settled .f09b-overline{
+ background:#F9DEE0;color:#A6002D;border-color:#FFFFFF
+}
+.f09b-hero.is-settled .f09b-primary{
+ background:#E3002B;color:#FFFFFF;border-color:#D2002C;
+ box-shadow:0 5px 14px #C3002B28
+}
+.f09b-hero.is-settled .f09b-explain summary{
+ background:#FFFFFFC2;color:#8D2945;border-color:#FFFFFF
+}
+.f09b-hero.is-settled .f09b-explain[open]{
+ background:#FFFFFFEE;color:#493C3A;border-color:#E9CDD0
+}
+.f09b-hero.is-settled .f09b-explain[open] p{color:#493C3A}
+/* Optional cards stay useful, but don't adopt the language or color treatment
+ * of a task requiring a response. */
+.f09b-row.is-invitation .f09b-row-cta{
+ background:#FFFFFFBC;border-color:#FFFFFF;color:#45403D;
+ font-weight:800
+}
+.f09b-feedback{
+ background:#E5F4EA;border:1px solid #B5DDC2;
+ color:#245A3A;border-radius:14px;
+ margin:-3px 4px 12px;padding:9px 12px;
+ font-size:11px;font-weight:800;line-height:1.4;
+ box-shadow:0 4px 11px #698C721C
+}
+@media(prefers-reduced-motion:no-preference){
+ .f09b-feedback{animation:f09-confirm-in .18s ease-out both}
+ @keyframes f09-confirm-in{
+  from{opacity:0;transform:translateY(-4px)}
+  to{opacity:1;transform:translateY(0)}
+ }
+ .f09b-primary:active,.f09b-row-cta:active{transform:scale(.985)}
+}
