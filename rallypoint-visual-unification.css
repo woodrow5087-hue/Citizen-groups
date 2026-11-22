@@ -1,0 +1,298 @@
+/*
+ * F-11 · Groups visual-unification pass — review-only, strictly Groups scoped.
+ * The approved PR #90 Today/Ask Rally, Team, Read, games, storage and behavior
+ * are intentionally unchanged. This stylesheet is last in index.html.
+ *
+ * Palette & hierarchy: approved F-09/F-10 Today (warm #FDF7F1 canvas,
+ * matte #E3002B, charcoal #242322, blush/sand/blue supporting surfaces).
+ * Never introduce unscoped shell / tab / card selectors in this file.
+ */
+.premium-alive.is-groups-v07{
+  --gu-paper:#FDF7F1;
+  --gu-ink:#292624;
+  --gu-red:#E3002B;
+  --gu-muted:#72645F;
+}
+
+/* The same light frame as approved Today, without changing any controls. */
+.premium-alive.is-groups-v07 .header{
+  background:var(--gu-paper);
+  color:var(--gu-ink);
+  border:0;
+  box-shadow:none;
+  min-height:68px;
+  padding:calc(10px + var(--safe-top,0px)) 18px 6px;
+}
+.premium-alive.is-groups-v07 .header::before{display:none}
+.premium-alive.is-groups-v07 .brand-home,
+.premium-alive.is-groups-v07 .brand-home span{
+  color:var(--gu-ink);
+}
+.premium-alive.is-groups-v07 .brand-home img{filter:none}
+.premium-alive.is-groups-v07 .brand-home span{
+  font-size:17px;line-height:.96;letter-spacing:-.055em;font-weight:950;
+}
+.premium-alive.is-groups-v07 .header-controls{gap:7px}
+.premium-alive.is-groups-v07 .header-button,
+.premium-alive.is-groups-v07 .profile-avatar,
+.premium-alive.is-groups-v07 .spotify-link{
+  display:grid;place-items:center;
+  background:#FFFEFC;
+  color:var(--gu-ink);
+  border:1px solid #FFFFFF;
+  border-radius:50%;
+  box-shadow:0 5px 14px #6B47311A;
+}
+.premium-alive.is-groups-v07 .header-button,
+.premium-alive.is-groups-v07 .profile-avatar{
+  min-width:42px;width:42px;height:42px;
+}
+.premium-alive.is-groups-v07 .profile-avatar{color:#BC0029}
+.premium-alive.is-groups-v07 .header-button i{
+  background:var(--gu-red);box-shadow:0 0 0 2px #FFF6F0;
+}
+.premium-alive.is-groups-v07 .spotify-link img{filter:brightness(0);opacity:.84}
+.premium-alive.is-groups-v07 .header button:focus-visible,
+.premium-alive.is-groups-v07 .header a:focus-visible{
+  outline:3px solid #B9002D;outline-offset:2px;
+}
+
+/* Background family and gentle visual breathing room. */
+.premium-alive.is-groups-v07 main{background:var(--gu-paper);padding:0}
+.premium-alive.is-groups-v07 .group-screen-v07{
+  background:var(--gu-paper);
+  color:var(--gu-ink);
+  overflow-x:clip;
+}
+.premium-alive.is-groups-v07 .group-community-hero{
+  background:linear-gradient(135deg,#FDF7F1 2%,#FFF0EC 72%,#F9DDE2 100%);
+  color:var(--gu-ink);
+  margin-bottom:12px;
+  padding:18px 21px 18px;
+  border-radius:0 0 27px 9px;
+  border-bottom:1px solid #EFDAD3;
+}
+.premium-alive.is-groups-v07 .group-community-hero:before{
+  background:#F6BBC6;right:-125px;top:-105px;opacity:.48;
+}
+.premium-alive.is-groups-v07 .group-community-hero:after{
+  background:#E3002B;left:-163px;bottom:-129px;opacity:.11;
+}
+.premium-alive.is-groups-v07 .group-hero-overline{
+  color:#A9002A;font-size:9px;font-weight:900;
+}
+.premium-alive.is-groups-v07 .group-hero-overline .pill{
+  background:#FBE3E4;color:#A7002B;border:1px solid #E8C4C5;
+}
+.premium-alive.is-groups-v07 .group-community-hero h1{
+  color:#272524;
+  font-size:clamp(32px,9.2vw,42px);
+  letter-spacing:-.075em;
+  line-height:.98;
+  margin:12px 0 12px;
+}
+.premium-alive.is-groups-v07 .group-community-hero h1 span{color:#C40031}
+.premium-alive.is-groups-v07 .group-hero-next{
+  color:#6F4E4F;font-size:10px;margin:11px 0 2px;
+}
+.premium-alive.is-groups-v07 .group-hero-find{
+  color:#B50031;font-size:10px;min-height:44px;
+  font-weight:900;letter-spacing:.03em;
+}
+/* The legacy face strip stays absent as in the approved base. */
+.premium-alive.is-groups-v07 .group-hero-people{display:none}
+
+/* Real circular portraits and the existing group selector, not invented avatars. */
+.premium-alive.is-groups-v07 .pa-people-rail--group{
+  margin:0 -15px 0;
+  padding:7px 0 13px;
+  background:var(--gu-paper);
+  color:var(--gu-ink);
+}
+.premium-alive.is-groups-v07 .pa-people-rail--group .pa-people-heading h2{
+  color:#262322;font-size:clamp(20px,6vw,25px);
+}
+.premium-alive.is-groups-v07 .pa-people-rail--group .pa-people-heading>span{
+  color:#8E625C;
+}
+.premium-alive.is-groups-v07 .pa-people-rail--group .pa-person-trigger,
+.premium-alive.is-groups-v07 .pa-people-rail--group .pa-person-name{
+  color:#312C2A;
+}
+.premium-alive.is-groups-v07 .pa-people-rail--group .pa-story-ring{
+  box-shadow:0 2px 8px #4F38302B;
+}
+.premium-alive.is-groups-v07 .pa-people-rail--group .pa-person-trigger:focus-visible .pa-story-ring{
+  outline-color:#B5002B;
+}
+.premium-alive.is-groups-v07 .pa-group-summary{
+  background:#FFFCF8;
+  color:var(--gu-ink);
+  border:1px solid #F0E0D5;
+  border-radius:21px;
+  box-shadow:0 5px 15px #7B51401B;
+}
+.premium-alive.is-groups-v07 .pa-summary-mark{background:#F9DAE0;color:#A9002C}
+.premium-alive.is-groups-v07 .pa-summary-arrow{color:#B0002C}
+
+/* Status modules move from a blanket dark board to Today's supporting colors. */
+.premium-alive.is-groups-v07 .group-pulse{color:var(--gu-ink);margin:0 0 17px}
+.premium-alive.is-groups-v07 .group-pulse-top{
+  color:#36312F;padding:6px 3px 10px;
+}
+.premium-alive.is-groups-v07 .group-pulse-top span:last-child{color:#6C534E}
+.premium-alive.is-groups-v07 .group-pulse-feature{
+  color:var(--gu-ink);
+  border:1px solid #EADAD1;
+  background:linear-gradient(125deg,#FFFCFA 15%,#FDE5E5 100%);
+  border-radius:24px;
+  box-shadow:0 8px 19px #6E514019;
+}
+.premium-alive.is-groups-v07 .group-pulse-feature::after{
+  background:#EFBDC4;opacity:.42;
+}
+.premium-alive.is-groups-v07 .group-pulse-eyebrow{color:#A7002C}
+.premium-alive.is-groups-v07 .group-pulse-detail{color:#65534E}
+.premium-alive.is-groups-v07 .group-pulse-feature-cta{color:#A8002B}
+.premium-alive.is-groups-v07 .group-pulse-route{
+  color:#302926;
+  background:#F8DDE3;
+  border:1px solid #F3CED4;
+  border-radius:19px;
+  box-shadow:0 4px 13px #583D3414;
+}
+.premium-alive.is-groups-v07 .group-pulse-route:nth-child(2){
+  background:#F7E5C7;
+  border-color:#F0DCB3;
+  color:#493820;
+}
+.premium-alive.is-groups-v07 .group-pulse-route:nth-child(3){
+  background:#DCEAF1;
+  border-color:#CCE0EB;
+  color:#25475B;
+}
+.premium-alive.is-groups-v07 .group-pulse-route:nth-child(4){
+  background:#F6EBE3;
+  border-color:#EBDAD0;
+  color:#45352D;
+}
+.premium-alive.is-groups-v07 .group-pulse-route-kind,
+.premium-alive.is-groups-v07 .group-pulse-route small,
+.premium-alive.is-groups-v07 .group-pulse-route:nth-child(2) .group-pulse-route-kind,
+.premium-alive.is-groups-v07 .group-pulse-route:nth-child(2) small{
+  color:inherit;opacity:.83;
+}
+
+/* Inner panes retain their existing data/actions but gain one consistent surface. */
+.premium-alive.is-groups-v07 .group-screen-v07>.tabs{
+  margin:4px 0 13px;
+  padding:4px 2px 12px;
+}
+.premium-alive.is-groups-v07 .group-screen-v07 .tabs button{
+  min-height:44px;
+  background:#FFFDF9;
+  border:1px solid #E9DAD0;
+  color:#5B4B46;
+  border-radius:999px;
+  box-shadow:0 2px 5px #6E4A4110;
+}
+.premium-alive.is-groups-v07 .group-screen-v07 .tabs button.selected{
+  background:#FBE0E4;
+  border:1px solid #F0B9C0;
+  color:#AF002B;
+  box-shadow:0 2px 6px #E3002B16;
+}
+.premium-alive.is-groups-v07 .group-screen-v07 .card{
+  background:#FFFCF7;
+  color:#282422;
+  border:1px solid #EFE0D5;
+  border-radius:24px;
+  box-shadow:0 6px 17px #73584A16;
+}
+.premium-alive.is-groups-v07 .group-screen-v07 .card .kicker{color:#B0002C}
+
+/* Discovery and empty membership: no invisible cream-on-cream copy. */
+.premium-alive.is-groups-v07 .group-discovery-hero{
+  background:linear-gradient(135deg,#FDF7F1,#FCE4E6);
+}
+.premium-alive.is-groups-v07 .group-discovery-hero h1{color:#252221}
+.premium-alive.is-groups-v07 .group-discovery-hero .group-discovery-intro{
+  color:#67504A;
+}
+.premium-alive.is-groups-v07 .group-discovery-hero-strip{
+  color:#77223C;
+  background:#F9D9DE;
+  border-color:#F0BAC5;
+}
+.premium-alive.is-groups-v07 .group-discovery-head>span{color:#AE002D}
+.premium-alive.is-groups-v07 .group-discovery-head>strong{color:#292523}
+.premium-alive.is-groups-v07 .group-discovery-notice{color:#76645C}
+.premium-alive.is-groups-v07 .group-discovery-back{
+  color:#9E0028;background:#FFFBF7;border-color:#E8D5C9;
+  box-shadow:0 4px 13px #674D3D16;
+}
+.premium-alive.is-groups-v07 .group-screen-v07 .group-discovery-card{
+  box-shadow:0 8px 17px #65504423;
+}
+.premium-alive.is-groups-v07 .group-discovery-preview{box-shadow:0 7px 17px #60413725}
+.premium-alive.is-groups-v07 .group-discovery-v07 .disclaimer{color:#70615C}
+
+/* Authorized leader variant: keep the red editorial signal, readable copy,
+ * and all leadership tools, without reverting the whole app shell to black. */
+.premium-alive.is-groups-v07.is-leader-hybrid .group-community-hero{
+  background:#E3002B;color:#FFFFFF;border-bottom-color:#E3002B;
+}
+.premium-alive.is-groups-v07.is-leader-hybrid .group-community-hero:before{
+  background:#F42147;opacity:.62;
+}
+.premium-alive.is-groups-v07.is-leader-hybrid .group-community-hero:after{
+  background:#A7002A;opacity:.43;
+}
+.premium-alive.is-groups-v07.is-leader-hybrid .group-community-hero h1,
+.premium-alive.is-groups-v07.is-leader-hybrid .group-hero-overline,
+.premium-alive.is-groups-v07.is-leader-hybrid .group-hero-next,
+.premium-alive.is-groups-v07.is-leader-hybrid .group-hero-find{
+  color:#FFFFFF;
+}
+.premium-alive.is-groups-v07.is-leader-hybrid .group-hero-overline .pill{
+  background:#A8002A99;color:white;border-color:#FFD5E0;
+}
+
+/* Match Today's warm four-item dock without adding a destination or overlay. */
+.premium-alive.is-groups-v07 .bottom{
+  background:#FFF9F4FA;
+  color:#514842;
+  border:1px solid #FFFFFF;
+  border-radius:27px 27px 0 0;
+  box-shadow:0 -10px 26px #8D655D1C;
+  padding:7px 7px max(10px,env(safe-area-inset-bottom));
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  backdrop-filter:blur(18px);
+  -webkit-backdrop-filter:blur(18px);
+}
+.premium-alive.is-groups-v07 .bottom button{
+  min-width:0;min-height:48px;
+  color:#605652;border-radius:22px;gap:3px;
+}
+.premium-alive.is-groups-v07 .bottom button.active{
+  color:#C9002B;
+  background:linear-gradient(145deg,#FFE2E6,#FFF5F4);
+  box-shadow:inset 0 1px 0 #FFFFFF,0 3px 11px #E3002B12;
+}
+.premium-alive.is-groups-v07 .bottom button:focus-visible{
+  outline:3px solid #B9002D;outline-offset:2px;
+}
+
+@media(max-width:350px){
+  .premium-alive.is-groups-v07 .group-community-hero{padding:15px 17px 14px}
+  .premium-alive.is-groups-v07 .group-community-hero h1{font-size:32px}
+  .premium-alive.is-groups-v07 .pa-people-rail--group{margin-left:-11px;margin-right:-11px}
+  .premium-alive.is-groups-v07 .group-pulse-route{min-height:91px}
+}
+@media(prefers-reduced-motion:reduce){
+  .premium-alive.is-groups-v07 .bottom *,
+  .premium-alive.is-groups-v07 .group-pulse *,
+  .premium-alive.is-groups-v07 .group-community-hero *{
+    animation:none;transition:none;
+  }
+}
