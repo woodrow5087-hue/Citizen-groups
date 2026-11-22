@@ -64,6 +64,9 @@ function derive(d,now=new Date()){
  const heroType=hero.id==='group-rsvp'?'calendar':hero.id==='serve-response'?'team':
    hero.id==='group-unread'||hero.id==='group-unavailable'?'message':
    hero.id==='scripture-read'||hero.id==='scripture-step'?'read':'people';
+ const heroDetail=hero.id==='group-rsvp'&&d?.groupDate instanceof Date?
+   'Wednesday Group · '+d.groupDate.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'}):
+   hero.subtitle;
  const heroLabel=hero.id==='group-rsvp'?'RSVP · I’m in':
    hero.id==='serve-response'?'Confirm':
    hero.id==='group-unread'?'View messages':
@@ -133,7 +136,7 @@ function derive(d,now=new Date()){
    statusTone:d?.rhythmDue?'attention':d?.readToday?'complete':'neutral'
  }));
  return Object.freeze({hero:Object.freeze({
-   ...hero,primary:primary,heroType,heroLabel,eyebrow:choice?.score>=90?'NEXT UP':'YOUR NEXT ACTION'
+   ...hero,subtitle:heroDetail,primary:primary,heroType,heroLabel,eyebrow:choice?.score>=90?'NEXT UP':'YOUR NEXT ACTION'
  }),rows:displayed,agenda:Object.freeze(agenda),
    taskCount:rows.filter(r=>r.requiresResponse).length+Number(choice&&choice.score>=45),
    hasPeople:!!d?.member,summary:d?.source||'fictional local data'
