@@ -132,6 +132,8 @@ function model({state,ui,conversation,now=new Date(),today,companion,passage='Jo
    member,team,unread,meetingLabel,meetingText,
    groupDate:gathered?.date||null,serveDate:serving?.date||null,
    groupLocation:gathered?.location||'',serveLocation:serving?.location||'',
+   leaderRemaining:member&&s.role==='leader'&&Array.isArray(sourceToday.leader?.remaining)?sourceToday.leader.remaining.length:0,
+   audience:!member&&!team?'newcomer':member&&s.role==='leader'?'leader':team&&!member?'volunteer':member&&team?'connected':'group-member',
    serveDateLabel:serving?'Welcome Team · '+today.dateLabel(serving.date,now):'Explore serving',
    serveStatus:team?s.teamStatus||'unknown':'none',
    readToday:!!s.read,rhythmDue:!!due,
