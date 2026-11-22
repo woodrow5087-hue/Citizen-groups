@@ -51,7 +51,7 @@
 .premium-alive.is-groups-v07 .header-button i{
   background:var(--gu-red);box-shadow:0 0 0 2px #FFF6F0;
 }
-.premium-alive.is-groups-v07 .spotify-link img{filter:none}
+.premium-alive.is-groups-v07 .spotify-link img{filter:brightness(0);opacity:.84}
 .premium-alive.is-groups-v07 .header button:focus-visible,
 .premium-alive.is-groups-v07 .header a:focus-visible{
   outline:3px solid #B9002D;outline-offset:2px;
