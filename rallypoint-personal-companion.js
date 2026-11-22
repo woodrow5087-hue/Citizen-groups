@@ -352,7 +352,7 @@ function render(response,asked='',notice='',history=[],suggested=[]){
   '<label for="f10-query">Your next question</label><div class="f10-input-line">'+
   '<input id="f10-query" name="question" type="text" maxlength="160" autocomplete="off" placeholder="Ask a follow-up...">'+
   '<button type="submit">Ask</button></div></form>'+
-  '<details class="f10-topics"><summary>Explore other topics</summary>'+
+  '<details class="f10-topics"'+(!asked?' open':'')+'><summary>Explore other topics</summary>'+
    '<div class="f10-chips" aria-label="Suggested questions">'+chips+'</div></details>'+
   '<p class="f10-disclosure">'+esc(r.note)+'</p>'+
   '</div>';
