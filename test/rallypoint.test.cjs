@@ -6,8 +6,8 @@ const {JSDOM}=require('jsdom');
 const T=require('../rallypoint-today.js');
 const {makeChatDomainBundle}=require('../scripts/build-chat-lab.cjs');
 const root=path.resolve(__dirname,'..'),key='rallypoint-phase1-2026';
-function open(t,{saved,ui,modern,blocked=false,f09=false,f10=false,f103=false,now='2026-11-23T12:00:00'}={}){
- const dom=new JSDOM(fs.readFileSync(path.join(root,'index.html'),'utf8'),{url:f103?'https://rally.test/?f103=1':f10?'https://rally.test/?f10=1':f09?'https://rally.test/?f09='+(f09==='board'?'board':'1'):'https://rally.test',runScripts:'outside-only',pretendToBeVisual:true});t.after(()=>dom.window.close());const w=dom.window,d=w.document;
+function open(t,{saved,ui,modern,blocked=false,f09=false,f10=false,f103=false,f104=false,now='2026-11-23T12:00:00'}={}){
+ const dom=new JSDOM(fs.readFileSync(path.join(root,'index.html'),'utf8'),{url:f104?'https://rally.test/?f104=1':f103?'https://rally.test/?f103=1':f10?'https://rally.test/?f10=1':f09?'https://rally.test/?f09='+(f09==='board'?'board':'1'):'https://rally.test',runScripts:'outside-only',pretendToBeVisual:true});t.after(()=>dom.window.close());const w=dom.window,d=w.document;
  const NativeDate=w.Date;w.Date=class extends NativeDate{constructor(...args){super(...(args.length?args:[now]));}static now(){return new NativeDate(now).getTime();}};
  w.HTMLElement.prototype.scrollIntoView=function(){};
  if(saved)w.localStorage.setItem(key,JSON.stringify(saved));if(ui)w.localStorage.setItem(T.UI_KEY,JSON.stringify(ui));
@@ -1051,4 +1051,66 @@ test('F-10.3 guest goal route stays private and offers no forbidden confirmation
   assert.doesNotMatch(result,/North Commons|North Campus|Private prayer note|Old private archive|leader check-ins/);
   assert.equal(app.d.querySelector('[data-action="f10-confirm"]'),null);
  }
+});
+
+
+test('F-10.4 after explicit RSVP tap, Ask Rally acknowledges the saved choice and offers optional group details',t=>{
+ const app=open(t,{f104:true,now:'2026-11-25T12:00:00',saved:{
+  role:'member',rsvp:'',teamStatus:'pending',prayers:[],reached:[],groupMessages:[{name:'Jess',text:'Legacy archive must survive'}]
+ }});
+ const beforeChat=app.w.localStorage.getItem('rallypoint-wednesday-chat-lab-v1');
+ app.click('.f10-entry-button');
+ app.click('.f10-followup[data-value="goal-group"]');
+ assert.ok(app.d.querySelector('.f10-route[data-action="f10-confirm"][data-value="rsvp"]'));
+ app.click('.f10-route[data-action="f10-confirm"][data-value="rsvp"]');
+ assert.equal(app.saved().rsvp,'going');
+ assert.match(app.d.querySelector('.f10-response h3').textContent,/You’re in for Wednesday/);
+ assert.match(app.d.querySelector('.f10-response').textContent,/North Commons/);
+ assert.equal(app.d.querySelector('.f10-route[data-action="f10-confirm"]'),null);
+ assert.ok(app.d.querySelector('.f10-route[data-go="group"][data-pane="gather"]'));
+ assert.ok(app.d.querySelector('.f10-followup[data-value="group-where"]'));
+ assert.equal(app.w.localStorage.getItem('rallypoint-wednesday-chat-lab-v1'),beforeChat);
+ const before=JSON.stringify(app.saved());
+ const input=app.d.getElementById('f10-query');input.value='Where is that?';
+ input.form.dispatchEvent(new app.w.Event('submit',{bubbles:true,cancelable:true}));
+ assert.match(app.d.querySelector('.f10-response').textContent,/North Commons/);
+ assert.doesNotMatch(app.d.querySelector('.f10-response h3').textContent,/You’re in for Wednesday/);
+ assert.equal(JSON.stringify(app.saved()),before,'follow-up must remain read-only');
+ app.click('[data-action="close-dialog"]');
+ app.click('.f10-entry-button');
+ assert.equal(app.d.querySelectorAll('.f10-earlier-turn').length,0);
+ assert.doesNotMatch(app.d.querySelector('.f10-response h3').textContent,/You’re in for Wednesday/);
+});
+
+test('F-10.4 after serving confirmation, Ask Rally explains the saved status without auto-navigation',t=>{
+ const app=open(t,{f104:true,now:'2026-11-25T12:00:00',saved:{
+  role:'member',rsvp:'',teamStatus:'pending',prayers:[],reached:[],
+  groupMessages:[{name:'Jess',text:'Original archive'}]
+ }});
+ app.click('.f10-entry-button');
+ app.click('.f10-followup[data-value="goal-serve"]');
+ assert.ok(app.d.querySelector('.f10-route[data-action="f10-confirm"][data-value="serve"]'));
+ app.click('.f10-route[data-action="f10-confirm"][data-value="serve"]');
+ assert.equal(app.saved().teamStatus,'confirmed');
+ assert.match(app.d.querySelector('.f10-response h3').textContent,/You’re confirmed for Sunday/);
+ assert.match(app.d.querySelector('.f10-response').textContent,/North Campus/);
+ assert.equal(app.saved().view,'today','the user should choose whether to open Team');
+ assert.equal(app.d.querySelector('.f10-route[data-action="f10-confirm"]'),null);
+ assert.ok(app.d.querySelector('.f10-route[data-go="team"][data-pane="schedule"]'));
+ const input=app.d.getElementById('f10-query');input.value='What time?';
+ input.form.dispatchEvent(new app.w.Event('submit',{bubbles:true,cancelable:true}));
+ assert.match(app.d.querySelector('.f10-response').textContent,/Sun, Nov 29 · 9:00 AM/);
+ assert.equal(app.saved().teamStatus,'confirmed','reply does not perform a second action');
+});
+
+test('F-10.3 comparator retains previous post-confirmation behavior, without F-10.4 continuation',t=>{
+ const app=open(t,{f103:true,now:'2026-11-25T12:00:00',saved:{
+  role:'member',rsvp:'',teamStatus:'pending',prayers:[],reached:[],groupMessages:[]
+ }});
+ app.click('.f10-entry-button');
+ app.click('.f10-followup[data-value="goal-group"]');
+ app.click('.f10-route[data-action="f10-confirm"][data-value="rsvp"]');
+ assert.equal(app.saved().rsvp,'going');
+ assert.match(app.d.querySelector('.f10-response h3').textContent,/Get ready for Wednesday/);
+ assert.doesNotMatch(app.d.querySelector('.f10-response h3').textContent,/You’re in for Wednesday/);
 });
