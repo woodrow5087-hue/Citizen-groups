@@ -99,10 +99,14 @@ function choose({state,ui,conversation,now=new Date()}={}){
   add('explore-reading','YOUR COMPANION · TODAY','You showed up today.',
     'Small moments matter. There’s no streak to protect.','Explore my reading',
     'No higher-priority local suggestion is currently available.','read');
-  const selected=options.find(option=>
-    option.id==='care-marcus'||option.id==='explore-reading'||!hasDeferred(s,option.id,now))||
-    options.at(-1);
-  return Object.freeze({...selected,hasAlternatives:options.length>1,
+  const available=options.filter(option=>
+    option.id==='care-marcus'||option.id==='explore-reading'||!hasDeferred(s,option.id,now));
+  const selected=available[0]||options.at(-1);
+  // F-09 can page through these already-vetted choices without changing a
+  // read cursor or quietly snoozing a message. The first remains F-08's choice.
+  const alternatives=available.slice(1).map(option=>Object.freeze({...option}));
+  return Object.freeze({...selected,hasAlternatives:available.length>1,
+    alternatives:Object.freeze(alternatives),
     deferable:selected.id!=='care-marcus'&&selected.id!=='explore-reading',
     source:'fictional local data'});
 }
