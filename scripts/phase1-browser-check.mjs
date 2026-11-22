@@ -205,6 +205,50 @@ try{
    await audit(f09,'F-09 completed '+width);
    await f09Context.close();
  }
+ // F-09.1: selected Smart Priority Board: no scroll-to-discover stack cards.
+ // Same live fixture sources and original F-09 comparator remain available.
+ const boardUrl=new URL(todayUrl);boardUrl.searchParams.set('f09','board');
+ for(const width of [320,390,430]){
+   const height=width===320?568:width===390?844:932;
+   const boardContext=await browser.newContext({viewport:{width,height},isMobile:true,hasTouch:true,reducedMotion:'reduce'});
+   const board=await boardContext.newPage();
+   await board.clock.install({time:new Date('2026-11-25T12:00:00')});
+   await board.addInitScript(()=>{
+     localStorage.setItem('rallypoint-phase1-2026',JSON.stringify({
+       role:'member',view:'today',prayers:[],teamStatus:'pending',rsvp:'',
+       read:false,prayed:false,groupMessages:[{name:'Jess',time:'Yesterday',text:'Original archive stays.'}]
+     }));
+   });
+   await board.goto(boardUrl.toString());
+   assert.ok(await board.locator('.is-f09-board .f09-board').isVisible());
+   assert.equal(await board.locator('.f09-stack-controls').count(),0,'No hidden stack controls');
+   assert.equal(await board.locator('.f09b-row').count(),3);
+   assert.equal(await board.locator('.f09b-agenda-row').count(),3);
+   assert.equal(await board.locator('#nav button').count(),4);
+   assert.equal(await board.locator('.f09b-hero').getAttribute('data-priority'),'group-rsvp');
+   assert.ok((await board.locator('.f09b-hero').textContent()).includes('Group tonight.'));
+   await geometry(board,'F-09 board '+width);
+   await audit(board,'F-09 board initial '+width);
+   if(width===390)await board.screenshot({path:path.join(out,'f09-priority-board-390.png'),fullPage:false});
+   const modern=await board.evaluate(()=>localStorage.getItem('rallypoint-wednesday-chat-lab-v1'));
+   await board.locator('.f09b-primary[data-action="f09-rsvp"]').click();
+   assert.equal(await board.locator('.f09b-agenda-row[data-agenda="group"] .f09b-agenda-cta').textContent(),'Going');
+   assert.equal(await board.locator('.f09b-row[data-row="group-rsvp"]').count(),0);
+   await board.locator('.f09b-row[data-row="serve-response"] [data-action="f09-serve"]').click();
+   assert.equal(await board.locator('.f09b-agenda-row[data-agenda="serve"] .f09b-agenda-cta').textContent(),'Confirmed');
+   assert.equal(await board.evaluate(()=>localStorage.getItem('rallypoint-wednesday-chat-lab-v1')),modern);
+   await board.locator('.f09b-hero [data-go="group"][data-pane="chat"]').click();
+   assert.ok(await board.locator('#rpx-chat').isVisible());
+   await board.locator('#nav [data-go="today"]').click();
+   assert.equal(await board.locator('.f09b-row[data-row="group-unread"]').count(),0);
+   const state=await board.evaluate(()=>JSON.parse(localStorage.getItem('rallypoint-phase1-2026')));
+   assert.equal(state.rsvp,'going');
+   assert.equal(state.teamStatus,'confirmed');
+   assert.equal(state.groupMessages[0].text,'Original archive stays.');
+   await geometry(board,'F-09 board updated '+width);
+   await audit(board,'F-09 board updated '+width);
+   await boardContext.close();
+ }
  const fallback=await browser.newContext({viewport:{width:375,height:812},reducedMotion:'reduce'});await fallback.addInitScript(()=>Object.defineProperty(window,'localStorage',{get(){throw Error('Blocked');}}));const fp=await fallback.newPage();await fp.goto(todayUrl);assert.ok((await fp.locator('#view').textContent()).includes('could not save'));await fp.locator('#nav [data-go="read"]').click();await fp.locator('[data-action="read"]').click();assert.ok((await fp.locator('#view').textContent()).includes('Read today'));await fallback.close();
  fs.writeFileSync(path.join(out,'phase1-browser-results.json'),JSON.stringify({cases:results,flows:'Source links, original messages/prayers, RSVP, serving, role/leader tools, reading/question, empty states, focus, persistence and storage fallback passed.',axe:'No detected WCAG A/AA violations on tested views/dialogs.'},null,2));console.log('All Phase 1 mobile, accessibility, persistence and source-flow checks passed.');
 }finally{await browser.close();if(server)await new Promise(r=>server.close(r));}
