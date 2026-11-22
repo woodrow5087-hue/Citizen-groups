@@ -51,9 +51,11 @@ function derive(d,now=new Date()){
  const leaderCount=d?.member&&d?.audience==='leader'?asCount(d?.leaderRemaining):0;
  const rhythmDue=!!d?.rhythmDue;
  const words=n=>n===1?'1 new message':n+' new messages';
+ const deferred=new Set(Array.isArray(d?.deferredIds)?d.deferredIds:[]);
  const task=(id,score,tone,icon,title,detail,action,label,why,family=id)=>{
-   return Object.freeze({id,score,tone,icon,title,detail,action,label,why,
-     family,requiresResponse:true});
+   const isDeferred=deferred.has(id)&&score<90;
+   return Object.freeze({id,score:isDeferred?30:score,tone,icon,title,detail,
+     action,label,why,family,deferred:isDeferred,requiresResponse:true});
  };
  const pending=[];
  if(pendingGroup)pending.push(task('group-rsvp',upcoming(d.groupDate,24)?100:70,
@@ -79,7 +81,8 @@ function derive(d,now=new Date()){
    'A Scripture step you saved on this device has reached its follow-up date.','reading'));
  // Tie-break consistently; do not reorder cards based on clicks or viewing time.
  pending.sort((a,b)=>b.score-a.score||a.id.localeCompare(b.id));
- const lead=pending[0];
+ const lead=pending.find(r=>!r.deferred);
+ const hasDeferredOnly=!lead&&pending.length>0;
  const hasCommunity=!!d?.member,hasTeam=!!d?.team;
  const guest=!hasCommunity&&!hasTeam;
  let hero;
@@ -91,6 +94,13 @@ function derive(d,now=new Date()){
      why:lead.why||source?.why||'Based on your saved fictional activity.',
      hasPeople:hasCommunity&&['group-rsvp','group-unread','leader-checkins'].includes(lead.id),
      calm:false});
+ }else if(hasDeferredOnly){
+   hero=Object.freeze({id:'paused',title:'Nothing pressing right now.',
+     subtitle:'You chose to revisit a sample action later. It remains available below.',
+     primary:go('read'),heroType:'read',heroLabel:'Explore Scripture',
+     eyebrow:'AT YOUR OWN PACE',
+     why:'The only outstanding sample items have been deferred in the existing companion preference.',
+     hasPeople:false,calm:true});
  }else if(guest){
    hero=Object.freeze({id:'welcome-community',title:'There’s room for you.',
      subtitle:'Explore the sample church community at your own pace.',
@@ -112,7 +122,7 @@ function derive(d,now=new Date()){
    usedFamilies.add(r.family);rows.push(Object.freeze({...r}));
  }
  // Show the actual next commitments, not three duplicated versions of the hero.
- for(const r of pending.slice(1))add(r);
+ for(const r of pending.filter(item=>item.id!==hero.id))add(r);
  const optional=(id,family,tone,icon,title,detail,action,label)=>{
    add(Object.freeze({id,family,tone,icon,title,detail,action,label,requiresResponse:false}));
  };
