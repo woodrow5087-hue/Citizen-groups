@@ -195,5 +195,5 @@ test('F-10.1 transcript rendering escapes all prior user messages and bounds his
  assert.equal((html.match(/data-action="f10-ask"/g)||[]).length,6);
  assert.doesNotMatch(html,/<img src=x|<script>|data-value="<script>/);
  assert.match(html,/class="f10-topics"/);
- assert.match(html,/class="f10-conversation"/);
+ assert.match(html,/class="f10-panel f10-conversation"/);
 });
