@@ -1,0 +1,289 @@
+/*
+ * F-13 · Read visual unification with approved Today / Groups / Team.
+ * CRITICAL: is-read-v09 ALSO exists while Blank Battle is active. Every
+ * selector excludes is-play-v08, including the header, main and bottom dock.
+ * No game, Scripture content, role, state, navigation or storage edits.
+ */
+.premium-alive.is-read-v09:not(.is-play-v08){
+  --ru-paper:#FDF7F1;
+  --ru-ink:#292624;
+  --ru-red:#E3002B;
+  --ru-muted:#66554D;
+}
+
+/* Shared application identity, but only when the user is on Read itself. */
+.premium-alive.is-read-v09:not(.is-play-v08) .header{
+  background:var(--ru-paper);
+  color:var(--ru-ink);
+  border:0;
+  box-shadow:none;
+  min-height:68px;
+  padding:calc(10px + var(--safe-top,0px)) 18px 6px;
+}
+.premium-alive.is-read-v09:not(.is-play-v08) .header::before{display:none}
+.premium-alive.is-read-v09:not(.is-play-v08) .brand-home,
+.premium-alive.is-read-v09:not(.is-play-v08) .brand-home span{
+  color:var(--ru-ink);
+}
+.premium-alive.is-read-v09:not(.is-play-v08) .brand-home img{filter:none}
+.premium-alive.is-read-v09:not(.is-play-v08) .brand-home span{
+  font-size:17px;
+  line-height:.96;
+  letter-spacing:-.055em;
+  font-weight:950;
+}
+.premium-alive.is-read-v09:not(.is-play-v08) .header-controls{gap:7px}
+.premium-alive.is-read-v09:not(.is-play-v08) .header-button,
+.premium-alive.is-read-v09:not(.is-play-v08) .profile-avatar,
+.premium-alive.is-read-v09:not(.is-play-v08) .spotify-link{
+  display:grid;
+  place-items:center;
+  background:#FFFEFC;
+  color:var(--ru-ink);
+  border:1px solid #FFFFFF;
+  border-radius:50%;
+  box-shadow:0 5px 14px #6B47311A;
+}
+.premium-alive.is-read-v09:not(.is-play-v08) .header-button,
+.premium-alive.is-read-v09:not(.is-play-v08) .profile-avatar{
+  min-width:42px;
+  width:42px;
+  height:42px;
+}
+.premium-alive.is-read-v09:not(.is-play-v08) .profile-avatar{color:#BC0029}
+.premium-alive.is-read-v09:not(.is-play-v08) .header-button i{
+  background:var(--ru-red);
+  box-shadow:0 0 0 2px #FFF6F0;
+}
+.premium-alive.is-read-v09:not(.is-play-v08) .spotify-link img{
+  filter:brightness(0);
+  opacity:.84;
+}
+.premium-alive.is-read-v09:not(.is-play-v08) .header button:focus-visible,
+.premium-alive.is-read-v09:not(.is-play-v08) .header a:focus-visible{
+  outline:3px solid #B9002D;
+  outline-offset:2px;
+}
+
+/* A reading-first atmosphere; the existing dark/lime VersePlay remains vivid. */
+.premium-alive.is-read-v09:not(.is-play-v08) main{
+  background:var(--ru-paper);
+  padding:0;
+}
+.premium-alive.is-read-v09:not(.is-play-v08) .read-screen-v09{
+  background:var(--ru-paper);
+  color:var(--ru-ink);
+  overflow-x:clip;
+}
+.premium-alive.is-read-v09:not(.is-play-v08) .read-v09-hero{
+  background:linear-gradient(126deg,#FDF7F1 0%,#FFF1EB 64%,#F8E0E7 100%);
+  color:var(--ru-ink);
+  border-radius:0 0 28px 10px;
+  border-bottom:1px solid #F0DCD2;
+  padding:20px 23px 25px;
+  margin-bottom:16px;
+}
+.premium-alive.is-read-v09:not(.is-play-v08) .read-v09-hero:before{
+  background:#F6BDC8;
+  opacity:.36;
+  right:-168px;
+  top:-143px;
+}
+.premium-alive.is-read-v09:not(.is-play-v08) .read-v09-hero:after{
+  background:#D90033;
+  opacity:.09;
+  left:-178px;
+  bottom:-155px;
+}
+.premium-alive.is-read-v09:not(.is-play-v08) .read-v09-overline{
+  color:#A9002D;
+  font-size:9px;
+  letter-spacing:.17em;
+  font-weight:900;
+}
+.premium-alive.is-read-v09:not(.is-play-v08) .read-v09-hero h1{
+  color:#282321;
+  font-size:clamp(38px,10.5vw,46px);
+  letter-spacing:-.074em;
+  line-height:.99;
+  margin:13px 0 13px;
+}
+.premium-alive.is-read-v09:not(.is-play-v08) .read-v09-hero h1 span{color:#CB002F}
+.premium-alive.is-read-v09:not(.is-play-v08) .read-v09-hero p{
+  color:#62514C;
+  font-size:12px;
+  line-height:1.55;
+  max-width:275px;
+}
+
+/* Keep the actual game art, accent, title and button; reduce only hard depth. */
+.premium-alive.is-read-v09:not(.is-play-v08) .rp-game-entry{
+  border-radius:25px;
+  border-color:#536269;
+  box-shadow:0 9px 22px #44393629,0 2px 5px #3429291A;
+  margin-top:14px;
+  margin-bottom:20px;
+}
+.premium-alive.is-read-v09:not(.is-play-v08) .rp-game-classic-label{
+  color:#78625B;
+  margin-top:16px;
+}
+.premium-alive.is-read-v09:not(.is-play-v08) .rp-game-classic-label strong{color:#5E403E}
+.premium-alive.is-read-v09:not(.is-play-v08) .rp-game-classic-label span{color:#6A5A52}
+
+/* Reading path: calm support rather than a second major red/dark hero. */
+.premium-alive.is-read-v09:not(.is-play-v08) .read-focus-card{
+  background:linear-gradient(125deg,#EEF4F4 5%,#E5EEF3 100%);
+  color:#292624;
+  border:1px solid #CBDDE6;
+  border-radius:24px;
+  box-shadow:0 6px 17px #73584A16;
+}
+.premium-alive.is-read-v09:not(.is-play-v08) .read-focus-card:after{
+  background:#C8DAE5;
+  opacity:.6;
+}
+.premium-alive.is-read-v09:not(.is-play-v08) .read-focus-head{
+  color:#335163;
+  font-weight:900;
+}
+.premium-alive.is-read-v09:not(.is-play-v08) .read-focus-head .icon{color:#A70031}
+.premium-alive.is-read-v09:not(.is-play-v08) .read-focus-card h2{color:#282624}
+.premium-alive.is-read-v09:not(.is-play-v08) .read-focus-card p{color:#4F5960}
+.premium-alive.is-read-v09:not(.is-play-v08) .read-focus-detail{
+  border-top:1px solid #B4CDD7;
+}
+.premium-alive.is-read-v09:not(.is-play-v08) .read-focus-detail strong{color:#2D4650}
+.premium-alive.is-read-v09:not(.is-play-v08) .read-focus-detail small{color:#50616B}
+
+/* Bring Scripture, leader editing and prayer into the warm card family. */
+.premium-alive.is-read-v09:not(.is-play-v08) .read-screen-v09 .card{
+  background:#FFFCF7;
+  color:var(--ru-ink);
+  border:1px solid #EFE0D5;
+  border-radius:24px;
+  box-shadow:0 6px 17px #73584A16;
+}
+.premium-alive.is-read-v09:not(.is-play-v08) .read-section-label{color:#5F4542}
+.premium-alive.is-read-v09:not(.is-play-v08) .read-section-label .icon{color:#C80030}
+.premium-alive.is-read-v09:not(.is-play-v08) .read-scripture-card h2{color:#282321}
+.premium-alive.is-read-v09:not(.is-play-v08) .read-scripture-card blockquote{
+  color:#403630;
+  line-height:1.57;
+}
+.premium-alive.is-read-v09:not(.is-play-v08) .read-scripture-card .btn{
+  min-height:45px;
+}
+.premium-alive.is-read-v09:not(.is-play-v08) .read-scripture-card .fine-note{
+  color:#66554D;
+}
+.premium-alive.is-read-v09:not(.is-play-v08) .read-screen-v09 .card.read-question-card{
+  background:#343031;
+  color:#FFFFFF;
+  border:1px solid #584B47;
+  box-shadow:0 7px 18px #594A4524;
+}
+.premium-alive.is-read-v09:not(.is-play-v08) .read-question-card .read-section-label{color:#FFE9DF}
+.premium-alive.is-read-v09:not(.is-play-v08) .read-question-card .read-section-label .icon{color:#FFB1BF}
+.premium-alive.is-read-v09:not(.is-play-v08) .read-question-card h2{color:#FFFFFF}
+.premium-alive.is-read-v09:not(.is-play-v08) .read-question-card p{color:#F7E7DC}
+.premium-alive.is-read-v09:not(.is-play-v08) .read-discuss-action{
+  color:#282321;
+  background:#FDF7F1;
+  border-color:#FDF7F1;
+  min-height:47px;
+}
+.premium-alive.is-read-v09:not(.is-play-v08) .read-memory-card{
+  background:#E3002B;
+  color:#FFFFFF;
+  border:1px solid #EBB3BC;
+  box-shadow:0 7px 18px #A6002D25;
+  border-radius:24px;
+}
+.premium-alive.is-read-v09:not(.is-play-v08) .read-memory-card>button{
+  background:#FFFCF7;
+  color:#292624;
+  min-width:46px;
+  min-height:46px;
+}
+.premium-alive.is-read-v09:not(.is-play-v08) .read-screen-v09 .card.read-leader-card{
+  background:#FFF9F0;
+  border-color:#E6D4C7;
+}
+.premium-alive.is-read-v09:not(.is-play-v08) .read-leader-card .read-plan-button{
+  background:#FFFEFC;
+  color:#352A26;
+  border-color:#D6BFB2;
+  min-height:44px;
+}
+.premium-alive.is-read-v09:not(.is-play-v08) .read-leader-card .read-plan-button.selected{
+  color:#FFFFFF;
+  background:#302B29;
+  border-color:#302B29;
+}
+.premium-alive.is-read-v09:not(.is-play-v08) .read-leader-card textarea{
+  color:#2B2523;
+  background:#FFFFFF;
+}
+.premium-alive.is-read-v09:not(.is-play-v08) .read-screen-v09 .card.read-prayer-card{
+  background:#FCE5E9;
+  border-color:#F3C9D1;
+}
+.premium-alive.is-read-v09:not(.is-play-v08) .read-prayer-card h3{color:#302523}
+.premium-alive.is-read-v09:not(.is-play-v08) .read-prayer-card p{color:#5F4F4B}
+.premium-alive.is-read-v09:not(.is-play-v08) .read-screen-v09 .disclaimer{
+  color:#65564F;
+}
+
+/* The common four-item light dock; Blank Battle keeps its existing dark dock. */
+.premium-alive.is-read-v09:not(.is-play-v08) .bottom{
+  background:#FFF9F4FA;
+  color:#514842;
+  border:1px solid #FFFFFF;
+  border-radius:27px 27px 0 0;
+  box-shadow:0 -10px 26px #8D655D1C;
+  padding:7px 7px max(10px,env(safe-area-inset-bottom));
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  backdrop-filter:blur(18px);
+  -webkit-backdrop-filter:blur(18px);
+}
+.premium-alive.is-read-v09:not(.is-play-v08) .bottom button{
+  min-width:0;
+  min-height:48px;
+  color:#605652;
+  border-radius:22px;
+  gap:3px;
+}
+.premium-alive.is-read-v09:not(.is-play-v08) .bottom button.active{
+  color:#C9002B;
+  background:linear-gradient(145deg,#FFE2E6,#FFF5F4);
+  box-shadow:inset 0 1px 0 #FFFFFF,0 3px 11px #E3002B12;
+}
+.premium-alive.is-read-v09:not(.is-play-v08) .bottom button:focus-visible,
+.premium-alive.is-read-v09:not(.is-play-v08) .read-screen-v09 button:focus-visible{
+  outline:3px solid #B9002D;
+  outline-offset:2px;
+}
+.premium-alive.is-read-v09:not(.is-play-v08) .rp-game-entry button:focus-visible,
+.premium-alive.is-read-v09:not(.is-play-v08) .read-question-card button:focus-visible,
+.premium-alive.is-read-v09:not(.is-play-v08) .read-memory-card button:focus-visible{
+  outline:3px solid #FFFFFF;
+  outline-offset:2px;
+}
+@media(max-width:350px){
+  .premium-alive.is-read-v09:not(.is-play-v08) .read-v09-hero{
+    padding:17px 18px 20px;
+  }
+  .premium-alive.is-read-v09:not(.is-play-v08) .read-v09-hero h1{font-size:36px}
+  .premium-alive.is-read-v09:not(.is-play-v08) .rp-game-entry{
+    margin-left:11px;
+    margin-right:11px;
+  }
+}
+@media(prefers-reduced-motion:reduce){
+  .premium-alive.is-read-v09:not(.is-play-v08) .read-screen-v09 *,
+  .premium-alive.is-read-v09:not(.is-play-v08) .bottom *{
+    animation:none;
+    transition:none;
+  }
+}
