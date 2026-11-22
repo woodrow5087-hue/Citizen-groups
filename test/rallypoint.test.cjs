@@ -917,3 +917,61 @@ test('F-10 guest sees only discovery; no private chat, RSVP, team response or le
  assert.equal(app.saved().view,'group');
  assert.equal(app.d.querySelector('.f10-panel'),null);
 });
+
+test('F-10.1 actual conversation follows week → ambiguous time → Wednesday → Sunday → explicit serving confirmation',t=>{
+ const app=open(t,{f10:true,now:'2026-11-25T12:00:00',saved:{
+  role:'member',rsvp:'',teamStatus:'pending',read:false,prayed:false,
+  prayers:[],reached:[],groupMessages:[{name:'Jess',text:'Original archive'}]
+ }});
+ const before=JSON.stringify(app.saved().groupMessages);
+ const chat=app.w.localStorage.getItem('rallypoint-wednesday-chat-lab-v1');
+ app.click('.f10-entry-button');
+ function ask(question){
+  const input=app.d.getElementById('f10-query');
+  input.value=question;
+  input.form.dispatchEvent(new app.w.Event('submit',{bubbles:true,cancelable:true}));
+ }
+ ask('What time?');
+ assert.match(app.d.querySelector('.f10-response h3').textContent,/Which one do you mean/);
+ assert.ok(app.d.querySelector('[data-action="f10-followup"][data-value="group-time"]'));
+ assert.equal(app.d.querySelector('.f10-route[data-action="f10-confirm"]'),null);
+ app.click('[data-action="f10-followup"][data-value="group-time"]');
+ assert.match(app.d.querySelector('.f10-response').textContent,/Wed, Nov 25 · 6:30 PM/);
+ assert.ok(app.d.querySelectorAll('.f10-earlier-turn').length>=1);
+ ask('And Sunday?');
+ assert.match(app.d.querySelector('.f10-response').textContent,/Sun, Nov 29 · 9:00 AM/);
+ ask('Can I confirm that?');
+ assert.match(app.d.querySelector('.f10-response h3').textContent,/Your serving response/);
+ assert.equal(app.saved().teamStatus,'pending','typing cannot confirm');
+ assert.ok(app.d.querySelector('.f10-route[data-action="f10-confirm"][data-value="serve"]'));
+ ask('Yes');
+ assert.equal(app.saved().teamStatus,'pending','yes cannot confirm');
+ app.click('.f10-route[data-action="f10-confirm"][data-value="serve"]');
+ assert.equal(app.saved().teamStatus,'confirmed');
+ assert.match(app.d.querySelector('.f10-response').textContent,/already confirmed/);
+ assert.ok(app.d.querySelectorAll('.f10-earlier-turn').length<=3);
+ assert.equal(app.w.localStorage.getItem('rallypoint-wednesday-chat-lab-v1'),chat);
+ assert.equal(JSON.stringify(app.saved().groupMessages),before);
+ app.click('[data-action="close-dialog"]');
+ app.click('.f10-entry-button');
+ assert.equal(app.d.querySelectorAll('.f10-earlier-turn').length,0,'chat history resets on close');
+ assert.equal(app.d.querySelector('.f10-question'),null,'last typed question is ephemeral');
+ assert.match(app.d.querySelector('.f10-response').textContent,/week, at a glance/);
+});
+test('F-10.1 changed membership never grants historical conversational context to a new guest',t=>{
+ const guest=open(t,{f10:true,ui:{...T.initial(),name:'Guest',memberships:{group:false,team:false}},
+  saved:{role:'leader',rsvp:'',teamStatus:'pending',prayers:[{name:'Marcus C.',text:'Sample private prayer'}],
+    groupMessages:[{name:'Jess',text:'Archived private message'}]}});
+ guest.click('.f10-entry-button');
+ const input=guest.d.getElementById('f10-query');
+ input.value='What time is Wednesday Group?';
+ input.form.dispatchEvent(new guest.w.Event('submit',{bubbles:true,cancelable:true}));
+ assert.doesNotMatch(guest.d.querySelector('.f10-response').textContent,/North Commons|Marcus|Archived private/);
+ assert.equal(guest.d.querySelector('[data-action="f10-confirm"]'),null);
+ const next=guest.d.getElementById('f10-query');
+ next.value='Can I RSVP for my group?';
+ next.form.dispatchEvent(new guest.w.Event('submit',{bubbles:true,cancelable:true}));
+ assert.equal(guest.d.querySelector('[data-action="f10-confirm"]'),null);
+ assert.match(guest.d.querySelector('.f10-response').textContent,/no sample group membership|no group membership/i);
+ assert.equal(guest.saved().rsvp,'');
+});
