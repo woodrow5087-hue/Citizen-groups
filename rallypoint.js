@@ -4,7 +4,8 @@ const key='rallypoint-phase1-2026';
 // Preview builds choose the default layout. Experiments remain explicit URL choices.
 const previewParams=new URLSearchParams(window.location.search);
 const f103Preview=previewParams.get('f103')==='1';
-const f10Preview=f103Preview||previewParams.get('f10')==='1';
+const rallyOne=previewParams.get('rallyOne')==='1';
+const f10Preview=rallyOne||f103Preview||previewParams.get('f10')==='1';
 const defaultToday=document.documentElement.dataset.defaultToday;
 const f09Mode=f10Preview?'board':(previewParams.get('f09')??defaultToday);
 const f09Board=f09Mode==='board';
@@ -123,6 +124,21 @@ function f09Today(){
    return window.RallyPriorityBoard.render({...model,feedback:f09Feedback,f10Enabled:f10Preview},peopleRail,portraits,now);
  }
  return window.RallySmartDashboard.render(model,f09Index,H.peopleRail(todayUI,'today'),H.portraits);
+}
+function rallyOneToday(){
+ const people=['anna','jess','marcus','taylor'];
+ const portrait=id=>`<img alt="" src="assets/today-priority/${id}.webp">`;
+ const group=todayUI.memberships.group,team=todayUI.memberships.team;
+ const unread=conversation().unread;
+ return `<section class="one-page"><header><b>RALLY <em>ONE.</em></b><button data-action="f10-open">${icon('message')} Ask Rally</button></header>
+ <h1>Good morning, <em>Jonathan.</em></h1><div class="one-grid">
+ <article class="one-lead">${icon('calendar')}<h2>${group?'Group tonight':'Find a group'}</h2><p>${group?'Wednesday Group · 6:30 PM':'Meet people at your campus'}</p>
+ ${group?`<div class="one-stack">${people.slice(0,3).map(portrait).join('')}</div>`:''}
+ <button ${group&&s.rsvp!=='going'?'data-action="f09-rsvp"':'data-go="group" data-pane="gather"'}>${group?(s.rsvp==='going'?'✓ Going':'I’m going'):'Explore groups'}</button></article>
+ <button class="one-chat" data-go="group" data-pane="chat">${icon('message')}<strong>Group chat</strong><span>${unread?unread+' unread':'Open conversation'} ›</span></button>
+ <article class="one-serve">${icon('team')}<strong>Serve Sunday</strong><span>${team?'Welcome Team · 9 AM':'Explore serving'}</span><button ${team?'data-action="shift" data-value="confirmed"':'data-go="team"'}>${team?(s.teamStatus==='confirmed'?'✓ Confirmed':'Confirm'):'Explore'}</button></article></div>
+ ${group?`<h2>Your People</h2><div class="one-people">${people.map(id=>`<button data-action="hybrid-person" data-person="${id}">${portrait(id)}${id[0].toUpperCase()+id.slice(1)}</button>`).join('')}</div>
+ <button class="one-gather" data-go="group" data-pane="gather">Wednesday Group <span>View gathering →</span></button>`:''}</section>`;
 }
 function today(){
   const chat=conversation(),snapshot=T.snapshot(s,todayUI,new Date(),chat),event=snapshot.upNext;
@@ -461,6 +477,7 @@ if(s.role!=='leader'){if(s.groupPane==='leader')s.groupPane='chat';if(s.teamPane
 save();
 const hybridShell=document.querySelector('.phone-inner');
 hybridShell.classList.add('premium-alive');
+ document.body.classList.toggle('one-today',rallyOne&&s.view==='today');
 hybridShell.classList.toggle('is-f09-dashboard',f09Preview&&s.view==='today');
 hybridShell.classList.toggle('is-f09-board',f09Board&&s.view==='today');
 hybridShell.classList.toggle('is-f10-lab',f10Preview&&s.view==='today');
@@ -475,7 +492,7 @@ document.querySelector('.phone-inner').classList.toggle('is-fluid-today',s.view=
 if(s.view==='group'&&s.groupPane==='chat'&&todayUI.memberships.group){
   try{window.RallyConversationRead?.markRead({storage:localStorage,domain:window.RallyChatDomain,member:true});}catch(_){}
 }
-view.innerHTML=(storageWarning?`<p class="storage-notice" role="status">${e(storageWarning)}</p>`:'')+(s.view==='today'?(f09Preview?f09Today():today()):s.view==='group'?group():s.view==='team'?team():s.view==='play'?play():read());
+view.innerHTML=(storageWarning?`<p class="storage-notice" role="status">${e(storageWarning)}</p>`:'')+(s.view==='today'?(rallyOne?rallyOneToday():f09Preview?f09Today():today()):s.view==='group'?group():s.view==='team'?team():s.view==='play'?play():read());
 if(s.view==='play')mountBlankBattle();
 view.querySelectorAll('textarea').forEach(field=>{if(drafts[field.id]!==undefined)field.value=drafts[field.id]});
 if(s.view==='group'&&s.groupPane==='chat'&&todayUI.memberships.group&&$('rpx-chat')){

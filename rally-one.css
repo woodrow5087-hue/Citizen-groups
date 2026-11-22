@@ -1,0 +1,30 @@
+.one-today .phone-inner>.header,.one-today .pitch{display:none!important}
+.one-today #view{padding:0!important;background:#fff8ef!important}
+.one-page{font:500 16px/1.28 Manrope,Arial,sans-serif;color:#191b1b;padding:0 14px 24px}
+.one-page *{box-sizing:border-box}
+.one-page button{font:inherit;color:inherit;border:0;cursor:pointer}
+.one-page header{display:flex;align-items:center;justify-content:space-between;background:#202222;color:white;padding:16px;margin:0 -14px}
+.one-page header b{font-size:24px;letter-spacing:-1px}
+.one-page em{color:#e32640;font-style:normal}
+.one-page header button{display:flex;align-items:center;gap:5px;border:1px solid white;border-radius:24px;padding:6px 10px;color:white;background:transparent;min-height:44px}
+.one-page h1,.one-page h2,.one-page p{margin:0;letter-spacing:-.035em}
+.one-page h1{font-size:clamp(23px,6vw,29px);margin:18px 0}
+.one-grid{display:grid;grid-template-columns:1.16fr 1fr;gap:8px}
+.one-grid article,.one-grid>.one-chat{border-radius:17px;padding:14px;display:flex;flex-direction:column;align-items:flex-start;text-align:left;gap:6px}
+.one-grid .icon{width:25px;height:25px}
+.one-lead{grid-row:span 2;color:white;background:#d80e36}
+.one-lead h2{font-size:32px;line-height:1.03}
+.one-grid strong{font-size:20px;letter-spacing:-.04em}
+.one-grid span{font-size:14px}
+.one-chat{background:#cee8f5}
+.one-serve{background:#f8dfb5}
+.one-grid article button{align-self:stretch;border-radius:24px;background:#fff8ef;min-height:44px;font-weight:800;color:#262525;margin-top:auto}
+.one-stack{display:flex;margin:8px 0}
+.one-stack img,.one-people img{object-fit:cover;border:2px solid white;border-radius:50%}
+.one-stack img{width:42px;height:42px;margin-right:-8px}
+.one-page>h2{font-size:25px;margin:17px 0 10px}
+.one-people{display:flex;justify-content:space-between}
+.one-people button{width:22%;background:transparent;text-align:center;font-weight:750;padding:0}
+.one-people img{display:block;width:100%;aspect-ratio:1;margin-bottom:4px}
+.one-gather{margin-top:22px;width:100%;min-height:64px;background:#f6e7d3;border-radius:16px;display:flex;align-items:center;justify-content:space-between;padding:12px;font-weight:bold}
+.one-gather span{font-size:14px}
