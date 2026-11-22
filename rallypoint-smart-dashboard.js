@@ -90,6 +90,7 @@ function model({state,ui,conversation,now=new Date(),today,companion,passage='Jo
  }
  const choices=[result,...(Array.isArray(result.alternatives)?result.alternatives:[])];
  const stack=Object.freeze(choices.slice(0,4).map(feature));
+ const allPriorities=Object.freeze(choices.map(feature));
  const modules=Object.freeze([
   Object.freeze({id:'messages',kind:'rose',icon:'message',title:member?'Messages':'Find your people',
     detail:!member?'Explore sample groups':chat.status==='unavailable'?'Conversation needs review':unread?words(unread):'All caught up',
@@ -127,7 +128,7 @@ function model({state,ui,conversation,now=new Date(),today,companion,passage='Jo
  }
  // There is no fabricated activity score, streak or completion from viewing the page.
  return Object.freeze({
-   stack,modules,tasks:Object.freeze(tasks.slice(0,4)),
+   stack,allPriorities,modules,tasks:Object.freeze(tasks.slice(0,4)),
    member,team,unread,meetingLabel,meetingText,
    groupDate:gathered?.date||null,serveDate:serving?.date||null,
    serveDateLabel:serving?'Welcome Team · '+today.dateLabel(serving.date,now):'Explore serving',
