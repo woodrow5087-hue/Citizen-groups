@@ -20,6 +20,7 @@ test('Visible board uses actual calendar urgency while never truncating relevant
  const b=Board.derive(d,wednesday);
  assert.equal(b.hero.id,'group-rsvp');
  assert.equal(b.hero.title,'Group tonight.');
+ assert.equal(b.hero.subtitle,'Wednesday Group · 6:30 PM');
  assert.equal(b.hero.heroLabel,'RSVP · I’m in');
  assert.equal(b.rows.length,3);
  assert.deepEqual(b.rows.map(x=>x.id),['group-unread','serve-response','scripture-read']);
