@@ -130,6 +130,7 @@ function model({state,ui,conversation,now=new Date(),today,companion,passage='Jo
    stack,modules,tasks:Object.freeze(tasks.slice(0,4)),
    member,team,unread,meetingLabel,meetingText,
    served:s.teamStatus==='confirmed',rsvp:s.rsvp==='going'?'going':s.rsvp==='maybe'?'maybe':'',
+   greeting:now.getHours()<12?'Good morning':now.getHours()<17?'Good afternoon':'Good evening',
    nowLabel:now.toLocaleDateString('en-US',{weekday:'long',month:'short',day:'numeric'}),
    name:String(ui?.name||'Friend').slice(0,20),passage:String(passage).slice(0,80),
    source:'existing fictional browser-local fixtures'
@@ -182,7 +183,7 @@ function render(d,position=0,peopleRail='',portraits=[]){
    '<div class="f09-done" role="status">You’re caught up on the sample actions shown here. No streaks, no pressure.</div>';
  return '<section class="f09-dashboard" aria-label="F-09 Smart Dashboard preview">'+
   '<div class="f09-greeting"><span class="f09-preview-label">TODAY · SMART DASHBOARD LAB</span>'+
-  '<h1>Good morning,<br><em>'+escape(d.name)+'.</em></h1><span class="f09-date">'+escape(d.nowLabel)+'</span></div>'+
+  '<h1>'+escape(d.greeting||'Welcome back')+',<br><em>'+escape(d.name)+'.</em></h1><span class="f09-date">'+escape(d.nowLabel)+'</span></div>'+
   '<div class="f09-hero-frame"><div class="f09-hero" data-active-card="'+escape(active.id)+'" '+
    'aria-roledescription="stacked card" aria-label="Priority '+(index+1)+' of '+stack.length+'">'+
    '<div class="f09-hero-content"><div class="f09-hero-overline">'+escape(active.eyebrow)+'</div>'+
