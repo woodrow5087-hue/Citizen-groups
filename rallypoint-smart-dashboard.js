@@ -88,6 +88,11 @@ function model({state,ui,conversation,now=new Date(),today,companion,passage='Jo
      secondary,secondaryLabel:d.id==='group-rsvp'?'View details':d.id==='serve-response'?'Review schedule':'See my people',
      why:d.why||'',hasPeople:hasPeople&&member});
  }
+ // Honor the F-08 “Not right now” choice as reduced nonurgent prominence.
+ // The item can remain visible as a manual action, and a near-term fixture
+ // deadline may still surface it; there is no new preference or storage key.
+ const deferredIds=Object.freeze(['group-unread','group-unavailable','group-rsvp','serve-response','scripture-step']
+   .filter(id=>typeof companion?.hasDeferred==='function'&&companion.hasDeferred(s,id,now)));
  const choices=[result,...(Array.isArray(result.alternatives)?result.alternatives:[])];
  const stack=Object.freeze(choices.slice(0,4).map(feature));
  const allPriorities=Object.freeze(choices.map(feature));
@@ -129,7 +134,7 @@ function model({state,ui,conversation,now=new Date(),today,companion,passage='Jo
  // There is no fabricated activity score, streak or completion from viewing the page.
  return Object.freeze({
    stack,allPriorities,modules,tasks:Object.freeze(tasks.slice(0,4)),
-   member,team,unread,meetingLabel,meetingText,
+   member,team,unread,deferredIds,meetingLabel,meetingText,
    groupDate:gathered?.date||null,serveDate:serving?.date||null,
    groupLocation:gathered?.location||'',serveLocation:serving?.location||'',
    leaderRemaining:member&&s.role==='leader'&&Array.isArray(sourceToday.leader?.remaining)?sourceToday.leader.remaining.length:0,
