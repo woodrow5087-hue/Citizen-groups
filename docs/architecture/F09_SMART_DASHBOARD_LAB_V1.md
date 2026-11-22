@@ -1,6 +1,6 @@
 # F-09 — Smart Dashboard Lab v1
 
-**Status:** Review-only feature branch containing Companion F-08 PR #71 as its unmerged prerequisite. PR #72 targets `rally-point/develop` to trigger CI, but must **not** be merged before F-08 PR #71 is approved and integrated.  
+**Status:** Review-only F-09 PR #72. Its prerequisite Companion F-08 PR #71 has been approved and squash-merged into `rally-point/develop`; F-09 branch ancestry was reconciled to expose only F-09 changes. Production remains unchanged.  
 **URL gate:** `/?f09=1` (use `/?skipWelcome=1&f09=1` to bypass the first-run welcome in a demo).  
 **Production:** Unchanged. **Approved Today:** Unchanged on ordinary `/` views.  
 **Design reference:** Owner-selected cream background / Citizen-red primary module / four distinct blush, golden, blue, lavender modules / compact task list / Sandia-inspired abstract mountain and mission banner. This isn't a direct copy of Apple proprietary visual assets.
@@ -50,7 +50,7 @@ The top of Today is a **personalized control surface, not another content feed**
 - [ ] Existing CI jobs for classic Today, Groups, Team, Read, onboarding and Blank Battle remain green.
 - [ ] Netlify Deploy Preview succeeds.
 - [ ] Owner compares with the selected visual reference on iPhone and reviews legibility, actual scrolling and action economy.
-- [ ] **Do not merge** F-09 (or upstream PR #71) before explicit approval. Keep production `main` untouched.
+- [x] Owner approved merging F-08 into Develop first and F-09 into Develop after diff/CI verification; no production `main` merge is authorized.
 
 ## Next slices after v1 approval
 
