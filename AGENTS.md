@@ -1,5 +1,23 @@
 # Rally Point · Repository Agent Instructions
 
+## CRITICAL VISUAL DESIGN LOCK — read before changing any UI
+
+The project has **owner-approved visual reference decisions** which are stronger than an assistant's general preference for a clean layout. This recovery branch includes the original design-lock documents, copied unchanged from `rally-point/design-lock-2026-11-21`:
+
+- `docs/design-lock/FINAL_VISUAL_DIRECTION_v1.md`
+- `docs/design-lock/RALLY_POINT_VISUAL_SPEC_v1.md`
+- `docs/design-lock/PREMIUM_ALIVE_HYBRID_V01_CHECKPOINT.md`
+- `docs/design-lock/REFERENCE_MANIFEST.md`
+- `docs/design-lock/RECOVERY_REFERENCE_2026-11-22.md` — exact source checksums for three newly uploaded owner screenshots, supplied separately as a ZIP.
+- Approved Premium ALIVE Hybrid code checkpoint: `e1b347528526aec62309d58774c712e52c56dbf8`. Keep snapshot branches intact.
+
+**This rule supersedes generic “modernize/refine” styling suggestions:** Existing warm/cream, matte bright red, charcoal, bold type, red-led visual hierarchy, photo-backed contextual surfaces, named circular Your People profiles and premium navigation are **locked** unless the owner explicitly approves a visual change. The RC1 engine, authorization and action rules must fit the approved UI, not replace it. A smaller generic Ask Rally strip is **not** an acceptable substitute for the personalized premium assistant visual system.
+
+**Visual work is blocked until the original screenshot references can actually be inspected** (the design-recovery ZIP and/or preserved image archive). Never pretend that the reference images were viewed just because the Markdown descriptions were read. For any UI implementation: screenshot the pre-change state, compare with exact reference images and preserved checkpoint, then screenshot the post-change version with identical 320/390/430px fixtures and prove preserved source functionality. Keep Today / Groups / Team / Read; never adopt a concept-only People/Profile tab bar.
+
+Review-only work on `rally-point/rc1-visual-recovery-2026-11-22` is subject to issue #87 and **explicit owner signoff**. Do not merge PR #78, #83, #84, #85 or #86 automatically, and never deploy production.
+
+
 Applies to the complete repository. Read `README.md`, `docs/RALLY_POINT_MASTER_BLUEPRINT_v1.0.md`, and `docs/roadmap/RALLY_COMPANION_1_0.md` before planning substantial Rally Companion work. The current milestone is tracked at GitHub issue #79.
 
 ## Product north star
