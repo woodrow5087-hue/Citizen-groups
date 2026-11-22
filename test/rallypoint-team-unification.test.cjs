@@ -75,7 +75,7 @@ test('Warm shell remains consistent with approved Today and Groups; serving hero
 });
 test('Existing Team functions and simulated role/status language remain intact',()=>{
  const js=source('rallypoint.js');
- for(const token of ['Confirm serving','Can\\'t make it','Request coverage','Withdraw request','team-preview','team-empty-try','TEAM CONVERSATION','AUTHORIZED TEAM LEADER','Welcome Team'])
+ for(const token of ['Confirm serving',"Can't make it",'Request coverage','Withdraw request','team-preview','team-empty-try','TEAM CONVERSATION','AUTHORIZED TEAM LEADER','Welcome Team'])
   assert.ok(js.includes(token),'Missing original Team contract: '+token);
  assert.match(js,/teamStatus==='confirmed'/);
  assert.match(js,/teamStatus==='declined'/);
