@@ -1,6 +1,6 @@
 # F-09.1 — Visible Smart Priority Board (lead design candidate)
 
-**Scope:** review-only alternative to the F-09 Smart Stack lab, opt-in at `?f09=board&skipWelcome=1`. Existing `?f09=1` remains a direct comparison; the default Today route stays approved and unchanged. Branch/PR #72 includes the unmerged prerequisite F-08 PR #71. Neither may merge without explicit approval. `main` / production stays untouched.
+**Scope:** review-only alternative to the F-09 Smart Stack lab, opt-in at `?f09=board&skipWelcome=1`. Existing `?f09=1` remains a direct comparison; the default Today route stays approved and unchanged. F-08 PR #71 has been squash-merged into Develop; F-09 PR #72 is reconciled to contain only the F-09 changes. The owner explicitly approved merging to Develop after checks. `main` / production stays untouched.
 
 ## Selected visual reference
 
@@ -54,4 +54,4 @@ Visual micro-refinements: bolt glyph in the lead card, slightly more distinct pa
 
 **Additional QA:** Verify the schedule digest contains no focusable controls, statuses update immediately after RSVP and serving actions, real fixture time/location is shown without invention, mobile accessibility passes and the legacy archive is preserved.
 
-**Next review decision:** Compare the actual iPhone screenshot with the selected reference for typography, hero proportions and People / mission visibility. Do not merge before explicit approval.
+**Next review decision:** The owner approved integration into Develop after verification; production remains untouched. Continue comparing the iPhone preview with the selected visual reference after integration.
