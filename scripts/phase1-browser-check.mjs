@@ -156,6 +156,55 @@ try{
    new Date('2026-11-23T12:00:00').getTime());
  await audit(smartPage,'Companion deferred suggestion and RSVP');
  await smartContext.close();
+ // F-09: opt-in Smart Dashboard never overwrites the approved Today,
+ // all actions read/write the same F-08/F-07 source state.
+ const f09Url=new URL(todayUrl);f09Url.searchParams.set('f09','1');
+ for(const width of [320,390,430]){
+   const height=width===320?568:width===390?844:932;
+   const f09Context=await browser.newContext({viewport:{width,height},isMobile:true,hasTouch:true,reducedMotion:'reduce'});
+   const f09=await f09Context.newPage();
+   await f09.clock.install({time:new Date('2026-11-23T12:00:00')});
+   await f09.addInitScript(()=>{
+     localStorage.setItem('rallypoint-phase1-2026',JSON.stringify({
+       role:'member',view:'today',prayers:[],teamStatus:'pending',rsvp:'',
+       read:true,prayed:true,groupMessages:[{name:'Jess',time:'Yesterday',text:'Protected legacy archive.'}]
+     }));
+   });
+   await f09.goto(f09Url.toString());
+   assert.ok(await f09.locator('.is-f09-dashboard .f09-dashboard').isVisible());
+   assert.equal(await f09.locator('#nav button').count(),4);
+   assert.equal(await f09.locator('.f09-module').count(),4);
+   assert.equal(await f09.locator('.f09-hero').getAttribute('data-active-card'),'serve-response');
+   assert.ok((await f09.locator('.f09-gold').textContent()).includes('Confirm your availability'));
+   await geometry(f09,'F-09 phone '+width);
+   await audit(f09,'F-09 priorities '+width);
+   if(width===390)await f09.screenshot({path:path.join(out,'f09-smart-dashboard-390.png'),fullPage:false});
+   // Pager must show actual F-08 alternatives, without a faux read receipt.
+   const chatBefore=await f09.evaluate(()=>localStorage.getItem('rallypoint-wednesday-chat-lab-v1'));
+   await f09.locator('[data-action="f09-stack"][data-value="next"]').click();
+   assert.equal(await f09.locator('.f09-hero').getAttribute('data-active-card'),'group-unread');
+   await f09.locator('[data-action="f09-stack"][data-value="prev"]').click();
+   assert.equal(await f09.locator('.f09-hero').getAttribute('data-active-card'),'serve-response');
+   assert.equal(await f09.evaluate(()=>localStorage.getItem('rallypoint-wednesday-chat-lab-v1')),chatBefore);
+   await f09.locator('.f09-task[data-task="rsvp"] [data-action="f09-rsvp"]').click();
+   assert.equal(await f09.locator('.f09-task[data-task="rsvp"]').count(),0);
+   await f09.locator('.f09-task[data-task="serve"] [data-action="f09-serve"]').click();
+   assert.equal(await f09.locator('.f09-task[data-task="serve"]').count(),0);
+   assert.ok((await f09.locator('.f09-gold').textContent()).includes('Confirmed on this device'));
+   assert.equal(await f09.locator('.f09-hero').getAttribute('data-active-card'),'group-unread');
+   await f09.locator('.f09-rose').click();
+   assert.ok(await f09.locator('#rpx-chat').isVisible());
+   await f09.locator('#nav [data-go="today"]').click();
+   assert.equal(await f09.locator('.f09-rose .f09-unread').count(),0);
+   assert.ok((await f09.locator('.f09-glance').textContent()).includes('caught up'));
+   const journal=await f09.evaluate(()=>JSON.parse(localStorage.getItem('rallypoint-phase1-2026')));
+   assert.equal(journal.rsvp,'going');
+   assert.equal(journal.teamStatus,'confirmed');
+   assert.equal(journal.groupMessages[0].text,'Protected legacy archive.');
+   await geometry(f09,'F-09 after actions '+width);
+   await audit(f09,'F-09 completed '+width);
+   await f09Context.close();
+ }
  const fallback=await browser.newContext({viewport:{width:375,height:812},reducedMotion:'reduce'});await fallback.addInitScript(()=>Object.defineProperty(window,'localStorage',{get(){throw Error('Blocked');}}));const fp=await fallback.newPage();await fp.goto(todayUrl);assert.ok((await fp.locator('#view').textContent()).includes('could not save'));await fp.locator('#nav [data-go="read"]').click();await fp.locator('[data-action="read"]').click();assert.ok((await fp.locator('#view').textContent()).includes('Read today'));await fallback.close();
  fs.writeFileSync(path.join(out,'phase1-browser-results.json'),JSON.stringify({cases:results,flows:'Source links, original messages/prayers, RSVP, serving, role/leader tools, reading/question, empty states, focus, persistence and storage fallback passed.',axe:'No detected WCAG A/AA violations on tested views/dialogs.'},null,2));console.log('All Phase 1 mobile, accessibility, persistence and source-flow checks passed.');
 }finally{await browser.close();if(server)await new Promise(r=>server.close(r));}
