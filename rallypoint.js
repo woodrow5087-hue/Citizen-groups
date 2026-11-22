@@ -104,7 +104,7 @@ function f09Today(){
    companion:window.RallyCompanionDecision,passage:currentReading().passage
  });
  f09Index=Math.max(0,Math.min(f09Index,model.stack.length-1));
- return window.RallySmartDashboard.render(model,f09Index,H.peopleRail(todayUI,'today'));
+ return window.RallySmartDashboard.render(model,f09Index,H.peopleRail(todayUI,'today'),H.portraits);
 }
 function today(){
   const chat=conversation(),snapshot=T.snapshot(s,todayUI,new Date(),chat),event=snapshot.upNext;
