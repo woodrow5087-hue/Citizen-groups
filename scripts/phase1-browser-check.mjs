@@ -304,6 +304,98 @@ try{
  await geometry(leader,'F-09.3 leader reviewed');
  await audit(leader,'F-09.3 leader reviewed');
  await leaderContext.close();
+ // F-10 opt-in Ask Rally lab. Retains the approved F-09 Board and four tabs;
+ // no fifth screen, network calls, forced completion, or new storage keys.
+ const companionUrl=new URL(boardUrl);companionUrl.searchParams.set('f10','1');
+ for(const width of [320,390,430]){
+   const companionContext=await browser.newContext({viewport:{width,height:width===320?568:width===390?844:932},
+     isMobile:true,hasTouch:true,reducedMotion:'reduce'});
+   const companion=await companionContext.newPage();
+   await companion.clock.install({time:new Date('2026-11-25T12:00:00')});
+   await companion.addInitScript(()=>{
+     localStorage.setItem('rallypoint-phase1-2026',JSON.stringify({
+       role:'member',view:'today',prayers:[],teamStatus:'pending',rsvp:'',read:false,prayed:false,
+       groupMessages:[{name:'Jess',text:'Historical group archive remains untouched.'}]
+     }));
+   });
+   await companion.goto(companionUrl.toString());
+   assert.equal(await companion.locator('.f10-entry').count(),1);
+   assert.equal(await companion.locator('.f09b-row').count(),3);
+   assert.equal(await companion.locator('#nav button').count(),4);
+   await geometry(companion,'F-10 integrated board '+width);
+   await audit(companion,'F-10 board '+width);
+   const oldChat=await companion.evaluate(()=>localStorage.getItem('rallypoint-wednesday-chat-lab-v1'));
+   const oldKeys=await companion.evaluate(()=>Object.keys(localStorage).sort());
+   await companion.locator('.f10-entry-button').click();
+   assert.ok(await companion.locator('.f10-panel').isVisible());
+   assert.equal(await companion.locator('.f10-chip').count(),6);
+   await audit(companion,'F-10 companion modal '+width);
+   await companion.locator('.f10-chip[data-value="next"]').click();
+   assert.ok((await companion.locator('.f10-response').textContent()).includes('What needs your attention'));
+   await companion.locator('.f10-route[data-action="f10-confirm"][data-value="rsvp"]').click();
+   assert.ok((await companion.locator('.f10-notice').textContent()).includes('RSVP is now Going'));
+   await companion.locator('.f10-route[data-action="f10-confirm"][data-value="serve"]').click();
+   assert.ok((await companion.locator('.f10-notice').textContent()).includes('serving availability is now Confirmed'));
+   assert.equal(await companion.locator('.f10-route[data-action="f10-confirm"]').count(),0);
+   await companion.locator('.f10-topics summary').click();
+   await companion.locator('.f10-chip[data-value="week"]').click();
+   assert.ok((await companion.locator('.f10-response').textContent()).includes('Wednesday Group'));
+   await companion.locator('#f10-query').fill('What time?');
+   await companion.locator('.f10-query-form button[type="submit"]').click();
+   assert.ok((await companion.locator('.f10-response h3').textContent()).includes('Which one do you mean'));
+   assert.equal(await companion.locator('.f10-route[data-action="f10-confirm"]').count(),0);
+   await companion.locator('.f10-followup[data-value="group-time"]').click();
+   assert.ok((await companion.locator('.f10-response').textContent()).includes('Wed, Nov 25 · 6:30 PM'));
+   await companion.locator('#f10-query').fill('And Sunday?');
+   await companion.locator('.f10-query-form button[type="submit"]').click();
+   assert.ok((await companion.locator('.f10-response').textContent()).includes('Sun, Nov 29 · 9:00 AM'));
+   await companion.locator('#f10-query').fill('Can I confirm that?');
+   await companion.locator('.f10-query-form button[type="submit"]').click();
+   assert.ok((await companion.locator('.f10-response').textContent()).includes('already confirmed'));
+   assert.equal(await companion.locator('.f10-route[data-action="f10-confirm"]').count(),0);
+   assert.ok(await companion.locator('.f10-earlier-turn').count()<=3);
+   if(width===390)await companion.screenshot({path:path.join(out,'f10-ask-rally-390.png'),fullPage:false});
+   await audit(companion,'F-10.1 contextual follow-ups '+width);
+   const newKeys=await companion.evaluate(()=>Object.keys(localStorage).sort());
+   assert.deepEqual(newKeys,oldKeys);
+   assert.equal(await companion.evaluate(()=>localStorage.getItem('rallypoint-wednesday-chat-lab-v1')),oldChat);
+   const local=await companion.evaluate(()=>JSON.parse(localStorage.getItem('rallypoint-phase1-2026')));
+   assert.equal(local.rsvp,'going');assert.equal(local.teamStatus,'confirmed');
+   assert.equal(local.groupMessages[0].text,'Historical group archive remains untouched.');
+   await audit(companion,'F-10 companion confirmed '+width);
+   await companion.locator('[data-action="close-dialog"]').click();
+   assert.equal(await companion.locator('.f10-panel').count(),0);
+   await companion.locator('.f10-entry-button').click();
+   assert.equal(await companion.locator('.f10-earlier-turn').count(),0);
+   assert.equal(await companion.locator('.f10-question').count(),0);
+   await companion.locator('[data-action="close-dialog"]').click();
+   await geometry(companion,'F-10 board after actions '+width);
+   await companionContext.close();
+ }
+ const guestCompanion=await browser.newContext({viewport:{width:390,height:844},isMobile:true,hasTouch:true,reducedMotion:'reduce'});
+ const guestAsk=await guestCompanion.newPage();
+ await guestAsk.clock.install({time:new Date('2026-11-25T12:00:00')});
+ await guestAsk.addInitScript(()=>{
+   localStorage.setItem('rallypoint-phase1-2026',JSON.stringify({
+     role:'leader',view:'today',teamStatus:'pending',rsvp:'',
+     prayers:[{name:'Marcus C.',text:'Private group sample note'}]
+   }));
+   localStorage.setItem('rallypoint-today-ui-v1',JSON.stringify({
+     name:'Guest',memberships:{group:false,team:false}
+   }));
+ });
+ await guestAsk.goto(companionUrl.toString());
+ await guestAsk.locator('.f10-entry-button').click();
+ for(const intent of ['week','next','group','serve','why']){
+   const topics=guestAsk.locator('.f10-topics');
+   if(!(await topics.evaluate(el=>el.open)))await topics.locator('summary').click();
+   await guestAsk.locator('.f10-chip[data-value="'+intent+'"]').click();
+   const body=await guestAsk.locator('.f10-response').textContent();
+   assert.ok(!/Marcus|Private group sample note|3 unread|leader check-ins/.test(body));
+   assert.equal(await guestAsk.locator('.f10-route[data-action="f10-confirm"]').count(),0);
+ }
+ await audit(guestAsk,'F-10 guest privacy modal');
+ await guestCompanion.close();
  const fallback=await browser.newContext({viewport:{width:375,height:812},reducedMotion:'reduce'});await fallback.addInitScript(()=>Object.defineProperty(window,'localStorage',{get(){throw Error('Blocked');}}));const fp=await fallback.newPage();await fp.goto(todayUrl);assert.ok((await fp.locator('#view').textContent()).includes('could not save'));await fp.locator('#nav [data-go="read"]').click();await fp.locator('[data-action="read"]').click();assert.ok((await fp.locator('#view').textContent()).includes('Read today'));await fallback.close();
  fs.writeFileSync(path.join(out,'phase1-browser-results.json'),JSON.stringify({cases:results,flows:'Source links, original messages/prayers, RSVP, serving, role/leader tools, reading/question, empty states, focus, persistence and storage fallback passed.',axe:'No detected WCAG A/AA violations on tested views/dialogs.'},null,2));console.log('All Phase 1 mobile, accessibility, persistence and source-flow checks passed.');
 }finally{await browser.close();if(server)await new Promise(r=>server.close(r));}

@@ -6,8 +6,8 @@ const {JSDOM}=require('jsdom');
 const T=require('../rallypoint-today.js');
 const {makeChatDomainBundle}=require('../scripts/build-chat-lab.cjs');
 const root=path.resolve(__dirname,'..'),key='rallypoint-phase1-2026';
-function open(t,{saved,ui,modern,blocked=false,f09=false,now='2026-11-23T12:00:00'}={}){
- const dom=new JSDOM(fs.readFileSync(path.join(root,'index.html'),'utf8'),{url:f09?'https://rally.test/?f09='+(f09==='board'?'board':'1'):'https://rally.test',runScripts:'outside-only',pretendToBeVisual:true});t.after(()=>dom.window.close());const w=dom.window,d=w.document;
+function open(t,{saved,ui,modern,blocked=false,f09=false,f10=false,now='2026-11-23T12:00:00'}={}){
+ const dom=new JSDOM(fs.readFileSync(path.join(root,'index.html'),'utf8'),{url:f10?'https://rally.test/?f10=1':f09?'https://rally.test/?f09='+(f09==='board'?'board':'1'):'https://rally.test',runScripts:'outside-only',pretendToBeVisual:true});t.after(()=>dom.window.close());const w=dom.window,d=w.document;
  const NativeDate=w.Date;w.Date=class extends NativeDate{constructor(...args){super(...(args.length?args:[now]));}static now(){return new NativeDate(now).getTime();}};
  w.HTMLElement.prototype.scrollIntoView=function(){};
  if(saved)w.localStorage.setItem(key,JSON.stringify(saved));if(ui)w.localStorage.setItem(T.UI_KEY,JSON.stringify(ui));
@@ -16,7 +16,7 @@ function open(t,{saved,ui,modern,blocked=false,f09=false,now='2026-11-23T12:00:0
  if(blocked)Object.defineProperty(w,'localStorage',{get(){throw Error('Blocked storage');}});
  w.structuredClone=structuredClone;
   w.eval(makeChatDomainBundle());
-  for(const name of ['rallypoint-today.js','rallypoint-ui.js','rallypoint-memorize.js','rallypoint-verseplay-ui.js','rallypoint-companion-decision.js','rallypoint-premium-alive.js','rallypoint-smart-dashboard.js','rallypoint-priority-board.js','rallypoint-group-view.js','rallypoint-group-experience.js','rallypoint-storage-guard.js','rallypoint-conversation-read-model.js','wednesday-chat-lab.js','rallypoint.js'])w.eval(fs.readFileSync(path.join(root,name),'utf8'));
+  for(const name of ['rallypoint-today.js','rallypoint-ui.js','rallypoint-memorize.js','rallypoint-verseplay-ui.js','rallypoint-companion-decision.js','rallypoint-premium-alive.js','rallypoint-smart-dashboard.js','rallypoint-priority-board.js','rallypoint-personal-companion.js','rallypoint-group-view.js','rallypoint-group-experience.js','rallypoint-storage-guard.js','rallypoint-conversation-read-model.js','wednesday-chat-lab.js','rallypoint.js'])w.eval(fs.readFileSync(path.join(root,name),'utf8'));
  const click=selector=>{const el=d.querySelector(selector);assert.ok(el,selector);el.click();};
  const type=(id,value)=>{const el=d.getElementById(id);assert.ok(el,id);el.value=value;el.dispatchEvent(new w.Event('input',{bubbles:true}));};
  return {w,d,click,type,action:a=>click('[data-action="'+a+'"]'),go:v=>click('#nav [data-go="'+v+'"]'),saved:()=>JSON.parse(w.localStorage.getItem(key)),ui:()=>JSON.parse(w.localStorage.getItem(T.UI_KEY)),text:()=>d.getElementById('view').textContent,other};
@@ -837,4 +837,141 @@ test('F-09.3 volunteer-only member sees team priority, not group-private content
  app.click('.f09b-primary[data-action="f09-serve"]');
  assert.equal(app.saved().teamStatus,'confirmed');
  assert.equal(app.d.querySelector('.f09b-hero').dataset.priority,'caught-up');
+});
+
+test('F-10 opt-in Ask Rally sheet keeps the approved Today, Stack and four-tab interface unchanged',t=>{
+ const classic=open(t);assert.equal(classic.d.querySelector('.f10-entry'),null);
+ const board=open(t,{f09:'board'});assert.equal(board.d.querySelector('.f10-entry'),null);
+ const lab=open(t,{f10:true});
+ assert.ok(lab.d.querySelector('.phone-inner.is-f10-lab'));
+ assert.ok(lab.d.querySelector('.f10-entry'));
+ assert.equal(lab.d.querySelectorAll('.f09b-row').length,3);
+ assert.equal(lab.d.querySelectorAll('#nav button').length,4);
+ lab.click('.f10-entry-button');
+ assert.ok(lab.d.querySelector('.f10-panel'));
+ assert.equal(lab.d.querySelectorAll('[data-action="f10-ask"]').length,6);
+ assert.match(lab.d.querySelector('.f10-response').textContent,/Your week, at a glance/);
+ assert.match(lab.d.querySelector('.f10-disclosure').textContent,/No church accounts/);
+ lab.click('[data-action="close-dialog"]');
+ assert.equal(lab.d.querySelector('.f10-panel'),null);
+ lab.go('team');assert.equal(lab.d.querySelector('.phone-inner').classList.contains('is-f10-lab'),false);
+ lab.go('today');assert.ok(lab.d.querySelector('.f10-entry'));
+});
+test('F-10 Ask Rally answers questions from shared fixtures without marking messages as read',t=>{
+ const app=open(t,{f10:true,now:'2026-11-25T12:00:00',saved:{
+  role:'member',rsvp:'',teamStatus:'pending',read:false,prayed:false,
+  groupMessages:[{name:'Jess',text:'Archived content must survive'}],prayers:[]
+ }});
+ const original=structuredClone(app.saved().groupMessages);
+ const modern=app.w.localStorage.getItem('rallypoint-wednesday-chat-lab-v1');
+ const keysBefore=Array.from({length:app.w.localStorage.length},(_,i)=>app.w.localStorage.key(i)).sort();
+ app.click('.f10-entry-button');
+ app.click('.f10-chip[data-value="next"]');
+ assert.match(app.d.querySelector('.f10-response').textContent,/What needs your attention/);
+ assert.ok(app.d.querySelector('[data-action="f10-confirm"][data-value="rsvp"]'));
+ assert.ok(app.d.querySelector('[data-action="f10-confirm"][data-value="serve"]'));
+ assert.equal(app.w.localStorage.getItem('rallypoint-wednesday-chat-lab-v1'),modern,
+   'opening the companion does not mark source messages read');
+ app.click('[data-action="f10-confirm"][data-value="rsvp"]');
+ assert.equal(app.saved().rsvp,'going');
+ assert.match(app.d.querySelector('.f10-notice').textContent,/sample RSVP is now Going/);
+ assert.equal(app.d.querySelectorAll('[data-action="f10-confirm"][data-value="rsvp"]').length,0);
+ app.click('[data-action="f10-confirm"][data-value="serve"]');
+ assert.equal(app.saved().teamStatus,'confirmed');
+ assert.match(app.d.querySelector('.f10-notice').textContent,/serving availability is now Confirmed/);
+ assert.deepEqual(app.saved().groupMessages,original);
+ assert.equal(app.w.localStorage.getItem('rallypoint-wednesday-chat-lab-v1'),modern);
+ const keysAfter=Array.from({length:app.w.localStorage.length},(_,i)=>app.w.localStorage.key(i)).sort();
+ assert.deepEqual(keysAfter,keysBefore,'no new companion transcript or persistent preferences');
+ app.click('.f10-chip[data-value="next"]');
+ assert.match(app.d.querySelector('.f10-response').textContent,/still|unread|caught up/i);
+});
+test('F-10 handwritten question is supported only for stated intents and escaped in UI',t=>{
+ const app=open(t,{f10:true});app.click('.f10-entry-button');
+ const el=app.d.getElementById('f10-query');
+ el.value='What is my serving schedule?';
+ el.form.dispatchEvent(new app.w.Event('submit',{bubbles:true,cancelable:true}));
+ assert.match(app.d.querySelector('.f10-response').textContent,/Your serving rhythm/);
+ assert.match(app.d.querySelector('.f10-question').textContent,/What is my serving schedule/);
+ app.d.getElementById('f10-query').value='<img src=x onerror=alert(1)>';
+ app.d.querySelector('[data-form="f10-query"]').dispatchEvent(new app.w.Event('submit',{bubbles:true,cancelable:true}));
+ assert.match(app.d.querySelector('.f10-response').textContent,/prototype understands a few specific questions/);
+ assert.equal(app.d.querySelector('.f10-question img'),null);
+ assert.ok(!app.saved().f10Prompt);
+});
+test('F-10 guest sees only discovery; no private chat, RSVP, team response or leader access',t=>{
+ const app=open(t,{f10:true,saved:{
+  role:'leader',rsvp:'',teamStatus:'pending',prayers:[{name:'Marcus C.',text:'Confidential fictional prayer'}],
+  groupMessages:[{name:'Jess',text:'Older private archive'}],reached:[]
+ },ui:{...T.initial(),name:'Guest',memberships:{group:false,team:false}}});
+ app.click('.f10-entry-button');
+ for(const id of ['week','next','group','serve','why']){
+   app.click('.f10-chip[data-value="'+id+'"]');
+   const txt=app.d.querySelector('.f10-response').textContent;
+   assert.doesNotMatch(txt,/Marcus|Confidential|Older private archive|leader check-ins|3 unread/i,id);
+   assert.equal(app.d.querySelector('[data-action="f10-confirm"]'),null);
+ }
+ assert.match(app.d.querySelector('.f10-disclosure').textContent,/fictional|local/i);
+ app.click('.f10-chip[data-value="group"]');
+ app.click('.f10-route[data-go="group"]');
+ assert.equal(app.saved().view,'group');
+ assert.equal(app.d.querySelector('.f10-panel'),null);
+});
+
+test('F-10.1 actual conversation follows week → ambiguous time → Wednesday → Sunday → explicit serving confirmation',t=>{
+ const app=open(t,{f10:true,now:'2026-11-25T12:00:00',saved:{
+  role:'member',rsvp:'',teamStatus:'pending',read:false,prayed:false,
+  prayers:[],reached:[],groupMessages:[{name:'Jess',text:'Original archive'}]
+ }});
+ const before=JSON.stringify(app.saved().groupMessages);
+ const chat=app.w.localStorage.getItem('rallypoint-wednesday-chat-lab-v1');
+ app.click('.f10-entry-button');
+ function ask(question){
+  const input=app.d.getElementById('f10-query');
+  input.value=question;
+  input.form.dispatchEvent(new app.w.Event('submit',{bubbles:true,cancelable:true}));
+ }
+ ask('What time?');
+ assert.match(app.d.querySelector('.f10-response h3').textContent,/Which one do you mean/);
+ assert.ok(app.d.querySelector('[data-action="f10-followup"][data-value="group-time"]'));
+ assert.equal(app.d.querySelector('.f10-route[data-action="f10-confirm"]'),null);
+ app.click('[data-action="f10-followup"][data-value="group-time"]');
+ assert.match(app.d.querySelector('.f10-response').textContent,/Wed, Nov 25 · 6:30 PM/);
+ assert.ok(app.d.querySelectorAll('.f10-earlier-turn').length>=1);
+ ask('And Sunday?');
+ assert.match(app.d.querySelector('.f10-response').textContent,/Sun, Nov 29 · 9:00 AM/);
+ ask('Can I confirm that?');
+ assert.match(app.d.querySelector('.f10-response h3').textContent,/Your serving response/);
+ assert.equal(app.saved().teamStatus,'pending','typing cannot confirm');
+ assert.ok(app.d.querySelector('.f10-route[data-action="f10-confirm"][data-value="serve"]'));
+ ask('Yes');
+ assert.equal(app.saved().teamStatus,'pending','yes cannot confirm');
+ app.click('.f10-route[data-action="f10-confirm"][data-value="serve"]');
+ assert.equal(app.saved().teamStatus,'confirmed');
+ assert.match(app.d.querySelector('.f10-response').textContent,/already confirmed/);
+ assert.ok(app.d.querySelectorAll('.f10-earlier-turn').length<=3);
+ assert.equal(app.w.localStorage.getItem('rallypoint-wednesday-chat-lab-v1'),chat);
+ assert.equal(JSON.stringify(app.saved().groupMessages),before);
+ app.click('[data-action="close-dialog"]');
+ app.click('.f10-entry-button');
+ assert.equal(app.d.querySelectorAll('.f10-earlier-turn').length,0,'chat history resets on close');
+ assert.equal(app.d.querySelector('.f10-question'),null,'last typed question is ephemeral');
+ assert.match(app.d.querySelector('.f10-response').textContent,/week, at a glance/);
+});
+test('F-10.1 changed membership never grants historical conversational context to a new guest',t=>{
+ const guest=open(t,{f10:true,ui:{...T.initial(),name:'Guest',memberships:{group:false,team:false}},
+  saved:{role:'leader',rsvp:'',teamStatus:'pending',prayers:[{name:'Marcus C.',text:'Sample private prayer'}],
+    groupMessages:[{name:'Jess',text:'Archived private message'}]}});
+ guest.click('.f10-entry-button');
+ const input=guest.d.getElementById('f10-query');
+ input.value='What time is Wednesday Group?';
+ input.form.dispatchEvent(new guest.w.Event('submit',{bubbles:true,cancelable:true}));
+ assert.doesNotMatch(guest.d.querySelector('.f10-response').textContent,/North Commons|Marcus|Archived private/);
+ assert.equal(guest.d.querySelector('[data-action="f10-confirm"]'),null);
+ const next=guest.d.getElementById('f10-query');
+ next.value='Can I RSVP for my group?';
+ next.form.dispatchEvent(new guest.w.Event('submit',{bubbles:true,cancelable:true}));
+ assert.equal(guest.d.querySelector('[data-action="f10-confirm"]'),null);
+ assert.match(guest.d.querySelector('.f10-response').textContent,/no sample group membership|no group membership/i);
+ assert.equal(guest.saved().rsvp,'');
 });
