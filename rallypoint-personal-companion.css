@@ -196,7 +196,7 @@
 }
 .f10-followups{display:grid;gap:6px;margin:3px 0 12px}
 .f10-followups>span{
- color:#846E62;font-size:9px;font-weight:900;letter-spacing:.1em
+ color:#6D5145;font-size:9px;font-weight:900;letter-spacing:.1em
 }
 .f10-followup-list{
  display:flex;align-items:center;gap:7px;overflow:auto;
