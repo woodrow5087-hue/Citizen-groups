@@ -234,9 +234,6 @@
 .premium-alive.is-groups-v07 .group-screen-v07 .group-discovery-card{
   box-shadow:0 8px 17px #65504423;
 }
-.premium-alive.is-groups-v07 .group-discovery-card--2{
-  background:#302C2B!important;
-}
 .premium-alive.is-groups-v07 .group-discovery-preview{box-shadow:0 7px 17px #60413725}
 .premium-alive.is-groups-v07 .group-discovery-v07 .disclaimer{color:#70615C}
 
@@ -296,6 +293,6 @@
   .premium-alive.is-groups-v07 .bottom *,
   .premium-alive.is-groups-v07 .group-pulse *,
   .premium-alive.is-groups-v07 .group-community-hero *{
-    animation:none!important;transition:none!important;
+    animation:none;transition:none;
   }
 }
