@@ -131,10 +131,10 @@ function derive(d,now=new Date()){
    'Your people','Your sample group is here when you need them',go('group','chat'),'Open');
  if(hasTeam&&!pendingServe)optional('serving-overview','serve','gold','team',
    'Your team','Review the Welcome Team schedule',go('team','schedule'),'See team');
- if(hasCommunity&&find('care-marcus'))optional('care-marcus','care','rose','people',
-   'Someone to encourage','A fictional group prayer note',act('companion-encourage'),'Reach out');
  if(!d?.readToday&&!rhythmDue)optional('scripture-read','reading','blue','read',
    'Today’s Scripture',d?.passage||'Your local reading',go('read'),'Read');
+ if(hasCommunity&&find('care-marcus'))optional('care-marcus','care','rose','people',
+   'Someone to encourage','A fictional group prayer note',act('companion-encourage'),'Reach out');
  if(!hasCommunity)optional('find-people','community','rose','people',
    'Find your people','Explore fictional community groups',go('group'),'Explore');
  if(!hasTeam)optional('find-team','serve','gold','team',
