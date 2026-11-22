@@ -167,3 +167,14 @@ test('Group-only request, current membership and OIDC scope remain mandatory in 
  await failure(denied.client.readForServerSession({...validSession(),scopes:['groups']}),'access-denied');
  assert.equal(denied.calls.length,0);
 });
+
+test('Nested group event listings remain scoped even if an individual event omits group relationship',async()=>{
+ const {client,calls}=harness({'/groups/v2/groups/222/events':{data:[
+  {id:'101',type:'Event',attributes:{name:'Known group event',starts_at:'2026-11-25T18:30:00Z'}},
+  {id:'102',type:'Event',attributes:{name:'Explicitly different group',starts_at:'2026-11-24T18:30:00Z'},
+   relationships:{group:{data:{id:'999'}}}}
+ ]}});
+ const result=await client.readForServerSession(validSession());
+ assert.equal(result.nextGathering.title,'Known group event');
+ assert.ok(calls.every(c=>!new URL(c.url).pathname.startsWith('/groups/v2/events')));
+});
