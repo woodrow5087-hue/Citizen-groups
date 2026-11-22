@@ -150,7 +150,7 @@
 }
 .f09b-agenda-row{
  display:flex;align-items:center;gap:9px;min-width:0;padding:8px 0;
- border-top:1px solid #E9DED6;min-height:59px
+ border-top:1px solid #E9DED6;min-height:58px
 }
 .f09b-agenda-icon{
  width:37px;height:37px;display:grid;place-items:center;flex:none;
@@ -162,21 +162,35 @@
 .f09b-agenda-icon .f09b-icon{width:23px;height:23px}
 .f09b-agenda-copy{flex:1;min-width:0}
 .f09b-agenda-copy strong{
- display:block;font-size:11.5px;line-height:1.25;
- font-weight:900;letter-spacing:-.02em
+ display:block;font-size:12px;line-height:1.25;
+ font-weight:900;letter-spacing:-.015em
 }
 .f09b-agenda-copy small{
- display:block;font-size:9px;color:#64574F;line-height:1.35;margin-top:2px;
+ display:block;font-size:9px;color:#5B514A;line-height:1.35;margin-top:2px;
  overflow-wrap:anywhere
 }
-.f09b-agenda-cta{
- min-height:44px;min-width:67px;padding:8px 10px;flex:none;
- border-radius:999px;border:1px solid #FFF;
- font-size:10px;font-weight:900;color:#B00029;background:#FADDE2;
+/* Summary metadata is deliberately NOT actionable: primary CTAs live above. */
+.f09b-status{
+ flex:none;display:inline-flex;align-items:center;justify-content:center;gap:5px;
+ padding:7px 9px;min-width:64px;max-width:107px;min-height:28px;
+ border-radius:999px;border:1px solid #FFF9F6;
+ font-size:9px;font-weight:900;line-height:1.2;text-align:center;
+ letter-spacing:.005em;white-space:normal;
+ box-shadow:inset 0 1px 0 #FFFFFFA6;
 }
-.f09b-agenda-cta.f09b-gold{background:#F8E5CA;color:#593B1A}
-.f09b-agenda-cta.f09b-blue{background:#D7ECF5;color:#254E5E}
-.f09b-agenda-cta.is-done{background:#F1ECE6;color:#453D38}
+.f09b-status::before{
+ content:"";flex:none;display:block;width:5px;height:5px;
+ border-radius:50%;background:currentColor
+}
+.f09b-status.attention{color:#8D233B;background:#FCE2E8}
+.f09b-status.complete{color:#1E614A;background:#DFF1E5}
+.f09b-status.neutral{color:#4F5661;background:#EDEAE7}
+.f09b-agenda-row[data-agenda="serve"] .f09b-status.attention{
+ background:#F8E8D0;color:#744310
+}
+.f09b-agenda-row[data-agenda="scripture"] .f09b-status.attention{
+ background:#D9EFF7;color:#1F5C77
+}
 .f09-board .pa-people-rail--today{margin:6px -5px 12px;padding:0}
 .f09-board .pa-people-heading{padding:0 10px 5px}
 .f09-board .pa-people-heading h2{font-size:18px;letter-spacing:-.035em}
@@ -226,7 +240,7 @@
  .f09b-glance{padding:12px 9px 8px}
  .f09b-agenda-row{gap:6px}
  .f09b-agenda-icon{width:32px;height:34px;border-radius:11px}
- .f09b-agenda-cta{min-width:58px;padding:7px;font-size:9px}
+ .f09b-status{min-width:57px;max-width:88px;padding:6px 7px;font-size:8px}
  .f09b-agenda-copy strong{font-size:11px}
 }
 @media(prefers-reduced-motion:reduce){
