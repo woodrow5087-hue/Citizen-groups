@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="theme-color" content="#222420"><title>Verse Circuit · Rally</title>
+<style>
+*{box-sizing:border-box}body{margin:0;color:#222420;background:#edece4;font:1rem/1.45 "DM Sans",system-ui,sans-serif}button,input{font:inherit}button{color:inherit;cursor:pointer;touch-action:manipulation}button:focus-visible,input:focus-visible{outline:3px solid #125abd;outline-offset:3px}header{background:#222420;color:#fff;padding:.7rem max(1rem,calc((100vw - 780px)/2));display:flex;align-items:center;justify-content:space-between}header strong{font-size:1.35rem;letter-spacing:-.06em}header strong i{color:#ff654e}header button{background:transparent;color:#fff;border:1px solid #77796f;border-radius:2rem;padding:.55rem 1rem;min-height:44px}main{max-width:780px;margin:1.4rem auto;padding:0 1rem 2rem}.cover{background:#ff604b;position:relative;overflow:hidden;border-radius:1rem;padding:1.5rem 1.7rem;isolation:isolate}.cover h1{font:bold clamp(3.5rem,9vw,5rem)/.86 "Arial Black",Arial,sans-serif;letter-spacing:-.09em;margin:.65rem 0}.cover small,.meta,.mode{font:bold .79rem/1.4 ui-monospace,monospace;text-transform:uppercase;letter-spacing:.06em}.orbit{position:absolute;right:-3rem;top:50%;transform:translateY(-50%) rotate(-32deg);width:40%;height:170%;border-radius:50%;border:8px solid #252721;z-index:-1;box-shadow:0 0 0 10px #ff604b,0 0 0 18px #252721,0 0 0 28px #ff604b,0 0 0 36px #252721,0 0 0 46px #ff604b,0 0 0 54px #252721}.deckline,.topline,.actions{display:flex;align-items:center;justify-content:space-between;gap:.6rem}.deckline{padding:1rem .25rem .65rem}.meter{display:flex;gap:4px}.meter i{width:24px;height:7px;background:#cccec1;border-radius:8px}.meter .lit{background:#333b2b}.board{background:#faf9f2;border:1px solid #c9cabd;border-radius:1rem;padding:clamp(1rem,4vw,1.8rem)}.mode{display:inline-flex;align-items:center;gap:.4rem;background:#dbedab;padding:.35rem .65rem;border-radius:.38rem}.ref{font-weight:700;font-size:.94rem}.board h2,dialog h2{font-size:clamp(1.65rem,5vw,2.25rem);letter-spacing:-.06em;line-height:1.12;margin:1rem 0 .3rem}.sub{margin:0 0 1rem;color:#53584c}.tiles{display:grid;gap:.5rem}.tile,.entry{width:100%;text-align:left;display:flex;align-items:center;gap:.8rem;min-height:53px;border:1px solid #c6c8bc;background:white;border-radius:.65rem;padding:.65rem .8rem}.tile{font:bold 1.25rem/1.2 Georgia,serif;box-shadow:0 2px #d9dbd0}.tile span{font:700 .85rem ui-monospace,monospace;padding:.42rem;background:#eeefe6;border-radius:.35rem}.tile[aria-pressed=true]{background:#e1efb9;border-color:#445730}.actions{margin-top:1rem;flex-wrap:wrap}.plain,.primary{padding:.65rem .95rem;min-height:44px;border-radius:.55rem;border:1px solid #b6b8ab;background:transparent;font-weight:650}.primary{background:#252821;color:white;border-color:#252821}.note{color:#484f40;font-size:.94rem;min-height:1.5em;margin:.8rem 0 0}.note:empty{display:none}blockquote{font:clamp(1.6rem,5vw,2.25rem)/1.25 Georgia,serif;letter-spacing:-.025em;margin:1.5rem 0;border-left:4px solid #94ae60;padding-left:1rem}.recall{width:100%;border:1px solid #969a8a;border-radius:.5rem;padding:.8rem;margin-top:.4rem}.entry{justify-content:space-between;margin-top:.45rem}.entry small{color:#4d5843}dialog{color:inherit;width:min(92vw,430px);border:1px solid #a7ac9f;border-radius:1rem;background:#faf9f2;padding:1.3rem}dialog::backdrop{background:#181a15aa}dialog h2{margin:0}footer{margin-top:.8rem;text-align:center;color:#606558;font-size:.82rem}@media(max-width:480px){main{margin:.8rem auto}.cover{padding:1.1rem 1.2rem}.orbit{right:-4rem}.meter i{width:17px}.actions>button{flex:1}}@media(prefers-reduced-motion:no-preference){.tile{transition:transform .12s,background .12s}.tile:active{transform:scale(.98)}blockquote{animation:appear .28s ease-out}@keyframes appear{from{opacity:.25;transform:translateY(5px)}}}
+</style></head><body>
+<header><strong><i>///</i> Rally</strong><button id="openDeck">My verses</button></header>
+<main><section class="cover"><small>Scripture puzzles</small><h1>Verse<br>Circuit.</h1><div class="orbit" aria-hidden="true"></div></section>
+<div class="deckline"><span class="meta" id="progress"></span><span aria-hidden="true" class="meter" id="meter"></span></div>
+<section class="board" id="board"></section><footer>Berean Standard Bible · BSB</footer></main>
+<dialog id="deck"><div class="topline"><h2>My verses</h2><button class="plain" id="closeDeck">Close</button></div><p>Choose a verse to play.</p><div id="entries"></div></dialog>
+<script>
+const cards = [
+ {ref:"John 15:12",parts:["This is My commandment,","that you love one another","as I have loved you."],swap:[1,2],hint:"Jesus gives the command first, then describes His example."},
+ {ref:"Psalm 119:105",parts:["Your word is","a lamp to my feet","and a light to my path."],swap:[0,1],hint:"Start with what the psalmist is describing."},
+ {ref:"1 John 4:19",parts:["We love","because He","first loved us."],swap:[0,2],hint:"Our response comes first in the sentence."},
+ {ref:"Proverbs 3:5",parts:["Trust in the LORD","with all your heart,","and lean not on your own understanding;"],swap:[1,2],hint:"The first two phrases describe how to trust."},
+ {ref:"Psalm 56:3",parts:["When I am afraid,","I put my trust","in You."],swap:[0,1],hint:"The psalmist names the feeling before responding."}
+];
+const el=id=>document.getElementById(id);
+const key="rally.verse-circuit.puzzle.v1";
+let state={index:0,phase:"play",solved:[],recalled:[]};
+try{
+ const saved=JSON.parse(localStorage.getItem(key));
+ if(saved && Number.isInteger(saved.index) && cards[saved.index] && ["play","won","recall","remembered"].includes(saved.phase) && ["solved","recalled"].every(k=>Array.isArray(saved[k]) && saved[k].every(i=>Number.isInteger(i)&&cards[i]))) state=saved;
+}catch{}
+let selected=null;
+function save(){try{localStorage.setItem(key,JSON.stringify(state))}catch{}}
+function change(phase,index=state.index){state.phase=phase;state.index=index;selected=null;save();render();el("title").focus();}
+function record(list){if(!state[list].includes(state.index))state[list].push(state.index)}
+function order(card){const out=[0,1,2];const [a,b]=card.swap;[out[a],out[b]]=[out[b],out[a]];return out}
+function next(){for(let step=1;step<=cards.length;step++){const i=(state.index+step)%cards.length;if(!state.solved.includes(i))return change("play",i)}change("play",(state.index+1)%cards.length)}
+function drawDeck(){el("entries").replaceChildren();cards.forEach((c,i)=>{const b=document.createElement("button");b.className="entry";b.innerHTML='<b>'+c.ref+'</b><small>'+(state.recalled.includes(i)?"Recalled":state.solved.includes(i)?"Solved":"Play")+'</small>';b.onclick=()=>{el("deck").close();change("play",i)};el("entries").append(b)})}
+el("openDeck").onclick=()=>{drawDeck();el("deck").showModal()};el("closeDeck").onclick=()=>el("deck").close();
+function render(){
+ const {index,phase}=state,c=cards[index],playing=phase==="play",recall=phase==="recall";
+ const title=playing?"Swap two phrases.":recall?"Finish the verse.":phase==="remembered"?"You remembered.":"Verse restored.";
+ el("progress").textContent=state.solved.length+" / "+cards.length+" verses solved";
+ el("meter").innerHTML=cards.map((_,i)=>'<i class="'+(state.solved.includes(i)?"lit":"")+'"></i>').join("");
+ el("board").innerHTML='<div class="topline"><span class="mode">'+(playing?"One Swap":recall?"Memory round":"✓ Complete")+'</span><span class="ref">'+c.ref+'</span></div><h2 id="title" tabindex="-1">'+title+'</h2><div id="content"></div><p class="note" id="msg" role="status"></p><div class="actions" id="actions"></div>';
+ const content=el("content"),actions=el("actions");
+ function button(label,fn,primary=false){const b=document.createElement("button");b.className=primary?"primary":"plain";b.textContent=label;b.onclick=fn;actions.append(b)}
+ function message(s){el("msg").textContent=s}
+ if(playing){
+ content.innerHTML='<p class="sub">Tap the two tiles that belong in each other’s place.</p><div class="tiles" id="tiles"></div>';
+ const tiles=el("tiles");
+ order(c).forEach((part,pos)=>{const b=document.createElement("button");b.className="tile";b.setAttribute("aria-pressed","false");b.innerHTML='<span>'+String.fromCharCode(65+pos)+'</span>'+c.parts[part];b.onclick=()=>{
+ if(selected===null){selected=pos;b.setAttribute("aria-pressed","true");message("Now tap the other tile.");return}
+ const first=selected;tiles.children[first].setAttribute("aria-pressed","false");selected=null;
+ if(first===pos){message("Selection cleared.");return}
+ if(c.swap.includes(first)&&c.swap.includes(pos)){record("solved");change("won");return}
+ message("Those two don’t restore the verse. Try another pair.")
+ };tiles.append(b)});
+ button("Hint",()=>message(c.hint));
+ }else if(recall){
+ content.innerHTML='<blockquote>'+c.parts.slice(0,2).join(" ")+' …</blockquote><form id="answer"><label for="words">What comes next?</label><input id="words" class="recall" autocomplete="off" placeholder="Type the closing phrase"></form>';
+ const normalize=s=>s.toLowerCase().replace(/[^a-z0-9 ]/g,"").trim().replace(/ +/g," ");
+ el("answer").onsubmit=e=>{e.preventDefault();if(normalize(el("words").value)===normalize(c.parts[2])){record("recalled");change("remembered")}else message("Try again, or use the first-letter hint.")};
+ button("Check answer",()=>el("answer").requestSubmit(),true);button("Hint",()=>message(c.parts[2].split(" ").map(w=>w[0].toUpperCase()).join(" · ")));button("Reveal verse",()=>change("won"));
+ }else{
+ content.innerHTML='<blockquote>'+c.parts.join(" ")+'</blockquote>';
+ button(state.solved.length===cards.length?"Play again":"New verse",next,true);
+ if(phase==="won")button("Harder version",()=>change("recall"));
+ }
+}
+render();
+</script></body></html>
