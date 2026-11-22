@@ -36,7 +36,7 @@ test('F-10.2 preparation uses only authorized group, modern unread count and vol
  assert.equal(r.response.items[0].action.id,'rsvp');
  assert.match(r.response.items[0].title,/Wed, Nov 25 · 6:30 PM/);
  assert.match(r.response.items[0].detail,/North Commons/);
- assert.ok(r.response.items.some(x=>x.action?.pane==='chat'&&/3 sample messages/.test(x.detail)));
+ assert.ok(r.response.items.some(x=>x.action?.pane==='chat'&&/3 sample messages/.test(x.title)));
  assert.ok(r.response.items.some(x=>x.action?.id==='read'));
  assert.deepEqual(s,before,'a suggested checklist must never mark an item completed');
 });
