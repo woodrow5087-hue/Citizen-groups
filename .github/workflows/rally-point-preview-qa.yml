@@ -10,6 +10,7 @@ on:
       - main
       - 'rally-point/develop'
       - 'rally-point/rc1-a-authorized-source-v1'
+      - 'rally-point/rc1-bc-integrated-companion-v1'
 
 permissions:
   contents: read

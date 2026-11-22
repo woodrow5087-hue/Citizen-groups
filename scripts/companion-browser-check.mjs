@@ -239,11 +239,26 @@ async function connected(page) {
   assert.equal(await page.locator('.pa-companion .pa-companion-link[data-action="rc1-open"]').count(), 1,
     'the original-style assistant opens the new RC1 conversation');
   assert.equal(await page.evaluate(() => {
-    const items = [...document.querySelector('.today-screen').children];
+    const items = [...document.querySelector('.rc1-recovery').children];
     const rail = items.findIndex(item => item.classList.contains('pa-people-rail'));
     const assistant = items.findIndex(item => item.classList.contains('pa-companion'));
-    return rail >= 0 && assistant === rail + 1;
-  }), true, 'assistant appears immediately after the approved circular people rail');
+    const supporting = items.findIndex(item => item.classList.contains('rc1-support'));
+    return assistant >= 0 && rail === assistant + 1 && supporting === rail + 1;
+  }), true, 'one lead assistant, then the named people rail and supporting actions');
+  assert.deepEqual(await page.locator('.pa-people-rail--today .pa-person-name').allTextContents(),
+    ['Anna', 'Jess', 'Marcus', 'Taylor']);
+  assert.deepEqual(await page.locator('.rc1-support [data-priority]').evaluateAll(tiles=>tiles.map(tile=>tile.dataset.priority)),
+    ['group', 'team', 'read']);
+  assert.equal(await page.locator('.rc1-recovery :is(.pa-today-hero,.today-people-message,.dashboard-twins,.fluid-week)').count(),0);
+  const photos=page.locator('.rc1-priority-photo,.pa-people-rail--today img');
+  assert.equal(await photos.count(),5);
+  await Promise.all((await photos.all()).map(photo=>photo.evaluate(image=>image.decode())));
+  assert.ok(await page.locator('.rc1-recovery .pa-people-heading h2').evaluate(node=>
+    node.getBoundingClientRect().top < document.querySelector('#nav').getBoundingClientRect().top),
+    'Your People starts above the bottom navigation');
+  assert.ok(await page.locator('.pa-people-rail--today .pa-story-ring').first().evaluate(node=>
+    node.getBoundingClientRect().bottom <= document.querySelector('#nav').getBoundingClientRect().top),
+    'portrait circles are visible on initial load');
   assert.deepEqual((await page.locator('#nav button').allTextContents()).map(label => label.trim()),
     ['Today', 'Groups', 'Team', 'Read']);
   await geometry(page, 'connected Today');
@@ -281,14 +296,17 @@ async function connected(page) {
   const afterRsvp = await readStorage(page);
   assert.deepEqual({...afterRsvp, [PRIMARY]: before[PRIMARY]}, before, 'only existing primary response changed');
   assert.deepEqual(JSON.parse(afterRsvp[PRIMARY]), {...JSON.parse(before[PRIMARY]), rsvp: 'going'});
-  if (width === 390) {
-    await screenshot(page, 'group-saved-390');
-    await panel(page).locator('[data-go="group"][data-pane="gather"]').click();
-    await page.locator('.group-gather-rsvp').waitFor();
-    assert.match(await page.locator('.group-gather-rsvp').textContent(), /going/i);
-    assert.equal(await page.locator('[data-action="rsvp"][data-value="going"]').getAttribute('aria-pressed'), 'true');
-    await navigate(page, 'today');
-  } else await close(page);
+  if (width === 390) await screenshot(page, 'group-saved-390');
+  await panel(page).locator('[data-go="group"][data-pane="gather"]').click();
+  await page.locator('.group-gather-rsvp').waitFor();
+  assert.match(await page.locator('.group-gather-rsvp').textContent(), /going/i);
+  assert.equal(await page.locator('[data-action="rsvp"][data-value="going"]').getAttribute('aria-pressed'), 'true');
+  await page.locator('.rc1-group-photo').evaluate(photo=>photo.decode());
+  const panes=await page.locator('.group-pulse [data-value]').evaluateAll(items=>items.map(item=>item.dataset.value));
+  assert.equal(new Set(panes).size,panes.length,'connected group shortcuts are unique');
+  await geometry(page,'recovered connected Groups');
+  await audit(page,'recovered connected Groups '+width);
+  await navigate(page, 'today');
 
   await open(page);
   const beforeServing = await readStorage(page);
