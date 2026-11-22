@@ -224,10 +224,16 @@ function render(d,peopleRail='',portraits=[],now=new Date()){
   '</div>').join('');
  const feedback=typeof d?.feedback==='string'&&d.feedback.trim()?
   '<div class="f09b-feedback" role="status" aria-live="polite">'+esc(d.feedback.slice(0,120))+'</div>':'';
+ const companionEntry=d?.f10Enabled?
+  '<aside class="f10-entry" aria-label="Ask Rally companion">'+
+   '<span class="f10-entry-mark" aria-hidden="true">R.</span>'+
+   '<span class="f10-entry-copy"><strong>Ask Rally.</strong><small>Your week. Your people. Your next step.</small></span>'+
+   '<button type="button" class="f10-entry-button" data-action="f10-open" aria-label="Ask Rally about your sample week">Ask <span aria-hidden="true">›</span></button>'+
+   '</aside>':'';
  return '<section class="f09-dashboard f09-board" data-audience="'+esc(b.audience)+'" data-caught-up="'+b.caughtUp+'" aria-label="F-09 Smart Priority Board preview">'+
   '<header class="f09-greeting"><span class="f09-preview-label">TODAY · YOUR PRIORITIES</span>'+
     '<h1>'+esc(d.greeting||'Welcome back')+',<br><em>'+esc(d.name||'Friend')+'.</em></h1>'+
-    '<span class="f09-date">'+esc(d.nowLabel||'')+'</span></header>'+feedback+
+    '<span class="f09-date">'+esc(d.nowLabel||'')+'</span></header>'+feedback+companionEntry+
   '<div class="f09b-priorities" aria-label="Visible priorities">'+hero+
    '<div class="f09b-row-stack">'+rows+'</div></div>'+
   '<section class="f09b-glance" aria-label="Today at a Glance">'+
