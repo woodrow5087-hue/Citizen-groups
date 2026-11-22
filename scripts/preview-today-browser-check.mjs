@@ -40,7 +40,7 @@ try{
         await page.screenshot({path:out+'/'+(query?'earlier-today':'priority-board')+'-390.png'});
       }
     }
-    await page.locator('.f10-entry').click();
+    await page.locator('.f10-entry-button').click();
     await page.locator('.f10-panel').waitFor({state:'visible'});
     await page.goto(base);
     assert.equal(await page.locator('.f10-entry').count(),0);
