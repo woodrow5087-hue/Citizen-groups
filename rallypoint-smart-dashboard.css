@@ -111,11 +111,12 @@
 }
 .f09-hero-content>p{font-size:12px;font-weight:700;line-height:1.4;color:#FFF0F2;max-width:270px}
 .f09-mini-faces{display:flex;align-items:center;margin:10px 0 -1px;padding-left:5px}
-.f09-mini-faces span{
+.f09-mini-faces span,.f09-mini-faces img{
  display:grid;place-items:center;margin-left:-5px;width:30px;height:30px;
  border:2px solid #FFFFFF;border-radius:50%;font-size:8px;font-weight:950;
  background:#F7D8BF;color:#704134
 }
+.f09-mini-faces img{object-fit:cover;object-position:center;background:#F7D8BF}
 .f09-mini-faces span:nth-child(2){background:#C5DFDF;color:#2F5958}
 .f09-mini-faces span:nth-child(3){background:#FFE0A9;color:#754819}
 .f09-hero-actions{display:flex;gap:8px;align-items:stretch;flex-wrap:wrap;margin-top:15px}
