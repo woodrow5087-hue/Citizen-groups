@@ -1,6 +1,6 @@
 # F-09 — Smart Dashboard Lab v1
 
-**Status:** Review-only stacked feature branch, based on Companion F-08 PR #71.  
+**Status:** Review-only feature branch containing Companion F-08 PR #71 as its unmerged prerequisite. PR #72 targets `rally-point/develop` to trigger CI, but must **not** be merged before F-08 PR #71 is approved and integrated.  
 **URL gate:** `/?f09=1` (use `/?skipWelcome=1&f09=1` to bypass the first-run welcome in a demo).  
 **Production:** Unchanged. **Approved Today:** Unchanged on ordinary `/` views.  
 **Design reference:** Owner-selected cream background / Citizen-red primary module / four distinct blush, golden, blue, lavender modules / compact task list / Sandia-inspired abstract mountain and mission banner. This isn't a direct copy of Apple proprietary visual assets.
