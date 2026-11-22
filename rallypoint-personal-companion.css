@@ -1,0 +1,155 @@
+/* F-10 · Ask Rally local companion lab. Opt-in ?f10=1 only.
+ * Single compact Today entry; all interaction in existing accessible sheet.
+ * No fifth tab, faux human chat avatars, or fabricated AI indicators.
+ */
+.premium-alive.is-f10-lab .f10-entry{
+ display:flex;align-items:center;gap:12px;margin:0 3px 13px;
+ border-radius:19px;padding:10px 10px 10px 14px;
+ background:#252322;color:#FFF9F3;border:1px solid #34312E;
+ box-shadow:0 6px 14px #4C2D2719,inset 0 1px 0 #FFFFFF27
+}
+.premium-alive.is-f10-lab .f10-entry-mark{
+ width:38px;height:38px;display:grid;place-items:center;flex:none;
+ border-radius:13px;background:#E3002B;color:#FFFFFF;
+ font-weight:950;font-size:18px;letter-spacing:-.07em;
+ box-shadow:0 3px 7px #160D0E44
+}
+.premium-alive.is-f10-lab .f10-entry-copy{min-width:0;flex:1}
+.premium-alive.is-f10-lab .f10-entry-copy strong{
+ font-weight:900;font-size:13px;line-height:1.25;display:block;letter-spacing:-.03em
+}
+.premium-alive.is-f10-lab .f10-entry-copy small{
+ color:#DDD0C5;font-size:9px;line-height:1.35;display:block;margin-top:3px
+}
+.premium-alive.is-f10-lab .f10-entry-button{
+ border:1px solid #FFD3D9;border-radius:999px;min-height:44px;
+ padding:8px 13px;display:flex;align-items:center;gap:5px;
+ background:#FFF7F2;color:#B9002C;font-size:11px;font-weight:900;flex:none
+}
+.premium-alive.is-f10-lab .f10-entry-button span{font-size:21px;line-height:10px}
+.rp-sheet:has(.f10-panel){
+ background:#FCF6EE;max-height:min(91%,850px);
+ padding:10px 16px max(22px,env(safe-area-inset-bottom,0px));
+ border-color:#D2BCAC
+}
+.rp-sheet:has(.f10-panel) .rp-sheet-top{margin-bottom:11px}
+.rp-sheet:has(.f10-panel) .rp-sheet-top h2{
+ font-size:24px;letter-spacing:-.055em
+}
+.f10-panel{font-family:var(--display);color:#242322;padding-bottom:4px}
+.f10-intro{
+ display:flex;align-items:center;gap:8px;
+ color:#A5002A;font-size:9px;font-weight:900;letter-spacing:.11em
+}
+.f10-local-dot{width:8px;height:8px;border-radius:50%;background:#E3002B;flex:none}
+.rp-sheet .f10-helper{
+ color:#544B45;font-size:11px;line-height:1.45;margin:8px 0 15px
+}
+.f10-query-form{
+ border-radius:18px;padding:11px 11px 10px;
+ border:1px solid #E9CEC5;background:#FFFDF9;
+ box-shadow:0 3px 12px #61443710
+}
+.f10-query-form label{
+ display:block;font-size:9px;letter-spacing:.08em;font-weight:850;
+ color:#826459;margin:0 0 7px;text-transform:uppercase
+}
+.f10-input-line{display:flex;gap:8px;min-width:0}
+.f10-input-line input{
+ min-width:0;flex:1;width:100%;border:1px solid #D5BFB3;
+ min-height:44px;border-radius:12px;padding:8px 11px;
+ font-size:16px;color:#282321;background:#FCF7F1
+}
+.f10-input-line button{
+ min-height:44px;min-width:56px;border-radius:12px;
+ background:#E3002B;color:#FFFFFF;font-weight:900;
+ padding:9px 12px;font-size:12px;border:1px solid #C1002A
+}
+.f10-chips{
+ display:flex;gap:7px;overflow:auto;padding:12px 1px 13px;
+ scrollbar-width:none;scroll-snap-type:x proximity
+}
+.f10-chips::-webkit-scrollbar{display:none}
+.f10-chip{
+ display:inline-flex;justify-content:center;align-items:center;flex:none;
+ min-height:44px;scroll-snap-align:start;border-radius:999px;
+ padding:8px 12px;border:1px solid #E8D9CF;background:#FFF5ED;
+ color:#513F38;font-size:10px;font-weight:850;
+ box-shadow:0 2px 4px #5035270B
+}
+.f10-chip:focus-visible{outline:3px solid #B5002A}
+.f10-question{
+ display:flex;align-items:center;gap:9px;flex-wrap:wrap;
+ margin:0 0 9px!important;color:#242322;font-weight:850;
+ font-size:12px!important;word-break:break-word
+}
+.f10-question span{
+ color:#73645C;font-size:9px;text-transform:uppercase;
+ letter-spacing:.09em;font-weight:900
+}
+.rp-sheet .f10-notice{
+ margin:0 0 10px;padding:10px;border-radius:12px;
+ border:1px solid #B9DEC2;background:#E6F4E8;
+ color:#22563D;font-size:11px;line-height:1.45;font-weight:800
+}
+.f10-response{
+ background:linear-gradient(160deg,#FFFDF9,#FEF5ED);
+ border-radius:21px;padding:15px 12px 12px;
+ border:1px solid #E9D8CC;box-shadow:0 5px 12px #5C352317
+}
+.f10-response h3{
+ font-family:var(--display);font-size:21px;line-height:1.13;
+ font-weight:950;letter-spacing:-.045em;color:#272321;margin:0 0 8px
+}
+.rp-sheet .f10-response-intro{
+ color:#66564A;font-size:11px;line-height:1.5;margin:0 0 11px
+}
+.f10-results{display:grid;gap:8px}
+.f10-result-card{
+ display:flex;align-items:center;gap:9px;
+ padding:12px 11px;border-radius:15px;
+ background:#F9E3E1;border:1px solid #F4CBCB;
+ min-width:0
+}
+.f10-result-card:nth-child(3n+2){background:#FAEDD9;border-color:#F3DFC0}
+.f10-result-card:nth-child(3n){background:#E2F1F6;border-color:#D2E7EE}
+.f10-result-card>div{flex:1;min-width:0}
+.f10-result-card strong{
+ font-weight:900;font-size:12px;line-height:1.25;
+ letter-spacing:-.02em;display:block;overflow-wrap:anywhere
+}
+.rp-sheet .f10-result-card p{
+ color:#4D4540;font-size:10px;line-height:1.45;margin:4px 0 0
+}
+.f10-result-card details{font-size:10px;margin-top:6px}
+.f10-result-card summary{
+ color:#92502E;cursor:pointer;font-weight:800;
+ text-decoration:underline;text-underline-offset:3px;
+ display:inline-block;min-height:22px
+}
+.rp-sheet .f10-result-card details p{
+ padding:3px 0 1px;color:#514642;line-height:1.55
+}
+.f10-route{
+ min-width:70px;max-width:110px;min-height:44px;flex:none;
+ border-radius:999px;padding:8px 9px;
+ border:1px solid #E9CAD0;background:#FFFDF9;color:#9B0027;
+ font-size:10px;font-weight:900;display:flex;align-items:center;
+ justify-content:center;gap:5px;text-align:center
+}
+.f10-route span{font-size:18px;line-height:10px}
+.rp-sheet .f10-disclosure{
+ color:#73665E;font-size:9px;line-height:1.55;
+ margin:14px 4px 6px
+}
+@media(max-width:350px){
+ .premium-alive.is-f10-lab .f10-entry{padding:8px;gap:7px}
+ .premium-alive.is-f10-lab .f10-entry-mark{width:34px;height:34px}
+ .premium-alive.is-f10-lab .f10-entry-button{padding:8px 10px}
+ .premium-alive.is-f10-lab .f10-entry-copy strong{font-size:12px}
+ .f10-result-card{padding:10px 8px;gap:6px}
+ .f10-route{min-width:63px;max-width:90px;padding:7px 6px;font-size:9px}
+}
+@media(prefers-reduced-motion:reduce){
+ .is-f10-lab .f10-entry button,.f10-chip,.f10-route{transition:none!important;animation:none!important}
+}
