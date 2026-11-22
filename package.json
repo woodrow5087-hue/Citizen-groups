@@ -3,9 +3,12 @@
   "private": true,
   "scripts": {
     "test": "node --test test/*.test.cjs",
+    "test:companion": "node --test test/companion-*.test.cjs test/conversation-read-model.test.cjs test/f09*.test.cjs test/f10-personal-companion.test.cjs test/rallypoint.test.cjs",
+    "verify:companion": "npm run test:companion && npm run build",
     "build": "node scripts/build.cjs",
     "dev": "python3 -m http.server 8000",
     "test:browser": "npm run build && node scripts/phase1-browser-check.mjs",
+    "test:companion-browser": "npm run build && node scripts/companion-browser-check.mjs",
     "test:onboarding": "npm run build && node scripts/onboarding-browser-check.mjs",
     "pilot:check": "node scripts/check-pilot-readiness.cjs",
     "test:blank-battle": "npm run build && node scripts/blank-battle-browser-check.mjs",

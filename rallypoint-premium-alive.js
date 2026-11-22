@@ -10,18 +10,20 @@
     {id:'marcus', name:'Marcus', initials:'MC', image:'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=200&q=78',ring:'blue'},
     {id:'taylor', name:'Taylor', initials:'TD', image:'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=200&q=78',ring:'amber'}
   ];
-  function peopleRail(ui, placement){
+  const recoveryPhoto='assets/premium-alive/community.webp';
+  function peopleRail(ui, placement, {recovery=false}={}){
     if(!ui || !ui.memberships || !ui.memberships.group) return '';
     const items=portraits.map(function(person){
       return '<li class="pa-person"><button type="button" class="pa-person-trigger" data-action="hybrid-person" data-person="'+person.id+'" aria-label="Open fictional private demo conversation with '+person.name+'">'+
-        '<span class="pa-story-ring pa-ring-'+person.ring+'"><span class="pa-story-initials">'+person.initials+'</span><img src="'+person.image+'" alt="" loading="lazy" referrerpolicy="no-referrer"></span>'+
+        '<span class="pa-story-ring pa-ring-'+person.ring+'"><span class="pa-story-initials">'+person.initials+'</span><img src="'+(recovery?'assets/premium-alive/'+person.id+'.webp':person.image)+'" alt="" loading="'+(recovery?'eager':'lazy')+'" referrerpolicy="no-referrer"></span>'+
         '<span class="pa-person-name">'+person.name+'</span></button></li>';
     }).join('');
     return '<section class="pa-people-rail pa-people-rail--'+placement+'" aria-label="Your People, fictional profiles">'+
-      '<div class="pa-people-heading"><h2>Your people<span class="pa-star" aria-hidden="true">✳</span></h2><span>YOUR CIRCLE · DEMO</span></div>'+
-      '<ul class="pa-people-scroll" aria-label="Fictional group members"><li class="pa-person">'+
+      '<div class="pa-people-heading"><h2>Your people<span class="pa-star" aria-hidden="true">'+(recovery?window.RallyUI.icon('heart'):'✳')+'</span></h2>'+
+      (recovery?'<button type="button" class="pa-see-people" data-go="group" data-pane="people">See all <span aria-hidden="true">›</span></button>':'<span>YOUR CIRCLE · DEMO</span>')+'</div>'+
+      '<ul class="pa-people-scroll" aria-label="Fictional group members">'+(recovery?'':'<li class="pa-person">'+
       '<button type="button" class="pa-person-trigger" data-go="group" data-pane="chat" aria-label="Open fictional Wednesday Group conversation">'+
-      '<span class="pa-story-ring pa-ring-primary"><img src="https://images.unsplash.com/photo-1543269865-cbf427effbad?auto=format&fit=crop&w=220&q=78" alt="" loading="lazy" referrerpolicy="no-referrer"></span><span class="pa-person-name">My group</span></button></li>'+items+'</ul>'+
+      '<span class="pa-story-ring pa-ring-primary"><img src="https://images.unsplash.com/photo-1543269865-cbf427effbad?auto=format&fit=crop&w=220&q=78" alt="" loading="lazy" referrerpolicy="no-referrer"></span><span class="pa-person-name">My group</span></button></li>')+items+'</ul>'+
       '</section>';
   }
   function todayHero(ui){
@@ -87,9 +89,9 @@
       skip+memory+rhythmFollowup(s)+
       '</section>';
   }
-  function groupSummary(){
+  function groupSummary(when='Next gathering Wednesday at 6:30 PM'){
     return '<button type="button" class="pa-group-summary" data-go="group" data-pane="gather" aria-label="View next fictional Wednesday Group gathering">'+
-      '<span class="pa-summary-mark" aria-hidden="true">♧</span><span class="pa-summary-body"><strong>Wednesday Group</strong><small>8 fictional members · Next gathering Wednesday at 6:30 PM</small></span><span class="pa-summary-arrow" aria-hidden="true">›</span></button>';
+      '<span class="pa-summary-mark" aria-hidden="true">♧</span><span class="pa-summary-body"><strong>Wednesday Group</strong><small>8 fictional members · '+escapeNote(when)+'</small></span><span class="pa-summary-arrow" aria-hidden="true">›</span></button>';
   }
-  window.RallyHybrid=Object.freeze({peopleRail,todayHero,todayPrompt,groupSummary,rhythmEditor,rhythmFollowup,portraits:Object.freeze(portraits.map(person=>Object.freeze({...person})))});
+  window.RallyHybrid=Object.freeze({peopleRail,todayHero,todayPrompt,groupSummary,rhythmEditor,rhythmFollowup,recoveryPhoto,portraits:Object.freeze(portraits.map(person=>Object.freeze({...person})))});
 })();

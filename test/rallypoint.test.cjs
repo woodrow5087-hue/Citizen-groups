@@ -6,8 +6,8 @@ const {JSDOM}=require('jsdom');
 const T=require('../rallypoint-today.js');
 const {makeChatDomainBundle}=require('../scripts/build-chat-lab.cjs');
 const root=path.resolve(__dirname,'..'),key='rallypoint-phase1-2026';
-function open(t,{saved,ui,modern,blocked=false,f09=false,f10=false,f103=false,now='2026-11-23T12:00:00'}={}){
- const dom=new JSDOM(fs.readFileSync(path.join(root,'index.html'),'utf8'),{url:f103?'https://rally.test/?f103=1':f10?'https://rally.test/?f10=1':f09?'https://rally.test/?f09='+(f09==='board'?'board':'1'):'https://rally.test',runScripts:'outside-only',pretendToBeVisual:true});t.after(()=>dom.window.close());const w=dom.window,d=w.document;
+function open(t,{saved,ui,modern,blocked=false,f09=false,f10=false,f103=false,rc1=false,sampleWeek=true,now='2026-11-23T12:00:00'}={}){
+ const dom=new JSDOM(fs.readFileSync(path.join(root,'index.html'),'utf8'),{url:rc1?'https://rally.test/?rc1=1'+(sampleWeek?'&sampleWeek=1':''):f103?'https://rally.test/?f103=1':f10?'https://rally.test/?f10=1':f09?'https://rally.test/?f09='+(f09==='board'?'board':'1'):'https://rally.test',runScripts:'outside-only',pretendToBeVisual:true});t.after(()=>dom.window.close());const w=dom.window,d=w.document;
  const NativeDate=w.Date;w.Date=class extends NativeDate{constructor(...args){super(...(args.length?args:[now]));}static now(){return new NativeDate(now).getTime();}};
  w.HTMLElement.prototype.scrollIntoView=function(){};
  if(saved)w.localStorage.setItem(key,JSON.stringify(saved));if(ui)w.localStorage.setItem(T.UI_KEY,JSON.stringify(ui));
@@ -16,7 +16,7 @@ function open(t,{saved,ui,modern,blocked=false,f09=false,f10=false,f103=false,no
  if(blocked)Object.defineProperty(w,'localStorage',{get(){throw Error('Blocked storage');}});
  w.structuredClone=structuredClone;
   w.eval(makeChatDomainBundle());
-  for(const name of ['rallypoint-today.js','rallypoint-ui.js','rallypoint-memorize.js','rallypoint-verseplay-ui.js','rallypoint-companion-decision.js','rallypoint-premium-alive.js','rallypoint-smart-dashboard.js','rallypoint-priority-board.js','rallypoint-personal-companion.js','rallypoint-group-view.js','rallypoint-group-experience.js','rallypoint-storage-guard.js','rallypoint-conversation-read-model.js','wednesday-chat-lab.js','rallypoint.js'])w.eval(fs.readFileSync(path.join(root,name),'utf8'));
+  for(const name of ['rallypoint-today.js','rallypoint-ui.js','rallypoint-memorize.js','rallypoint-verseplay-ui.js','rallypoint-companion-decision.js','rallypoint-premium-alive.js','rallypoint-smart-dashboard.js','rallypoint-priority-board.js','rallypoint-companion-source.js','rallypoint-companion-journeys.js','rallypoint-companion-view.js','rallypoint-personal-companion.js','rallypoint-group-view.js','rallypoint-group-experience.js','rallypoint-storage-guard.js','rallypoint-conversation-read-model.js','wednesday-chat-lab.js','rallypoint.js'])w.eval(fs.readFileSync(path.join(root,name),'utf8'));
  const click=selector=>{const el=d.querySelector(selector);assert.ok(el,selector);el.click();};
  const type=(id,value)=>{const el=d.getElementById(id);assert.ok(el,id);el.value=value;el.dispatchEvent(new w.Event('input',{bubbles:true}));};
  return {w,d,click,type,action:a=>click('[data-action="'+a+'"]'),go:v=>click('#nav [data-go="'+v+'"]'),saved:()=>JSON.parse(w.localStorage.getItem(key)),ui:()=>JSON.parse(w.localStorage.getItem(T.UI_KEY)),text:()=>d.getElementById('view').textContent,other};
@@ -1051,4 +1051,173 @@ test('F-10.3 guest goal route stays private and offers no forbidden confirmation
   assert.doesNotMatch(result,/North Commons|North Campus|Private prayer note|Old private archive|leader check-ins/);
   assert.equal(app.d.querySelector('[data-action="f10-confirm"]'),null);
  }
+});
+
+const rcPanel='.rc1-panel';
+const rcConfirm=id=>`${rcPanel} [data-action="rc1-confirm"][data-value="${id}"]`;
+function rcAsk(app,question){
+ const form=app.d.querySelector('[data-form="rc1-query"]');
+ form.elements.question.value=question;
+ form.dispatchEvent(new app.w.Event('submit',{bubbles:true,cancelable:true}));
+ return app.d.querySelector('.rc1-response')?.textContent;
+}
+
+test('RC1 combines the photographic hero and assistant ahead of one named people rail and unique source tiles',t=>{
+ const app=open(t,{rc1:true});
+ const today=app.d.querySelector('.today-screen');
+ const children=[...today.children];
+ const rail=children.findIndex(x=>x.classList.contains('pa-people-rail'));
+ const assistant=children.findIndex(x=>x.classList.contains('pa-companion'));
+ const supporting=children.findIndex(x=>x.classList.contains('rc1-support'));
+ assert.ok(assistant>=0&&rail===assistant+1&&supporting===rail+1);
+ assert.equal(today.querySelector('.pa-today-hero,.today-people-message,.dashboard-twins,.fluid-week'),null);
+ assert.deepEqual([...today.querySelectorAll('.pa-person-name')].map(x=>x.textContent),['Anna','Jess','Marcus','Taylor']);
+ assert.deepEqual([...today.querySelectorAll('[data-priority]')].map(x=>x.dataset.priority),['group','team','read']);
+ assert.ok(today.querySelector('[data-priority="group"][data-pane="chat"]'));
+ assert.equal(app.d.querySelectorAll('.pa-companion').length,1,'one prominent personalized assistant card');
+ assert.equal(app.d.querySelectorAll('.rc1-entry').length,0,'no competing compact generic assistant entry');
+ const card=app.d.querySelector('.pa-companion');
+ assert.match(card.querySelector('h2').textContent,/Wednesday is coming up/);
+ assert.match(card.querySelector('.rc1-occurrence').textContent,/Nov 25.*6:30 PM MT.*North Commons/);
+ assert.ok(card.querySelector('.rc1-priority-photo'));
+ assert.match(card.querySelector('.pa-companion-why').textContent,/current group membership/);
+ assert.ok(card.querySelector('.pa-pulse'));
+ assert.ok(card.querySelector('.pa-companion-more[data-action="quick-actions"]'));
+ assert.ok(card.querySelector('.pa-companion-link[data-action="rc1-open"]'));
+ app.click('.pa-companion-link[data-action="rc1-open"]');
+ assert.match(app.d.querySelector('.rc1-response').textContent,/Wednesday/i);
+ assert.equal(app.saved().rsvp,'','opening the companion card is not an RSVP');
+});
+test('RC1 assistant card changes for a visitor without exposing private membership details',t=>{
+ const app=open(t,{rc1:true,ui:{...T.initial(),memberships:{group:false,team:false}},
+  saved:{role:'leader',rsvp:'',teamStatus:'pending',prayers:[{name:'Marcus C.',text:'Private prayer'}]}});
+ const card=app.d.querySelector('.today-screen .pa-companion');
+ assert.ok(card,'approved assistant card is present for an unjoined visitor');
+ assert.match(card.textContent,/Your people\. Your next step/);
+ assert.doesNotMatch(card.textContent,/North Commons|North Campus|Marcus C\.|Private prayer/);
+ app.click('.pa-companion-link[data-action="rc1-open"]');
+ assert.match(app.d.querySelector('.rc1-response').textContent,/connect|group|start/i);
+ assert.equal(app.d.querySelector('[data-action="rc1-confirm"]'),null);
+});
+
+test('RC1 carries Today relevance into a bounded conversation and saves responses only on deliberate clicks',t=>{
+ const app=open(t,{rc1:true,saved:{groupMessages:[{text:'Preserve this archive'}]}});
+ const {d,w,click}=app;
+ const initial=w.localStorage.getItem(key);
+ const initialKeys=Object.keys(w.localStorage).sort();
+ const modern=w.localStorage.getItem('rallypoint-wednesday-chat-lab-v1');
+ assert.equal(d.querySelector('[data-action="rc1-open"]').dataset.value,'group');
+ assert.ok(d.querySelector('.pa-people-rail--today'));
+ click('[data-action="rc1-open"]');
+ assert.match(d.querySelector('.rc1-response').textContent,/Nov 25, 2026 · 6:30 PM MT.*North Commons/);
+ assert.match(rcAsk(app,'What time?'),/Nov 25, 2026 · 6:30 PM MT/);
+ assert.match(rcAsk(app,'And Sunday?'),/Nov 29, 2026 · 9:00 AM MT.*North Campus/);
+ assert.match(rcAsk(app,'Yes'),/Availability requested/i);
+ assert.equal(w.localStorage.getItem(key),initial);
+ assert.equal(w.localStorage.getItem('rallypoint-wednesday-chat-lab-v1'),modern);
+ click(rcConfirm('serve'));
+ assert.match(d.querySelector('.rc1-response').textContent,/Your serving response is saved/);
+ assert.equal(d.querySelectorAll(rcConfirm('serve')).length,0);
+ assert.equal(d.querySelectorAll('.rc1-results [data-go]').length,1);
+ assert.equal(app.saved().teamStatus,'confirmed');
+ assert.equal(app.saved().rsvp,'');
+ assert.match(rcAsk(app,'My Wednesday RSVP'),/Your RSVP is open/);
+ click(rcConfirm('rsvp'));
+ assert.match(d.querySelector('.rc1-response').textContent,/Your RSVP is saved/);
+ assert.equal(app.saved().rsvp,'going');
+ assert.equal(app.saved().teamStatus,'confirmed');
+ assert.deepEqual(app.saved().groupMessages,[{text:'Preserve this archive'}]);
+ assert.equal(w.localStorage.getItem('rallypoint-wednesday-chat-lab-v1'),modern);
+ assert.deepEqual(Object.keys(w.localStorage).sort(),initialKeys);
+ assert.doesNotMatch(w.localStorage.getItem(key),/What time|And Sunday/);
+ click('[data-action="close-dialog"]');
+ assert.equal(d.activeElement.dataset.action,'rc1-open');
+ click('[data-action="rc1-open"]');
+ assert.equal(d.querySelector('.rc1-history'),null);
+ assert.equal(d.querySelector('.rc1-question'),null);
+ assert.match(rcAsk(app,'My RSVP'),/Going is saved/);
+});
+
+test('RC1 refreshes scope and forgets prior turns after cross-tab revocation',t=>{
+ const app=open(t,{rc1:true,saved:{role:'leader'}});
+ const {d,w,click}=app;
+ click('[data-action="rc1-open"]');
+ assert.match(rcAsk(app,'Any group check-ins?'),/2 sample check-ins/);
+ assert.doesNotMatch(d.querySelector(rcPanel).textContent,/Marcus|Taylor|attendance list/);
+ const revoked={...app.ui(),memberships:{group:false,team:true}};
+ w.localStorage.setItem(T.UI_KEY,JSON.stringify(revoked));
+ w.dispatchEvent(new w.StorageEvent('storage',{key:T.UI_KEY,newValue:JSON.stringify(revoked)}));
+ assert.equal(d.querySelector(rcPanel),null);
+ assert.equal(d.querySelector('.pa-people-rail--today'),null);
+ click('[data-action="rc1-open"]');
+ assert.equal(d.querySelector('.rc1-history'),null);
+ assert.match(rcAsk(app,'Where does Wednesday Group meet?'),/Group access unavailable/);
+ assert.doesNotMatch(d.querySelector(rcPanel).textContent,/North Commons|Marcus|Taylor/);
+ assert.equal(d.querySelector(rcConfirm('rsvp')),null);
+ assert.equal(app.ui().memberships.group,false);
+});
+
+test('RC1 reports a failed local save without changing a response or issuing a receipt',t=>{
+ const app=open(t,{rc1:true});
+ const {d,w,click}=app;
+ click('[data-action="rc1-open"]');
+ const before=w.localStorage.getItem(key);
+ const original=w.Storage.prototype.setItem;
+ w.Storage.prototype.setItem=function(name,value){
+   if(name==='rallypoint-write-journal-v1')throw new Error('Storage quota');
+   return original.call(this,name,value);
+ };
+ click(rcConfirm('rsvp'));
+ assert.match(d.querySelector('.rc1-notice').textContent,/not saved/i);
+ assert.doesNotMatch(d.querySelector('.rc1-response').textContent,/Your RSVP is saved/);
+ assert.equal(w.localStorage.getItem(key),before);
+ assert.equal(app.saved().rsvp,'');
+});
+
+test('RC1 reports expired dates and unreadable scope without fabricating a schedule',t=>{
+ const expired=open(t,{rc1:true,sampleWeek:false,now:'2026-11-30T12:00:00Z'});
+ expired.click('[data-action="rc1-open"]');
+ assert.match(rcAsk(expired,'When does Wednesday Group meet?'),/upcoming sample date is unavailable/);
+ assert.doesNotMatch(expired.d.querySelector(rcPanel).textContent,/6:30 PM|9:00 AM/);
+ assert.equal(expired.d.querySelector('[data-action="rc1-confirm"]'),null);
+ expired.click(`${rcPanel} [data-go="group"][data-pane="gather"]`);
+ assert.match(expired.text(),/No upcoming sample date/);
+ assert.equal(expired.d.querySelector('[data-action="rsvp"]'),null);
+ const blocked=open(t,{rc1:true,blocked:true});
+ blocked.click('[data-action="rc1-open"]');
+ assert.match(rcAsk(blocked,'What time is Wednesday Group?'),/membership could not be verified/);
+ assert.equal(blocked.d.querySelector('[data-action="rc1-confirm"]'),null);
+ assert.doesNotMatch(blocked.d.querySelector(rcPanel).textContent,/North Commons|North Campus/);
+});
+
+test('RC1 goes directly to the matching source view and keeps saved Maybe and decline in sync',t=>{
+ const app=open(t,{rc1:true});
+ const {d,click,go}=app;
+ click('[data-action="rc1-open"]');
+ click(`${rcPanel} [data-go="group"][data-pane="gather"]`);
+ assert.equal(d.querySelector(rcPanel),null);
+ assert.match(d.activeElement.textContent,/Nov 25, 2026 · 6:30 PM MT/);
+ click('[data-action="rsvp"][data-value="maybe"]');
+ assert.equal(app.saved().rsvp,'maybe');
+ go('team');
+ assert.match(app.text(),/Nov 29, 2026 · 9:00 AM MT/);
+ click('[data-action="shift"][data-value="declined"]');
+ assert.equal(app.saved().teamStatus,'declined');
+ click('[data-action="notifications"]');
+ assert.match(rcAsk(app,'What is my serving response?'),/Declined on this device/);
+ assert.equal(d.querySelector(rcConfirm('serve')),null);
+ assert.match(rcAsk(app,'My Wednesday RSVP'),/Maybe is saved/);
+});
+
+test('RC1 treats a malformed membership separately from a valid saved scope',t=>{
+ const original={...T.initial(),memberships:{group:'false',team:true}};
+ const app=open(t,{rc1:true,ui:original});
+ assert.deepEqual(app.ui(),original);
+ app.click('[data-action="rc1-open"]');
+ assert.match(rcAsk(app,'What time is Wednesday Group?'),/membership could not be verified/);
+ assert.match(rcAsk(app,'And Sunday?'),/Nov 29, 2026 · 9:00 AM MT/);
+ assert.equal(app.d.querySelector(rcConfirm('rsvp')),null);
+ app.click(rcConfirm('serve'));
+ assert.equal(app.saved().teamStatus,'confirmed');
+ assert.deepEqual(app.ui(),original);
 });

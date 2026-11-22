@@ -18,7 +18,8 @@ const action=(name,verb,pane='',value='')=>Object.freeze({name,verb,pane,value})
 const go=(dest,pane='')=>action(dest,'go',pane);
 const act=(name,value='')=>action(name,'action','',value);
 function model({state,ui,conversation,now=new Date(),today,companion,passage='John 15:12'}={}){
- const s=state&&typeof state==='object'?state:{},member=!!ui?.memberships?.group,team=!!ui?.memberships?.team;
+ const s=state&&typeof state==='object'?state:{},member=ui?.memberships?.group===true,team=ui?.memberships?.team===true;
+ const role=s.role==='leader'?'leader':'member';
  const chat=conversation&&typeof conversation==='object'?conversation:{status:'unavailable'};
  const sourceToday=today?.snapshot(s,ui,now,chat)||{upNext:null,events:[]};
  const result=companion?.choose({state:s,ui,conversation:chat,now})||{
@@ -26,8 +27,9 @@ function model({state,ui,conversation,now=new Date(),today,companion,passage='Jo
    action:'Open reading',why:'The daily reading is available.',dest:'read',pane:'',intent:'',
    alternatives:[],source:'fictional local data'
  };
- const unread=member&&chat.status==='ok'&&Number.isSafeInteger(chat.unreadCount)?
-   Math.max(0,chat.unreadCount):0;
+ const conversationUnreadCount=member&&chat.status==='ok'&&Number.isSafeInteger(chat.unreadCount)&&chat.unreadCount>=0?
+   Math.max(0,chat.unreadCount):null;
+ const unread=conversationUnreadCount??0;
  const gathered=member&&sourceToday.events?.find(x=>x.id==='group');
  const serving=team&&sourceToday.events?.find(x=>x.id==='team');
  const due=validTime(s.rhythm?.followUpAt)&&!s.rhythm?.completedAt&&
@@ -134,15 +136,16 @@ function model({state,ui,conversation,now=new Date(),today,companion,passage='Jo
  // There is no fabricated activity score, streak or completion from viewing the page.
  return Object.freeze({
    stack,allPriorities,modules,tasks:Object.freeze(tasks.slice(0,4)),
-   member,team,unread,deferredIds,meetingLabel,meetingText,
+   role,member,team,unread,deferredIds,meetingLabel,meetingText,
    groupDate:gathered?.date||null,serveDate:serving?.date||null,
+   groupDateSource:gathered?.dateSource||null,serveDateSource:serving?.dateSource||null,
    groupLocation:gathered?.location||'',serveLocation:serving?.location||'',
-   leaderRemaining:member&&s.role==='leader'&&Array.isArray(sourceToday.leader?.remaining)?sourceToday.leader.remaining.length:0,
-   audience:!member&&!team?'newcomer':member&&s.role==='leader'?'leader':team&&!member?'volunteer':member&&team?'connected':'group-member',
+   leaderRemaining:member&&role==='leader'&&Array.isArray(sourceToday.leader?.remaining)?sourceToday.leader.remaining.length:0,
+   audience:!member&&!team?'newcomer':member&&role==='leader'?'leader':team&&!member?'volunteer':member&&team?'connected':'group-member',
    serveDateLabel:serving?'Welcome Team · '+today.dateLabel(serving.date,now):'Explore serving',
    serveStatus:team?s.teamStatus||'unknown':'none',
    readToday:!!s.read,rhythmDue:!!due,
-   conversationStatus:member?chat.status:'not-joined',
+   conversationStatus:member?chat.status:'not-joined',conversationUnreadCount,
    served:s.teamStatus==='confirmed',rsvp:s.rsvp==='going'?'going':s.rsvp==='maybe'?'maybe':'',
    greeting:now.getHours()<12?'Good morning':now.getHours()<17?'Good afternoon':'Good evening',
    nowLabel:now.toLocaleDateString('en-US',{weekday:'long',month:'short',day:'numeric'}),

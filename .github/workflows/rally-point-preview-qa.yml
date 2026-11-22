@@ -9,6 +9,8 @@ on:
     branches:
       - main
       - 'rally-point/develop'
+      - 'rally-point/rc1-a-authorized-source-v1'
+      - 'rally-point/rc1-bc-integrated-companion-v1'
 
 permissions:
   contents: read
@@ -35,6 +37,8 @@ jobs:
         run: npx playwright install --with-deps chromium
       - name: Run mobile, accessibility, source navigation and VersePlay regression
         run: npm run test:browser
+      - name: Run integrated Rally Companion journeys and accessibility checks
+        run: npm run test:companion-browser
       - name: Run animated onboarding → dashboard integration regression
         run: npm run test:onboarding
       - name: Run Blank Battle mobile gameplay and screenshot QA
