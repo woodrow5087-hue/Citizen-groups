@@ -230,3 +230,165 @@
 @media(prefers-reduced-motion:reduce){
  .f10-followup,.f10-earlier,.f10-topics{scroll-behavior:auto!important;animation:none!important}
 }
+
+/* Rally Companion 1.0 uses the approved Today layout and existing sheet. */
+.rc1-entry{
+ display:grid;
+ grid-template-columns:minmax(0,1fr) auto;
+ align-items:center;
+ gap:12px;
+ width:100%;
+ min-height:60px;
+ padding:9px 12px 9px 15px;
+ border:1px solid #36302E;
+ border-left:4px solid var(--red);
+ border-radius:16px;
+ background:var(--ink);
+ color:var(--paper);
+ text-align:left;
+ font-family:var(--display);
+}
+.rc1-entry-copy{display:grid;gap:3px;min-width:0}
+.rc1-entry-copy strong{font-size:17px;font-weight:850;line-height:1.15;letter-spacing:-.03em}
+.rc1-entry-copy>span{font-size:13px;line-height:1.3;color:#F0DED1}
+.rc1-entry-arrow{
+ display:grid;
+ place-items:center;
+ width:36px;
+ height:36px;
+ border-radius:50%;
+ background:var(--paper);
+ color:var(--ink);
+ font-size:21px;
+}
+.premium-alive .rc1-entry:focus-visible{outline-color:var(--red)}
+.rp-sheet:has(.rc1-panel){
+ max-height:calc(100% - 12px - var(--safe-top,0px));
+ padding:10px clamp(14px,5vw,21px) calc(20px + var(--safe-bottom,0px));
+ background:var(--paper) var(--texture);
+}
+.rp-sheet:has(.rc1-panel) .rp-sheet-top{margin-bottom:10px}
+.rc1-panel{
+ display:grid;
+ gap:13px;
+ min-width:0;
+ font-family:var(--display);
+ color:var(--ink);
+}
+.rp-sheet .rc1-panel p{
+ margin:0;
+ font-size:14px;
+ line-height:1.45;
+ overflow-wrap:anywhere;
+}
+.rp-sheet .rc1-panel .rc1-sample,.rp-sheet .rc1-panel .rc1-disclosure{
+ color:#65544B;
+ font-size:12px;
+}
+.rc1-query-form{display:grid;gap:6px;min-width:0}
+.rc1-query-form label{font-size:14px;font-weight:800}
+.rc1-query-line{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px}
+.rc1-query-line input{
+ width:100%;
+ min-width:0;
+ min-height:44px;
+ padding:8px 10px;
+ border:1px solid #9F8879;
+ border-radius:12px;
+ background:#FFFDF9;
+ color:var(--ink);
+ font-size:16px;
+}
+.rc1-query-line input::placeholder{color:#695950}
+.rc1-query-line button,.rc1-route,.rc1-suggestion{
+ min-width:44px;
+ min-height:44px;
+ padding:9px 11px;
+ border:1px solid #A78878;
+ border-radius:12px;
+ background:var(--paper);
+ color:#701632;
+ font-size:13px;
+ font-weight:800;
+ line-height:1.25;
+}
+.rc1-query-line button,.rc1-route[data-action="rc1-confirm"]{
+ background:var(--red);
+ border-color:#B50029;
+ color:#FFF;
+}
+.rp-sheet .rc1-panel .rc1-notice{
+ padding:9px 11px;
+ border-left:3px solid var(--red);
+ border-radius:5px;
+ background:#F8E3DD;
+}
+.rp-sheet .rc1-panel .rc1-question{
+ justify-self:end;
+ max-width:95%;
+ padding:8px 11px;
+ border-radius:13px 13px 4px 13px;
+ background:#F6E1E3;
+ color:#5D2030;
+}
+.rc1-question strong{margin-right:4px}
+.rc1-response{
+ display:grid;
+ gap:8px;
+ padding:13px;
+ border:1px solid #D0BAA9;
+ border-radius:17px 17px 17px 6px;
+ background:#F2E5D8;
+}
+.rc1-response h3{
+ font-size:23px;
+ font-weight:850;
+ line-height:1.2;
+ letter-spacing:-.035em;
+ overflow-wrap:anywhere;
+}
+.rc1-response h3:focus-visible{outline:2px solid #9B0027;outline-offset:3px}
+.rc1-results{display:grid;gap:0;margin:0;padding:0;list-style:none}
+.rc1-result{
+ display:grid;
+ align-items:center;
+ gap:7px;
+ min-width:0;
+ padding:9px 0;
+ border-top:1px solid #CFB6A6;
+}
+.rc1-result-action{grid-template-columns:minmax(0,1fr) minmax(66px,auto)}
+.rc1-result:last-child{padding-bottom:0}
+.rc1-result h4{
+ margin:0;
+ font-size:14px;
+ font-weight:850;
+ line-height:1.35;
+ overflow-wrap:anywhere;
+}
+.rp-sheet .rc1-panel .rc1-result p{margin-top:3px;color:#54423A;font-size:13px}
+.rc1-route{max-width:118px;overflow-wrap:anywhere}
+.rc1-suggestions{display:flex;align-items:start;flex-wrap:wrap;gap:7px}
+.rc1-suggestion{border-radius:999px;background:#FFF8EF}
+.rc1-history{border-top:1px solid #D0BAA9}
+.rc1-history summary{
+ min-height:44px;
+ padding:12px 1px;
+ color:#5D453A;
+ cursor:pointer;
+ font-size:13px;
+ font-weight:800;
+}
+.rc1-history summary:focus-visible{outline:2px solid #9B0027;outline-offset:2px}
+.rc1-history ol{display:grid;gap:8px;margin:0;padding:0 0 0 24px;color:#5D453A}
+.rp-sheet .rc1-panel .rc1-history p{font-size:13px}
+.rc1-history p:first-child{font-weight:800}
+@media(max-width:350px){
+ .rc1-entry{padding-left:11px}
+ .rc1-response{padding:10px}
+ .rc1-route{max-width:98px;padding-inline:7px}
+}
+@media(prefers-reduced-motion:reduce){
+ .rc1-entry,.rc1-panel button{transition:none}
+}
+.phone-inner.is-rc1 .today-people-message-head > small{color:#FFF6EC}
