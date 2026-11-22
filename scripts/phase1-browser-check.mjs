@@ -337,9 +337,25 @@ try{
    await companion.locator('.f10-route[data-action="f10-confirm"][data-value="serve"]').click();
    assert.ok((await companion.locator('.f10-notice').textContent()).includes('serving availability is now Confirmed'));
    assert.equal(await companion.locator('.f10-route[data-action="f10-confirm"]').count(),0);
+   await companion.locator('.f10-topics summary').click();
    await companion.locator('.f10-chip[data-value="week"]').click();
    assert.ok((await companion.locator('.f10-response').textContent()).includes('Wednesday Group'));
+   await companion.locator('#f10-query').fill('What time?');
+   await companion.locator('.f10-query-form button[type="submit"]').click();
+   assert.ok((await companion.locator('.f10-response h3').textContent()).includes('Which one do you mean'));
+   assert.equal(await companion.locator('.f10-route[data-action="f10-confirm"]').count(),0);
+   await companion.locator('.f10-followup[data-value="group-time"]').click();
+   assert.ok((await companion.locator('.f10-response').textContent()).includes('Wed, Nov 25 · 6:30 PM'));
+   await companion.locator('#f10-query').fill('And Sunday?');
+   await companion.locator('.f10-query-form button[type="submit"]').click();
+   assert.ok((await companion.locator('.f10-response').textContent()).includes('Sun, Nov 29 · 9:00 AM'));
+   await companion.locator('#f10-query').fill('Can I confirm that?');
+   await companion.locator('.f10-query-form button[type="submit"]').click();
+   assert.ok((await companion.locator('.f10-response').textContent()).includes('already confirmed'));
+   assert.equal(await companion.locator('.f10-route[data-action="f10-confirm"]').count(),0);
+   assert.ok(await companion.locator('.f10-earlier-turn').count()<=3);
    if(width===390)await companion.screenshot({path:path.join(out,'f10-ask-rally-390.png'),fullPage:false});
+   await audit(companion,'F-10.1 contextual follow-ups '+width);
    const newKeys=await companion.evaluate(()=>Object.keys(localStorage).sort());
    assert.deepEqual(newKeys,oldKeys);
    assert.equal(await companion.evaluate(()=>localStorage.getItem('rallypoint-wednesday-chat-lab-v1')),oldChat);
@@ -349,6 +365,10 @@ try{
    await audit(companion,'F-10 companion confirmed '+width);
    await companion.locator('[data-action="close-dialog"]').click();
    assert.equal(await companion.locator('.f10-panel').count(),0);
+   await companion.locator('.f10-entry-button').click();
+   assert.equal(await companion.locator('.f10-earlier-turn').count(),0);
+   assert.equal(await companion.locator('.f10-question').count(),0);
+   await companion.locator('[data-action="close-dialog"]').click();
    await geometry(companion,'F-10 board after actions '+width);
    await companionContext.close();
  }
