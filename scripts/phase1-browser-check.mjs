@@ -398,9 +398,9 @@ try{
  await guestCompanion.close();
  // F-10.2: opt-in natural guidance. All source data stays fictional/local.
  const intelligenceUrl=new URL(companionUrl);intelligenceUrl.searchParams.set('f10','2');
- const smartContext=await browser.newContext({viewport:{width:390,height:844},
+ const intelligenceContext=await browser.newContext({viewport:{width:390,height:844},
    isMobile:true,hasTouch:true,reducedMotion:'reduce'});
- const smart=await smartContext.newPage();
+ const smart=await intelligenceContext.newPage();
  await smart.clock.install({time:new Date('2026-11-25T12:00:00')});
  await smart.addInitScript(()=>{
    localStorage.setItem('rallypoint-phase1-2026',JSON.stringify({
@@ -442,7 +442,7 @@ try{
  assert.deepEqual(await smart.evaluate(()=>JSON.parse(localStorage.getItem('rallypoint-phase1-2026')).groupMessages),archive);
  await smart.locator('[data-action="close-dialog"]').click();
  assert.equal(await smart.locator('.f10-panel').count(),0);
- await smartContext.close();
+ await intelligenceContext.close();
  const smartGuestContext=await browser.newContext({viewport:{width:390,height:844},
    isMobile:true,hasTouch:true,reducedMotion:'reduce'});
  const smartGuest=await smartGuestContext.newPage();
