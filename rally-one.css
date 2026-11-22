@@ -28,3 +28,34 @@
 .one-people img{display:block;width:100%;aspect-ratio:1;margin-bottom:4px}
 .one-gather{margin-top:22px;width:100%;min-height:64px;background:#f6e7d3;border-radius:16px;display:flex;align-items:center;justify-content:space-between;padding:12px;font-weight:bold}
 .one-gather span{font-size:14px}
+.one-today .phone-inner>.header,.one-today .pitch,.one-today .phone-inner>header{display:none!important}
+.one-today #view{background:#fff8ef!important;padding:0!important}
+.one-today .one-page{background:#fff8ef;color:#191b1b}
+.one-today #nav{background:#fff8ef!important;border-top:1px solid #e5ddd2}
+.one-today #nav button{background:transparent!important;color:#201e1e!important;box-shadow:none!important}
+.one-today #nav button.active{color:#cb0030!important}
+.ro-detail.one-today #nav{display:none!important}
+.ro-page h1{font-size:40px;margin:16px 0 12px;line-height:1.1}
+.ro-page h2,.one-page .ro-photo strong{font-size:26px;line-height:1.1;letter-spacing:-.04em}
+.one-page .ro-photo{display:flex;flex-direction:column;align-items:flex-start;justify-content:flex-end;width:100%;gap:4px;text-align:left;color:white;border-radius:16px;padding:18px;min-height:165px;background-size:cover;background-position:center}
+.one-page .community{margin-top:18px;min-height:260px;background-image:linear-gradient(transparent,#121212da),url(assets/rally-one/community.webp)}
+.one-page .dinner{background-image:linear-gradient(transparent,#18130ad9),url(assets/rally-one/dinner.webp)}
+.one-page .welcome{margin-top:18px;background-image:linear-gradient(transparent,#18130ada),url(assets/rally-one/welcome.webp)}
+.ro-week,.ro-next,.ro-compose,.ro-snippet,.ro-bar{display:flex;align-items:center;gap:10px}
+.one-page .ro-week,.ro-next,.ro-practice,.ro-shift,.ro-verse{padding:16px;border-radius:16px;margin:12px 0;width:100%;text-align:left}
+.ro-week,.ro-verse{background:#cce8f6}
+.ro-next,.ro-shift{background:#fae4c1}
+.ro-practice{background:#f6ecde}
+.one-page .ro-primary,.ro-sheet .ro-primary{display:block;width:100%;border:0;border-radius:14px;background:#c90030;color:#fff;padding:10px;font:700 18px/1.2 Manrope,Arial,sans-serif;min-height:44px}
+.ro-next .ro-primary,.ro-compose .ro-primary{width:auto;margin-left:auto}
+.ro-practice .ro-primary,.ro-shift .ro-primary{margin-top:14px}
+.ro-shift h2{color:#c90030;font-size:32px;margin:12px 0 4px}
+.ro-verse{overflow:hidden}.ro-verse h2{margin:14px 0 4px}.ro-verse blockquote{font:26px/1.15 Georgia,serif;margin:16px 0}.ro-verse img{display:block;width:calc(100% + 32px);margin:4px -16px -16px;height:130px;object-fit:cover}
+.ro-snippet{align-items:flex-start;margin:10px 0}.ro-avatar{width:46px;height:46px;border-radius:50%;object-fit:cover}.ro-snippet p,.ro-bubble,.ro-incoming{padding:12px;border-radius:14px;overflow-wrap:anywhere}.ro-snippet p{background:#cce8f6}.ro-snippet+.ro-snippet p{background:#fae4c1}
+.one-page .ro-link,.ro-sheet .ro-link{display:block;width:100%;background:transparent;border:0;text-align:center;padding:12px;text-decoration:underline}
+.one-page .ro-outline{display:block;width:100%;border:1px solid #ccbcab;background:transparent;padding:12px;margin:12px 0;border-radius:12px;text-align:left}
+.ro-sheet{position:fixed;inset:auto 0 0;width:min(100%,430px);margin:auto;border:0;border-radius:22px 22px 0 0;text-align:center;background:#fff8ef;padding:22px;font:500 17px Manrope,Arial;color:#191b1b}
+.ro-sheet::backdrop{background:#16161680}.ro-sheet .ro-avatar{width:88px;height:88px}.ro-sheet h2,.ro-sheet p{margin:6px 0 12px}.ro-close{position:absolute;right:12px;top:8px;background:none;border:0;font-size:32px}
+.one-page .ro-bar{justify-content:flex-start;min-height:58px;font-size:20px;font-weight:bold}.one-page .ro-back{font-size:30px;border:0;background:none}
+.ro-detail .ro-page{min-height:100%;display:flex;flex-direction:column}
+.ro-thread{flex:1;padding:12px 0}.ro-thread p{margin:12px 0}.ro-thread .ro-bubble{background:#eddfcf;margin-left:auto;width:fit-content;max-width:84%}.ro-incoming{border:1px solid #d4c5b4;width:fit-content;max-width:87%}.ro-compose input{width:100%;min-width:0;border:1px solid #bfaf9d;background:transparent;border-radius:12px;padding:12px;font:inherit}
