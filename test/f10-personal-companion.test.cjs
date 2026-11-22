@@ -333,7 +333,8 @@ test('F-10.3 guest and revoked membership do not reveal private group or team fi
 });
 test('F-10.3 no future fixture means no proposed direct confirmation',()=>{
  const s=state(),date=new Date('2026-12-16T12:00:00');
- const src={...context(s,ui(true,true),{status:'ok',unreadCount:0},date),goalMode:true};
+ const base=context(s,ui(true,true),{status:'ok',unreadCount:0},date);
+ const src={...base,model:{...base.model,groupDate:null,serveDate:null},goalMode:true};
  for(const key of ['goal-group','goal-serve']){
   const p=Companion.respond(key,src);
   assert.ok(p.response.goal);
