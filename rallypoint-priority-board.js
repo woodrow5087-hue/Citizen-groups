@@ -45,6 +45,8 @@ function derive(d,now=new Date()){
    return remaining>=0&&remaining<=hours*3600000;
  };
  const pendingGroup=!!d?.member&&!d.rsvp;
+ const groupSoon=pendingGroup&&upcoming(d.groupDate,24);
+ const groupTonight=groupSoon&&d.groupDate.toDateString()===now.toDateString();
  const pendingServe=!!d?.team&&d.serveStatus==='pending';
  const hasUnread=!!d?.member&&asCount(d?.unread)>0;
  const isUnavailable=!!d?.member&&d.conversationStatus==='unavailable';
@@ -58,8 +60,8 @@ function derive(d,now=new Date()){
      action,label,why,family,deferred:isDeferred,requiresResponse:true});
  };
  const pending=[];
- if(pendingGroup)pending.push(task('group-rsvp',upcoming(d.groupDate,24)?100:70,
-   'rose','calendar',upcoming(d.groupDate,24)?'Group tonight.':'Your Wednesday Group.',
+ if(pendingGroup)pending.push(task('group-rsvp',groupSoon?100:70,
+   'rose','calendar',groupTonight?'Group tonight.':'Your Wednesday Group.',
    d?.groupDate instanceof Date?'Wednesday Group · '+d.groupDate.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'}):
    'Respond to the next sample gathering',act('f09-rsvp'),'RSVP · I’m in',
    'Your saved group RSVP is still open; the gathering is from the fictional schedule.','gather'));

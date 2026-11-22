@@ -6,7 +6,7 @@ import {fileURLToPath} from 'node:url';
 import {chromium} from 'playwright';
 import AxeBuilder from '@axe-core/playwright';
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..'),out=path.join(root,'test-results');fs.mkdirSync(out,{recursive:true});
-const types={'.html':'text/html','.js':'text/javascript','.css':'text/css','.png':'image/png','.svg':'image/svg+xml','.ttf':'font/ttf','.md':'text/plain'};
+const types={'.html':'text/html','.js':'text/javascript','.css':'text/css','.png':'image/png','.webp':'image/webp','.svg':'image/svg+xml','.ttf':'font/ttf','.md':'text/plain'};
 let server;if(!process.env.PREVIEW_URL){server=http.createServer((req,res)=>{const pathname=decodeURIComponent(new URL(req.url,'http://local').pathname);const file=path.resolve(root,'dist','.'+(pathname==='/'?'/index.html':pathname));if(!file.startsWith(path.join(root,'dist')+path.sep)){res.writeHead(403).end();return;}try{res.setHeader('Content-Type',types[path.extname(file)]||'application/octet-stream');res.end(fs.readFileSync(file));}catch{res.writeHead(404).end();}});await new Promise(r=>server.listen(0,'127.0.0.1',r));}
 const base=process.env.PREVIEW_URL||`http://127.0.0.1:${server.address().port}`;
 // Existing Today regression checks bypass the new first-run welcome; welcome gets its own tests.
@@ -224,12 +224,19 @@ try{
    assert.equal(await board.locator('.f09-stack-controls').count(),0,'No hidden stack controls');
    assert.equal(await board.locator('.f09b-row').count(),3);
    assert.equal(await board.locator('.f09b-agenda-row').count(),3);
-   assert.equal(await board.locator('.f09b-glance button').count(),0,'At a Glance must not repeat actions');
+   assert.equal(await board.locator('.f09b-glance :is(button, a, [data-action], [data-go])').count(),0,'At a Glance only shows status');
    assert.ok((await board.locator('.f09b-glance').textContent()).includes('SCHEDULE & STATUS'));
    assert.ok((await board.locator('.f09b-agenda-row[data-agenda="group"]').textContent()).includes('North Commons'));
    assert.equal(await board.locator('#nav button').count(),4);
    assert.equal(await board.locator('.f09b-hero').getAttribute('data-priority'),'group-rsvp');
    assert.ok((await board.locator('.f09b-hero').textContent()).includes('Group tonight.'));
+   const ridge=await board.locator('.f09b-hero').evaluate(hero=>getComputedStyle(hero,'::before').backgroundImage);
+   assert.match(ridge,/\/assets\/today-priority\/sandia-ridge\.webp/);
+   const portraitSelector='.f09b-faces img, .pa-people-rail--today img';
+   await board.locator('.pa-people-rail--today').scrollIntoViewIfNeeded();
+   assert.equal(await board.locator(portraitSelector).count(),8);
+   await board.waitForFunction(selector=>[...document.querySelectorAll(selector)].every(img=>img.complete&&img.naturalWidth>0),portraitSelector,{timeout:5000});
+   await board.locator('#view').evaluate(view=>view.scrollTop=0);
    await geometry(board,'F-09 board '+width);
    await audit(board,'F-09 board initial '+width);
    if(width===390)await board.screenshot({path:path.join(out,'f09-priority-board-390.png'),fullPage:false});
