@@ -1,6 +1,6 @@
 # Rally Companion 1.0 · Source, Conversation and Action Contracts
 
-**Status: proposed interface design only.** This document does not claim these interfaces are already implemented. It describes the next engineering workstream so Codex can refactor incrementally without changing observable behavior or compromising privacy. See [milestone blueprint](../roadmap/RALLY_COMPANION_1_0.md) and [epic #79](https://github.com/woodrow5087-hue/Citizen-groups/issues/79).
+**Status** · RC1-A implements the fixture source snapshot. The conversation, proposal and receipt contracts describe subsequent work. See the [milestone blueprint](../roadmap/RALLY_COMPANION_1_0.md) and [epic #79](https://github.com/woodrow5087-hue/Citizen-groups/issues/79).
 
 ## Existing baseline (keep functional)
 - `RallySmartDashboard.model({state,ui,conversation,now,today,companion,passage})` projects the existing local sample role/membership, chat unread state, date/location, RSVP and team status.
@@ -11,44 +11,56 @@
 
 All existing opt-in F-10/F-10.3 behavior, four tabs, CSS and tests are compatibility requirements. F-10.4 in PR #78 is unmerged at kickoff and may only become a dependency after owner approval.
 
-## Proposed contract: AuthorizedSourceSnapshot
-Build an **immutable, pure** projection using the current trusted fixture UI and domain inputs. Keep internal implementation independent of HTML and route effects:
+## AuthorizedSourceSnapshot
+
+Call `RallyCompanionSource.snapshot({model, now})` with a fresh `RallySmartDashboard.model` from the current fixture and the same valid `Date` used to build it. The dashboard preserves the status and validated count from the modern read model. The adapter derives the priority board from the same dashboard model, so a board retained before a scope change cannot supply its count. The adapter is available as a browser global and a CommonJS module. F-10 and F-10.3 retain their existing inputs as RC1-B begins adopting the new contract.
 
 ```ts
 type SourceStatus = 'available' | 'unavailable' | 'not-member' | 'unknown';
 
 type AuthorizedSourceSnapshot = Readonly<{
-  viewer: {
+  viewer: Readonly<{
     role: 'member' | 'leader';          // fixture role; not production identity
     group: boolean;                    // current membership only
     team: boolean;
     audience: string;                  // derived, non-authoritative presentation
-  };
-  sources: {
+  }>;
+  sources: Readonly<{
     group: SourceStatus;
     team: SourceStatus;
     conversation: SourceStatus;
     scripture: SourceStatus;
-  };
-  group?: {
-    nextDate: Date | null;              // current fixture date or unknown, not inferred
+  }>;
+  group?: Readonly<{
+    nextDate: string | null;            // ISO 8601 scheduled occurrence or unknown
     location: string | null;           // shown only to authorized group members
     rsvp: 'going' | 'maybe' | 'none';
     unreadCount: number | null;        // null when source unavailable; never pretend zero
-  };
-  serving?: {
-    nextDate: Date | null;
+  }>;
+  serving?: Readonly<{
+    nextDate: string | null;
     location: string | null;
     response: 'pending' | 'confirmed' | 'declined' | 'unknown';
-  };
-  scripture?: { passage: string | null; readToday: boolean | null };
-  board: { taskCount: number | null }; // from existing priority board, not guessed
-  provenance: readonly string[];       // non-sensitive fixture source identifiers only
-  now: Date;                            // injected clock for reproducible tests
+  }>;
+  scripture?: Readonly<{ passage: string | null; readToday: boolean | null }>;
+  board: Readonly<{ taskCount: number | null }>;
+  provenance: readonly string[];       // fixture source identifiers
+  now: string;                          // ISO 8601 copy of the injected clock
 }>;
 ```
 
-Rules: do not add `group` or `serving` protected properties for non-members, even with `null` placeholder values that contain sensitive labels. Empty source and unavailable source are different. Exposing role by itself never grants private group data. No sensitive message bodies in this projection. Clone only the minimum safe fields; do not pass raw storage, private prayers or leader-roster objects through a conversational intent engine.
+| Viewer or source | Snapshot behavior |
+| --- | --- |
+| Guest or membership revoked | Omit the protected record for the lost scope. Report `not-member` and rederive the task count from current scopes. Scripture remains available from the local fixture. |
+| Group member | Expose the group's saved RSVP, fixture venue and any verified upcoming occurrence. Unread requires an authorized modern cursor. |
+| Team member | Expose the viewer's saved serving response, fixture venue when present and any verified upcoming shift. Team scope grants no group or conversation access. |
+| Leader | Apply the same independent membership gates. The board count can include an authorized group check-in task. The snapshot excludes the roster, check-in records and private text. |
+| Modern thread with a known count | Preserve the count, including `0` after an explicit acknowledgment. |
+| Modern thread unavailable or denied | Return `null` unread. `unavailable` includes unreadable, blocked or invalid modern storage and can produce a board review task. `not-member` includes an explicit denial. |
+| Unknown cursor data | Return `null` unread and `null` task count for a group member. The archive, saved draft and legacy read signature supply no cursor evidence. |
+| Missing, invalid, past or rolling preview date | Return `null` for `nextDate`. A source event can use `dateSource: 'scheduled'` for an explicit occurrence. The current Today fixture calculates rolling demo dates and supplies no such occurrence. Its existing rendering is preserved. |
+
+All returned records and the provenance array are frozen. Dates use ISO strings because a frozen `Date` still accepts `Date` setters. Locations describe fixture venues independently of date availability. The snapshot excludes message bodies, author information, prayer text, roster data, raw storage and action controls. The caller should rebuild the dashboard and snapshot whenever source state changes. The adapter performs no writes and provides no live identity, calendar or authorization service.
 
 ## Proposed contract: ConversationTurn
 ```ts
@@ -108,7 +120,7 @@ The UI handler first validates membership and current pending state, performs th
 
 ## Migration / implementation steps
 1. Characterize existing behavior with tests for F-09/F-10.3 (plus F-10.4 if separately merged) and record fixtures for `guest`, `group-member`, `volunteer`, `connected`, `scoped-leader`, `source-unavailable`.
-2. Extract a pure projection module (proposed `rallypoint-companion-source.js`) that accepts only trusted existing `model/board/now` objects and returns an immutable, minimal snapshot. CommonJS + `window` UMD style consistent with existing files. Keep a small compatibility adapter.
+2. Extract the pure `rallypoint-companion-source.js` projection from the trusted dashboard and priority board. Preserve the existing comparator interfaces during migration.
 3. Add clear tests: forbidden private content never enters snapshot, state isn't mutated, `unavailable !== 0 unread`, dates are not extrapolated, team and group gates remain independent.
 4. Extend goal policies and follow-through on top of the normalized source. Keep `RallyPersonalCompanion.respond()` signature and basic UI response stable.
 5. Consolidate repeated intent/confirmation logic once behavior tests are green. Never do a wholesale rewrite of `rallypoint.js` and companion engine simultaneously.

@@ -3,7 +3,7 @@
   "private": true,
   "scripts": {
     "test": "node --test test/*.test.cjs",
-    "test:companion": "node --test test/f10-personal-companion.test.cjs test/rallypoint.test.cjs",
+    "test:companion": "node --test test/companion-source.test.cjs test/conversation-read-model.test.cjs test/f09*.test.cjs test/f10-personal-companion.test.cjs test/rallypoint.test.cjs",
     "verify:companion": "npm run test:companion && npm run build",
     "build": "node scripts/build.cjs",
     "dev": "python3 -m http.server 8000",

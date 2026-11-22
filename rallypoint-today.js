@@ -17,8 +17,9 @@
   }
   function snapshot(state,ui,now=new Date(),conversation=null){
     const events=[];
-    if(ui.memberships.group)events.push({id:'group',title:'Wednesday Group',kind:'GROUP GATHERING',date:nextEvent(3,18,30,now),location:'North Commons',pane:'gather'});
-    if(ui.memberships.team&&state.teamStatus!=='declined')events.push({id:'team',title:'Sunday Welcome Team',kind:'YOUR SERVING SCHEDULE',date:nextEvent(0,9,0,now),location:'North Campus',pane:'schedule'});
+    // These rolling dates are for the demo display. They do not identify a scheduled occurrence.
+    if(ui.memberships.group)events.push({id:'group',title:'Wednesday Group',kind:'GROUP GATHERING',date:nextEvent(3,18,30,now),dateSource:'recurring-preview',location:'North Commons',pane:'gather'});
+    if(ui.memberships.team&&state.teamStatus!=='declined')events.push({id:'team',title:'Sunday Welcome Team',kind:'YOUR SERVING SCHEDULE',date:nextEvent(0,9,0,now),dateSource:'recurring-preview',location:'North Campus',pane:'schedule'});
     events.sort((a,b)=>a.date-b.date);
     // Only the versioned Wednesday thread's own per-user cursor defines unread.
     // The legacy signature stays readable for old local data, but is never a read receipt.
