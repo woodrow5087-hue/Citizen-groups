@@ -18,7 +18,7 @@ function context(s=state(),user=ui(true,true),chat={status:'ok',unreadCount:3},d
  return {model,board,now:date};
 }
 test('Natural-language parser understands supported queries, never arbitrary commands',()=>{
- const cases={'What do I need to do this week?':'week','What needs my attention?':'next',
+ const cases={'What do I need to do this week?':'next','What do I need to take care of this week?':'next','What’s happening this week?':'week','What needs my attention?':'next',
   'Can you tell me about my group?':'group','Am I serving Sunday?':'serve',
   'Help with Scripture':'scripture','Why does this show first?':'why',
   'Call a taxi':'unknown','confirmation rsvp':'group'};
