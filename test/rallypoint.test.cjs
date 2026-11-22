@@ -733,6 +733,8 @@ test('F-09 Smart Priority Board is separately gated; original Today and the Smar
  assert.equal(app.d.querySelector('.f09-stack-controls'),null,'no hidden carousel');
  assert.equal(app.d.querySelectorAll('.f09b-row').length,3);
  assert.equal(app.d.querySelectorAll('.f09b-agenda-row').length,3);
+ assert.equal(app.d.querySelectorAll('.f09b-glance button').length,0,'glance displays read-only status instead of repeating controls');
+ assert.match(app.d.querySelector('.f09b-glance').textContent,/SCHEDULE & STATUS/);
  assert.ok(app.d.querySelector('.pa-people-rail--today'),'same approved fictional people rail');
  assert.ok(app.d.querySelector('.f09b-mission'));
  assert.deepEqual([...app.d.querySelectorAll('#nav button small')].map(x=>x.textContent),
@@ -751,12 +753,12 @@ test('F-09 board leads with real Wednesday RSVP, immediately updates agenda and 
  app.click('.f09b-primary[data-action="f09-rsvp"]');
  assert.equal(app.saved().rsvp,'going');
  assert.equal(app.d.querySelector('.f09b-hero').dataset.priority,'group-unread');
- assert.equal(app.d.querySelector('.f09b-agenda-row[data-agenda="group"] .f09b-agenda-cta').textContent,'Going');
+ assert.equal(app.d.querySelector('.f09b-agenda-row[data-agenda="group"] .f09b-status').textContent,'Going');
  assert.equal(app.d.querySelector('.f09b-row[data-row="group-rsvp"]'),null);
  app.click('.f09b-row[data-row="serve-response"] [data-action="f09-serve"]');
  assert.equal(app.saved().teamStatus,'confirmed');
  assert.equal(app.d.querySelector('.f09b-row[data-row="serve-response"]'),null);
- assert.equal(app.d.querySelector('.f09b-agenda-row[data-agenda="serve"] .f09b-agenda-cta').textContent,'Confirmed');
+ assert.equal(app.d.querySelector('.f09b-agenda-row[data-agenda="serve"] .f09b-status').textContent,'Confirmed');
  assert.deepEqual(app.saved().groupMessages,before);
  assert.equal(app.w.localStorage.getItem('rallypoint-wednesday-chat-lab-v1'),modern);
  app.click('.f09b-hero .f09b-primary[data-go="group"]');
@@ -774,7 +776,7 @@ test('F-09 board guest view never exposes gated group conversation, prayer or se
  app.action('demo-controls');app.click('[data-action="scenario"][data-value="no-memberships"]');
  assert.equal(app.d.querySelector('.f09b-faces'),null);
  assert.doesNotMatch(app.d.querySelector('.f09-board').textContent,/Marcus|Private|3 new messages|RSVP for Wednesday Group/);
- assert.equal(app.d.querySelector('.f09b-agenda-row[data-agenda="group"] .f09b-agenda-copy strong').textContent,'Find a group');
+ assert.equal(app.d.querySelector('.f09b-agenda-row[data-agenda="group"] .f09b-agenda-copy strong').textContent,'Community');
  assert.equal(app.d.querySelector('.f09b-agenda-row[data-agenda="serve"] .f09b-agenda-copy strong').textContent,'Serving');
  assert.equal(app.d.querySelector('.f09b-row[data-row="group-rsvp"]'),null);
  assert.equal(app.d.querySelector('.f09b-row[data-row="serve-response"]'),null);
