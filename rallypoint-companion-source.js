@@ -56,6 +56,9 @@
         location:text(model.serveLocation),
         response:['pending','confirmed','declined'].includes(model.serveStatus)?model.serveStatus:'unknown'
       })}),
+      ...(group&&role==='leader'&&isCount(model.leaderRemaining)&&{
+        leadership:Object.freeze({groupCheckIns:model.leaderRemaining})
+      }),
       ...(scripture&&{scripture:Object.freeze({passage,readToday})}),
       board:Object.freeze({taskCount}),
       provenance:Object.freeze([
