@@ -182,27 +182,44 @@ function f09Today(){
  if(f09Board)return window.RallyPriorityBoard.render({...model,feedback:f09Feedback,f10Enabled:f10Preview},H.peopleRail(todayUI,'today'),H.portraits,now);
  return window.RallySmartDashboard.render(model,f09Index,H.peopleRail(todayUI,'today'),H.portraits);
 }
+function recoveredToday(){
+  const now=rcNow(),snapshot=rcSnapshot(now);
+  const campus=({central:'Central',north:'North',maui:'Maui',online:'Online'})[todayUI.campus];
+  const timeZone='America/Denver';
+  const hour=Number(now.toLocaleString('en-US',{hour:'numeric',hourCycle:'h23',timeZone}));
+  const greeting=hour<12?'Good morning':hour<18?'Good afternoon':'Good evening';
+  const date=now.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric',timeZone});
+  return `<section class="today-screen rc1-recovery" aria-label="Today">
+    <header class="rc1-welcome">
+      <h1>${greeting}, <span>${e(todayUI.name||'Jonathan')}.</span></h1>
+      <p>${campus?`<span>Your campus · ${e(campus)}</span>`:''}<time datetime="${now.toISOString()}">${e(date)}</time></p>
+    </header>
+    ${RC.entry(snapshot,{sampleWeek,photo:H.recoveryPhoto,formatOccurrence:J.formatOccurrence,icon})}
+    ${H.peopleRail(todayUI,'today',{recovery:true})}
+    ${RC.priorities(snapshot,{formatOccurrence:J.formatOccurrence,icon})}
+    ${H.rhythmFollowup(s)}
+    <div class="today-demo-footer">
+      <span><i class="demo-dot"></i>RALLY COMPANION · FICTIONAL PREVIEW</span>
+      <button type="button" class="demo-controls-link" data-action="demo-controls">Demo controls</button>
+    </div>
+  </section>`;
+}
 function today(){
-  const chat=conversation(),now=rc1?rcNow():new Date();
-  const snapshot=(rc1?T.companion:T).snapshot(s,todayUI,now,chat),event=snapshot.upNext;
-  const timeZone=rc1?{timeZone:'America/Denver'}:{};
+  if(rc1)return recoveredToday();
+  const chat=conversation(),now=new Date(),snapshot=T.snapshot(s,todayUI,now,chat),event=snapshot.upNext;
   const campusLabel=({central:'Central',north:'North',maui:'Maui',online:'Online'})[todayUI.campus]||'';
-  const day=event?.date.toLocaleDateString('en-US',{weekday:'short',...timeZone})||'';
-  const hour=event?.date.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit',...timeZone})||'';
+  const day=event?.date.toLocaleDateString('en-US',{weekday:'short'})||'';
+  const hour=event?.date.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'})||'';
   const target=event?.id==='group'?'Groups':'My Schedule';
   const nextWidget=event
-  ? `<button type="button" class="up-next dashboard-next" data-go="${event.id}" data-pane="${event.pane}" aria-label="Up next: ${event.title}, ${rc1?J.formatOccurrence(event.date.toISOString()):T.dateLabel(event.date)}. Open ${target}">
+  ? `<button type="button" class="up-next dashboard-next" data-go="${event.id}" data-pane="${event.pane}" aria-label="Up next: ${event.title}, ${T.dateLabel(event.date)}. Open ${target}">
       <span class="dashboard-tile-head">${icon('calendar')}<span>UP NEXT</span><span class="dashboard-tile-arrow">${icon('arrow')}</span></span>
-      <span class="dashboard-event-when">${day} <strong>${hour}${rc1?' MT':''}</strong></span>
+      <span class="dashboard-event-when">${day} <strong>${hour}</strong></span>
       <span class="dashboard-event-desc">${event.title}</span>
       <span class="dashboard-event-detail">${icon('pin')}${e(event.location)}</span>
       <span class="dashboard-curve" aria-hidden="true"></span>
     </button>`
-  : rc1&&todayUI.memberships.group?`<button type="button" class="dashboard-next dashboard-next--empty" data-go="group" data-pane="gather" aria-label="Open group gathering">
-      <span class="dashboard-tile-head">${icon('calendar')}<span>GROUP GATHERING</span><span class="dashboard-tile-arrow">${icon('arrow')}</span></span>
-      <span class="dashboard-event-desc">No upcoming sample date</span>
-      <span class="dashboard-event-detail">Open Groups</span>
-    </button>`:`<button type="button" class="dashboard-next dashboard-next--empty" data-go="group" aria-label="Explore sample groups">
+  :`<button type="button" class="dashboard-next dashboard-next--empty" data-go="group" aria-label="Explore sample groups">
       <span class="dashboard-tile-head">${icon('group')}<span>UP NEXT</span><span class="dashboard-tile-arrow">${icon('arrow')}</span></span>
       <span class="dashboard-event-when">There’s room</span>
       <span class="dashboard-event-desc">for you here.</span>
@@ -226,14 +243,14 @@ function today(){
     <div class="today-welcome">
       <div class="dashboard-identity">
         <h1>Good morning, <span>${e(todayUI.name||'Jonathan')}</span>.${campusLabel?`<small class="dashboard-campus-marker">YOUR CAMPUS · ${e(campusLabel.toUpperCase())}</small>`:''}</h1>
-        <span class="dashboard-today-date">${now.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric',...timeZone})}</span>
+        <span class="dashboard-today-date">${now.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'})}</span>
       </div>
       <span class="dashboard-welcome-wave" aria-hidden="true"></span>
       <span class="today-watermark" aria-hidden="true"></span>
     </div>
     ${H.todayHero(todayUI)}
     ${H.peopleRail(todayUI,'today')}
-    ${rc1?RC.entry(rcSnapshot(now,chat),{sampleWeek}):H.todayPrompt(s,todayUI,chat)}
+    ${H.todayPrompt(s,todayUI,chat)}
     ${renderPeople(snapshot,chat)}
     <div class="dashboard-twins" role="group" aria-label="Upcoming gathering and serving">${nextWidget}${teamWidget}</div>
     <div class="today-reading">
@@ -248,18 +265,17 @@ function today(){
       </div>
       <p class="reading-caption">${todayUI.memberships.group?'Your group’s selection':'Daily Scripture'} · Fictional reading fixture${s.read?' · Read today':''}</p>
     </div>
-    ${rc1?H.rhythmFollowup(s):''}
-    ${!rc1&&!snapshot.attention&&!snapshot.leader&&chat.status!=='unavailable'?`<div class="today-empty dashboard-clear">${icon('check')}<div><h3>You’re all caught up.</h3><p>No group messages or serving responses need your attention.</p></div></div>`:''}
-    ${rc1?'':`<div class="fluid-week">
+    ${!snapshot.attention&&!snapshot.leader&&chat.status!=='unavailable'?`<div class="today-empty dashboard-clear">${icon('check')}<div><h3>You’re all caught up.</h3><p>No group messages or serving responses need your attention.</p></div></div>`:''}
+    <div class="fluid-week">
       <div class="fluid-week-heading"><span>THIS WEEK</span><small>YOUR RHYTHM</small></div>
       <div class="fluid-week-events">
         ${todayUI.memberships.group?`<button type="button" data-go="group" data-pane="gather"><span class="fluid-event-dot"></span><strong>GROUP</strong><small>${wed()}</small>${icon('arrow')}</button>`:''}
         ${todayUI.memberships.team?`<button type="button" data-go="team" data-pane="schedule"><span class="fluid-event-dot"></span><strong>SERVE</strong><small>${sun()}</small>${icon('arrow')}</button>`:''}
         ${!todayUI.memberships.group&&!todayUI.memberships.team?`<button type="button" data-go="group"><span class="fluid-event-dot"></span><strong>FIND YOUR PEOPLE</strong><small>Explore groups</small>${icon('arrow')}</button>`:''}
       </div>
-    </div>`}
+    </div>
     <div class="today-demo-footer">
-      <span><i class="demo-dot"></i>${rc1?'RALLY COMPANION · FICTIONAL PREVIEW':'FICTIONAL LOCAL DEMO · v0.6'}</span>
+      <span><i class="demo-dot"></i>FICTIONAL LOCAL DEMO · v0.6</span>
       <button type="button" class="demo-controls-link" data-action="demo-controls">Demo controls</button>
     </div>
   </section>`;
@@ -298,15 +314,21 @@ function connectedGroup(){
   // A projection, never an extra inbox, attendance source, or read receipt.
   const x=GX.snapshot(s,todayUI.memberships.group,conversation());
   if(!x.visible)return '';
-  const route=(pane,kind,title,detail)=>`<button type="button" class="group-pulse-route" data-action="pane" data-area="group" data-value="${pane}" aria-label="Open ${e(kind)}: ${e(detail)}">
-    <span class="group-pulse-route-kind">${e(kind)}</span><strong>${e(title)}</strong><small>${e(detail)}</small><span class="group-pulse-route-arrow" aria-hidden="true">↗</span>
+  let focus=x.focus;
+  if(rc1&&focus.pane==='gather'){
+    const date=rcOccurrence('group');
+    focus=date?{...focus,detail:date+' · '+T.companion.occurrences.group.location}:
+      {...focus,title:'Wednesday Group',detail:'No upcoming sample date is available.',action:'See gathering'};
+  }
+  const route=(pane,kind,title,detail)=>rc1&&(pane===focus.pane||pane==='people')?'':`<button type="button" class="group-pulse-route" data-action="pane" data-area="group" data-value="${pane}" aria-label="Open ${e(kind)}: ${e(detail)}">
+    <span class="group-pulse-route-kind">${e(kind)}</span><strong>${e(title)}</strong><small>${e(detail)}</small><span class="group-pulse-route-arrow" aria-hidden="true">${rc1?icon('arrow'):'↗'}</span>
   </button>`;
   return `<section class="group-pulse" aria-label="Your Wednesday Group at a glance">
-    <div class="group-pulse-top"><span>YOUR GROUP, TOGETHER.</span><span>LIVE FROM LOCAL SAMPLE DATA</span></div>
-    <button type="button" class="group-pulse-feature" data-action="pane" data-area="group" data-value="${x.focus.pane}">
-      <span class="group-pulse-eyebrow">${e(x.focus.eyebrow)}</span>
-      <strong>${e(x.focus.title)}</strong><span class="group-pulse-detail">${e(x.focus.detail)}</span>
-      <span class="group-pulse-feature-cta">${e(x.focus.action)} <span aria-hidden="true">↗</span></span>
+    <div class="group-pulse-top"><span>${rc1?'WEDNESDAY GROUP':'YOUR GROUP, TOGETHER.'}</span><span>${rc1?'FICTIONAL GROUP':'LIVE FROM LOCAL SAMPLE DATA'}</span></div>
+    <button type="button" class="group-pulse-feature" data-action="pane" data-area="group" data-value="${focus.pane}">
+      <span class="group-pulse-eyebrow">${e(focus.eyebrow)}</span>
+      <strong>${e(focus.title)}</strong><span class="group-pulse-detail">${e(focus.detail)}</span>
+      <span class="group-pulse-feature-cta">${e(focus.action)} <span aria-hidden="true">${rc1?icon('arrow'):'↗'}</span></span>
     </button>
     <div class="group-pulse-routes" role="group" aria-label="Jump to group activity">
       ${route('chat','CONVERSATION',x.messageLabel,x.status==='unavailable'?'Earlier notes preserved':'Modern group thread')}
@@ -355,8 +377,9 @@ if(s.groupPane==='direct'){
 if(s.groupPane==='gather')body=`<div class="card group-gather-card"><div class="kicker">NEXT GROUP GATHERING · SAMPLE</div><h3>${gatherWhen()}</h3>${rc1?`<p>${e(T.companion.occurrences.group.location)} · Fictional gathering</p>`:''}<p>${e(currentReading().passage)} · ${e(s.question)}</p><p class="group-gather-rsvp" role="status">${s.rsvp==='going'?'You’re going · saved on this device':s.rsvp==='maybe'?'Maybe · saved on this device':rc1&&!rcOccurrence('group')?'No upcoming sample RSVP':'Your response is still open'}</p>${!rc1||rcOccurrence('group')?`<div class="actions"><button class="btn ${s.rsvp==='going'?'chosen':'outline'}" data-action="rsvp" data-value="going" aria-pressed="${s.rsvp==='going'}">I'm going</button><button class="btn ${s.rsvp==='maybe'?'chosen':'outline'}" data-action="rsvp" data-value="maybe" aria-pressed="${s.rsvp==='maybe'}">Maybe</button></div>`:''}<div class="group-gather-next"><span>STAY CONNECTED</span><button type="button" data-action="pane" data-area="group" data-value="chat">Talk with your group ${icon('arrow')}</button><button type="button" data-go="read" data-reading="scripture">Read ${e(currentReading().passage)} ${icon('arrow')}</button></div></div><div class="card"><h3>Connected beyond the semester.</h3><p>Continuity is a proposed model, not an approved policy. Groups may continue through breaks, subject to church leadership decisions.</p></div>`;
 if(s.groupPane==='prayer')body=`<div class="card"><div class="kicker">PEOPLE BEFORE POSTS · LOCAL DEMO</div><h3>Pray for one another.</h3><p>Use fictional examples here—do not enter private real requests into this demo.</p>${prayerList()}${compose('prayer','Add a sample prayer request','What can your group pray about?')}<div class="group-prayer-next"><span>CONTINUE THE CONVERSATION</span><button type="button" data-action="pane" data-area="group" data-value="people">Check in with someone ${icon('arrow')}</button></div></div>`;
 if(s.groupPane==='leader')body=lead();
-return `<section class="group-screen-v07">
+return `<section class="group-screen-v07${rc1?' rc1-connected-group':''}">
   <div class="group-community-hero">
+    ${rc1&&s.groupPane!=='leader'?`<img class="rc1-group-photo" src="${H.recoveryPhoto}" alt="">`:''}
     <div class="group-hero-overline">MY COMMUNITY ${canLead('group')?pill('LEADER VIEW'):''}</div>
     <h1>${canLead('group')&&s.groupPane==='leader'?'Care for<br>your people.':'The people<br>who know you.'}</h1>
     <div class="group-hero-people">
@@ -364,11 +387,11 @@ return `<section class="group-screen-v07">
       <span class="group-hero-count">8 fictional members</span>
       <button type="button" class="group-hero-people-button" data-action="pane" data-area="group" data-value="people" aria-label="See people in your group">${icon('arrow')}</button>
     </div>
-    <div class="group-hero-next">${icon('calendar')} ${gatherWhen()}</div>
+    ${rc1?'':`<div class="group-hero-next">${icon('calendar')} ${gatherWhen()}</div>`}
     <button type="button" class="group-hero-find" data-action="browse">Explore more groups ${icon('arrow')}</button>
   </div>
-  ${H.peopleRail(todayUI,'group')}
-  ${H.groupSummary(rc1?gatherWhen():undefined)}
+  ${H.peopleRail(todayUI,'group',{recovery:rc1})}
+  ${rc1?'':H.groupSummary()}
   ${connectedGroup()}
   ${tabs('group',opts,s.groupPane)}${body}${footer()}
 </section>`;

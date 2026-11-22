@@ -1062,18 +1062,24 @@ function rcAsk(app,question){
  return app.d.querySelector('.rc1-response')?.textContent;
 }
 
-test('RC1 restores approved Premium ALIVE assistant card under the circular people rail',t=>{
+test('RC1 combines the photographic hero and assistant ahead of one named people rail and unique source tiles',t=>{
  const app=open(t,{rc1:true});
  const today=app.d.querySelector('.today-screen');
  const children=[...today.children];
- const hero=children.findIndex(x=>x.classList.contains('pa-today-hero'));
  const rail=children.findIndex(x=>x.classList.contains('pa-people-rail'));
  const assistant=children.findIndex(x=>x.classList.contains('pa-companion'));
- assert.ok(hero>=0&&hero<rail&&rail<assistant,'Hero, circular people rail, assistant card use approved order');
+ const supporting=children.findIndex(x=>x.classList.contains('rc1-support'));
+ assert.ok(assistant>=0&&rail===assistant+1&&supporting===rail+1);
+ assert.equal(today.querySelector('.pa-today-hero,.today-people-message,.dashboard-twins,.fluid-week'),null);
+ assert.deepEqual([...today.querySelectorAll('.pa-person-name')].map(x=>x.textContent),['Anna','Jess','Marcus','Taylor']);
+ assert.deepEqual([...today.querySelectorAll('[data-priority]')].map(x=>x.dataset.priority),['group','team','read']);
+ assert.ok(today.querySelector('[data-priority="group"][data-pane="chat"]'));
  assert.equal(app.d.querySelectorAll('.pa-companion').length,1,'one prominent personalized assistant card');
  assert.equal(app.d.querySelectorAll('.rc1-entry').length,0,'no competing compact generic assistant entry');
  const card=app.d.querySelector('.pa-companion');
  assert.match(card.querySelector('h2').textContent,/Wednesday is coming up/);
+ assert.match(card.querySelector('.rc1-occurrence').textContent,/Nov 25.*6:30 PM MT.*North Commons/);
+ assert.ok(card.querySelector('.rc1-priority-photo'));
  assert.match(card.querySelector('.pa-companion-why').textContent,/current group membership/);
  assert.ok(card.querySelector('.pa-pulse'));
  assert.ok(card.querySelector('.pa-companion-more[data-action="quick-actions"]'));

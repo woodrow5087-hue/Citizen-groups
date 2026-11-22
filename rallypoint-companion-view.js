@@ -15,26 +15,30 @@
     read:['','scripture']
   };
 
-  function entryPrompt(snapshot){
-    const {group,serving,leadership,board}=snapshot||{};
-    if(!group&&!serving)return {id:'start',hint:'Explore groups, serving or Scripture.'};
+  function priorityTopic(snapshot){
+    const {group,serving,leadership}=snapshot;
+    if(!group&&!serving)return 'start';
     const needsGroup=group?.nextDate&&group.rsvp==='none';
     const needsServing=serving?.nextDate&&serving.response==='pending';
     if(needsGroup&&(!needsServing||group.nextDate<=serving.nextDate)){
-      return {id:'group',hint:'Get ready for Wednesday Group.'};
+      return 'group';
     }
-    if(needsServing)return {id:'serve',hint:'Get ready for your serving shift.'};
-    if(leadership?.groupCheckIns>0)return {id:'leader',hint:'See what needs a leader’s attention.'};
-    if(group?.unreadCount>0)return {id:'group',hint:'Catch up with your group.'};
-    return board?.taskCount===0?
-      {id:'check',hint:'Check your sample commitments.'}:
-      {id:'check',hint:'See what needs your attention.'};
+    if(needsServing)return 'serve';
+    if(leadership?.groupCheckIns>0)return 'leader';
+    if(group?.unreadCount>0)return 'group';
+    return 'check';
   }
 
   // Restore the approved F-08 Premium ALIVE assistant card; the RC1 engine
   // supplies current, authorized content and opens the new conversational sheet.
   function entryStory(snapshot,id){
     const {group,serving,leadership,sources,board}=snapshot||{};
+    if(id==='start'&&(sources?.group==='unknown'||sources?.team==='unknown'))return {
+      title:'Let’s check what’s current.',
+      detail:'Your membership details are unavailable. You can still explore.',
+      why:'Rally needs a current profile to show private group or team details.',
+      action:'Explore my options'
+    };
     if(id==='start')return {
       title:'Your people. Your next step.',
       detail:'Find a place to connect, explore serving, or open Scripture. You choose where to begin.',
@@ -44,9 +48,9 @@
     if(id==='group'){
       if(group?.nextDate&&group.rsvp==='none')return {
         title:'Wednesday is coming up.',
-        detail:'Your sample group gathering is scheduled. Your RSVP is still open.',
+        detail:'Your sample RSVP is open.',
         why:'Your current group membership and the dated sample gathering are available.',
-        action:'Help me prepare for Wednesday'
+        action:'Prepare for Wednesday'
       };
       return {
         title:'Your group has something new.',
@@ -69,7 +73,7 @@
       why:'Only an authorized group leader can see this aggregate sample count.',
       action:'Show my leader check-ins'
     };
-    if(sources?.conversation==='unavailable'&&group)return {
+    if(sources?.conversation!=='available'&&group)return {
       title:'Let’s check what’s current.',
       detail:'Your sample group conversation is unavailable. Other details may still be available.',
       why:'Unknown message status is not treated as zero unread.',
@@ -89,17 +93,59 @@
     };
   }
 
-  function entry(snapshot,{sampleWeek=false}={}){
-    const {id}=entryPrompt(snapshot),story=entryStory(snapshot,id);
+  function entry(snapshot,{sampleWeek=false,photo='',formatOccurrence,icon}){
+    const id=priorityTopic(snapshot),story=entryStory(snapshot,id);
+    const occurrence=id==='serve'?snapshot.serving:id==='group'&&snapshot.group?.rsvp==='none'?snapshot.group:null;
+    const date=occurrence?.nextDate?formatOccurrence(occurrence.nextDate):null;
+    const groupContext=snapshot.viewer?.group===true;
     return '<section class="pa-companion rc1-assistant-card" aria-label="Personalized companion suggestion" data-suggestion="'+escape(id)+'">'+
+      (photo&&groupContext?'<img class="rc1-priority-photo" src="'+escape(photo)+'" alt="">':'')+
       '<div class="pa-companion-top"><span class="pa-pulse" aria-hidden="true"></span>'+
-      'YOUR RALLY COMPANION'+(sampleWeek?' · SAMPLE WEEK':' · LOCAL DEMO')+
-      '<button type="button" class="pa-companion-more" data-action="quick-actions" title="More ways to connect" aria-label="Open companion quick actions">✳</button></div>'+
+      'YOUR COMPANION'+(sampleWeek?' · SAMPLE WEEK':' · LOCAL DEMO')+
+      '<button type="button" class="pa-companion-more" data-action="quick-actions" title="More ways to connect" aria-label="Open companion quick actions">'+icon('plus')+'</button></div>'+
       '<h2>'+escape(story.title)+'</h2><p>'+escape(story.detail)+'</p>'+
-      '<button type="button" class="pa-companion-link" data-action="rc1-open" data-value="'+escape(id)+'" aria-haspopup="dialog">'+
-      escape(story.action)+' <span aria-hidden="true">↗</span></button>'+
-      '<p class="pa-companion-why"><strong>WHY THIS?</strong> '+escape(story.why)+'</p>'+
+      (date?'<p class="rc1-occurrence">'+escape(date+(occurrence.location?' · '+occurrence.location:''))+'</p>':'')+
+      '<div class="rc1-priority-footer"><button type="button" class="pa-companion-link" data-action="rc1-open" data-value="'+escape(id)+'" aria-haspopup="dialog">'+
+      escape(story.action)+icon('arrow')+'</button>'+
+      '<details class="rc1-priority-reason"><summary>Why this?</summary><p class="pa-companion-why">'+escape(story.why)+'</p></details></div>'+
       '</section>';
+  }
+
+  function priorities(snapshot,{formatOccurrence,icon}){
+    const id=priorityTopic(snapshot);
+    const {group,serving,scripture,sources}=snapshot;
+    const date=record=>record.nextDate?formatOccurrence(record.nextDate):null;
+    const tile=(key,pane,glyph,title,detail)=>'<button type="button" class="rc1-support-tile rc1-support-'+key+
+      '" data-priority="'+key+'" data-go="'+key+'"'+(pane?' data-pane="'+pane+'"':'')+'>'+
+      '<span class="rc1-support-icon" aria-hidden="true">'+icon(glyph)+'</span><span class="rc1-support-copy"><strong>'+
+      escape(title)+'</strong><span>'+escape(detail)+'</span></span><span class="rc1-support-arrow" aria-hidden="true">›</span></button>';
+    let community='';
+    if(group&&id==='group'&&group.nextDate&&group.rsvp==='none'){
+      if(sources.conversation!=='not-member'){
+        const unread=group.unreadCount;
+        const detail=unread===null?'Unread status unavailable':unread>0?
+          unread+' unread sample '+(unread===1?'message':'messages'):'Open the sample thread';
+        community=tile('group','chat','message','Group conversation',detail);
+      }
+    }else if(group){
+      community=tile('group','gather','calendar','Group gathering',date(group)||'Upcoming sample date unavailable');
+    }else{
+      community=tile('group','','group','Explore Groups','Browse sample communities');
+    }
+    const servingDate=serving?date(serving):null;
+    const team=id==='serve'?'':serving?
+      tile('team','schedule','team','Welcome Team',
+        serving.response==='declined'?'Declined · Review schedule':
+        [servingDate,{pending:servingDate?'Response needed':'Upcoming date unavailable',confirmed:'Confirmed',unknown:'Response unavailable'}[serving.response]].filter(Boolean).join(' · ')):
+      tile('team','','team','Explore serving','See ways to get involved');
+    const reading='<div class="rc1-support-reading" data-priority="read">'+
+      '<button type="button" class="rc1-support-tile rc1-support-read" data-go="read" data-reading="scripture">'+
+      '<span class="rc1-support-icon" aria-hidden="true">'+icon('read')+'</span><span class="rc1-support-copy"><strong>'+
+      escape(scripture?.passage||'Scripture')+'</strong><span>'+(scripture?.readToday?'Read today':'Today’s Scripture')+
+      '</span></span><span class="rc1-support-arrow" aria-hidden="true">›</span></button>'+
+      '<div class="rc1-reading-links"><button type="button" data-go="read" data-reading="questions">Reflect</button>'+
+      '<button type="button" data-go="play" aria-label="Play the new Blank Battle Scripture game">Memorize</button></div></div>';
+    return '<section class="rc1-support" aria-label="More ways to follow through">'+community+team+reading+'</section>';
   }
 
   function route(action){
@@ -148,5 +194,5 @@
       '<p class="rc1-disclosure">'+escape(note)+'</p></div>';
   }
 
-  return Object.freeze({entry,render});
+  return Object.freeze({entry,priorities,render});
 });
