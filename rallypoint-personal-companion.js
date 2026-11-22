@@ -341,7 +341,7 @@ function render(response,asked='',notice='',history=[],suggested=[]){
  return '<div class="f10-panel f10-conversation" aria-label="Ask Rally local companion">'+
   '<div class="f10-intro"><div class="f10-local-dot" aria-hidden="true"></div><span>ASK RALLY · LOCAL PREVIEW</span></div>'+
   '<p class="f10-helper">We can stay on the same topic. Try “What time?” or “And Sunday?” after a question.</p>'+
-  (older?'<div class="f10-earlier" aria-label="Earlier messages in this session">'+older+'</div>':'')+
+  (older?'<div class="f10-earlier" role="region" tabindex="0" aria-label="Earlier messages in this session">'+older+'</div>':'')+
   notes+question+
   '<section class="f10-response" aria-live="polite" aria-label="Companion answer">'+
    '<h3>'+esc(r.heading)+'</h3><p class="f10-response-intro">'+esc(r.intro)+'</p>'+
