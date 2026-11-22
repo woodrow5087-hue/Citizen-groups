@@ -105,3 +105,7 @@ storage. Use fictional content. New preview origins have separate storage.
 Physical iPhone Safari/VoiceOver and user approval remain review steps. Names,
 branding, scheduling, attendance/flagging and reading-policy decisions remain
 provisional as stated in the blueprint. No production readiness is claimed.
+
+### Comparing Today in the development preview
+
+After the sample welcome flow, Netlify deploy previews and branch deploys open Today on the Priority Board. Use `?f09=legacy` for the earlier Today or `?f09=1` for Smart Stack. These URL choices last only for that visit. Ask Rally requires `?f10=1` or `?f103=1` and opens when tapped. To build the same preview locally, run `CONTEXT=deploy-preview npm run build` and serve `dist/`.

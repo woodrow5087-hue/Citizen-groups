@@ -6,8 +6,9 @@ const {JSDOM}=require('jsdom');
 const T=require('../rallypoint-today.js');
 const {makeChatDomainBundle}=require('../scripts/build-chat-lab.cjs');
 const root=path.resolve(__dirname,'..'),key='rallypoint-phase1-2026';
-function open(t,{saved,ui,modern,blocked=false,f09=false,f10=false,f103=false,now='2026-11-23T12:00:00'}={}){
- const dom=new JSDOM(fs.readFileSync(path.join(root,'index.html'),'utf8'),{url:f103?'https://rally.test/?f103=1':f10?'https://rally.test/?f10=1':f09?'https://rally.test/?f09='+(f09==='board'?'board':'1'):'https://rally.test',runScripts:'outside-only',pretendToBeVisual:true});t.after(()=>dom.window.close());const w=dom.window,d=w.document;
+function open(t,{previewBuild=false,saved,ui,modern,blocked=false,f09=false,f10=false,f103=false,now='2026-11-23T12:00:00'}={}){
+ const dom=new JSDOM(fs.readFileSync(path.join(root,'index.html'),'utf8'),{url:f103?'https://rally.test/?f103=1':f10?'https://rally.test/?f10=1':f09?'https://rally.test/?f09='+(f09===true?'1':f09):'https://rally.test',runScripts:'outside-only',pretendToBeVisual:true});t.after(()=>dom.window.close());const w=dom.window,d=w.document;
+ if(previewBuild)d.documentElement.dataset.defaultToday='board';
  const NativeDate=w.Date;w.Date=class extends NativeDate{constructor(...args){super(...(args.length?args:[now]));}static now(){return new NativeDate(now).getTime();}};
  w.HTMLElement.prototype.scrollIntoView=function(){};
  if(saved)w.localStorage.setItem(key,JSON.stringify(saved));if(ui)w.localStorage.setItem(T.UI_KEY,JSON.stringify(ui));
@@ -723,6 +724,20 @@ test('F-09 preview gate never reveals group-private cards for a guest',t=>{
  assert.equal(app.d.querySelector('.f09-mini-faces'),null);
 });
 
+test('Preview Today defaults to the board, preserves comparisons and keeps Ask Rally opt-in',t=>{
+ const preview=options=>open(t,{previewBuild:true,...options});
+ const app=preview();
+ for(const view of ['group','team','read','today'])app.go(view);
+ assert.ok(app.d.querySelector('.f09-board'));
+ assert.equal(app.d.querySelector('.f10-entry'),null);
+ assert.ok(preview({f09:'legacy'}).d.querySelector('.pa-companion'));
+ assert.ok(preview({f09:true}).d.querySelector('.f09-stack-controls'));
+ for(const flag of ['f10','f103']){
+  const lab=preview({[flag]:true});
+  assert.ok(lab.d.querySelector('.f10-entry'));
+  assert.equal(lab.d.querySelector('.f10-panel'),null);
+ }
+});
 test('F-09 Smart Priority Board is separately gated; original Today and the Smart Stack remain unchanged',t=>{
  const classic=open(t);assert.equal(classic.d.querySelector('.f09-board'),null);
  const stacked=open(t,{f09:true});assert.ok(stacked.d.querySelector('.f09-stack-controls'));
