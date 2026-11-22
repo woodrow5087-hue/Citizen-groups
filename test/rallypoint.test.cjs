@@ -6,8 +6,8 @@ const {JSDOM}=require('jsdom');
 const T=require('../rallypoint-today.js');
 const {makeChatDomainBundle}=require('../scripts/build-chat-lab.cjs');
 const root=path.resolve(__dirname,'..'),key='rallypoint-phase1-2026';
-function open(t,{saved,ui,modern,blocked=false,f09=false,f10=false,now='2026-11-23T12:00:00'}={}){
- const dom=new JSDOM(fs.readFileSync(path.join(root,'index.html'),'utf8'),{url:f10?'https://rally.test/?f10=1':f09?'https://rally.test/?f09='+(f09==='board'?'board':'1'):'https://rally.test',runScripts:'outside-only',pretendToBeVisual:true});t.after(()=>dom.window.close());const w=dom.window,d=w.document;
+function open(t,{saved,ui,modern,blocked=false,f09=false,f10=false,f103=false,now='2026-11-23T12:00:00'}={}){
+ const dom=new JSDOM(fs.readFileSync(path.join(root,'index.html'),'utf8'),{url:f103?'https://rally.test/?f103=1':f10?'https://rally.test/?f10=1':f09?'https://rally.test/?f09='+(f09==='board'?'board':'1'):'https://rally.test',runScripts:'outside-only',pretendToBeVisual:true});t.after(()=>dom.window.close());const w=dom.window,d=w.document;
  const NativeDate=w.Date;w.Date=class extends NativeDate{constructor(...args){super(...(args.length?args:[now]));}static now(){return new NativeDate(now).getTime();}};
  w.HTMLElement.prototype.scrollIntoView=function(){};
  if(saved)w.localStorage.setItem(key,JSON.stringify(saved));if(ui)w.localStorage.setItem(T.UI_KEY,JSON.stringify(ui));
@@ -1001,4 +1001,54 @@ test('F-10.2 typed natural questions keep session context, visible guardrails an
  app.click('[data-action="close-dialog"]');
  app.click('.f10-entry-button');
  assert.equal(app.d.querySelectorAll('.f10-earlier-turn').length,0);
+});
+
+test('F-10.3 opt-in goal experience is source-grounded, accessible through existing sheet, and non-mutating',t=>{
+ const app=open(t,{f103:true,now:'2026-11-25T12:00:00',saved:{
+   role:'member',rsvp:'',teamStatus:'pending',read:false,prayed:false,
+   prayers:[],reached:[],groupMessages:[{name:'Jess',text:'Do not overwrite the archive'}]
+ }});
+ const before=JSON.stringify(app.saved());
+ const oldKeys=Object.keys(app.w.localStorage).sort();
+ assert.equal(app.d.querySelectorAll('#nav button').length,4);
+ app.click('.f10-entry-button');
+ assert.equal(app.d.querySelectorAll('.f10-chip').length,6);
+ assert.ok(app.d.querySelector('[data-action="f10-followup"][data-value="goal-group"]'));
+ assert.ok(app.d.querySelector('[data-action="f10-followup"][data-value="goal-serve"]'));
+ const ask=q=>{
+   const input=app.d.getElementById('f10-query');
+   input.value=q;input.form.dispatchEvent(new app.w.Event('submit',{bubbles:true,cancelable:true}));
+   return app.d.querySelector('.f10-response').textContent;
+ };
+ assert.match(ask('Help me get ready for Wednesday'),/Get ready for Wednesday/);
+ assert.ok(app.d.querySelector('[data-action="f10-confirm"][data-value="rsvp"]'));
+ assert.equal(app.saved().rsvp,'');
+ assert.match(ask('Did I already RSVP?'),/Your group RSVP/);
+ assert.match(ask('And Sunday?'),/Welcome Team/);
+ assert.match(ask('Help me prepare for that'),/Get ready to serve/);
+ assert.ok(app.d.querySelector('[data-action="f10-confirm"][data-value="serve"]'));
+ assert.equal(app.saved().teamStatus,'pending');
+ assert.match(ask('What about next week?'),/recurring church schedule/);
+ assert.equal(JSON.stringify(app.saved()),before,'conversation and goals remain read-only');
+ assert.deepEqual(Object.keys(app.w.localStorage).sort(),oldKeys);
+ app.click('[data-action="close-dialog"]');
+ app.click('.f10-entry-button');
+ assert.equal(app.d.querySelectorAll('.f10-earlier-turn').length,0);
+});
+test('F-10.3 guest goal route stays private and offers no forbidden confirmations',t=>{
+ const app=open(t,{f103:true,now:'2026-11-25T12:00:00',
+  ui:{...T.initial(),name:'Guest',memberships:{group:false,team:false}},
+  saved:{role:'leader',teamStatus:'pending',rsvp:'',prayers:[{name:'Marcus C.',text:'Private prayer note'}],
+    groupMessages:[{name:'Jess',text:'Old private archive'}]}});
+ app.click('.f10-entry-button');
+ for(const prompt of ['goal-group','goal-serve','goal-connect']){
+  const chip=app.d.querySelector('[data-action="f10-followup"][data-value="'+prompt+'"]');
+  if(chip)chip.click();else{
+   const input=app.d.getElementById('f10-query');input.value=prompt;
+   input.form.dispatchEvent(new app.w.Event('submit',{bubbles:true,cancelable:true}));
+  }
+  const result=app.d.querySelector('.f10-response').textContent;
+  assert.doesNotMatch(result,/North Commons|North Campus|Private prayer note|Old private archive|leader check-ins/);
+  assert.equal(app.d.querySelector('[data-action="f10-confirm"]'),null);
+ }
 });
