@@ -1,6 +1,9 @@
 (function rallyApp(){
 'use strict';
 const key='rallypoint-phase1-2026';
+// F-09 is an isolated, explicit preview URL switch, never a saved preference.
+const f09Preview=new URLSearchParams(window.location.search).get('f09')==='1';
+let f09Index=0;
 const defaults=()=>({role:'member',groupPane:'chat',directPerson:'anna',directMessages:{},teamPane:'schedule',view:'today',discover:false,groupMessages:[{name:'Jess W.',time:'Yesterday',text:'What stood out to you in John 15 this week?'},{name:'Anna L.',time:'Today',text:'Looking forward to seeing everyone Wednesday.'}],teamMessages:[{name:'Sam R.',time:'Yesterday',text:'Welcome team — thank you for helping people feel at home!'}],prayers:[{name:'Marcus C.',time:'Yesterday',text:'Praying for wisdom with an upcoming decision.'}],rsvp:'',teamStatus:'pending',coverage:false,attendance:{anna:'here',jess:'here',marcus:'unknown',taylor:'unknown'},reached:[],interest:[],plan:'sermon',planQuestions:{},memoryTextRevision:'BSB-2026-1',memoryGames:{},memoryMode:'solo',memoryActive:null,memoryPassTurn:1,memoryTarget:null,question:'How can we love one another as Jesus has loved us?',read:false,prayed:false,companionCare:{},companionChoices:{snoozedUntil:{}},rhythm:{}});
 let s;try{s={...defaults(),...JSON.parse(localStorage.getItem(key)||'null')}}catch(_){s=defaults()}
 if(!s||!s.groupMessages||!Array.isArray(s.groupMessages))s=defaults();
@@ -94,6 +97,14 @@ function renderPeople(snapshot,chat){
       ${snapshot.leader?`<button type="button" class="leader-entry today-people-leader" data-go="group" data-pane="leader" aria-label="Open authorized sample group leader check-ins">${icon('leader')}<span><span class="today-label">LEADER FOLLOW-UP · DEMO</span><strong>${snapshot.leader.remaining.length} sample check-ins to review</strong><small>People first, not engagement scores</small></span>${icon('arrow')}</button>`:''}
     </div>
   </section>`;
+}
+function f09Today(){
+ const now=new Date(),chat=conversation(),model=window.RallySmartDashboard.model({
+   state:s,ui:todayUI,conversation:chat,now,today:T,
+   companion:window.RallyCompanionDecision,passage:currentReading().passage
+ });
+ f09Index=Math.max(0,Math.min(f09Index,model.stack.length-1));
+ return window.RallySmartDashboard.render(model,f09Index,H.peopleRail(todayUI,'today'));
 }
 function today(){
   const chat=conversation(),snapshot=T.snapshot(s,todayUI,new Date(),chat),event=snapshot.upNext;
@@ -432,6 +443,7 @@ if(s.role!=='leader'){if(s.groupPane==='leader')s.groupPane='chat';if(s.teamPane
 save();
 const hybridShell=document.querySelector('.phone-inner');
 hybridShell.classList.add('premium-alive');
+hybridShell.classList.toggle('is-f09-dashboard',f09Preview&&s.view==='today');
 hybridShell.classList.toggle('is-leader-hybrid',s.view==='group'&&s.groupPane==='leader'&&canLead('group'));
 document.querySelector('.phone-inner').classList.toggle('is-fluid-today',s.view==='today');
  document.querySelector('.phone-inner').classList.toggle('is-groups-v07',s.view==='group');
@@ -443,7 +455,7 @@ document.querySelector('.phone-inner').classList.toggle('is-fluid-today',s.view=
 if(s.view==='group'&&s.groupPane==='chat'&&todayUI.memberships.group){
   try{window.RallyConversationRead?.markRead({storage:localStorage,domain:window.RallyChatDomain,member:true});}catch(_){}
 }
-view.innerHTML=(storageWarning?`<p class="storage-notice" role="status">${e(storageWarning)}</p>`:'')+(s.view==='today'?today():s.view==='group'?group():s.view==='team'?team():s.view==='play'?play():read());
+view.innerHTML=(storageWarning?`<p class="storage-notice" role="status">${e(storageWarning)}</p>`:'')+(s.view==='today'?(f09Preview?f09Today():today()):s.view==='group'?group():s.view==='team'?team():s.view==='play'?play():read());
 if(s.view==='play')mountBlankBattle();
 view.querySelectorAll('textarea').forEach(field=>{if(drafts[field.id]!==undefined)field.value=drafts[field.id]});
 if(s.view==='group'&&s.groupPane==='chat'&&todayUI.memberships.group&&$('rpx-chat')){
@@ -481,6 +493,7 @@ view.scrollTop=position;
 function navigate(view,pane,reading){
 closeDialog(false);
 s.view=view;
+if(view==='today'&&f09Preview)f09Index=0;
 if(view==='group'){
 s.discover=false;if(pane)s.groupPane=pane;
 if(pane==='leader'&&!(s.role==='leader'&&todayUI.memberships.group))s.groupPane='chat';
@@ -498,7 +511,7 @@ function showDialog(type,trigger=document.activeElement){dialogTrigger=trigger;d
 function renderDialog(){
 let title='',body='';const chat=conversation(),snapshot=T.snapshot(s,todayUI,new Date(),chat);
 if(dialog==='demo-controls'){
-title='Your local preview';body=`<p><strong>Rally Point · Phase 1</strong><br>Fictional people, messages and schedules. No account or integration is connected.</p><form data-form="demo-name" class="rp-stack"><label class="demo-field" for="demo-name">First name for this demo<input id="demo-name" name="name" maxlength="20" value="${e(todayUI.name)}" autocomplete="nickname" required></label><button type="submit" class="btn red">Save local name</button></form><div class="demo-section"><h3>Role preview</h3><button type="button" id="role" class="role" aria-label="Toggle member or leader preview">${s.role==='leader'?'Leader demo · Switch to member':'Member demo · Try leader tools'}</button><p class="fine-note">This grants fixture permissions only for Wednesday Group and Welcome Team when you belong to them. It is not a real account, authority grant or secure backend.</p></div><div class="demo-section"><h3>Try a Today state</h3><div class="rp-stack"><button type="button" class="demo-option" data-action="scenario" data-value="connected"><span>${icon('group')}</span><span><strong>Connected & actionable</strong><small>Group update and a pending serving response.</small></span></button><button type="button" class="demo-option" data-action="scenario" data-value="caught-up"><span>${icon('check')}</span><span><strong>All caught up</strong><small>Acknowledge updates and confirm the sample schedule.</small></span></button><button type="button" class="demo-option" data-action="scenario" data-value="no-memberships"><span>${icon('heart')}</span><span><strong>No group or team yet</strong><small>Welcoming empty state with Scripture and discovery paths.</small></span></button></div><p class="fine-note">Fixture controls change your local sample response and Today memberships. Your messages, prayer posts, RSVP and saved leader/reading choices are kept.</p></div><div class="demo-section"><h3>Welcome experience</h3><a href="?welcome=1" class="activity-item rp-replay-welcome">${icon('arrow')}<span><strong>Replay animated welcome</strong><small>Splash → Welcome → Log In or Campus → your existing Rally Point demo</small></span>${icon('arrow')}</a><p class="fine-note">Replaying onboarding won’t erase saved fictional messages, reading progress or schedule responses. Real sign-in is not connected.</p></div><div class="demo-section"><p class="fine-note">The working name and branding remain provisional. Local browser storage is not secure member storage. Please use fictional content.</p><a href="premium-hybrid-archive.html">Open the preserved Citizen Connect demo</a></div>`;
+title='Your local preview';body=`<p><strong>Rally Point · Phase 1</strong><br>Fictional people, messages and schedules. No account or integration is connected.</p><form data-form="demo-name" class="rp-stack"><label class="demo-field" for="demo-name">First name for this demo<input id="demo-name" name="name" maxlength="20" value="${e(todayUI.name)}" autocomplete="nickname" required></label><button type="submit" class="btn red">Save local name</button></form><div class="demo-section"><h3>Role preview</h3><button type="button" id="role" class="role" aria-label="Toggle member or leader preview">${s.role==='leader'?'Leader demo · Switch to member':'Member demo · Try leader tools'}</button><p class="fine-note">This grants fixture permissions only for Wednesday Group and Welcome Team when you belong to them. It is not a real account, authority grant or secure backend.</p></div><div class="demo-section"><h3>Try a Today state</h3><div class="rp-stack"><button type="button" class="demo-option" data-action="scenario" data-value="connected"><span>${icon('group')}</span><span><strong>Connected & actionable</strong><small>Group update and a pending serving response.</small></span></button><button type="button" class="demo-option" data-action="scenario" data-value="caught-up"><span>${icon('check')}</span><span><strong>All caught up</strong><small>Acknowledge updates and confirm the sample schedule.</small></span></button><button type="button" class="demo-option" data-action="scenario" data-value="no-memberships"><span>${icon('heart')}</span><span><strong>No group or team yet</strong><small>Welcoming empty state with Scripture and discovery paths.</small></span></button></div><p class="fine-note">Fixture controls change your local sample response and Today memberships. Your messages, prayer posts, RSVP and saved leader/reading choices are kept.</p></div><div class="demo-section"><h3>Today dashboard experiment</h3><p class="fine-note">Explore F-09 with the same fictional people, group, serving and Scripture data. This preview does not replace the approved Today screen.</p><a href="${f09Preview?'./':'?f09=1'}">${f09Preview?'Return to approved Today':'Open F-09 Smart Dashboard'}</a></div><div class="demo-section"><h3>Welcome experience</h3><a href="?welcome=1" class="activity-item rp-replay-welcome">${icon('arrow')}<span><strong>Replay animated welcome</strong><small>Splash → Welcome → Log In or Campus → your existing Rally Point demo</small></span>${icon('arrow')}</a><p class="fine-note">Replaying onboarding won’t erase saved fictional messages, reading progress or schedule responses. Real sign-in is not connected.</p></div><div class="demo-section"><p class="fine-note">The working name and branding remain provisional. Local browser storage is not secure member storage. Please use fictional content.</p><a href="premium-hybrid-archive.html">Open the preserved Citizen Connect demo</a></div>`;
 }
 if(dialog==='quick-actions'){
  title='Make your next move';body=`<p>Quick actions from your current Rally Point demo. Select one to open its existing feature.</p><div class="rp-stack">${todayUI.memberships.group?`<button type="button" class="activity-item" data-go="group" data-pane="chat">${icon('group')}<span><strong>Your group</strong><small>Open the Wednesday Group conversation</small></span>${icon('arrow')}</button>`:`<button type="button" class="activity-item" data-go="group">${icon('group')}<span><strong>Find a group</strong><small>Explore community</small></span>${icon('arrow')}</button>`}${todayUI.memberships.team?`<button type="button" class="activity-item" data-go="team" data-pane="schedule">${icon('team')}<span><strong>Your serving schedule</strong><small>See the upcoming sample shift</small></span>${icon('arrow')}</button>`:''}<button type="button" class="activity-item" data-go="read" data-reading="scripture">${icon('read')}<span><strong>Today’s Scripture</strong><small>Read John 15:9–12</small></span>${icon('arrow')}</button></div>`;
@@ -522,6 +535,27 @@ if(b.type==='submit'&&b.form)return;
 if(b.id==='role'){s.role=s.role==='leader'?'member':'leader';s.groupPane='chat';s.teamPane='schedule';render();renderDialog();notify(s.role==='leader'?'Scoped leader fixture enabled':'Member fixture enabled');return}
 if(b.dataset.go){navigate(b.dataset.go,b.dataset.pane||((b.dataset.leader)?'leader':''),b.dataset.reading);return}
 const a=b.dataset.action,v=b.dataset.value||'',person=b.dataset.person;
+if(f09Preview&&s.view==='today'&&a==='f09-stack'){
+ const m=window.RallySmartDashboard.model({
+   state:s,ui:todayUI,conversation:conversation(),now:new Date(),today:T,
+   companion:window.RallyCompanionDecision,passage:currentReading().passage
+ });
+ if(!m.stack.length)return;
+ f09Index=(f09Index+(v==='prev'?-1:1)+m.stack.length)%m.stack.length;
+ render();return;
+}
+if(f09Preview&&s.view==='today'&&a==='f09-rsvp'){
+ if(!todayUI.memberships.group)return;
+ s.rsvp='going';f09Index=0;render();
+ notify('Sample RSVP saved on this device.');return;
+}
+if(f09Preview&&s.view==='today'&&a==='f09-serve'){
+ if(!todayUI.memberships.team)return;
+ s.teamStatus='confirmed';s.coverage=false;
+ s.teamMessages=s.teamMessages.filter(x=>!x.coverage);
+ f09Index=0;render();
+ notify('Sample serving availability confirmed locally.');return;
+}
 if(a==='memorize-preview'){navigate('read',null,'memorize');return}
 if(['notifications','demo-controls','team-preview','quick-actions'].includes(a)){showDialog(a,b);return}
 if(a==='close-dialog'){closeDialog();return}
@@ -661,6 +695,28 @@ if(a==='question'&&canLead('group')){const txt=$('question')?.value.trim();if(!t
 if(a==='read'){s.read=!s.read;render();return}
 if(a==='pray'){s.prayed=!s.prayed;render();return}
 });
+// F-09 priority cards can be browsed without mutating the F-08 snooze state.
+// Dedicated previous/next buttons also work with touch, keyboard and assistive tech.
+let f09Touch=null;
+document.addEventListener('touchstart',ev=>{
+ if(!f09Preview||s.view!=='today'||ev.touches.length!==1)return;
+ const hero=ev.target.closest('.f09-hero');
+ if(!hero||ev.target.closest('button,summary,a'))return;
+ const t=ev.touches[0];f09Touch={x:t.clientX,y:t.clientY};
+},{passive:true});
+document.addEventListener('touchend',ev=>{
+ if(!f09Touch||!f09Preview||s.view!=='today'||!ev.changedTouches.length)return;
+ const {x,y}=f09Touch;f09Touch=null;
+ const dx=ev.changedTouches[0].clientX-x,dy=ev.changedTouches[0].clientY-y;
+ if(Math.abs(dy)<46||Math.abs(dy)<Math.abs(dx)*1.4)return;
+ const m=window.RallySmartDashboard.model({
+   state:s,ui:todayUI,conversation:conversation(),now:new Date(),today:T,
+   companion:window.RallyCompanionDecision,passage:currentReading().passage
+ });
+ if(m.stack.length<2)return;
+ f09Index=(f09Index+(dy<0?1:-1)+m.stack.length)%m.stack.length;
+ render();
+},{passive:true});
 document.addEventListener('click',ev=>{if(ev.target.dataset.dismiss==='dialog')closeDialog();});
 document.addEventListener('submit',ev=>{
 if(ev.target.dataset.form!=='demo-name')return;ev.preventDefault();const value=String(new FormData(ev.target).get('name')||'').trim();
