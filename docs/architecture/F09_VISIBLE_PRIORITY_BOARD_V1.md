@@ -40,4 +40,18 @@ Integration: preserve old Today, Smart Stack and four tabs; RSVP/serve update sa
 
 Mobile browser: Playwright at 320 / 390 / 430 widths, no horizontal overflow, reachable 44px targets, WCAG axe A/AA, board screenshot and state changes; existing F-03/F-04/F-08 and F-09 regressions must still pass.
 
-**Product decision after visual review:** keep the board's single lead action + three visible rows. Consider whether Today-at-a-Glance is primarily a schedule/status summary, to minimize repeated identical CTAs while remaining faithful to the selected visual reference.
+## F-09.2 refinement — action/status separation and visual fidelity
+
+**Decision implemented:** The red hero and three colored rows are the only priority action surface. **Today at a Glance is now a read-only schedule and status digest**, not a second place to RSVP or confirm serving. The heading keeps the approved visual identity with the sublabel “Schedule & Status”; each row shows existing source-backed time/place and a compact noninteractive state chip:
+
+- Wednesday Group — actual next sample Wednesday time and North Commons location; *RSVP open / Going / Maybe*.
+- Welcome Team — next fixture Sunday time and North Campus; *Needs reply / Confirmed / View schedule*.
+- Scripture rhythm — current passage and whether it is *To read / Read / Step due*.
+
+There are **zero buttons or `data-action`/`data-go` routes in the summary**, and the hero/priority rows continue to use existing guarded handlers. This preserves the reference's three-row visual rhythm while removing duplicate action points and reusing saved source values. A green completion chip is distinct from the red/pink/gold attention colors. Empty membership shows neutral descriptive community/team states with no private activity. All states remain fictional demo content.
+
+Visual micro-refinements: bolt glyph in the lead card, slightly more distinct pastel row surfaces, stronger hero headline proportions, and an unobtrusive “Today · Your Priorities” eyebrow (the demo disclosure remains at the bottom). No new storage keys, backend assumptions, automated nudges or default-screen changes.
+
+**Additional QA:** Verify the schedule digest contains no focusable controls, statuses update immediately after RSVP and serving actions, real fixture time/location is shown without invention, mobile accessibility passes and the legacy archive is preserved.
+
+**Next review decision:** Compare the actual iPhone screenshot with the selected reference for typography, hero proportions and People / mission visibility. Do not merge before explicit approval.
