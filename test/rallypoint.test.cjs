@@ -911,7 +911,7 @@ test('F-10 guest sees only discovery; no private chat, RSVP, team response or le
    assert.doesNotMatch(txt,/Marcus|Confidential|Older private archive|leader check-ins|3 unread/i,id);
    assert.equal(app.d.querySelector('[data-action="f10-confirm"]'),null);
  }
- assert.match(app.d.querySelector('.f10-response').textContent,/local demo|local/i);
+ assert.match(app.d.querySelector('.f10-disclosure').textContent,/fictional|local/i);
  app.click('.f10-chip[data-value="group"]');
  app.click('.f10-route[data-go="group"]');
  assert.equal(app.saved().view,'group');
