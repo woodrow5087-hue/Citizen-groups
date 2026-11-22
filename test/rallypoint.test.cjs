@@ -781,3 +781,60 @@ test('F-09 board guest view never exposes gated group conversation, prayer or se
  assert.equal(app.d.querySelector('.f09b-row[data-row="group-rsvp"]'),null);
  assert.equal(app.d.querySelector('.f09b-row[data-row="serve-response"]'),null);
 });
+
+test('F-09.3 novice fixture gets welcoming, private-data-free discovery with unchanged tabs',t=>{
+ const app=open(t,{f09:'board',saved:{role:'member',prayers:[{name:'Marcus C.',text:'Private request'}],teamStatus:'pending'},
+  ui:{...T.initial(),name:'Newcomer',memberships:{group:false,team:false}}});
+ assert.equal(app.d.querySelector('.f09-board').dataset.audience,'newcomer');
+ assert.equal(app.d.querySelector('.f09b-hero').dataset.priority,'welcome-community');
+ assert.match(app.d.querySelector('.f09b-hero').textContent,/There.s room for you/);
+ assert.equal(app.d.querySelectorAll('.f09b-row').length,3);
+ assert.doesNotMatch(app.d.querySelector('.f09-board').textContent,/Marcus|Private request|leader check-ins/);
+ assert.equal(app.d.querySelector('.f09b-row[data-row="serve-response"]'),null);
+ assert.equal(app.d.querySelectorAll('#nav button').length,4);
+ app.click('.f09b-primary[data-go="group"]');assert.equal(app.saved().view,'group');
+});
+test('F-09.3 leader uses authorized review only, and naturally becomes caught-up after source review',t=>{
+ const app=open(t,{f09:'board',saved:{role:'leader',rsvp:'going',teamStatus:'confirmed',read:true,prayed:true,prayers:[]}});
+ // Opening and acknowledging the existing conversation is not an unrelated task completion.
+ app.go('group');app.go('today');
+ assert.equal(app.d.querySelector('.f09-board').dataset.audience,'leader');
+ assert.equal(app.d.querySelector('.f09b-hero').dataset.priority,'leader-checkins');
+ assert.equal(app.d.querySelector('.f09b-hero [data-go="group"]').dataset.pane,'leader');
+ app.click('.f09b-primary[data-go="group"][data-pane="leader"]');
+ assert.equal(app.saved().groupPane,'leader');
+ app.click('[data-action="reached"][data-person="marcus"]');
+ app.click('[data-action="reached"][data-person="taylor"]');
+ app.go('today');
+ assert.equal(app.d.querySelector('.f09b-hero').dataset.priority,'caught-up');
+ assert.equal(app.d.querySelector('.f09-board').dataset.caughtUp,'true');
+ assert.match(app.d.querySelector('.f09b-hero').textContent,/Nothing in your sample commitments needs a response/);
+ assert.deepEqual(app.saved().reached.sort(),['marcus','taylor']);
+});
+test('F-09.3 confirms source actions with transient live feedback and no extra browser state',t=>{
+ const app=open(t,{f09:'board',saved:{role:'member',rsvp:'',teamStatus:'pending',read:true,prayed:true,prayers:[]},
+  now:'2026-11-25T12:00:00'});
+ const archived=structuredClone(app.saved().groupMessages);
+ const modern=app.w.localStorage.getItem('rallypoint-wednesday-chat-lab-v1');
+ app.click('.f09b-hero [data-action="f09-rsvp"]');
+ assert.match(app.d.querySelector('.f09b-feedback[role="status"]').textContent,/Sample group RSVP saved/);
+ assert.equal(app.saved().f09Feedback,undefined);
+ app.click('.f09b-row [data-action="f09-serve"]');
+ assert.match(app.d.querySelector('.f09b-feedback').textContent,/Sample serving response saved/);
+ assert.equal(app.saved().teamStatus,'confirmed');
+ assert.deepEqual(app.saved().groupMessages,archived);
+ assert.equal(app.w.localStorage.getItem('rallypoint-wednesday-chat-lab-v1'),modern);
+ app.go('read');app.go('today');
+ assert.equal(app.d.querySelector('.f09b-feedback'),null,'feedback does not survive navigation');
+});
+test('F-09.3 volunteer-only member sees team priority, not group-private content',t=>{
+ const app=open(t,{f09:'board',now:'2026-11-21T12:00:00',
+ saved:{role:'member',prayers:[{name:'Marcus C.',text:'Not for a volunteer without group'}],teamStatus:'pending',rsvp:''},
+ ui:{...T.initial(),name:'Volunteer',memberships:{group:false,team:true}}});
+ assert.equal(app.d.querySelector('.f09-board').dataset.audience,'volunteer');
+ assert.equal(app.d.querySelector('.f09b-hero').dataset.priority,'serve-response');
+ assert.doesNotMatch(app.d.querySelector('.f09-board').textContent,/Marcus|Not for a volunteer|3 new group messages/);
+ app.click('.f09b-primary[data-action="f09-serve"]');
+ assert.equal(app.saved().teamStatus,'confirmed');
+ assert.equal(app.d.querySelector('.f09b-hero').dataset.priority,'caught-up');
+});
