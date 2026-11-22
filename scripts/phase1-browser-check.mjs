@@ -387,6 +387,8 @@ try{
  await guestAsk.goto(companionUrl.toString());
  await guestAsk.locator('.f10-entry-button').click();
  for(const intent of ['week','next','group','serve','why']){
+   const topics=guestAsk.locator('.f10-topics');
+   if(!(await topics.evaluate(el=>el.open)))await topics.locator('summary').click();
    await guestAsk.locator('.f10-chip[data-value="'+intent+'"]').click();
    const body=await guestAsk.locator('.f10-response').textContent();
    assert.ok(!/Marcus|Private group sample note|3 unread|leader check-ins/.test(body));
