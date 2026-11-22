@@ -244,6 +244,12 @@ try{
    assert.ok(await board.locator('#rpx-chat').isVisible());
    await board.locator('#nav [data-go="today"]').click();
    assert.equal(await board.locator('.f09b-row[data-row="group-unread"]').count(),0);
+   assert.equal(await board.locator('.f09b-hero').getAttribute('data-priority'),'caught-up');
+   assert.equal(await board.locator('.f09-board').getAttribute('data-caught-up'),'true');
+   assert.ok((await board.locator('.f09b-agenda-row[data-agenda="scripture"]').textContent()).includes('To read'),
+     'a quiet hero never marks optional Scripture completed');
+   assert.equal(await board.locator('.f09b-feedback').count(),0,'transient confirmation clears on navigation');
+   if(width===390)await board.screenshot({path:path.join(out,'f09-adaptive-caught-up-390.png'),fullPage:false});
    const state=await board.evaluate(()=>JSON.parse(localStorage.getItem('rallypoint-phase1-2026')));
    assert.equal(state.rsvp,'going');
    assert.equal(state.teamStatus,'confirmed');
@@ -252,6 +258,52 @@ try{
    await audit(board,'F-09 board updated '+width);
    await boardContext.close();
  }
+ // F-09.3 scenario matrix in a browser (separate from the pure policy tests).
+ // Roles remain fictional and membership gated; no leader authority is inferred.
+ const roleOptions={viewport:{width:390,height:844},isMobile:true,hasTouch:true,reducedMotion:'reduce'};
+ const guestContext=await browser.newContext(roleOptions),guest=await guestContext.newPage();
+ await guest.clock.install({time:new Date('2026-11-23T12:00:00')});
+ await guest.addInitScript(()=>{
+   localStorage.setItem('rallypoint-phase1-2026',JSON.stringify({
+     role:'member',view:'today',teamStatus:'pending',rsvp:'',read:false,prayed:false,
+     groupMessages:[],prayers:[{name:'Marcus C.',text:'Private fictional sample'}]
+   }));
+   localStorage.setItem('rallypoint-today-ui-v1',JSON.stringify({
+     name:'Newcomer',memberships:{group:false,team:false}
+   }));
+ });
+ await guest.goto(boardUrl.toString());
+ assert.equal(await guest.locator('.f09-board').getAttribute('data-audience'),'newcomer');
+ assert.equal(await guest.locator('.f09b-hero').getAttribute('data-priority'),'welcome-community');
+ assert.ok(!(await guest.locator('.f09-board').textContent()).includes('Private fictional sample'));
+ assert.equal(await guest.locator('.f09b-row[data-row="serve-response"]').count(),0);
+ await geometry(guest,'F-09.3 newcomer');
+ await audit(guest,'F-09.3 newcomer');
+ await guestContext.close();
+ const leaderContext=await browser.newContext(roleOptions),leader=await leaderContext.newPage();
+ await leader.clock.install({time:new Date('2026-11-23T12:00:00')});
+ await leader.addInitScript(()=>{
+   localStorage.setItem('rallypoint-phase1-2026',JSON.stringify({
+     role:'leader',view:'today',teamStatus:'confirmed',rsvp:'going',read:true,prayed:true,
+     groupMessages:[],prayers:[],reached:[]
+   }));
+ });
+ await leader.goto(boardUrl.toString());
+ // Visit the actual modern thread to acknowledge its cursor. Today alone must not.
+ await leader.locator('#nav [data-go="group"]').click();
+ await leader.locator('#nav [data-go="today"]').click();
+ assert.equal(await leader.locator('.f09-board').getAttribute('data-audience'),'leader');
+ assert.equal(await leader.locator('.f09b-hero').getAttribute('data-priority'),'leader-checkins');
+ await leader.locator('.f09b-primary[data-go="group"][data-pane="leader"]').click();
+ for(const id of ['marcus','taylor']){
+   await leader.locator('[data-action="reached"][data-person="'+id+'"]').click();
+ }
+ await leader.locator('#nav [data-go="today"]').click();
+ assert.equal(await leader.locator('.f09b-hero').getAttribute('data-priority'),'caught-up');
+ assert.equal(await leader.locator('.f09-board').getAttribute('data-caught-up'),'true');
+ await geometry(leader,'F-09.3 leader reviewed');
+ await audit(leader,'F-09.3 leader reviewed');
+ await leaderContext.close();
  const fallback=await browser.newContext({viewport:{width:375,height:812},reducedMotion:'reduce'});await fallback.addInitScript(()=>Object.defineProperty(window,'localStorage',{get(){throw Error('Blocked');}}));const fp=await fallback.newPage();await fp.goto(todayUrl);assert.ok((await fp.locator('#view').textContent()).includes('could not save'));await fp.locator('#nav [data-go="read"]').click();await fp.locator('[data-action="read"]').click();assert.ok((await fp.locator('#view').textContent()).includes('Read today'));await fallback.close();
  fs.writeFileSync(path.join(out,'phase1-browser-results.json'),JSON.stringify({cases:results,flows:'Source links, original messages/prayers, RSVP, serving, role/leader tools, reading/question, empty states, focus, persistence and storage fallback passed.',axe:'No detected WCAG A/AA violations on tested views/dialogs.'},null,2));console.log('All Phase 1 mobile, accessibility, persistence and source-flow checks passed.');
 }finally{await browser.close();if(server)await new Promise(r=>server.close(r));}
