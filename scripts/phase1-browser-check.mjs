@@ -121,6 +121,41 @@ try{
  assert.equal(await rhythmPage.locator('.pa-people-rail--today').count(),1,'Approved people rail remains');
  await audit(rhythmPage,'Scripture follow-through remembered');
  await rhythmContext.close();
+ // Companion F-08: source-backed suggestion, explanation and non-destructive deferral.
+ const smartContext=await browser.newContext({viewport:{width:390,height:844},isMobile:true,hasTouch:true,reducedMotion:'reduce'});
+ const smartPage=await smartContext.newPage();
+ await smartPage.clock.install({time:new Date('2026-11-23T12:00:00')});
+ await smartPage.addInitScript(()=>{
+   localStorage.setItem('rallypoint-phase1-2026',JSON.stringify({
+     role:'member',view:'today',prayers:[],teamStatus:'confirmed',rsvp:'',
+     read:true,prayed:true,groupMessages:[{name:'Jess W.',time:'Yesterday',text:'Legacy record stays.'}]
+   }));
+ });
+ await smartPage.goto(todayUrl);
+ assert.equal(await smartPage.locator('.pa-companion').getAttribute('data-suggestion'),'group-unread');
+ assert.ok((await smartPage.locator('.pa-companion-why').textContent()).includes('modern group read cursor'));
+ await audit(smartPage,'Companion source-backed unread');
+ await smartPage.locator('.pa-companion').scrollIntoViewIfNeeded();
+ await smartPage.screenshot({path:path.join(out,'companion-f08-unread-390.png')});
+ const modernBefore=await smartPage.evaluate(()=>localStorage.getItem('rallypoint-wednesday-chat-lab-v1'));
+ await smartPage.locator('[data-action="companion-later"]').click();
+ assert.equal(await smartPage.locator('.pa-companion').getAttribute('data-suggestion'),'group-rsvp');
+ const modernAfter=await smartPage.evaluate(()=>localStorage.getItem('rallypoint-wednesday-chat-lab-v1'));
+ assert.equal(modernAfter,modernBefore,'deferring an idea does not mark messages read');
+ assert.ok((await smartPage.locator('.today-people-message').textContent()).includes('3 UNREAD'));
+ await smartPage.locator('.pa-companion').scrollIntoViewIfNeeded();
+ await smartPage.screenshot({path:path.join(out,'companion-f08-next-step-390.png')});
+ await smartPage.locator('.pa-companion [data-go="group"][data-pane="gather"]').click();
+ await smartPage.locator('[data-action="rsvp"][data-value="going"]').click();
+ await smartPage.locator('#nav [data-go="today"]').click();
+ assert.equal(await smartPage.locator('.pa-companion').getAttribute('data-suggestion'),'group-people');
+ const savedSmart=await smartPage.evaluate(()=>JSON.parse(localStorage.getItem('rallypoint-phase1-2026')));
+ assert.equal(savedSmart.rsvp,'going');
+ assert.equal(savedSmart.groupMessages[0].text,'Legacy record stays.');
+ assert.ok(Date.parse(savedSmart.companionChoices.snoozedUntil['group-unread'])>
+   new Date('2026-11-23T12:00:00').getTime());
+ await audit(smartPage,'Companion deferred suggestion and RSVP');
+ await smartContext.close();
  const fallback=await browser.newContext({viewport:{width:375,height:812},reducedMotion:'reduce'});await fallback.addInitScript(()=>Object.defineProperty(window,'localStorage',{get(){throw Error('Blocked');}}));const fp=await fallback.newPage();await fp.goto(todayUrl);assert.ok((await fp.locator('#view').textContent()).includes('could not save'));await fp.locator('#nav [data-go="read"]').click();await fp.locator('[data-action="read"]').click();assert.ok((await fp.locator('#view').textContent()).includes('Read today'));await fallback.close();
  fs.writeFileSync(path.join(out,'phase1-browser-results.json'),JSON.stringify({cases:results,flows:'Source links, original messages/prayers, RSVP, serving, role/leader tools, reading/question, empty states, focus, persistence and storage fallback passed.',axe:'No detected WCAG A/AA violations on tested views/dialogs.'},null,2));console.log('All Phase 1 mobile, accessibility, persistence and source-flow checks passed.');
 }finally{await browser.close();if(server)await new Promise(r=>server.close(r));}

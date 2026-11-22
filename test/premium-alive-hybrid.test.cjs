@@ -6,6 +6,7 @@ const path=require('node:path');
 const root=path.resolve(__dirname,'..');
 function helpers(){
   const sandbox={window:{}};
+  vm.runInNewContext(fs.readFileSync(path.join(root,'rallypoint-companion-decision.js'),'utf8'),sandbox);
   vm.runInNewContext(fs.readFileSync(path.join(root,'rallypoint-premium-alive.js'),'utf8'),sandbox);
   return sandbox.window.RallyHybrid;
 }
@@ -38,10 +39,12 @@ test('Today hero remains personal and companion prompt adapts to meaningful sour
   assert.match(h.todayHero(connected),/Your people/);
   assert.match(h.todayHero(disconnected),/Explore fictional groups/);
   assert.match(h.todayPrompt({teamStatus:'pending'},connected),/Review my serve/);
-  assert.match(h.todayPrompt({teamStatus:'confirmed',groupMessages:[{name:'Anna L.'}]},connected),/Catch up with my group/);
+  assert.match(h.todayPrompt({teamStatus:'confirmed',groupMessages:[{name:'Anna L.'}]},connected,{status:'ok',unreadCount:2}),/Catch up with my group/);
   assert.match(h.todayPrompt({teamStatus:'confirmed',read:false,prayed:false},disconnected),/Open today’s reading/);
   assert.match(h.todayPrompt({teamStatus:'confirmed',read:true,prayed:false},disconnected),/Open prayer/);
-  assert.match(h.todayPrompt({teamStatus:'confirmed',read:true,prayed:true},disconnected),/There’s no streak to protect/);
+  assert.match(h.todayPrompt({teamStatus:'confirmed',read:true,prayed:true},disconnected),/Find my people/);
+  // A deferred discovery idea falls back without inventing an engagement score.
+  assert.match(h.todayPrompt({teamStatus:'confirmed',read:true,prayed:true,companionChoices:{snoozedUntil:{'find-community':'9999-12-31T00:00:00Z'}}},disconnected),/There’s no streak to protect/);
 });
 test('group summary routes to existing gathering rather than inventing attendance or messages',()=>{
  const h=helpers();
