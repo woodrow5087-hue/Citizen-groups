@@ -129,6 +129,11 @@ function model({state,ui,conversation,now=new Date(),today,companion,passage='Jo
  return Object.freeze({
    stack,modules,tasks:Object.freeze(tasks.slice(0,4)),
    member,team,unread,meetingLabel,meetingText,
+   groupDate:gathered?.date||null,serveDate:serving?.date||null,
+   serveDateLabel:serving?'Welcome Team · '+today.dateLabel(serving.date,now):'Explore serving',
+   serveStatus:team?s.teamStatus||'unknown':'none',
+   readToday:!!s.read,rhythmDue:!!due,
+   conversationStatus:member?chat.status:'not-joined',
    served:s.teamStatus==='confirmed',rsvp:s.rsvp==='going'?'going':s.rsvp==='maybe'?'maybe':'',
    greeting:now.getHours()<12?'Good morning':now.getHours()<17?'Good afternoon':'Good evening',
    nowLabel:now.toLocaleDateString('en-US',{weekday:'long',month:'short',day:'numeric'}),
