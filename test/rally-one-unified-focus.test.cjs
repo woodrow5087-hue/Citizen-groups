@@ -13,7 +13,7 @@ const now=new Date('2026-11-25T10:00:00');
 function model(overrides={}){
  return {
   member:true,team:true,audience:'connected',name:'Friend',greeting:'Good morning',
-  groupDate:new Date('2026-11-25T18:30:00'),serveDate:new Date('2026-11-29T09:00:00'),
+  groupDate:new Date('2026-11-25T18:30:00'),serveDate:new Date('2026-11-26T09:00:00'),
   unread:3,conversationStatus:'ok',rsvp:'',serveStatus:'pending',
   leaderRemaining:0,readToday:false,rhythmDue:false,passage:'John 15:12',
   deferredIds:[],...overrides
@@ -29,7 +29,7 @@ function care(stage='ready'){
 }
 function select(d,careState=care()){
  const board=Board.derive(d,now);
- return Focus.focus({board,model:d,care:careState});
+ return Focus.focus({board,model:d,care:careState,now});
 }
 function html(d,careState=care()){
  const focus=select(d,careState);
