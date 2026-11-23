@@ -651,6 +651,13 @@ function f10Ask(question){
  renderDialog();
 }
 function notify(text){const x=$('toast');x.textContent=text;x.hidden=false;clearTimeout(notify.timer);notify.timer=setTimeout(()=>x.hidden=true,2600)}
+// Keep local-only Scripture reflections safe across tab changes, leader actions and rerenders.
+document.addEventListener('input',ev=>{
+ const field=ev.target;
+ if(s.view!=='read'||!(field instanceof HTMLTextAreaElement))return;
+ if(field.id==='reader-note'){s.readerNotes[s.plan]=field.value.slice(0,1200);save();}
+ if(field.id==='reflection-response'){s.reflectionResponses[s.plan]=field.value.slice(0,1200);save();}
+});
 document.addEventListener('click',ev=>{
 const b=ev.target.closest('button');if(!b)return;
 if(b.type==='submit'&&b.form)return;
