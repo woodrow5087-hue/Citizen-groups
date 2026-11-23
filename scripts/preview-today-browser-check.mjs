@@ -7,6 +7,8 @@ import {chromium} from 'playwright';
 const base=process.argv[2];
 // Validate the newest interaction milestone before the broader route audits.
 await import('./connect-usability-browser-check.mjs');
+// Verify Groups 2.0 interaction and member permissions before the broader dashboard audit.
+await import('./groups-v2-browser-check.mjs');
 const out='test-results/preview-today';
 await mkdir(out,{recursive:true});
 const executablePath=process.env.BROWSER_PATH||(existsSync('/usr/bin/chromium')?'/usr/bin/chromium':undefined);
