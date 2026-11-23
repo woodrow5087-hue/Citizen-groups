@@ -3,8 +3,22 @@
 const key='rallypoint-phase1-2026';
 // Preview builds choose the default layout. Experiments remain explicit URL choices.
 const previewParams=new URLSearchParams(window.location.search);
+const rallyOne=previewParams.has('rallyOne')?previewParams.get('rallyOne')==='1':
+ document.documentElement.dataset.defaultExperience==='rally-one'&&
+ !['f09','f10','f103'].some(flag=>previewParams.has(flag));
+if(rallyOne){
+ document.body.classList.add('rally-one');
+ const brand=document.querySelector('.brand-home');
+ brand?.setAttribute('aria-label','Rally One, Today');
+ if(brand)brand.querySelector('span').innerHTML='RALLY <em>ONE.</em>';
+ const pitch=document.querySelector('.pitch .brand');
+ if(pitch)pitch.innerHTML='RALLY<br>ONE.';
+ const caption=document.querySelector('.phone-caption');
+ if(caption)caption.textContent='Rally One · Fictional activity · Private to this browser';
+ document.querySelector('meta[name="apple-mobile-web-app-title"]')?.setAttribute('content','Rally One');
+}
 const f103Preview=previewParams.get('f103')==='1';
-const f10Preview=f103Preview||previewParams.get('f10')==='1';
+const f10Preview=rallyOne||f103Preview||previewParams.get('f10')==='1';
 const defaultToday=document.documentElement.dataset.defaultToday;
 const f09Mode=f10Preview?'board':(previewParams.get('f09')??defaultToday);
 const f09Board=f09Mode==='board';
@@ -20,6 +34,7 @@ function f10ClearSession(){
 const defaults=()=>({role:'member',groupPane:'chat',directPerson:'anna',directMessages:{},teamPane:'schedule',view:'today',discover:false,groupMessages:[{name:'Jess W.',time:'Yesterday',text:'What stood out to you in John 15 this week?'},{name:'Anna L.',time:'Today',text:'Looking forward to seeing everyone Wednesday.'}],teamMessages:[{name:'Sam R.',time:'Yesterday',text:'Welcome team — thank you for helping people feel at home!'}],prayers:[{name:'Marcus C.',time:'Yesterday',text:'Praying for wisdom with an upcoming decision.'}],rsvp:'',teamStatus:'pending',coverage:false,attendance:{anna:'here',jess:'here',marcus:'unknown',taylor:'unknown'},reached:[],interest:[],plan:'sermon',planQuestions:{},memoryTextRevision:'BSB-2026-1',memoryGames:{},memoryMode:'solo',memoryActive:null,memoryPassTurn:1,memoryTarget:null,question:'How can we love one another as Jesus has loved us?',read:false,prayed:false,companionCare:{},companionChoices:{snoozedUntil:{}},rhythm:{}});
 let s;try{s={...defaults(),...JSON.parse(localStorage.getItem(key)||'null')}}catch(_){s=defaults()}
 if(!s||!s.groupMessages||!Array.isArray(s.groupMessages))s=defaults();
+if(rallyOne)s.view='today';
  if(!s.directMessages||typeof s.directMessages!=='object'||Array.isArray(s.directMessages))s.directMessages={};
  if(!s.planQuestions||typeof s.planQuestions!=='object'||Array.isArray(s.planQuestions))s.planQuestions={};
 if(!s.companionCare||typeof s.companionCare!=='object'||Array.isArray(s.companionCare))s.companionCare={};
@@ -111,6 +126,7 @@ function renderPeople(snapshot,chat){
     </div>
   </section>`;
 }
+const campusNames={central:'Central',north:'North',maui:'Maui',online:'Online'};
 function f09Today(){
  const now=new Date(),chat=conversation(),model=window.RallySmartDashboard.model({
    state:s,ui:todayUI,conversation:chat,now,today:T,
@@ -118,15 +134,17 @@ function f09Today(){
  });
  f09Index=Math.max(0,Math.min(f09Index,model.stack.length-1));
  if(f09Board){
-   const portraits=H.portraits.map(person=>({...person,image:`assets/today-priority/${person.id}.webp`}));
+   const portraitFolder=rallyOne?'rally-one':'today-priority';
+   const portraits=H.portraits.map(person=>({...person,image:`assets/${portraitFolder}/${person.id}.webp`}));
    const peopleRail=H.peopleRail(todayUI,'today',portraits,'assets/today-priority/group.webp');
-   return window.RallyPriorityBoard.render({...model,feedback:f09Feedback,f10Enabled:f10Preview},peopleRail,portraits,now);
+   const campus=rallyOne?campusNames[todayUI.campus]:'';
+   return window.RallyPriorityBoard.render({...model,feedback:f09Feedback,f10Enabled:f10Preview,campus},peopleRail,portraits,now);
  }
  return window.RallySmartDashboard.render(model,f09Index,H.peopleRail(todayUI,'today'),H.portraits);
 }
 function today(){
   const chat=conversation(),snapshot=T.snapshot(s,todayUI,new Date(),chat),event=snapshot.upNext;
-  const campusLabel=({central:'Central',north:'North',maui:'Maui',online:'Online'})[todayUI.campus]||'';
+  const campusLabel=campusNames[todayUI.campus]||'';
   const day=event?.date.toLocaleDateString('en-US',{weekday:'short'})||'';
   const hour=event?.date.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'})||'';
   const target=event?.id==='group'?'Groups':'My Schedule';
