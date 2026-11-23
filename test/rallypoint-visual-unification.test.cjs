@@ -15,7 +15,7 @@ const build=source('scripts/build.cjs');
  * A visual-only refinement must not modify any of these modules, even if a
  * later Codex pass tries to "clean up" app logic while changing styles. */
 const frozen=Object.freeze({
- 'rallypoint.js':'8be0b6e5517ebcf7e0ee72602a9d06fbfcbb6133',
+ 'rallypoint.js':'6c160caca68d815ee92ace79d1c9b170b18773c1',
  'rallypoint-phase1.css':'db0bbe26f995fbde1e35a1e4c3a5ef3a6d799833',
  'rallypoint-groups-v07.css':'513c03013506bdaa0d9a99ced6c4d455fd15c386',
  'rallypoint-team-v08.css':'dff9ce0ef59d02a4752bf740407b08324f0459ac',
