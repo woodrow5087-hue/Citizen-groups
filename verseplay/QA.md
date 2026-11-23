@@ -60,3 +60,7 @@ The repository checks above were executed and reported by the parent engineer in
 Testing uses Chromium automation in Linux. Safari/WebKit, Firefox, physical phones, VoiceOver/TalkBack, sound listening quality and offline font delivery have not been verified. Google Fonts remains the prototype's external dependency. No theological or church editorial approval is implied by engineering source-text verification; Afterglow retains its illustrative/editorial-review caution.
 
 Axe contrast checks were enabled. Passed-node counts and any incomplete contrast checks that require manual review are included per screen in the committed report. No color changes were made. There is no claim that automated contrast evaluation proves every decorative, disabled or transient element accessible.
+
+## Deploy Preview re-trigger (2026-11-23)
+
+After branch-deploy eligibility was updated for the approved showcase PR target, a documentation-only commit was made to prompt Netlify to reevaluate draft PR #118. This changes no executable code, CSS, images, fonts, copy shown in gameplay, or approved visual baseline. The actual Netlify deploy status and deployed commit must be checked separately; the existence of this note does not claim that Netlify generated a preview.
