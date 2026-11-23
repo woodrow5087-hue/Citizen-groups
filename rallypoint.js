@@ -806,14 +806,23 @@ if(f09Preview&&!f09Board&&s.view==='today'&&a==='f09-stack'){
  render();return;
 }
 if(f09Preview&&s.view==='today'&&a==='f09-rsvp'){
- if(!todayUI.memberships.group)return;
- s.rsvp='going';f09Index=0;if(f09Board)f09Feedback='Sample group RSVP saved. The board has updated.';render();
+ if(rallyOne){
+   if(!applyLocalAction({type:'group-rsvp',value:'going'}))return;
+ }else{
+   if(!todayUI.memberships.group)return;
+   s.rsvp='going';
+ }
+ f09Index=0;if(f09Board)f09Feedback='Sample group RSVP saved. The board has updated.';render();
  notify('Sample RSVP saved on this device.');return;
 }
 if(f09Preview&&s.view==='today'&&a==='f09-serve'){
- if(!todayUI.memberships.team)return;
- s.teamStatus='confirmed';s.coverage=false;
- s.teamMessages=s.teamMessages.filter(x=>!x.coverage);
+ if(rallyOne){
+   if(!applyLocalAction({type:'serving-response',value:'confirmed'}))return;
+ }else{
+   if(!todayUI.memberships.team)return;
+   s.teamStatus='confirmed';s.coverage=false;
+   s.teamMessages=s.teamMessages.filter(x=>!x.coverage);
+ }
  f09Index=0;if(f09Board)f09Feedback='Sample serving response saved. The board has updated.';render();
  notify('Sample serving availability confirmed locally.');return;
 }
@@ -830,11 +839,15 @@ if(f10Preview&&dialog==='f10-companion'&&a==='f10-followup'){
 }
 if(f10Preview&&dialog==='f10-companion'&&a==='f10-confirm'&&s.view==='today'){
  if(v==='rsvp'&&todayUI.memberships.group&&!s.rsvp){
-   s.rsvp='going';f10Notice='Your sample RSVP is now Going. Nothing was sent to a church system.';
+   if(!rallyOne||applyLocalAction({type:'group-rsvp',value:'going'})){
+     if(!rallyOne)s.rsvp='going';
+     f10Notice='Your sample RSVP is now Going. Nothing was sent to a church system.';
+   }else f10Notice='The sample RSVP could not be saved.';
  }else if(v==='serve'&&todayUI.memberships.team&&s.teamStatus==='pending'){
-   s.teamStatus='confirmed';s.coverage=false;
-   s.teamMessages=s.teamMessages.filter(x=>!x.coverage);
-   f10Notice='Your sample serving availability is now Confirmed on this device.';
+   if(!rallyOne||applyLocalAction({type:'serving-response',value:'confirmed'})){
+     if(!rallyOne){s.teamStatus='confirmed';s.coverage=false;s.teamMessages=s.teamMessages.filter(x=>!x.coverage);}
+     f10Notice='Your sample serving availability is now Confirmed on this device.';
+   }else f10Notice='The sample serving response could not be saved.';
  }else{f10Notice='That sample action is already handled or unavailable for this profile.';}
  f09Feedback='';render();renderDialog();return;
 }
@@ -962,16 +975,24 @@ if(a==='care-open-prayer'||a==='care-mark-prayed'||
   if(a==='care-open-prayer'){navigate('group','prayer');return;}
   if(a==='care-open-groups'){navigate('group','overview');return;}
   if(a==='care-mark-prayed'&&!care.paused&&!care.completed){
-    s.companionCare.marcus={
-      ...(s.companionCare.marcus||{}),
-      prayedAt:new Date().toISOString()
-    };
+    if(rallyOne){
+      if(!applyLocalAction({type:'care-mark-prayed'}))return;
+    }else{
+      s.companionCare.marcus={
+        ...(s.companionCare.marcus||{}),
+        prayedAt:new Date().toISOString()
+      };
+    }
     render();notify('You marked a fictional prayer moment on this device.');return;
   }
   if(a==='care-resume'&&care.paused){
-    const next={...(s.companionCare.marcus||{})};
-    delete next.snoozedUntil;
-    s.companionCare.marcus=next;
+    if(rallyOne){
+      if(!applyLocalAction({type:'care-resume'}))return;
+    }else{
+      const next={...(s.companionCare.marcus||{})};
+      delete next.snoozedUntil;
+      s.companionCare.marcus=next;
+    }
     render();notify('Your local care reminder is available again.');return;
   }
   return;
@@ -996,7 +1017,12 @@ if(a==='hybrid-person'){if(!todayUI.memberships.group)return;const member=sample
 if(a==='message-person'){if(!todayUI.memberships.group)return;const member=sampleGroupPeople.find(p=>p.id===person);if(!member)return;s.directPerson=member.id;s.groupPane='direct';render();return}
  if(a==='pane'){if(v==='leader'&&!canLead(b.dataset.area))return;if(b.dataset.area==='group')s.groupPane=v;else s.teamPane=v;render();if(rallyOne&&b.dataset.area==='group')$('view').scrollTop=0;return}
 if(a==='browse'){s.discover=!s.discover;render();if(rallyOne&&s.view==='group')$('view').scrollTop=0;return}
-if(a==='rsvp'){s.rsvp=s.rsvp===v?'':v;render();notify('Sample RSVP updated');return}
+if(a==='rsvp'){
+ if(rallyOne){
+   if(!applyLocalAction({type:'group-rsvp',value:s.rsvp===v?'clear':v}))return;
+ }else s.rsvp=s.rsvp===v?'':v;
+ render();notify('Sample RSVP updated');return;
+}
 if(a==='interest'){s.interest=s.interest.includes(v)?s.interest.filter(x=>x!==v):[...s.interest,v];render();notify('Interest saved locally, not submitted');return}
 if(a==='send'){
  const x=$(v+'-input'),txt=x?.value.trim();if(!txt){notify('Write a message first');return}
@@ -1017,8 +1043,21 @@ if(a==='send'){
  x.value='';delete drafts[v+'-input'];render();notify('Saved to this device only');return;
 }
 if(a==='attendance'&&canLead('group')){s.attendance[person]=v;render();notify('Sample attendance updated');return}
-if(a==='reached'&&canLead('group')){s.reached=s.reached.includes(person)?s.reached.filter(x=>x!==person):[...s.reached,person];render();return}
-if(a==='shift'){s.teamStatus=v;if(v==='confirmed'){s.coverage=false;s.teamMessages=s.teamMessages.filter(x=>!x.coverage)}render();notify('Sample serving response saved');return}
+if(a==='reached'&&canLead('group')){
+ if(rallyOne){
+   if(!applyLocalAction({type:'leader-review',person}))return;
+ }else s.reached=s.reached.includes(person)?s.reached.filter(x=>x!==person):[...s.reached,person];
+ render();return;
+}
+if(a==='shift'){
+ if(rallyOne){
+   if(!applyLocalAction({type:'serving-response',value:v}))return;
+ }else{
+   s.teamStatus=v;
+   if(v==='confirmed'){s.coverage=false;s.teamMessages=s.teamMessages.filter(x=>!x.coverage)}
+ }
+ render();notify('Sample serving response saved');return;
+}
 if(a==='cover'){s.coverage=!s.coverage;s.teamMessages=s.teamMessages.filter(x=>!x.coverage);if(s.coverage)s.teamMessages.push({name:'You',time:'Just now',text:'Could someone cover my Sunday 9:00 AM shift?',coverage:true});render();notify(s.coverage?'Sample coverage request posted':'Sample request withdrawn');return}
 if(a==='plan'&&canLead('group')&&readingLibrary[v]){s.planQuestions[s.plan]=s.question;s.plan=v;s.memoryActive=v;s.memoryTarget=null;s.question=s.planQuestions[v]||readingLibrary[v].question;render();notify('Sample reading pathway selected locally');return}
 if(a==='question'&&canLead('group')){const txt=$('question')?.value.trim();if(!txt){notify('Enter a question first');return}s.question=txt;s.planQuestions[s.plan]=txt;render();notify('Sample group question updated locally');return}
