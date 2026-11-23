@@ -191,7 +191,12 @@ function derive(d,now=new Date()){
  });
 }
 function render(d,peopleRail='',portraits=[],now=new Date()){
- const b=derive(d,now),h=b.hero;
+ const baseline=derive(d,now);
+ // M5B: reuse the exact approved Priority Board surfaces. Rally One may
+ // provide one focused hero + at most one row; other demos remain unchanged.
+ const f=d?.unifiedFocus;
+ const b=f?.hero&&Array.isArray(f.rows)?{...baseline,hero:f.hero,rows:f.rows}:baseline;
+ const h=b.hero;
  const faces=h.hasPeople&&b.hasPeople?
   '<div class="f09b-faces" role="group" aria-label="Fictional group members">'+
    (Array.isArray(portraits)?portraits.slice(0,3).map(p=>face(p.id,p.name,p.image)).join(''):'')+
