@@ -1,0 +1,223 @@
+/* Rally One · M5 visual parity / iPhone regression repair
+ * The earlier two-column Today grid assumed three optional priority cards.
+ * M5 renders only a primary and one supporting action. Retain the approved
+ * graphite / Citizen red / parchment system without a redesign.
+ */
+.rally-one .premium-alive.is-f09-board .f09b-priorities {
+ display:grid;
+ grid-template-columns:minmax(0,1fr);
+ grid-auto-rows:auto;
+ gap:10px;
+ min-width:0;
+ width:100%;
+}
+.rally-one .premium-alive.is-f09-board .f09b-hero {
+ grid-column:1/-1;
+ grid-row:auto;
+ display:flex;
+ flex-direction:row;
+ align-items:flex-start;
+ align-self:auto;
+ grid-template-rows:none;
+ gap:11px;
+ width:100%;
+ min-width:0;
+ min-height:188px;
+ padding:16px 14px 14px;
+ border-radius:20px;
+}
+.rally-one .premium-alive.is-f09-board .f09b-hero-symbol {
+ flex:0 0 40px;
+ width:40px;
+ height:40px;
+ border-radius:12px;
+}
+.rally-one .premium-alive.is-f09-board .f09b-hero-main {
+ flex:1 1 auto;
+ min-width:0;
+}
+.rally-one .premium-alive.is-f09-board .f09b-hero h2 {
+ font-size:clamp(24px,6.8vw,32px);
+ max-width:none;
+ line-height:1.07;
+ overflow-wrap:break-word;
+ word-break:normal;
+}
+.rally-one .premium-alive.is-f09-board .f09b-row-stack {
+ display:grid;
+ grid-column:1/-1;
+ grid-template-columns:minmax(0,1fr);
+ gap:9px;
+ min-width:0;
+ width:100%;
+}
+.rally-one .premium-alive.is-f09-board .f09b-row-stack .f09b-row {
+ display:flex;
+ flex-wrap:nowrap;
+ align-items:center;
+ align-content:center;
+ grid-column:1/-1;
+ width:100%;
+ min-width:0;
+ min-height:77px;
+ padding:10px 12px;
+ gap:10px;
+ border-radius:18px;
+ background:#343230;
+}
+.rally-one .premium-alive.is-f09-board .f09b-row-stack .f09b-row-icon {
+ flex:0 0 39px;
+ width:39px;
+ height:39px;
+}
+.rally-one .premium-alive.is-f09-board .f09b-row-stack .f09b-row-copy {
+ flex:1 1 auto;
+ min-width:0;
+}
+.rally-one .premium-alive.is-f09-board .f09b-row-stack .f09b-row-copy strong {
+ font-size:clamp(13px,3.5vw,15px);
+ line-height:1.25;
+ overflow-wrap:break-word;
+ word-break:normal;
+}
+.rally-one .premium-alive.is-f09-board .f09b-row-stack .f09b-row-copy small {
+ line-height:1.35;
+ overflow-wrap:break-word;
+ word-break:normal;
+}
+.rally-one .premium-alive.is-f09-board .f09b-row-stack .f09b-row-cta,
+.rally-one .premium-alive.is-f09-board .f09b-row-stack .f09b-row:not(:last-child) .f09b-row-cta {
+ flex:0 0 auto;
+ min-width:0;
+ width:auto;
+ max-width:125px;
+ min-height:44px;
+ white-space:normal;
+ text-align:center;
+ padding:9px 11px;
+ font-size:11px;
+}
+.rally-one .premium-alive.is-f09-board .f09b-row-stack .f09b-row-cta span {
+ flex:none;
+}
+@media(max-width:359px) {
+ .rally-one .premium-alive.is-f09-board .f09b-hero {
+   gap:8px;padding:13px 10px;min-height:176px;
+ }
+ .rally-one .premium-alive.is-f09-board .f09b-hero-symbol {
+   flex-basis:34px;width:34px;height:34px;
+ }
+ .rally-one .premium-alive.is-f09-board .f09b-row-stack .f09b-row {
+   flex-wrap:wrap;gap:8px;padding:10px;
+ }
+ .rally-one .premium-alive.is-f09-board .f09b-row-stack .f09b-row-icon {
+   flex-basis:35px;width:35px;height:35px;
+ }
+ .rally-one .premium-alive.is-f09-board .f09b-row-stack .f09b-row-cta {
+   margin-left:auto;
+ }
+}
+
+/* Today's people rail uses the very same markup and local photo sprite as
+ * Groups 2.0. It does not create a second set of identities or image files.
+ */
+.rally-one .premium-alive.is-f09-board .gv2-today-people {
+ display:grid;gap:7px;min-width:0;
+ margin:16px 0 18px;padding:1px 0 2px;
+ color:#fff4e8;
+}
+.rally-one .premium-alive.is-f09-board .gv2-today-heading {
+ display:flex;align-items:end;justify-content:space-between;
+ gap:8px;padding:0 11px;
+}
+.rally-one .premium-alive.is-f09-board .gv2-today-heading h2 {
+ margin:0;font-size:clamp(26px,7.4vw,34px);
+ letter-spacing:-.065em;line-height:1.1;font-weight:950;
+ color:#fff5e9;
+ white-space:nowrap;
+}
+.rally-one .premium-alive.is-f09-board .gv2-today-heading h2 span {
+ color:#ff466b;font-size:22px;margin-left:5px;
+ vertical-align:4px;
+}
+.rally-one .premium-alive.is-f09-board .gv2-today-heading small {
+ color:#dfcdc0;font-size:9px;font-weight:850;
+ text-align:right;letter-spacing:.085em;
+}
+.rally-one .premium-alive.is-f09-board .gv2-today-people .gv2-rail-wrap {
+ min-width:0;margin:0 -9px;
+}
+.rally-one .premium-alive.is-f09-board .gv2-today-people .gv2-rail {
+ display:flex;align-items:flex-start;list-style:none;
+ gap:15px;margin:0;padding:12px 18px;
+ overflow-x:auto;overflow-y:hidden;
+ scrollbar-width:none;
+ scroll-snap-type:x proximity;
+ -webkit-overflow-scrolling:touch;
+ overscroll-behavior-x:contain;
+}
+.rally-one .premium-alive.is-f09-board .gv2-today-people .gv2-rail::-webkit-scrollbar {
+ display:none;
+}
+.rally-one .premium-alive.is-f09-board .gv2-today-people .gv2-rail-item {
+ flex:0 0 69px;scroll-snap-align:start;
+}
+.rally-one .premium-alive.is-f09-board .gv2-today-people .gv2-rail-button {
+ display:flex;flex-direction:column;align-items:center;gap:8px;
+ width:69px;min-height:105px;padding:0;
+ background:transparent;border:0;color:#fff5e8;
+ font:inherit;font-size:11px;font-weight:800;text-align:center;
+ touch-action:manipulation;
+}
+.rally-one .premium-alive.is-f09-board .gv2-today-people .gv2-ring {
+ display:grid;place-items:center;flex:none;
+ width:69px;height:69px;border:3px solid #a6dfcc;
+ border-radius:50%;padding:3px;
+ background:#383a39;
+ box-shadow:0 0 0 1px #ffffff1c,0 3px 9px #08070765;
+}
+.rally-one .premium-alive.is-f09-board .gv2-today-people .gv2-ring-red {
+ border-color:#ff406b;
+}
+.rally-one .premium-alive.is-f09-board .gv2-today-people :is(.gv2-ring img,.gv2-portrait) {
+ display:block;width:100%;height:100%;
+ border-radius:50%;object-fit:cover;background-color:#403b38;
+}
+.rally-one .premium-alive.is-f09-board .gv2-today-people .gv2-portrait,
+.rally-one .premium-alive.is-f09-board .f09b-faces .f09b-real-photo {
+ background-image:url('assets/rally-one/groups-v2-people.webp');
+ background-repeat:no-repeat;
+ background-size:600% 100%;
+ background-color:#38342f;
+}
+.rally-one .premium-alive.is-f09-board .gv2-today-people .gv2-photo-dustin,
+.rally-one .premium-alive.is-f09-board .f09b-faces .gv2-photo-dustin {background-position:0% 50%}
+.rally-one .premium-alive.is-f09-board .gv2-today-people .gv2-photo-mandy,
+.rally-one .premium-alive.is-f09-board .f09b-faces .gv2-photo-mandy {background-position:20% 50%}
+.rally-one .premium-alive.is-f09-board .gv2-today-people .gv2-photo-garrett,
+.rally-one .premium-alive.is-f09-board .f09b-faces .gv2-photo-garrett {background-position:40% 50%}
+.rally-one .premium-alive.is-f09-board .gv2-today-people .gv2-photo-nick,
+.rally-one .premium-alive.is-f09-board .f09b-faces .gv2-photo-nick {background-position:60% 50%}
+.rally-one .premium-alive.is-f09-board .gv2-today-people .gv2-photo-aiden,
+.rally-one .premium-alive.is-f09-board .f09b-faces .gv2-photo-aiden {background-position:80% 50%}
+.rally-one .premium-alive.is-f09-board .gv2-today-people .gv2-photo-dom,
+.rally-one .premium-alive.is-f09-board .f09b-faces .gv2-photo-dom {background-position:100% 50%}
+.rally-one .premium-alive.is-f09-board .gv2-today-people .gv2-rail-label {
+ color:#fff3e9;font-size:11px;white-space:nowrap;
+ max-width:76px;overflow:hidden;text-overflow:ellipsis;
+}
+.rally-one .premium-alive.is-f09-board .gv2-today-people .gv2-rail-button:focus-visible .gv2-ring {
+ outline:3px solid #ffb3bf;outline-offset:3px;
+}
+.rally-one .premium-alive.is-f09-board .gv2-today-note {
+ padding:0 11px;margin:-2px 0 0;
+ font-size:10px;line-height:1.45;color:#decec1;
+}
+.rally-one .premium-alive.is-f09-board .f09b-faces .f09b-real-photo {
+ display:block;flex:none;
+ width:33px;height:33px;border-radius:50%;
+}
+@media(max-width:359px){
+ .rally-one .premium-alive.is-f09-board .gv2-today-heading h2{font-size:25px}
+ .rally-one .premium-alive.is-f09-board .gv2-today-people .gv2-rail{gap:12px;padding-inline:13px}
+}
