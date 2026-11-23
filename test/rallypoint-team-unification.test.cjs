@@ -17,7 +17,7 @@ const frozen=Object.freeze({
  /* Groups v2 isolated overview routing + preserved Connect and other tab behavior. */
  /* Companion Care flow: scoped UI insertion and explicit action only; no other tab redesign. */
  /* M5B: scoped, read-only Unified Focus ranking within existing Today Priority Board. */
- 'rallypoint.js':'d908c009ef1ad75f2f4feb34ced95de8909b253f',
+ 'rallypoint.js':'13669050af62557bd0a9a8089ee3323153d943e1',
   'rallypoint-phase1.css':'db0bbe26f995fbde1e35a1e4c3a5ef3a6d799833',
   'rallypoint-groups-v07.css':'513c03013506bdaa0d9a99ced6c4d455fd15c386',
   'rallypoint-team-v08.css':'dff9ce0ef59d02a4752bf740407b08324f0459ac',
