@@ -64,8 +64,8 @@ test('member permission and discovery guards remain before Groups home',()=>{
  const check=source.indexOf('if(!todayUI.memberships.group)return groupBrowse();');
  const overview=source.indexOf("s.groupPane==='overview'");
  assert.ok(check>0&&overview>check);
- assert.match(source,/groupPane:'overview'/);
- assert.match(source,/s\.groupPane=pane\|\|'overview'/);
+ assert.match(source,/groupPane:'chat'/); // Legacy default remains intact.
+ assert.match(source,/if\(rallyOne\)s\.groupPane=pane\|\|'overview'/);
  assert.match(source,/if\(a==='gv2-profile'&&s\.view==='group'/);
  assert.match(source,/openConnect\('thread'\);return;/);
  assert.doesNotMatch(read('rally-one-groups-v2.js'),/localStorage|sessionStorage|fetch\s*\(|WebSocket/);
