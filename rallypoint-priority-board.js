@@ -13,7 +13,13 @@ const esc=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&
 const call=(kind,id,pane='')=>Object.freeze({kind,id,pane});
 const go=(id,pane='')=>call('go',id,pane);
 const act=id=>call('action',id);
-const face=(id,name,src)=>{
+const face=(id,name,src,imageSprite=false)=>{
+ // Approved real-image demo sprite is shared with Groups 2.0.
+ // Never infer user identity, status or private-message membership.
+ if(imageSprite===true&&['dustin','mandy','garrett','nick','aiden','dom'].includes(id)){
+  return '<span role="img" class="f09b-real-photo gv2-photo-'+id+
+   '" aria-label="'+esc(name)+'"></span>';
+ }
  const safe=String(src||'');
  return safe&&(/^(?:assets\/|https:\/\/images\.unsplash\.com\/photo-[A-Za-z0-9-]+\?|data:image\/(?:png|jpeg|webp);base64,)/).test(safe)?
   '<img src="'+esc(safe)+'" alt="'+esc(name)+'" loading="lazy" decoding="async">':
@@ -202,7 +208,7 @@ function render(d,peopleRail='',portraits=[],now=new Date()){
  const h=b.hero;
  const faces=h.hasPeople&&b.hasPeople?
   '<div class="f09b-faces" role="group" aria-label="Fictional group members">'+
-   (Array.isArray(portraits)?portraits.slice(0,3).map(p=>face(p.id,p.name,p.image)).join(''):'')+
+   (Array.isArray(portraits)?portraits.slice(0,3).map(p=>face(p.id,p.name,p.image,p.imageSprite===true)).join(''):'')+
    (Array.isArray(portraits)&&portraits.length>3?'<span aria-label="'+(portraits.length-3)+' additional fictional group member">+'+(portraits.length-3)+'</span>':'')+
   '</div>':'';
  const hero=
