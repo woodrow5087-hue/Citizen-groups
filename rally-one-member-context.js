@@ -12,15 +12,15 @@
 'use strict';
 const allowedCampuses=new Set(['central','north','maui','online']);
 const leaderIds=Object.freeze(['marcus','taylor']);
-const validDate=value=>typeof value==='string'&&Number.isFinite(Date.parse(value));
+const validDate=value=>typeof value==='string'&&/^\d{4}-\d{2}-\d{2}T/.test(value)&&Number.isFinite(Date.parse(value));
 const object=value=>value&&typeof value==='object'&&!Array.isArray(value)?value:{};
 const frozen=value=>Object.freeze(value);
 function snapshot({state,ui,conversation,now=new Date()}={}){
  const s=object(state),u=object(ui),m=object(u.memberships),c=object(conversation);
- const group=!!m.group,team=!!m.team;
+ const group=m.group===true,team=m.team===true;
  const leader=group&&s.role==='leader';
  const status=group?(c.status==='ok'?'ok':'unavailable'):'not-joined';
- const unreadCount=status==='ok'&&Number.isSafeInteger(c.unreadCount)&&c.unreadCount>=0?
+ const unreadCount=status==='ok'&&Number.isSafeInteger(c.unreadCount)&&c.unreadCount>=0&&c.unreadCount<=9999?
     c.unreadCount:null; // unknown is NOT zero
  const rsvp=group&&['going','maybe'].includes(s.rsvp)?s.rsvp:'';
  const servingResponse=team&&['pending','confirmed','declined'].includes(s.teamStatus)?
@@ -31,7 +31,7 @@ function snapshot({state,ui,conversation,now=new Date()}={}){
  const prayed=namedRequest&&validDate(marcus.prayedAt);
  const followedUp=namedRequest&&validDate(marcus.completedAt);
  const snoozed=namedRequest&&!followedUp&&validDate(marcus.snoozedUntil)&&Date.parse(marcus.snoozedUntil)>now.getTime();
- const reached=Array.isArray(s.reached)?s.reached:[];
+ const reached=Array.isArray(s.reached)?s.reached.filter(x=>typeof x==='string'):[];
  const leaderPending=leaderIds.filter(id=>!reached.includes(id));
  const rhythm=object(s.rhythm);
  const intentionDue=!!(typeof rhythm.text==='string'&&rhythm.text.trim()&&!rhythm.completedAt&&
