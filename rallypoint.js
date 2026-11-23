@@ -773,14 +773,14 @@ title='Your local preview';body=`<p><strong>Rally Point · Phase 1</strong><br>F
 }
 if(dialog==='demo-controls'&&rallyOne&&window.RallySprint7Demo){
  const scenarios=window.RallySprint7Demo.scenarios;
- body+=`<section class="s7-scene-picker" aria-label="Leadership demo scenarios">
+ body=`<section class="s7-scene-picker" aria-label="Leadership demo scenarios">
  <h3>Leadership demo · One-tap journeys</h3>
  <p class="fine-note">Use these five fictional starting points for a repeatable presentation. Selection resets only the sample RSVP, response, review and prayer progress; it preserves your local chat, drafts and Scripture work.</p>
  <div class="s7-scenes">${scenarios.map(scene=>`<button type="button" class="s7-scene" data-action="s7-scenario" data-value="${e(scene.id)}" aria-label="Load fictional scenario: ${e(scene.label)}">
  <strong>${e(scene.label)}</strong><small>${e(scene.detail)}</small></button>`).join('')}</div>
  <button type="button" class="s7-restore" data-action="s7-restore">Restore starting demo state</button>
  <p class="fine-note">Restores this page session's original group/team settings. It does not rewind separate Connect message history. Not verified member access or real leader authorization.</p>
- </section>`;
+ </section>`+body;
 }
 if(dialog==='quick-actions'){
  title='Make your next move';body=`<p>Quick actions from your current Rally Point demo. Select one to open its existing feature.</p><div class="rp-stack">${todayUI.memberships.group?`<button type="button" class="activity-item" data-go="group" data-pane="chat">${icon('group')}<span><strong>Your group</strong><small>Open the Wednesday Group conversation</small></span>${icon('arrow')}</button>`:`<button type="button" class="activity-item" data-go="group">${icon('group')}<span><strong>Find a group</strong><small>Explore community</small></span>${icon('arrow')}</button>`}${todayUI.memberships.team?`<button type="button" class="activity-item" data-go="team" data-pane="schedule">${icon('team')}<span><strong>Your serving schedule</strong><small>See the upcoming sample shift</small></span>${icon('arrow')}</button>`:''}<button type="button" class="activity-item" data-go="read" data-reading="scripture">${icon('read')}<span><strong>Today’s Scripture</strong><small>Read John 15:9–12</small></span>${icon('arrow')}</button></div>`;
