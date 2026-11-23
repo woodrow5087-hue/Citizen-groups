@@ -17,7 +17,7 @@ let f10Turns=[],f10Prior={},f10Active=null;
 function f10ClearSession(){
  f10Prompt='week';f10Asked='';f10Notice='';f10Turns=[];f10Prior={};f10Active=null;
 }
-const defaults=()=>({role:'member',groupPane:'chat',directPerson:'anna',directMessages:{},teamPane:'schedule',view:'today',discover:false,groupMessages:[{name:'Jess W.',time:'Yesterday',text:'What stood out to you in John 15 this week?'},{name:'Anna L.',time:'Today',text:'Looking forward to seeing everyone Wednesday.'}],teamMessages:[{name:'Sam R.',time:'Yesterday',text:'Welcome team — thank you for helping people feel at home!'}],prayers:[{name:'Marcus C.',time:'Yesterday',text:'Praying for wisdom with an upcoming decision.'}],rsvp:'',teamStatus:'pending',coverage:false,attendance:{anna:'here',jess:'here',marcus:'unknown',taylor:'unknown'},reached:[],interest:[],plan:'sermon',planQuestions:{},memoryTextRevision:'BSB-2026-1',memoryGames:{},memoryMode:'solo',memoryActive:null,memoryPassTurn:1,memoryTarget:null,question:'How can we love one another as Jesus has loved us?',read:false,prayed:false,reflectionPrompt:'notice',reflectionResponses:{},readerPreferences:{size:'regular',highlighted:{}},readerNotes:{},companionCare:{},companionChoices:{snoozedUntil:{}},rhythm:{}});
+const defaults=()=>({role:'member',groupPane:'chat',directPerson:'anna',directMessages:{},teamPane:'schedule',view:'today',discover:false,groupMessages:[{name:'Jess W.',time:'Yesterday',text:'What stood out to you in John 15 this week?'},{name:'Anna L.',time:'Today',text:'Looking forward to seeing everyone Wednesday.'}],teamMessages:[{name:'Sam R.',time:'Yesterday',text:'Welcome team — thank you for helping people feel at home!'}],prayers:[{name:'Marcus C.',time:'Yesterday',text:'Praying for wisdom with an upcoming decision.'}],rsvp:'',teamStatus:'pending',coverage:false,attendance:{anna:'here',jess:'here',marcus:'unknown',taylor:'unknown'},reached:[],interest:[],plan:'sermon',planQuestions:{},memoryTextRevision:'BSB-2026-1',memoryGames:{},memoryMode:'solo',memoryActive:null,memoryPassTurn:1,memoryTarget:null,question:'How can we love one another as Jesus has loved us?',read:false,prayed:false,weeklyDay:0,reflectionPrompt:'notice',reflectionResponses:{},readerPreferences:{size:'regular',highlighted:{}},readerNotes:{},companionCare:{},companionChoices:{snoozedUntil:{}},rhythm:{}});
 let s;try{s={...defaults(),...JSON.parse(localStorage.getItem(key)||'null')}}catch(_){s=defaults()}
 if(!s||!s.groupMessages||!Array.isArray(s.groupMessages))s=defaults();
  if(!s.directMessages||typeof s.directMessages!=='object'||Array.isArray(s.directMessages))s.directMessages={};
@@ -32,6 +32,7 @@ if(!s.readerPreferences||typeof s.readerPreferences!=='object'||Array.isArray(s.
 if(!['regular','large'].includes(s.readerPreferences.size))s.readerPreferences.size='regular';
 if(!s.readerPreferences.highlighted||typeof s.readerPreferences.highlighted!=='object'||Array.isArray(s.readerPreferences.highlighted))s.readerPreferences.highlighted={};
 if(!s.readerNotes||typeof s.readerNotes!=='object'||Array.isArray(s.readerNotes))s.readerNotes={};
+if(!Number.isInteger(s.weeklyDay)||s.weeklyDay<0||s.weeklyDay>6)s.weeklyDay=0;
 if(!['notice','meaning','action'].includes(s.reflectionPrompt))s.reflectionPrompt='notice';
 if(!s.reflectionResponses||typeof s.reflectionResponses!=='object'||Array.isArray(s.reflectionResponses))s.reflectionResponses={};
 if(!['solo','pass'].includes(s.memoryMode))s.memoryMode='solo';
@@ -64,6 +65,15 @@ const readingLibrary={
  year:{name:'Bible in One Year',title:'Daily Bible Reading',passage:'Psalm 23:1–2',excerpt:'The LORD is my shepherd; I shall not want. He makes me lie down in green pastures; He leads me beside quiet waters.',question:'How does this passage speak to the care and guidance you need?',description:'Illustrative daily passage, not a licensed Bible reading calendar'}
 };
 const currentReading=()=>readingLibrary[s.plan]||readingLibrary.sermon;
+const weeklyJourney=[
+ {day:'SUN',name:'Gather',title:'Hear the Word',body:'Begin with the Scripture focus from the sample sermon pathway.',step:'Open today’s reading',target:'scripture'},
+ {day:'MON',name:'Read',title:'Sit with the passage',body:'Read slowly. Notice one phrase you want to carry into the day.',step:'Open Scripture',target:'scripture'},
+ {day:'TUE',name:'Remember',title:'Let the words stick',body:'Practice the same verse in VersePlay. No streak or score is required.',step:'Open memory game',target:'memorize'},
+ {day:'WED',name:'Together',title:'Make space for people',body:'Bring one honest question to your group conversation.',step:'Open reflection',target:'questions'},
+ {day:'THU',name:'Reflect',title:'Listen and respond',body:'Consider what the passage means for a real relationship.',step:'Open reflection',target:'questions'},
+ {day:'FRI',name:'Live',title:'Choose one small action',body:'Encourage someone, offer help, or follow through on a kind intention.',step:'Open next step',target:'prayer'},
+ {day:'SAT',name:'Rest',title:'Look back with gratitude',body:'Take a quiet moment to pray and remember the week.',step:'Open prayer',target:'prayer'}
+];
 const next=d=>T.nextEvent(d,d===3?18:9,d===3?30:0).toLocaleDateString('en-US',{weekday:'long',month:'short',day:'numeric'});
 const wed=()=>next(3),sun=()=>next(0);
 const teamList=()=>s.teamMessages.map(m=>`<div class="message"><div class="avatar">${e(m.name.split(' ').map(x=>x[0]).join('').slice(0,2))}</div><div><div class="message-meta"><strong>${e(m.name)}</strong><small>${e(m.time)}</small></div><p>${e(m.text)}</p></div></div>`).join('');
@@ -460,6 +470,19 @@ function read(){
    <div class="rp-game-classic-label"><strong>MORE WAYS TO PRACTICE</strong><span>Classic &amp; two-player pass-and-play</span></div>
    ${VP.render(s,e,icon)}
 
+   <section class="read-weekly" aria-label="Sunday-to-Sunday sample Scripture rhythm">
+     <div class="read-weekly-head"><span>THE WEEK IN THE WORD · SAMPLE</span><h2>One passage.<br>Seven ways to live it.</h2><p>A flexible Sunday-to-Sunday rhythm that connects reading, remembering, relationships, and real life. Explore any day—there is no required schedule.</p></div>
+     <div class="read-weekly-days" role="group" aria-label="Choose a day of the sample journey">
+       ${weeklyJourney.map((day,i)=>`<button type="button" data-action="weekly-day" data-value="${i}" aria-pressed="${s.weeklyDay===i}"><small>${day.day}</small><strong>${i+1}</strong></button>`).join('')}
+     </div>
+     <div class="read-weekly-detail">
+       <span>DAY ${s.weeklyDay+1} · ${weeklyJourney[s.weeklyDay].name.toUpperCase()}</span>
+       <h3>${e(weeklyJourney[s.weeklyDay].title)}</h3><p>${e(weeklyJourney[s.weeklyDay].body)}</p>
+       <div class="read-weekly-passage">THIS WEEK'S SAMPLE FOCUS <strong>${e(plan.passage)}</strong></div>
+       <button type="button" data-go="read" data-reading="${weeklyJourney[s.weeklyDay].target}">${e(weeklyJourney[s.weeklyDay].step)} ${icon('arrow')}</button>
+     </div>
+     <p class="fine-note">Illustrative journey only—not Citizen Church’s official sermon schedule, published devotional, or tracked attendance.</p>
+   </section>
    <div class="read-live-heading" id="reading-prayer" tabindex="-1"><span>04 / LIVE</span><h2>Take it beyond the page.</h2><p>Choose someone to encourage or take a quiet moment to pray. Small actions matter.</p></div>
    <div class="card read-prayer-card"><div>${icon('heart')}<h3>A moment to pray.</h3><p>Take a minute to pray for someone in your group.</p></div>
      <button type="button" class="round ${s.prayed?'done':''}" aria-label="Mark prayer time" data-action="pray">${s.prayed?'✓':'↗'}</button>
@@ -689,6 +712,7 @@ if(v==='caught-up'){s.teamStatus='confirmed';s.coverage=false;s.teamMessages=s.t
  }
 s.view='today';closeDialog(false);render();$('view').scrollTop=0;notify('Local Today fixture updated. No data was sent.');return;
 }
+if(a==='weekly-day'){const day=Number(v);if(!Number.isInteger(day)||day<0||day>6)return;s.weeklyDay=day;render();return;}
 if(a==='read-practice-current'){s.memoryActive=s.plan;s.memoryMode='solo';s.memoryTarget=null;s.memoryPassTurn=1;render();const game=$('reading-memorize');if(game){game.focus({preventScroll:true});game.scrollIntoView({block:'start',behavior:'smooth'});}return;}
 if(a==='memory-mode'){
  if(!['solo','pass'].includes(v))return;
