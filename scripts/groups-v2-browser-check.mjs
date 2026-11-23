@@ -90,7 +90,8 @@ try{
   console.log('Groups v2: real avatars, member profiles, gathering, prayer, Connect, discovery and accessibility passed at '+width+'px');
  }
 
- // Unconnected guests must never see people photos or member-only actions.
+ // Guests can preview the publicly supplied demo portraits, but cannot access
+ // My group, group messages, member care or leader tools.
  const context=await browser.newContext({viewport:{width:390,height:844},isMobile:true,hasTouch:true});
  const page=await context.newPage();
  await page.goto(base);
@@ -101,10 +102,19 @@ try{
  await page.locator('[data-action="scenario"][data-value="no-memberships"]').click();
  await page.locator('#nav [data-go="group"]').click();
  await page.locator('.group-discovery-v07').waitFor();
- assert.equal(await page.locator('.gv2-rail').count(),0);
+ assert.equal(await page.locator('.gv2-public-rail .gv2-rail-button[data-person]').count(),6);
+ assert.equal(await page.locator('.gv2-public-rail .gv2-rail-button[data-value="people"]').count(),0);
  assert.equal(await page.locator('.gv2-home').count(),0);
+ assert.equal(await page.locator('.gv2-care').count(),0);
+ await page.locator('.gv2-public-rail [data-person="dom"]').click();
+ await page.locator('.gv2-profile h1').getByText('Dom').waitFor();
+ assert.equal(await page.locator('.gv2-profile [data-go="group"]').count(),0);
+ assert.equal(await page.locator('.gv2-profile [data-action="gv2-back-discovery"]').count(),2);
+ await page.locator('.gv2-profile .gv2-back').click();
+ await page.locator('.group-discovery-v07').waitFor();
+ assert.equal(await page.locator('.ro-care').count(),0);
  await context.close();
- console.log('Groups v2: guest discovery and membership gate preserved');
+ console.log('Groups v2: guest photo preview without private conversations, care or membership');
 }finally{
  await browser.close();
 }
