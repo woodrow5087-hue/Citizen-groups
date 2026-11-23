@@ -11,7 +11,9 @@
     "test:blank-battle": "npm run build && node scripts/blank-battle-browser-check.mjs",
     "test:groups-safety": "npm run build && node scripts/groups-safety-browser-check.mjs",
     "test:chat-lab": "npm run build && node scripts/chat-lab-browser-check.mjs",
-    "test:groups-integrated": "npm run build && node scripts/groups-integrated-browser-check.mjs"
+    "test:groups-integrated": "npm run build && node scripts/groups-integrated-browser-check.mjs",
+    "test:verseplay": "node --test verseplay/tests/*.test.js",
+    "test:verseplay:browser": "node verseplay/tests/verse-circuit.browser.mjs"
   },
   "engines": {
     "node": ">=22.12"
@@ -19,6 +21,8 @@
   "devDependencies": {
     "@axe-core/playwright": "^4.14.0",
     "jsdom": "^26.1.0",
-    "playwright": "^1.65.1"
+    "pixelmatch": "^7.1.0",
+    "playwright": "^1.65.1",
+    "pngjs": "^7.0.0"
   }
 }
