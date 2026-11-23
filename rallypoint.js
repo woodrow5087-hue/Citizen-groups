@@ -17,7 +17,7 @@ let f10Turns=[],f10Prior={},f10Active=null;
 function f10ClearSession(){
  f10Prompt='week';f10Asked='';f10Notice='';f10Turns=[];f10Prior={};f10Active=null;
 }
-const defaults=()=>({role:'member',groupPane:'chat',directPerson:'anna',directMessages:{},teamPane:'schedule',view:'today',discover:false,groupMessages:[{name:'Jess W.',time:'Yesterday',text:'What stood out to you in John 15 this week?'},{name:'Anna L.',time:'Today',text:'Looking forward to seeing everyone Wednesday.'}],teamMessages:[{name:'Sam R.',time:'Yesterday',text:'Welcome team — thank you for helping people feel at home!'}],prayers:[{name:'Marcus C.',time:'Yesterday',text:'Praying for wisdom with an upcoming decision.'}],rsvp:'',teamStatus:'pending',coverage:false,attendance:{anna:'here',jess:'here',marcus:'unknown',taylor:'unknown'},reached:[],interest:[],plan:'sermon',planQuestions:{},memoryTextRevision:'BSB-2026-1',memoryGames:{},memoryMode:'solo',memoryActive:null,memoryPassTurn:1,memoryTarget:null,question:'How can we love one another as Jesus has loved us?',read:false,prayed:false,companionCare:{},companionChoices:{snoozedUntil:{}},rhythm:{}});
+const defaults=()=>({role:'member',groupPane:'chat',directPerson:'anna',directMessages:{},teamPane:'schedule',view:'today',discover:false,groupMessages:[{name:'Jess W.',time:'Yesterday',text:'What stood out to you in John 15 this week?'},{name:'Anna L.',time:'Today',text:'Looking forward to seeing everyone Wednesday.'}],teamMessages:[{name:'Sam R.',time:'Yesterday',text:'Welcome team — thank you for helping people feel at home!'}],prayers:[{name:'Marcus C.',time:'Yesterday',text:'Praying for wisdom with an upcoming decision.'}],rsvp:'',teamStatus:'pending',coverage:false,attendance:{anna:'here',jess:'here',marcus:'unknown',taylor:'unknown'},reached:[],interest:[],plan:'sermon',planQuestions:{},memoryTextRevision:'BSB-2026-1',memoryGames:{},memoryMode:'solo',memoryActive:null,memoryPassTurn:1,memoryTarget:null,question:'How can we love one another as Jesus has loved us?',read:false,prayed:false,weeklyDay:0,reflectionPrompt:'notice',reflectionResponses:{},readerPreferences:{size:'regular',highlighted:{}},readerNotes:{},companionCare:{},companionChoices:{snoozedUntil:{}},rhythm:{}});
 let s;try{s={...defaults(),...JSON.parse(localStorage.getItem(key)||'null')}}catch(_){s=defaults()}
 if(!s||!s.groupMessages||!Array.isArray(s.groupMessages))s=defaults();
  if(!s.directMessages||typeof s.directMessages!=='object'||Array.isArray(s.directMessages))s.directMessages={};
@@ -28,6 +28,13 @@ if(!s.companionChoices.snoozedUntil||typeof s.companionChoices.snoozedUntil!=='o
    Array.isArray(s.companionChoices.snoozedUntil))s.companionChoices.snoozedUntil={};
 if(!s.rhythm||typeof s.rhythm!=='object'||Array.isArray(s.rhythm))s.rhythm={};
 if(!s.memoryGames||typeof s.memoryGames!=='object'||Array.isArray(s.memoryGames))s.memoryGames={};
+if(!s.readerPreferences||typeof s.readerPreferences!=='object'||Array.isArray(s.readerPreferences))s.readerPreferences={size:'regular',highlighted:{}};
+if(!['regular','large'].includes(s.readerPreferences.size))s.readerPreferences.size='regular';
+if(!s.readerPreferences.highlighted||typeof s.readerPreferences.highlighted!=='object'||Array.isArray(s.readerPreferences.highlighted))s.readerPreferences.highlighted={};
+if(!s.readerNotes||typeof s.readerNotes!=='object'||Array.isArray(s.readerNotes))s.readerNotes={};
+if(!Number.isInteger(s.weeklyDay)||s.weeklyDay<0||s.weeklyDay>6)s.weeklyDay=0;
+if(!['notice','meaning','action'].includes(s.reflectionPrompt))s.reflectionPrompt='notice';
+if(!s.reflectionResponses||typeof s.reflectionResponses!=='object'||Array.isArray(s.reflectionResponses))s.reflectionResponses={};
 if(!['solo','pass'].includes(s.memoryMode))s.memoryMode='solo';
 if(!['sermon','study','year','romans'].includes(s.memoryActive))s.memoryActive=null;
 if(![1,2].includes(s.memoryPassTurn))s.memoryPassTurn=1;
@@ -58,6 +65,20 @@ const readingLibrary={
  year:{name:'Bible in One Year',title:'Daily Bible Reading',passage:'Psalm 23:1–2',excerpt:'The LORD is my shepherd; I shall not want. He makes me lie down in green pastures; He leads me beside quiet waters.',question:'How does this passage speak to the care and guidance you need?',description:'Illustrative daily passage, not a licensed Bible reading calendar'}
 };
 const currentReading=()=>readingLibrary[s.plan]||readingLibrary.sermon;
+const reflectionPrompts={
+ sermon:{notice:'Which words stand out to you?',meaning:'What does loving one another look like in this passage?',action:'Who could you encourage with a small act of love this week?'},
+ study:{notice:'What instruction or contrast catches your attention?',meaning:'How does hearing differ from doing in this verse?',action:'What is one concrete step you can take today?'},
+ year:{notice:'What image in this passage feels most vivid?',meaning:'What does this excerpt suggest about guidance and rest?',action:'Where might you make space for rest or offer care today?'}
+};
+const weeklyJourney=[
+ {day:'SUN',name:'Gather',title:'Hear the Word',body:'Begin with the Scripture focus from the sample sermon pathway.',step:'Open today’s reading',target:'scripture'},
+ {day:'MON',name:'Read',title:'Sit with the passage',body:'Read slowly. Notice one phrase you want to carry into the day.',step:'Open Scripture',target:'scripture'},
+ {day:'TUE',name:'Remember',title:'Let the words stick',body:'Practice the same verse in VersePlay. No streak or score is required.',step:'Open memory game',target:'memorize'},
+ {day:'WED',name:'Together',title:'Make space for people',body:'Bring one honest question to your group conversation.',step:'Open reflection',target:'questions'},
+ {day:'THU',name:'Reflect',title:'Listen and respond',body:'Consider what the passage means for a real relationship.',step:'Open reflection',target:'questions'},
+ {day:'FRI',name:'Live',title:'Choose one small action',body:'Encourage someone, offer help, or follow through on a kind intention.',step:'Open next step',target:'prayer'},
+ {day:'SAT',name:'Rest',title:'Look back with gratitude',body:'Take a quiet moment to pray and remember the week.',step:'Open prayer',target:'prayer'}
+];
 const next=d=>T.nextEvent(d,d===3?18:9,d===3?30:0).toLocaleDateString('en-US',{weekday:'long',month:'short',day:'numeric'});
 const wed=()=>next(3),sun=()=>next(0);
 const teamList=()=>s.teamMessages.map(m=>`<div class="message"><div class="avatar">${e(m.name.split(' ').map(x=>x[0]).join('').slice(0,2))}</div><div><div class="message-meta"><strong>${e(m.name)}</strong><small>${e(m.time)}</small></div><p>${e(m.text)}</p></div></div>`).join('');
@@ -376,30 +397,55 @@ function team(){
 function read(){
  const plan=currentReading();
  return `<section class="read-screen-v09">
-   <div class="read-v09-hero"><div class="read-v09-overline">READ · REFLECT · REMEMBER</div><h1>In the<br>Word<span>.</span></h1><p>Your daily rhythm in Scripture, connected to your community.</p></div>
-   <section class="rp-game-entry" aria-label="VersePlay Blank Battle">
-      <div class="rp-game-entry-top"><span>VERSEPLAY · FEATURED GAME</span><span aria-hidden="true">✳</span></div>
-      <h2>Make the words<br><em>click.</em></h2>
-      <p>Five missing words. One verse to remember. Play a quick round of Blank Battle.</p>
-      <button type="button" class="rp-game-entry-play" data-go="play" aria-label="Play Blank Battle">${icon('check')} PLAY BLANK BATTLE ${icon('arrow')}</button>
-      <small>Private, on-device puzzle · No online opponents</small>
-   </section>
-   <div class="rp-game-classic-label"><strong>MORE WAYS TO PRACTICE</strong><span>Classic &amp; two-player pass-and-play</span></div>
-   ${VP.render(s,e,icon)}
+   <div class="read-v09-hero"><div class="read-v09-overline">READ · REFLECT · REMEMBER · LIVE</div><h1>In the<br>Word<span>.</span></h1><p>Scripture for your heart, your everyday life, and the people around you.</p></div>
+   <nav class="read-journey-nav" aria-label="Scripture journey">
+     <button type="button" data-go="read" data-reading="scripture"><span>01</span><strong>Read</strong><small>Begin with the Word</small></button>
+     <button type="button" data-go="read" data-reading="questions"><span>02</span><strong>Reflect</strong><small>Consider & connect</small></button>
+     <button type="button" data-go="read" data-reading="memorize"><span>03</span><strong>Remember</strong><small>Practice the passage</small></button>
+     <button type="button" data-go="read" data-reading="prayer"><span>04</span><strong>Live</strong><small>Put love in motion</small></button>
+   </nav>
    <div class="read-focus-card">
-     <div class="read-focus-head"><span>YOUR READING PATH · SAMPLE</span>${icon('read')}</div>
-     <h2>${e(plan.name)}</h2><p>${e(plan.title)}</p><div class="read-focus-detail"><strong>${e(plan.passage)}</strong><small>${e(plan.description)}</small></div>
+     <div class="read-focus-head"><span>01 / READ · YOUR READING PATH · SAMPLE</span>${icon('read')}</div>
+     <h2>Start with Scripture.</h2><p>${e(plan.title)} · ${e(plan.name)}</p><div class="read-focus-detail"><strong>${e(plan.passage)}</strong><small>${e(plan.description)}</small></div>
    </div>
-   <section class="card read-scripture-card" id="reading-scripture" tabindex="-1">
-     <div class="read-section-label">${icon('read')} <span>SCRIPTURE · BSB</span><i></i></div>
-     <h2>${e(plan.passage)}</h2><blockquote>“${e(plan.excerpt)}”</blockquote>
-     <button type="button" class="btn ${s.read?'chosen':'red'}" data-action="read">${s.read?'✓ Read today':'Mark as read'}</button>
-     <p class="fine-note">Public-domain Berean Standard Bible excerpt · Illustrative passage, not an assigned reading calendar.</p>
+   <section class="card read-scripture-card read-reader" id="reading-scripture" tabindex="-1" aria-label="Scripture reading">
+     <div class="read-section-label">${icon('read')} <span>01 / READ · BSB · BEREAN STANDARD BIBLE</span><i></i></div>
+     <div class="read-reader-top"><div><span class="read-reader-eyebrow">TODAY'S SCRIPTURE FOCUS</span><h2>${e(plan.passage)}</h2></div><span class="read-reader-translation">BSB</span></div>
+     <div class="read-reader-controls" role="group" aria-label="Reading preferences">
+       <button type="button" data-action="reader-size" aria-pressed="${s.readerPreferences.size==='large'}" aria-label="Toggle larger Scripture text">Aa <span>${s.readerPreferences.size==='large'?'Standard size':'Larger text'}</span></button>
+       <button type="button" data-action="reader-highlight" aria-pressed="${!!s.readerPreferences.highlighted[s.plan]}" aria-label="Highlight this Scripture excerpt">${s.readerPreferences.highlighted[s.plan]?'★ Highlighted':'☆ Highlight'}</button>
+     </div>
+     <div class="read-reader-page ${s.readerPreferences.size==='large'?'read-reader-page--large':''} ${s.readerPreferences.highlighted[s.plan]?'read-reader-page--highlighted':''}">
+       <span class="read-reader-verse-number">SCRIPTURE EXCERPT</span>
+       <blockquote>${e(plan.excerpt)}</blockquote>
+       <span class="read-reader-page-end" aria-hidden="true">✦</span>
+     </div>
+     <div class="read-reader-note">
+       <label for="reader-note">Your private reflection <small>Saved on this device</small></label>
+       <textarea id="reader-note" rows="3" maxlength="1200" placeholder="What stands out to you in these words?">${e(s.readerNotes[s.plan]||'')}</textarea>
+       <div class="read-reader-note-actions"><button type="button" data-action="reader-save-note">Save reflection</button><button type="button" class="btn ${s.read?'chosen':'red'}" data-action="read">${s.read?'✓ Read today':'Mark as read'}</button></div>
+     </div>
+     <p class="fine-note">Berean Standard Bible excerpt · Sample reading, not a full chapter or assigned calendar. Notes remain in this browser; avoid sensitive information on shared devices.</p>
    </section>
-   <section class="card read-question-card" id="reading-questions" tabindex="-1">
-     <div class="read-section-label">${icon('message')} <span>REFLECT TOGETHER</span><i></i></div>
-     <h2>A question worth sharing.</h2><p>${e(s.question)}</p>
-     <button type="button" class="read-discuss-action" data-go="group" data-pane="chat">${icon('group')} Open group conversation ${icon('arrow')}</button>
+   <section class="card read-question-card read-reflect" id="reading-questions" tabindex="-1">
+     <div class="read-section-label">${icon('message')} <span>02 / REFLECT · GUIDED PRACTICE</span><i></i></div>
+     <span class="read-reflect-eyebrow">FROM WORDS TO LIFE</span>
+     <h2>Let it stay with you.</h2>
+     <p class="read-reflect-question">${e(s.question)}</p>
+     <div class="read-reflect-prompts" role="group" aria-label="Choose a reflection prompt">
+       ${[['notice','NOTICE'],['meaning','CONSIDER'],['action','RESPOND']].map(([id,label])=>`<button type="button" data-action="reflect-prompt" data-value="${id}" aria-pressed="${s.reflectionPrompt===id}">${label}</button>`).join('')}
+     </div>
+     <div class="read-reflect-guidance">
+       <span>YOUR REFLECTION PROMPT</span>
+       <p>${e((reflectionPrompts[s.plan]||{})[s.reflectionPrompt]||'What stands out to you in these words?')}</p>
+     </div>
+     <label class="read-reflect-label" for="reflection-response">Your response <small>Private · saved on this device</small></label>
+     <textarea id="reflection-response" rows="3" maxlength="1200" placeholder="Write a thought, a prayer, or one small next step...">${e(s.reflectionResponses[s.plan]||'')}</textarea>
+     <div class="read-reflect-actions">
+       <button type="button" class="read-reflect-save" data-action="reflect-save">Save my reflection</button>
+       <button type="button" class="read-discuss-action" data-go="group" data-pane="chat">${icon('group')} Open group conversation ${icon('arrow')}</button>
+     </div>
+     <p class="fine-note">Prompts are prewritten sample guidance, not AI-generated interpretation or official Citizen Church teaching. Your private response is never posted to the group automatically.</p>
      ${H.rhythmEditor(s,plan)}
    </section>
    ${canLead('group')?`<section class="card read-leader-card">
@@ -412,6 +458,37 @@ function read(){
      <button type="button" class="btn dark-btn" data-action="question">Save local question</button>
      <p class="fine-note">Real publishing permissions, content review, group overrides, and licensing remain undecided.</p>
    </section>`:''}
+   <div class="read-memory-heading" id="reading-memory-intro" tabindex="-1"><span>03 / REMEMBER</span><h2>Make it memorable.</h2><p>Practice the same Scripture you just read. Start with this week's passage, or explore a bonus verse.</p></div>
+   <div class="read-memory-bridge">
+     <span>YOUR READING → YOUR MEMORY CHALLENGE</span>
+     <div><strong>${e(plan.passage)}</strong><small>${e(plan.title)}</small></div>
+     <button type="button" data-action="read-practice-current">Practice this passage ${icon('arrow')}</button>
+     <p>Opens the classic VersePlay word puzzle below. Blank Battle remains a separate featured game with its own sample verse.</p>
+   </div>
+   <section class="rp-game-entry" aria-label="VersePlay Blank Battle">
+      <div class="rp-game-entry-top"><span>VERSEPLAY · FEATURED GAME</span><span aria-hidden="true">✳</span></div>
+      <h2>Make the words<br><em>click.</em></h2>
+      <p>Five missing words. One verse to remember. Play a quick round of Blank Battle.</p>
+      <button type="button" class="rp-game-entry-play" data-go="play" aria-label="Play Blank Battle">${icon('check')} PLAY BLANK BATTLE ${icon('arrow')}</button>
+      <small>Private, on-device puzzle · No online opponents</small>
+   </section>
+   <div class="rp-game-classic-label"><strong>MORE WAYS TO PRACTICE</strong><span>Classic &amp; two-player pass-and-play</span></div>
+   ${VP.render(s,e,icon)}
+
+   <section class="read-weekly" aria-label="Sunday-to-Sunday sample Scripture rhythm">
+     <div class="read-weekly-head"><span>THE WEEK IN THE WORD · SAMPLE</span><h2>One passage.<br>Seven ways to live it.</h2><p>A flexible Sunday-to-Sunday rhythm that connects reading, remembering, relationships, and real life. Explore any day—there is no required schedule.</p></div>
+     <div class="read-weekly-days" role="group" aria-label="Choose a day of the sample journey">
+       ${weeklyJourney.map((day,i)=>`<button type="button" data-action="weekly-day" data-value="${i}" aria-pressed="${s.weeklyDay===i}"><small>${day.day}</small><strong>${i+1}</strong></button>`).join('')}
+     </div>
+     <div class="read-weekly-detail">
+       <span>DAY ${s.weeklyDay+1} · ${weeklyJourney[s.weeklyDay].name.toUpperCase()}</span>
+       <h3>${e(weeklyJourney[s.weeklyDay].title)}</h3><p>${e(weeklyJourney[s.weeklyDay].body)}</p>
+       <div class="read-weekly-passage">THIS WEEK'S SAMPLE FOCUS <strong>${e(plan.passage)}</strong></div>
+       <button type="button" data-go="read" data-reading="${weeklyJourney[s.weeklyDay].target}">${e(weeklyJourney[s.weeklyDay].step)} ${icon('arrow')}</button>
+     </div>
+     <p class="fine-note">Illustrative journey only—not Citizen Church’s official sermon schedule, published devotional, or tracked attendance.</p>
+   </section>
+   <div class="read-live-heading" id="reading-prayer" tabindex="-1"><span>04 / LIVE</span><h2>Take it beyond the page.</h2><p>Choose someone to encourage or take a quiet moment to pray. Small actions matter.</p></div>
    <div class="card read-prayer-card"><div>${icon('heart')}<h3>A moment to pray.</h3><p>Take a minute to pray for someone in your group.</p></div>
      <button type="button" class="round ${s.prayed?'done':''}" aria-label="Mark prayer time" data-action="pray">${s.prayed?'✓':'↗'}</button>
    </div>${footer()}
@@ -579,6 +656,13 @@ function f10Ask(question){
  renderDialog();
 }
 function notify(text){const x=$('toast');x.textContent=text;x.hidden=false;clearTimeout(notify.timer);notify.timer=setTimeout(()=>x.hidden=true,2600)}
+// Keep local-only Scripture reflections safe across tab changes, leader actions and rerenders.
+document.addEventListener('input',ev=>{
+ const field=ev.target;
+ if(s.view!=='read'||!(field instanceof HTMLTextAreaElement))return;
+ if(field.id==='reader-note'){s.readerNotes[s.plan]=field.value.slice(0,1200);save();}
+ if(field.id==='reflection-response'){s.reflectionResponses[s.plan]=field.value.slice(0,1200);save();}
+});
 document.addEventListener('click',ev=>{
 const b=ev.target.closest('button');if(!b)return;
 if(b.type==='submit'&&b.form)return;
@@ -640,6 +724,8 @@ if(v==='caught-up'){s.teamStatus='confirmed';s.coverage=false;s.teamMessages=s.t
  }
 s.view='today';closeDialog(false);render();$('view').scrollTop=0;notify('Local Today fixture updated. No data was sent.');return;
 }
+if(a==='weekly-day'){const day=Number(v);if(!Number.isInteger(day)||day<0||day>6)return;s.weeklyDay=day;render();return;}
+if(a==='read-practice-current'){s.memoryActive=s.plan;s.memoryMode='solo';s.memoryTarget=null;s.memoryPassTurn=1;render();const game=$('reading-memorize');if(game){game.focus({preventScroll:true});game.scrollIntoView({block:'start',behavior:'smooth'});}return;}
 if(a==='memory-mode'){
  if(!['solo','pass'].includes(v))return;
  s.memoryMode=v;s.memoryPassTurn=1;s.memoryTarget=null;render();return;
@@ -764,6 +850,11 @@ if(a==='shift'){s.teamStatus=v;if(v==='confirmed'){s.coverage=false;s.teamMessag
 if(a==='cover'){s.coverage=!s.coverage;s.teamMessages=s.teamMessages.filter(x=>!x.coverage);if(s.coverage)s.teamMessages.push({name:'You',time:'Just now',text:'Could someone cover my Sunday 9:00 AM shift?',coverage:true});render();notify(s.coverage?'Sample coverage request posted':'Sample request withdrawn');return}
 if(a==='plan'&&canLead('group')&&readingLibrary[v]){s.planQuestions[s.plan]=s.question;s.plan=v;s.memoryActive=v;s.memoryTarget=null;s.question=s.planQuestions[v]||readingLibrary[v].question;render();notify('Sample reading pathway selected locally');return}
 if(a==='question'&&canLead('group')){const txt=$('question')?.value.trim();if(!txt){notify('Enter a question first');return}s.question=txt;s.planQuestions[s.plan]=txt;render();notify('Sample group question updated locally');return}
+if(a==='reflect-prompt'){s.reflectionResponses[s.plan]=($('reflection-response')?.value||'').slice(0,1200);s.reflectionPrompt=['notice','meaning','action'].includes(v)?v:'notice';render();return}
+if(a==='reflect-save'){s.reflectionResponses[s.plan]=($('reflection-response')?.value||'').slice(0,1200);render();notify('Reflection saved privately on this device');return}
+if(a==='reader-size'){s.readerNotes[s.plan]=($('reader-note')?.value||'').slice(0,1200);s.readerPreferences.size=s.readerPreferences.size==='large'?'regular':'large';render();return}
+if(a==='reader-highlight'){s.readerNotes[s.plan]=($('reader-note')?.value||'').slice(0,1200);s.readerPreferences.highlighted[s.plan]=!s.readerPreferences.highlighted[s.plan];render();return}
+if(a==='reader-save-note'){const note=$('reader-note')?.value||'';s.readerNotes[s.plan]=note.slice(0,1200);render();notify('Private reflection saved on this device');return}
 if(a==='read'){s.read=!s.read;render();return}
 if(a==='pray'){s.prayed=!s.prayed;render();return}
 });
