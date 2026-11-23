@@ -63,6 +63,24 @@ test('fixed visual baseline, four tabs and local demo source order remain intact
  assert.match(workflow,/Check the default Today on the Netlify preview build/);
  assert.match(read('scripts/preview-today-browser-check.mjs'),/s7-demo-browser-check/);
 });
+test('revoked or malformed onboarding membership cannot surface private group details',()=>{
+ const Today=require('../rallypoint-today.js');
+ const raw={name:'Demo',memberships:{group:'false',team:'false'}};
+ const ctx=Today.snapshot({
+  groupMessages:[],prayers:[],role:'leader',teamStatus:'pending',reached:[]
+ },raw,new Date('2026-11-25T12:00:00Z'),{status:'ok',unreadCount:12});
+ assert.equal(ctx.events.length,0);
+ assert.equal(ctx.unread,false);
+ assert.equal(ctx.unreadCount,0);
+ assert.equal(ctx.pending,false);
+ assert.equal(ctx.leader,null);
+ const app=read('rallypoint.js');
+ assert.match(app,/const groupAllowed=rallyOne\?context\?\.permissions\.group===true/);
+ assert.match(app,/if\(!groupAllowed\)return groupBrowse\(\)/);
+ assert.match(app,/memberContext\(\)\?\.permissions\.group===true/);
+ assert.match(app,/memberContext\(\)\?\.permissions\.team===true/);
+ assert.match(app,/member:todayUI\.memberships\.group===true/);
+});
 test('synthetic provider contract cannot reach static Netlify bundle',()=>{
  const build=read('scripts/build.cjs'),html=read('index.html');
  assert.doesNotMatch(build,/s7-readonly-member-contract/);
