@@ -245,3 +245,26 @@
 @media (max-width: 600px) {
   .rally-one .premium-alive.is-f09-board .f09-board { padding-inline: 9px; }
 }
+
+#connect-entry { display: none; }
+.rally-one #connect-entry {
+  display: flex; flex: 0 0 auto; justify-content: space-between; align-items: center;
+  width: 100%; min-height: 44px; padding: 5px 19px; border: 0; border-bottom: 1px solid #c5aa94;
+  background: #f3e5d6; color: #242322; font: inherit; text-align: left;
+}
+#connect-entry strong { font-size: 22px; letter-spacing: -.065em; line-height: 1.1; }
+#connect-entry strong span, #connect-entry b { color: #bb0024; }
+#connect-entry > span { font-size: 15px; font-weight: 650; }
+#connect-entry b { margin-left: 5px; font-size: 20px; }
+.rally-one :is(.is-play-v08, .phone-inner:has(#rp-gateway:not([hidden]))) #connect-entry { display: none; }
+.connect-overlay[open] {
+  position: fixed; margin: 0; padding: 0; max-width: none; max-height: none;
+  border: 0; border-radius: inherit; overflow: hidden; background: #242322;
+  display: flex; flex-direction: column;
+}
+.connect-overlay::backdrop { background: rgba(24,23,22,.35); }
+.connect-overlay > button {
+  min-height: 44px; flex: 0 0 auto; text-align: left; padding: 8px 18px;
+  background: #242322; color: #fff8ef; border: 0; font: inherit; font-weight: 700;
+}
+.connect-overlay iframe { border: 0; width: 100%; flex: 1; min-height: 0; }

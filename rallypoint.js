@@ -53,7 +53,7 @@ if(s.memoryTextRevision!==M.textRevision){s.memoryGames={};s.memoryTextRevision=
 const storageGuard=window.RallyStorageGuard.create({getItem:k=>localStorage.getItem(k),setItem:(k,v)=>localStorage.setItem(k,v),removeItem:k=>localStorage.removeItem(k)});
  let todayUI=T.load({getItem:k=>localStorage.getItem(k)}),dialog=null,dialogTrigger=null,storageWarning=storageGuard.status().reason||'',drafts={},companionFocus=null;
 const $=x=>document.getElementById(x), e=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const save=()=>{const result=storageGuard.save({primaryRaw:JSON.stringify(s),todayRaw:JSON.stringify(todayUI)});storageWarning=result.ok?'':result.reason;};
+const save=()=>{const result=storageGuard.save({primaryRaw:JSON.stringify(s),todayRaw:JSON.stringify(todayUI)});storageWarning=result.ok?'':result.reason;return result.ok;};
 const canLead=area=>s.role==='leader'&&!!todayUI.memberships[area];
 // Shared read-only projection of the same F-02 snapshot mounted in Groups.
 // Legacy groupMessages remain an independent historical archive.
@@ -380,6 +380,7 @@ function team(){
   </button>
   <div class="card team-huddle"><div class="kicker">THIS SUNDAY</div><h3>Team huddle</h3><p>Arrive at 8:40 AM; huddle begins at 8:45 AM. These are fictional example times.</p><button type="button" class="text-button" data-action="pane" data-area="team" data-value="chat">Coordinate with your team ↗</button></div>`;
  if(s.teamPane==='chat')body=`<div class="card team-chat-card"><div class="kicker">WELCOME TEAM · LOCAL DEMO</div><h2>Stay in the loop.</h2><p>Share relevant updates with the people serving alongside you. Messages stay in this browser.</p>${teamList()}${compose('team','Send a team update','Share an update with your team…')}</div>`;
+ if(rallyOne && s.teamPane==='chat' && todayUI.memberships.team)body+='<button type="button" class="text-button" data-action="connect-room">Open Citizen Serve Team Rally Room ↗</button>';
  if(s.teamPane==='leader')body=`<div class="card team-leader-card"><div class="kicker">AUTHORIZED TEAM LEADER · FIXTURE</div><h2>Care for your team.</h2><p>Review the sample schedule and communication. A confirmed shift is not proof of attendance.</p><div class="team-leader-status"><strong>Coverage requests</strong><span>${s.coverage?'One sample coverage request':'No active sample requests'}</span></div><button type="button" class="btn red" data-action="pane" data-area="team" data-value="chat">Open team conversation ${icon('arrow')}</button></div><div class="card"><h3>Follow-up needs human judgment.</h3><p>The proposed future leader system requires approved definitions, actual participation records, restricted access, and a clear pastoral follow-up process before real alerts can be enabled.</p></div>`;
  return `<section class="team-screen-v08">
   <div class="team-v08-hero">
@@ -528,7 +529,76 @@ $('profile-initials').textContent=(todayUI.name||'Jonathan').split(/\s+/).map(v=
 const snapshot=T.snapshot(s,todayUI,new Date(),conversation());$('activity-dot').hidden=!snapshot.attention&&!snapshot.leader;
 view.scrollTop=position;
 }
+function openConnect(screen='inbox', person=''){
+ if(!rallyOne || !$('rp-gateway').hidden)return;
+ const opener=document.activeElement;
+ closeDialog(false);
+ const overlay=document.createElement('dialog');
+ overlay.className='connect-overlay';
+ overlay.setAttribute('aria-label','Connect messaging');
+ const phone=document.querySelector('.phone-inner');
+ const fit=()=>{
+   const rect=phone.getBoundingClientRect();
+   Object.assign(overlay.style,{left:rect.left+'px',top:rect.top+'px',width:rect.width+'px',height:rect.height+'px'});
+ };
+ const frame=document.createElement('iframe');
+ frame.title='Connect messaging inbox and conversations';
+ const back=document.createElement('button');
+ back.type='button';
+ const area={today:'Today',group:'Groups',team:'Team',read:'Read',play:'Read'}[s.view];
+ back.textContent='‹  Back to '+area;
+ const access=()=>({...todayUI.memberships});
+ const ids={Jess:'jess',Anna:'anna','Alex Morgan':'connect-alex'};
+ const messages=name=>s.directMessages[ids[name]]||[];
+ const room=()=>s.connectRoom||{};
+ frame.connectMember={
+   screen,person,access,conversation,
+   readModel:window.RallyConversationRead,domain:window.RallyChatDomain,
+   messages, room, praying:()=>!!s.connectPraying,
+   write(kind,value,name){
+     if(storageWarning)return false;
+     const previous={room:s.connectRoom,praying:s.connectPraying,direct:s.directMessages};
+     if(kind==='room'||kind==='rsvp'){
+       if(!access().team)return false;
+       s.connectRoom={...room()};
+       if(kind==='room')s.connectRoom.messages=[...(room().messages||[]),value];
+       else s.connectRoom.rsvp=value;
+     }else{
+       if(!access().group)return false;
+       if(kind==='direct' && Object.hasOwn(ids,name)){
+         s.directMessages={...s.directMessages,[ids[name]]:[...messages(name),{name:'You',time:'Just now',text:value}]};
+       }else if(kind==='prayer')s.connectPraying=value;
+       else return false;
+     }
+     if(save())return true;
+     s.connectRoom=previous.room;s.connectPraying=previous.praying;s.directMessages=previous.direct;
+     return false;
+   }
+ };
+ frame.src='connect-design-lab.html';
+ overlay.append(back,frame);
+ phone.append(overlay);
+ fit();
+ overlay.showModal();
+ const observer=new ResizeObserver(fit);
+ observer.observe(phone);
+ history.pushState({rallyConnect:true},'');
+ function close(){
+   observer.disconnect();
+   window.removeEventListener('popstate',close);
+   overlay.close();overlay.remove();
+   render();
+   if(opener?.isConnected)opener.focus();
+   else $('connect-entry').focus();
+ }
+ window.addEventListener('popstate',close,{once:true});
+ back.onclick=()=>history.back();
+ overlay.addEventListener('cancel',ev=>{ev.preventDefault();history.back();});
+}
 function navigate(view,pane,reading){
+ if(rallyOne && view==='group' && pane==='chat' && todayUI.memberships.group){
+   openConnect('thread');return;
+ }
 closeDialog(false);
 s.view=view;
 if(view!=='today')f09Feedback='';
@@ -644,6 +714,11 @@ if(f10Preview&&dialog==='f10-companion'&&a==='f10-confirm'&&s.view==='today'){
    f10Notice='Your sample serving availability is now Confirmed on this device.';
  }else{f10Notice='That sample action is already handled or unavailable for this profile.';}
  f09Feedback='';render();renderDialog();return;
+}
+if(a==='connect-room' && todayUI.memberships.team){openConnect('room');return;}
+if(a==='connect-inbox'){openConnect();return;}
+if(rallyOne && ['hybrid-person','message-person'].includes(a) && todayUI.memberships.group && ['anna','jess'].includes(person)){
+ openConnect('direct',person==='anna'?'Anna':'Jess');return;
 }
 if(a==='memorize-preview'){navigate('read',null,'memorize');return}
 if(['notifications','demo-controls','team-preview','quick-actions'].includes(a)){showDialog(a,b);return}

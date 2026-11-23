@@ -180,3 +180,6 @@ try{
     console.log('Rally One onboarding, accessibility and cross-tab regression passed at '+width+' px');
   }
 }finally{await browser.close();}
+
+// Exercise the integrated four-tab entry against the same review build.
+await import('./connect-member-browser-check.mjs');
