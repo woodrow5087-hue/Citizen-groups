@@ -51,6 +51,9 @@
     return {repository,...fields};
   }
   function drawThread(){
+    const scroll=$('#thread-scroll');
+    const previousTop=scroll.scrollTop;
+    const nearLatest=scroll.scrollHeight-scroll.scrollTop-scroll.clientHeight<88;
     const {repository,draft,replyTo}=thread();
     const snapshot=repository.getSnapshot();
     const messages=repository.listMessages(actor);
@@ -99,6 +102,11 @@
       $('#reply-context-text').textContent=name+': '+quoted.body.slice(0,130);
     }
     $('#thread-form .send-btn').disabled=!draft.trim();
+    // Reaction and reply re-render the list; keep the reading position
+    // instead of unexpectedly jumping to the beginning of the thread.
+    if(!$('#screen-thread').hidden)requestAnimationFrame(()=>{
+      scroll.scrollTop=nearLatest?scroll.scrollHeight:previousTop;
+    });
   }
   function safeThread(action){
     try{action();return true;}
