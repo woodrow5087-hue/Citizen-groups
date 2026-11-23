@@ -878,8 +878,8 @@ if(a==='companion-starter'){
 }
 if(a==='hybrid-person'){if(!todayUI.memberships.group)return;const member=sampleGroupPeople.find(p=>p.id===person);if(!member)return;s.directPerson=member.id;navigate('group','direct');return;}
 if(a==='message-person'){if(!todayUI.memberships.group)return;const member=sampleGroupPeople.find(p=>p.id===person);if(!member)return;s.directPerson=member.id;s.groupPane='direct';render();return}
- if(a==='pane'){if(v==='leader'&&!canLead(b.dataset.area))return;if(b.dataset.area==='group')s.groupPane=v;else s.teamPane=v;render();return}
-if(a==='browse'){s.discover=!s.discover;render();return}
+ if(a==='pane'){if(v==='leader'&&!canLead(b.dataset.area))return;if(b.dataset.area==='group')s.groupPane=v;else s.teamPane=v;render();if(rallyOne&&b.dataset.area==='group')$('view').scrollTop=0;return}
+if(a==='browse'){s.discover=!s.discover;render();if(rallyOne&&s.view==='group')$('view').scrollTop=0;return}
 if(a==='rsvp'){s.rsvp=s.rsvp===v?'':v;render();notify('Sample RSVP updated');return}
 if(a==='interest'){s.interest=s.interest.includes(v)?s.interest.filter(x=>x!==v):[...s.interest,v];render();notify('Interest saved locally, not submitted');return}
 if(a==='send'){
