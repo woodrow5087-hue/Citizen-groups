@@ -23,6 +23,9 @@ const score=Object.freeze({
 });
 const groupIds=new Set(['group-rsvp','group-unavailable','group-unread','leader-checkins']);
 function activeScore(id,model,now){
+ if(id==='leader-checkins'&&model.requestedCheckIn)return 106;
+ if(model.twoCommitmentDemo&&id==='group-rsvp')return 104;
+ if(model.twoCommitmentDemo&&id==='serve-response')return 103;
  const date=id==='group-rsvp'?model.groupDate:id==='serve-response'?model.serveDate:null;
  if(!(date instanceof Date)||!Number.isFinite(date.getTime()))return score[id]||0;
  const delta=date.getTime()-now.getTime();
@@ -106,7 +109,8 @@ function focus({board,model,care,now=new Date()}={}){
  }
  const [first,second]=selected;
  const hero=Object.freeze({
-  id:first.id,title:first.title,subtitle:first.detail,
+  id:first.id,title:first.id==='leader-checkins'&&d.requestedCheckIn?'Taylor asked for a check-in.':first.title,
+  subtitle:first.id==='leader-checkins'&&d.requestedCheckIn?'Wednesday Group · a fictional member request':first.detail,
   primary:first.action,heroType:first.icon,heroLabel:first.label,
   eyebrow:first.score>=84?'NEXT UP':first.family==='care'?'CARE · YOUR PEOPLE':
    first.family==='leader'?'LEADER FOLLOW-UP':'RALLY · YOUR NEXT STEP',

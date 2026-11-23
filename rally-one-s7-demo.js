@@ -33,6 +33,7 @@ function create(baseState,baseUI){
   state.role=id==='leader'?'leader':'member';
   state.view='today';state.groupPane='overview';state.teamPane='schedule';state.discover=false;
   state.rsvp='';state.teamStatus='pending';state.coverage=false;
+  state.leaderRequest=id==='leader'?'taylor-wednesday':null;
   state.reached=[];state.companionCare={...obj(state.companionCare),marcus:{}};
   state.companionChoices={...obj(state.companionChoices),snoozedUntil:{}};
   state.read=false;

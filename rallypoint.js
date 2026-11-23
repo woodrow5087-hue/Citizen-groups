@@ -24,6 +24,7 @@ const f09Mode=f10Preview?'board':(previewParams.get('f09')??defaultToday);
 const f09Board=f09Mode==='board';
 const f09Preview=f09Mode==='1'||f09Board;
 let f09Index=0;
+let receiptType=null;
 let f09Feedback='';
 let f10Prompt='week',f10Asked='',f10Notice='';
 let f10Turns=[],f10Prior={},f10Active=null;
@@ -102,6 +103,26 @@ function applyLocalAction(command){
 const pill=(t,light=false)=>`<span class="pill ${light?'light':''}">${e(t)}</span>`;
 const icons={home:'⌂',group:'♙',team:'♡',read:'▤',arrow:'↗'};
 let groupsV2ActiveProfile='dustin';
+let portraitOrigin=null;
+function movePortrait(from,to){
+ if(!from?.width||!to?.animate||window.matchMedia('(prefers-reduced-motion: reduce)').matches)return;
+ const dest=to.getBoundingClientRect();
+ if(!dest.width)return;
+ to.animate([
+   {transformOrigin:'top left',transform:`translate(${from.left-dest.left}px,${from.top-dest.top}px) scale(${from.width/dest.width})`},
+   {transformOrigin:'top left',transform:'none'}
+ ],{duration:260,easing:'cubic-bezier(.2,.8,.2,1)'});
+}
+function hasLeaderRequest(){
+ return rallyOne&&canLead('group')&&s.leaderRequest==='taylor-wednesday';
+}
+function leaderRequestCard(){
+ const reviewed=s.reached.includes('taylor');
+ return `<article class="r1-request"><small>WEDNESDAY GROUP · FICTIONAL REQUEST</small>
+ <h2>Taylor asked for a check-in.</h2><blockquote>“Could someone check in with me after Wednesday? I’m new to the group and would love to talk.”</blockquote>
+ <div class="r1-request-actions"><button type="button" data-action="leader-write">Write to Taylor ↗</button>
+ <button type="button" data-action="reached" data-person="taylor" aria-pressed="${reviewed}">${reviewed?'Reviewed ✓':'Mark reviewed'}</button></div></article>`;
+}
 const sampleGroupPeople=[{id:'anna',name:'Anna L.',initials:'AL'},{id:'jess',name:'Jess W.',initials:'JW'},{id:'marcus',name:'Marcus C.',initials:'MC'},{id:'taylor',name:'Taylor D.',initials:'TD'}];
  if(!sampleGroupPeople.some(p=>p.id===s.directPerson))s.directPerson='anna';
 const readingLibrary={
@@ -115,8 +136,8 @@ const wed=()=>next(3),sun=()=>next(0);
 const teamList=()=>s.teamMessages.map(m=>`<div class="message"><div class="avatar">${e(m.name.split(' ').map(x=>x[0]).join('').slice(0,2))}</div><div><div class="message-meta"><strong>${e(m.name)}</strong><small>${e(m.time)}</small></div><p>${e(m.text)}</p></div></div>`).join('');
 const prayerList=()=>s.prayers.map(m=>`<div class="message"><div class="avatar">${e(m.name[0])}</div><div><div class="message-meta"><strong>${e(m.name)}</strong><small>${e(m.time)}</small></div><p>${e(m.text)}</p></div></div>`).join('');
 const tabs=(area,values,active)=>`<div class="tabs" role="group" aria-label="${area} sections">${values.map(([id,label])=>`<button type="button" data-action="pane" data-area="${area}" data-value="${id}" class="${active===id?'selected':''}">${label}</button>`).join('')}</div>`;
-const compose=(type,title,placeholder)=>`<div class="composer"><label for="${type}-input">${title}</label><textarea id="${type}-input" rows="2" maxlength="700" placeholder="${placeholder}"></textarea><button type="button" class="btn red" data-action="send" data-value="${type}">Post to sample ${type==='group'?'group':type==='team'?'team':type==='direct'?'private demo conversation':'prayer board'} <span>➤</span></button></div>`;
-const lead=()=>`<div class="card"><div class="kicker">LEADER TOOLS · PRIVATE DEMO</div><h3>Record attendance</h3><p>Track actual participation, not whether someone opened the app.</p>${[['anna','Anna L.'],['jess','Jess W.'],['marcus','Marcus C.'],['taylor','Taylor D.']].map(([id,name])=>`<div class="attendance"><strong>${name}</strong><div class="actions">${[['here','Here'],['excused','Excused'],['unknown','Not recorded']].map(([v,label])=>`<button type="button" class="mini ${s.attendance[id]===v?'selected':''}" data-action="attendance" data-person="${id}" data-value="${v}">${label}</button>`).join('')}</div></div>`).join('')}</div><div class="card"><div class="kicker">PEOPLE FIRST</div><h3>Thoughtful check-ins</h3><p>These are fictional scenarios, not judgments about someone's spiritual health.</p>${[['marcus','Marcus C.','Two recent sample gatherings missed'],['taylor','Taylor D.','Signed up but no sample gathering yet']].map(([id,name,reason])=>`<div class="followup"><div>${pill(s.reached.includes(id)?'Reviewed':'Suggested check-in')}<strong>${name}</strong><small>${reason}</small></div><button type="button" class="btn outline" data-action="reached" data-person="${id}">${s.reached.includes(id)?'Undo':'Mark reviewed'}</button></div>`).join('')}</div>`;
+const compose=(type,title,placeholder)=>`<div class="composer"><label for="${type}-input">${title}</label><textarea id="${type}-input" data-draft-key="${type==='direct'?'direct-'+s.directPerson:type+'-input'}" rows="2" maxlength="700" placeholder="${placeholder}"></textarea><button type="button" class="btn red" data-action="send" data-value="${type}">Post to sample ${type==='group'?'group':type==='team'?'team':type==='direct'?'private demo conversation':'prayer board'} <span>➤</span></button></div>`;
+const lead=()=>`<div class="card"><div class="kicker">LEADER TOOLS · PRIVATE DEMO</div><h3>Record attendance</h3><p>Track actual participation, not whether someone opened the app.</p>${[['anna','Anna L.'],['jess','Jess W.'],['marcus','Marcus C.'],['taylor','Taylor D.']].map(([id,name])=>`<div class="attendance"><strong>${name}</strong><div class="actions">${[['here','Here'],['excused','Excused'],['unknown','Not recorded']].map(([v,label])=>`<button type="button" class="mini ${s.attendance[id]===v?'selected':''}" data-action="attendance" data-person="${id}" data-value="${v}">${label}</button>`).join('')}</div></div>`).join('')}</div><div class="card"><div class="kicker">PEOPLE FIRST</div><h3>Thoughtful check-ins</h3><p>These are fictional scenarios, not judgments about someone's spiritual health.</p>${[['marcus','Marcus C.','Two recent sample gatherings missed'],['taylor','Taylor D.','Signed up but no sample gathering yet']].filter(([id])=>id!=='taylor'||!hasLeaderRequest()).map(([id,name,reason])=>`<div class="followup"><div>${pill(s.reached.includes(id)?'Reviewed':'Suggested check-in')}<strong>${name}</strong><small>${reason}</small></div><button type="button" class="btn outline" data-action="reached" data-person="${id}">${s.reached.includes(id)?'Undo':'Mark reviewed'}</button></div>`).join('')}</div>`;
 function renderPeople(snapshot,chat){
   if(!todayUI.memberships.group){
     return `<section class="today-people today-people--discover" aria-label="Your people">
@@ -188,10 +209,10 @@ function f09Today(){
      state:s,member:todayUI.memberships.group===true,now
    });
    const unifiedFocus=rallyOne?window.RallyUnifiedFocus?.focus({
-     board:baselineBoard,model,care,now
+     board:baselineBoard,model:{...model,requestedCheckIn:hasLeaderRequest()&&!s.reached.includes('taylor'),twoCommitmentDemo:sprint7Session?.active()==='group-serving'},care,now
    }):null;
    return window.RallyPriorityBoard.render({
-     ...model,feedback:f09Feedback,f10Enabled:f10Preview,campus,
+     ...model,receipt:rallyOne&&f09Feedback?receiptType:null,feedback:f09Feedback,f10Enabled:f10Preview,campus,
      ...(unifiedFocus?{unifiedFocus}:{})
    },peopleRail,portraits,now);
  }
@@ -388,7 +409,7 @@ if(s.groupPane==='direct'){
 }
 if(s.groupPane==='gather')body=`<div class="card"><div class="kicker">NEXT GROUP GATHERING · SAMPLE</div><h3>${wed()} · 6:30 PM</h3><p>${e(currentReading().passage)} · ${e(s.question)}</p><p class="group-gather-rsvp" role="status">${s.rsvp==='going'?'You’re going · saved on this device':s.rsvp==='maybe'?'Maybe · saved on this device':'Your response is still open'}</p><div class="actions"><button class="btn ${s.rsvp==='going'?'chosen':'outline'}" data-action="rsvp" data-value="going" aria-pressed="${s.rsvp==='going'}">I'm going</button><button class="btn ${s.rsvp==='maybe'?'chosen':'outline'}" data-action="rsvp" data-value="maybe" aria-pressed="${s.rsvp==='maybe'}">Maybe</button></div><div class="group-gather-next"><span>STAY CONNECTED</span><button type="button" data-action="pane" data-area="group" data-value="chat">Talk with your group ${icon('arrow')}</button><button type="button" data-go="read" data-reading="scripture">Read ${e(currentReading().passage)} ${icon('arrow')}</button></div></div><div class="card"><h3>Connected beyond the semester.</h3><p>Continuity is a proposed model, not an approved policy. Groups may continue through breaks, subject to church leadership decisions.</p></div>`;
 if(s.groupPane==='prayer')body=`<div class="card"><div class="kicker">PEOPLE BEFORE POSTS · LOCAL DEMO</div><h3>Pray for one another.</h3><p>Use fictional examples here—do not enter private real requests into this demo.</p>${prayerList()}${compose('prayer','Add a sample prayer request','What can your group pray about?')}<div class="group-prayer-next"><span>CONTINUE THE CONVERSATION</span><button type="button" data-action="pane" data-area="group" data-value="people">Check in with someone ${icon('arrow')}</button></div></div>`;
-if(s.groupPane==='leader')body=lead();
+if(s.groupPane==='leader')body=(hasLeaderRequest()?leaderRequestCard():'')+lead();
 if(rallyOne&&GroupsV2){
  return '<section class="group-screen-v07 gv2-detail">'+
  GroupsV2.detailHeading(s.groupPane,canLead('group'))+
@@ -563,7 +584,7 @@ function mountBlankBattle(){
 function footer(){return `<p class="disclaimer">RallyPoint Phase 1 · Interactive sample data only. Nothing is sent to other people, church systems, or notifications.</p>`}
 function render(){
 const view=$('view'),position=view.scrollTop;
-view.querySelectorAll('textarea').forEach(field=>{drafts[field.id]=field.value});
+view.querySelectorAll('textarea').forEach(field=>{drafts[field.dataset.draftKey||field.id]=field.value});
 if(!['today','group','team','read','play'].includes(s.view))s.view='today';
 if(s.role!=='leader'){if(s.groupPane==='leader')s.groupPane=rallyOne?'overview':'chat';if(s.teamPane==='leader')s.teamPane='schedule';}
 save();
@@ -605,7 +626,7 @@ if(rallyOne&&window.RallyCareFlow){
   }
 }
 if(s.view==='play')mountBlankBattle();
-view.querySelectorAll('textarea').forEach(field=>{if(drafts[field.id]!==undefined)field.value=drafts[field.id]});
+view.querySelectorAll('textarea').forEach(field=>{if(drafts[field.dataset.draftKey||field.id]!==undefined)field.value=drafts[field.dataset.draftKey||field.id]});
 if(s.view==='group'&&s.groupPane==='chat'&&todayUI.memberships.group&&$('rpx-chat')){
   const root=$('rpx-chat'),Chat=window.RallyWednesdayChat,Domain=window.RallyChatDomain;
   if(Chat&&Domain&&typeof Domain.createMockAccessPolicy==='function'){
@@ -762,7 +783,7 @@ if(dialog==='f10-companion'&&f10Preview){
  // Ask Rally explains the SAME visible priority as Today; it does not
  // invent a second ranking or treat optional prayer as an obligation.
  const care=window.RallyCareFlow?.derive({state:s,member:todayUI.memberships.group===true,now});
- const focus=rallyOne?window.RallyUnifiedFocus?.focus({board:baselineBoard,model,care,now}):null;
+ const focus=rallyOne?window.RallyUnifiedFocus?.focus({board:baselineBoard,model:{...model,requestedCheckIn:hasLeaderRequest()&&!s.reached.includes('taylor'),twoCommitmentDemo:sprint7Session?.active()==='group-serving'},care,now}):null;
  const board=focus?.hero?{
    ...baselineBoard,hero:focus.hero,rows:focus.rows
  }:baselineBoard;
@@ -817,6 +838,10 @@ function f10Ask(question){
  f10Prompt=text;f10Asked=window.RallyPersonalCompanion.followKeys[text]||text;f10Notice='';
  renderDialog();
 }
+function focusReceipt(){
+ const receipt=$('view').querySelector('.r1-receipt button');
+ if(receipt)receipt.focus({preventScroll:true});
+}
 function notify(text){const x=$('toast');x.textContent=text;x.hidden=false;clearTimeout(notify.timer);notify.timer=setTimeout(()=>x.hidden=true,2600)}
 document.addEventListener('click',ev=>{
 const b=ev.target.closest('button');if(!b)return;
@@ -840,8 +865,8 @@ if(f09Preview&&s.view==='today'&&a==='f09-rsvp'){
    if(!todayUI.memberships.group)return;
    s.rsvp='going';
  }
- f09Index=0;if(f09Board)f09Feedback='Sample group RSVP saved. The board has updated.';render();
- notify('Sample RSVP saved on this device.');return;
+ receiptType='group';f09Index=0;if(f09Board)f09Feedback='Sample group RSVP saved. The board has updated.';render();
+ if(rallyOne&&f09Board)focusReceipt();else notify('Sample RSVP saved on this device.');return;
 }
 if(f09Preview&&s.view==='today'&&a==='f09-serve'){
  if(rallyOne){
@@ -851,8 +876,8 @@ if(f09Preview&&s.view==='today'&&a==='f09-serve'){
    s.teamStatus='confirmed';s.coverage=false;
    s.teamMessages=s.teamMessages.filter(x=>!x.coverage);
  }
- f09Index=0;if(f09Board)f09Feedback='Sample serving response saved. The board has updated.';render();
- notify('Sample serving availability confirmed locally.');return;
+ receiptType='team';f09Index=0;if(f09Board)f09Feedback='Sample serving response saved. The board has updated.';render();
+ if(rallyOne&&f09Board)focusReceipt();else notify('Sample serving availability confirmed locally.');return;
 }
 if(f10Preview&&s.view==='today'&&a==='f10-open'){
  f10ClearSession();showDialog('f10-companion',b);return;
@@ -882,9 +907,31 @@ if(f10Preview&&dialog==='f10-companion'&&a==='f10-confirm'&&s.view==='today'){
 if(a==='gv2-profile'&&rallyOne&&
   (s.view==='group'||s.view==='today')&&
   window.RallyGroupsV2?.profiles.some(p=>p.id===person)){
+ const from=b.querySelector('.gv2-portrait')?.getBoundingClientRect();
+ portraitOrigin={view:s.view,pane:s.groupPane,discover:s.discover,scroll:$('view').scrollTop,railScroll:b.closest('.gv2-rail')?.scrollLeft||0};
  groupsV2ActiveProfile=person;
- if(s.view==='today'){navigate('group','profile');return;}
- s.groupPane='profile';render();$('view').scrollTop=0;return;
+ if(s.view==='today')navigate('group','profile');
+ else {s.groupPane='profile';render();$('view').scrollTop=0;}
+ const profile=$('view').querySelector('.gv2-profile');
+ const back=profile?.querySelector('.gv2-back');
+ if(back){
+   back.dataset.action='portrait-return';
+   back.textContent=portraitOrigin.view==='today'?'← Today':'← Your people';
+   back.focus({preventScroll:true});
+ }
+ movePortrait(from,profile?.querySelector('.gv2-portrait'));return;
+}
+if(a==='portrait-return'&&portraitOrigin&&s.groupPane==='profile'){
+ const from=$('view').querySelector('.gv2-profile .gv2-portrait')?.getBoundingClientRect();
+ const origin=portraitOrigin;portraitOrigin=null;
+ s.view=origin.view;s.groupPane=origin.pane;s.discover=origin.discover;render();
+ $('view').scrollTop=origin.scroll;
+ const back=$('view').querySelector('[data-action="gv2-profile"][data-person="'+groupsV2ActiveProfile+'"]');
+ const rail=back?.closest('.gv2-rail');if(rail)rail.scrollLeft=origin.railScroll;
+ back?.focus({preventScroll:true});movePortrait(from,back?.querySelector('.gv2-portrait'));return;
+}
+if(a==='leader-write'&&s.view==='group'&&s.groupPane==='leader'&&hasLeaderRequest()){
+ companionFocus=null;s.directPerson='taylor';navigate('group','direct');return;
 }
 if(a==='gv2-back-discovery'&&rallyOne&&s.view==='group'){
   s.groupPane='overview';
@@ -1084,7 +1131,7 @@ if(a==='send'){
   }
   companionFocus=null;
  }else s.prayers.push(item);
- x.value='';delete drafts[v+'-input'];render();notify('Saved to this device only');return;
+ x.value='';delete drafts[x.dataset.draftKey||x.id];render();notify('Saved to this device only');return;
 }
 if(a==='attendance'&&canLead('group')){s.attendance[person]=v;render();notify('Sample attendance updated');return}
 if(a==='reached'&&canLead('group')){

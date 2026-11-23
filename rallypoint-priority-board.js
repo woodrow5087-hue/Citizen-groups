@@ -238,7 +238,11 @@ function render(d,peopleRail='',portraits=[],now=new Date()){
    '<span class="f09b-status '+esc(row.statusTone)+'" aria-label="'+esc(row.title+': '+row.status)+'">'+
     esc(row.status)+'</span>'+
   '</div>').join('');
- const feedback=typeof d?.feedback==='string'&&d.feedback.trim()?
+ const receipt=d?.receipt==='group'?{text:'You’re going Wednesday.',go:'group',pane:'gather',link:'View gathering'}:
+   d?.receipt==='team'?{text:'You’re confirmed for Sunday.',go:'team',pane:'schedule',link:'View shift'}:null;
+ const feedback=receipt?
+   '<div class="r1-receipt"><span class="r1-check" aria-hidden="true">✓</span><span role="status">'+receipt.text+
+   '</span><button type="button" data-go="'+receipt.go+'" data-pane="'+receipt.pane+'" aria-label="'+receipt.text+' '+receipt.link+'">'+receipt.link+' ↗</button></div>':typeof d?.feedback==='string'&&d.feedback.trim()?
   '<div class="f09b-feedback" role="status" aria-live="polite">'+esc(d.feedback.slice(0,120))+'</div>':'';
  const companionEntry=d?.f10Enabled?
   '<aside class="f10-entry" aria-label="Ask Rally companion">'+
@@ -250,8 +254,8 @@ function render(d,peopleRail='',portraits=[],now=new Date()){
   '<header class="f09-greeting"><span class="f09-preview-label">TODAY · YOUR PRIORITIES</span>'+
     '<h1>'+esc(d.greeting||'Welcome back')+',<br> <em>'+esc(d.name||'Friend')+'.</em></h1>'+
     '<span class="f09-date">'+esc(d.nowLabel||'')+'</span>'+
-    (d.campus?'<span class="ro-campus">'+esc(d.campus)+' campus</span>':'')+'</header>'+feedback+companionEntry+
-  '<div class="f09b-priorities" aria-label="Visible priorities">'+hero+
+    (d.campus?'<span class="ro-campus">'+esc(d.campus)+' campus</span>':'')+'</header>'+(receipt?'':feedback)+companionEntry+
+  '<div class="f09b-priorities" aria-label="Visible priorities">'+(receipt?feedback:'')+hero+
    '<div class="f09b-row-stack">'+rows+'</div></div>'+
   '<section class="f09b-glance" aria-label="Today at a Glance">'+
    '<div class="f09b-glance-heading"><h2>Today at a Glance</h2>'+
