@@ -376,19 +376,16 @@ function team(){
 function read(){
  const plan=currentReading();
  return `<section class="read-screen-v09">
-   <div class="read-v09-hero"><div class="read-v09-overline">READ · REFLECT · REMEMBER</div><h1>In the<br>Word<span>.</span></h1><p>Your daily rhythm in Scripture, connected to your community.</p></div>
-   <section class="rp-game-entry" aria-label="VersePlay Blank Battle">
-      <div class="rp-game-entry-top"><span>VERSEPLAY · FEATURED GAME</span><span aria-hidden="true">✳</span></div>
-      <h2>Make the words<br><em>click.</em></h2>
-      <p>Five missing words. One verse to remember. Play a quick round of Blank Battle.</p>
-      <button type="button" class="rp-game-entry-play" data-go="play" aria-label="Play Blank Battle">${icon('check')} PLAY BLANK BATTLE ${icon('arrow')}</button>
-      <small>Private, on-device puzzle · No online opponents</small>
-   </section>
-   <div class="rp-game-classic-label"><strong>MORE WAYS TO PRACTICE</strong><span>Classic &amp; two-player pass-and-play</span></div>
-   ${VP.render(s,e,icon)}
+   <div class="read-v09-hero"><div class="read-v09-overline">READ · REFLECT · REMEMBER · LIVE</div><h1>In the<br>Word<span>.</span></h1><p>Scripture for your heart, your everyday life, and the people around you.</p></div>
+   <nav class="read-journey-nav" aria-label="Scripture journey">
+     <button type="button" data-go="read" data-reading="scripture"><span>01</span><strong>Read</strong><small>Begin with the Word</small></button>
+     <button type="button" data-go="read" data-reading="questions"><span>02</span><strong>Reflect</strong><small>Consider & connect</small></button>
+     <button type="button" data-go="read" data-reading="memorize"><span>03</span><strong>Remember</strong><small>Practice the passage</small></button>
+     <button type="button" data-go="read" data-reading="prayer"><span>04</span><strong>Live</strong><small>Put love in motion</small></button>
+   </nav>
    <div class="read-focus-card">
-     <div class="read-focus-head"><span>YOUR READING PATH · SAMPLE</span>${icon('read')}</div>
-     <h2>${e(plan.name)}</h2><p>${e(plan.title)}</p><div class="read-focus-detail"><strong>${e(plan.passage)}</strong><small>${e(plan.description)}</small></div>
+     <div class="read-focus-head"><span>01 / READ · YOUR READING PATH · SAMPLE</span>${icon('read')}</div>
+     <h2>Start with Scripture.</h2><p>${e(plan.title)} · ${e(plan.name)}</p><div class="read-focus-detail"><strong>${e(plan.passage)}</strong><small>${e(plan.description)}</small></div>
    </div>
    <section class="card read-scripture-card" id="reading-scripture" tabindex="-1">
      <div class="read-section-label">${icon('read')} <span>SCRIPTURE · BSB</span><i></i></div>
@@ -397,7 +394,7 @@ function read(){
      <p class="fine-note">Public-domain Berean Standard Bible excerpt · Illustrative passage, not an assigned reading calendar.</p>
    </section>
    <section class="card read-question-card" id="reading-questions" tabindex="-1">
-     <div class="read-section-label">${icon('message')} <span>REFLECT TOGETHER</span><i></i></div>
+     <div class="read-section-label">${icon('message')} <span>02 / REFLECT TOGETHER</span><i></i></div>
      <h2>A question worth sharing.</h2><p>${e(s.question)}</p>
      <button type="button" class="read-discuss-action" data-go="group" data-pane="chat">${icon('group')} Open group conversation ${icon('arrow')}</button>
      ${H.rhythmEditor(s,plan)}
@@ -412,6 +409,18 @@ function read(){
      <button type="button" class="btn dark-btn" data-action="question">Save local question</button>
      <p class="fine-note">Real publishing permissions, content review, group overrides, and licensing remain undecided.</p>
    </section>`:''}
+   <div class="read-memory-heading" id="reading-memorize" tabindex="-1"><span>03 / REMEMBER</span><h2>Make it memorable.</h2><p>Practice what you've read with a short, interactive Scripture challenge.</p></div>
+   <section class="rp-game-entry" aria-label="VersePlay Blank Battle">
+      <div class="rp-game-entry-top"><span>VERSEPLAY · FEATURED GAME</span><span aria-hidden="true">✳</span></div>
+      <h2>Make the words<br><em>click.</em></h2>
+      <p>Five missing words. One verse to remember. Play a quick round of Blank Battle.</p>
+      <button type="button" class="rp-game-entry-play" data-go="play" aria-label="Play Blank Battle">${icon('check')} PLAY BLANK BATTLE ${icon('arrow')}</button>
+      <small>Private, on-device puzzle · No online opponents</small>
+   </section>
+   <div class="rp-game-classic-label"><strong>MORE WAYS TO PRACTICE</strong><span>Classic &amp; two-player pass-and-play</span></div>
+   ${VP.render(s,e,icon)}
+
+   <div class="read-live-heading" id="reading-prayer" tabindex="-1"><span>04 / LIVE</span><h2>Take it beyond the page.</h2><p>Choose someone to encourage or take a quiet moment to pray. Small actions matter.</p></div>
    <div class="card read-prayer-card"><div>${icon('heart')}<h3>A moment to pray.</h3><p>Take a minute to pray for someone in your group.</p></div>
      <button type="button" class="round ${s.prayed?'done':''}" aria-label="Mark prayer time" data-action="pray">${s.prayed?'✓':'↗'}</button>
    </div>${footer()}
