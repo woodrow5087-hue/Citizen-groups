@@ -443,7 +443,13 @@ function read(){
      <button type="button" class="btn dark-btn" data-action="question">Save local question</button>
      <p class="fine-note">Real publishing permissions, content review, group overrides, and licensing remain undecided.</p>
    </section>`:''}
-   <div class="read-memory-heading" id="reading-memory-intro" tabindex="-1"><span>03 / REMEMBER</span><h2>Make it memorable.</h2><p>Practice what you've read with a short, interactive Scripture challenge.</p></div>
+   <div class="read-memory-heading" id="reading-memory-intro" tabindex="-1"><span>03 / REMEMBER</span><h2>Make it memorable.</h2><p>Practice the same Scripture you just read. Start with this week's passage, or explore a bonus verse.</p></div>
+   <div class="read-memory-bridge">
+     <span>YOUR READING → YOUR MEMORY CHALLENGE</span>
+     <div><strong>${e(plan.passage)}</strong><small>${e(plan.title)}</small></div>
+     <button type="button" data-action="read-practice-current">Practice this passage ${icon('arrow')}</button>
+     <p>Opens the classic VersePlay word puzzle below. Blank Battle remains a separate featured game with its own sample verse.</p>
+   </div>
    <section class="rp-game-entry" aria-label="VersePlay Blank Battle">
       <div class="rp-game-entry-top"><span>VERSEPLAY · FEATURED GAME</span><span aria-hidden="true">✳</span></div>
       <h2>Make the words<br><em>click.</em></h2>
@@ -683,6 +689,7 @@ if(v==='caught-up'){s.teamStatus='confirmed';s.coverage=false;s.teamMessages=s.t
  }
 s.view='today';closeDialog(false);render();$('view').scrollTop=0;notify('Local Today fixture updated. No data was sent.');return;
 }
+if(a==='read-practice-current'){s.memoryActive=s.plan;s.memoryMode='solo';s.memoryTarget=null;s.memoryPassTurn=1;render();const game=$('reading-memorize');if(game){game.focus({preventScroll:true});game.scrollIntoView({block:'start',behavior:'smooth'});}return;}
 if(a==='memory-mode'){
  if(!['solo','pass'].includes(v))return;
  s.memoryMode=v;s.memoryPassTurn=1;s.memoryTarget=null;render();return;
