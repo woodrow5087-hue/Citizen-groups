@@ -71,7 +71,7 @@ test('nonmembers see real-photo sample rail without My group or private actions'
  assert.equal(publicProfile.querySelector('[data-go="group"][data-pane="chat"]'),null);
  assert.equal(publicProfile.querySelector('[data-value="people"]'),null);
  const src=read('rallypoint.js');
- assert.match(src,/if\(!todayUI\.memberships\.group\)return groupBrowse\(\)/);
+ assert.match(src,/if\(!groupAllowed\)return groupBrowse\(\)/);
  assert.match(src,/renderDiscoveryRail\(\)/);
  assert.match(src,/renderProfile\(groupsV2ActiveProfile,\{member:false\}\)/);
  assert.match(src,/if\(a==='gv2-back-discovery'/);
@@ -92,7 +92,7 @@ test('Today and Groups use identical six real-photo demo profiles',()=>{
  assert.equal(publicPreview.querySelector('[data-pane="people"]'),null);
  assert.match(publicPreview.body.textContent,/no connected group account/);
  const source=read('rallypoint.js');
- assert.match(source,/renderTodayRail\(todayUI\.memberships\.group\)/);
+ assert.match(source,/renderTodayRail\(memberContext\(\)\?\.permissions\.group===true\)/);
  assert.match(source,/navigate\('group','profile'\)/);
  const css=read('rally-one-m5-mobile-parity.css');
  assert.match(css,/groups-v2-people\.webp/);
@@ -101,7 +101,7 @@ test('Today and Groups use identical six real-photo demo profiles',()=>{
 });
 test('member permission and discovery guards remain before Groups home',()=>{
  const source=read('rallypoint.js');
- const check=source.indexOf('if(!todayUI.memberships.group)return groupBrowse();');
+ const check=source.indexOf('if(!groupAllowed)return groupBrowse();');
  const overview=source.indexOf("s.groupPane==='overview'");
  assert.ok(check>0&&overview>check);
  assert.match(source,/groupPane:'chat'/); // Legacy default remains intact.
