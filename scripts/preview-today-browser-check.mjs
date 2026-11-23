@@ -20,6 +20,8 @@ await import('./m5-mobile-parity-browser-check.mjs');
 await import('./m6-connected-browser-check.mjs');
 // Sprint 7C: five role scenarios, saved state isolation, consented restore and WCAG.
 await import('./s7-demo-browser-check.mjs');
+// Review-only showcase polish: layout remains frozen and motion is optional.
+await import('./showcase-polish-browser-check.mjs');
 const out='test-results/preview-today';
 await mkdir(out,{recursive:true});
 const executablePath=process.env.BROWSER_PATH||(existsSync('/usr/bin/chromium')?'/usr/bin/chromium':undefined);
