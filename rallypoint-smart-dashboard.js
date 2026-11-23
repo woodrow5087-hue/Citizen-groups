@@ -17,8 +17,11 @@ const arrow={go:'data-go',action:'data-action'};
 const action=(name,verb,pane='',value='')=>Object.freeze({name,verb,pane,value});
 const go=(dest,pane='')=>action(dest,'go',pane);
 const act=(name,value='')=>action(name,'action','',value);
-function model({state,ui,conversation,now=new Date(),today,companion,passage='John 15:12'}={}){
- const s=state&&typeof state==='object'?state:{},member=!!ui?.memberships?.group,team=!!ui?.memberships?.team;
+function model({state,ui,conversation,context=null,now=new Date(),today,companion,passage='John 15:12'}={}){
+ const s=state&&typeof state==='object'?state:{};
+ const ctx=context?.version===1?context:null;
+ const member=ctx?ctx.memberships.group:!!ui?.memberships?.group;
+ const team=ctx?ctx.memberships.team:!!ui?.memberships?.team;
  const chat=conversation&&typeof conversation==='object'?conversation:{status:'unavailable'};
  const sourceToday=today?.snapshot(s,ui,now,chat)||{upNext:null,events:[]};
  const result=companion?.choose({state:s,ui,conversation:chat,now})||{
@@ -26,8 +29,8 @@ function model({state,ui,conversation,now=new Date(),today,companion,passage='Jo
    action:'Open reading',why:'The daily reading is available.',dest:'read',pane:'',intent:'',
    alternatives:[],source:'fictional local data'
  };
- const unread=member&&chat.status==='ok'&&Number.isSafeInteger(chat.unreadCount)?
-   Math.max(0,chat.unreadCount):0;
+ const unread=ctx?(ctx.group.unreadCount??0):
+   member&&chat.status==='ok'&&Number.isSafeInteger(chat.unreadCount)?Math.max(0,chat.unreadCount):0;
  const gathered=member&&sourceToday.events?.find(x=>x.id==='group');
  const serving=team&&sourceToday.events?.find(x=>x.id==='team');
  const due=validTime(s.rhythm?.followUpAt)&&!s.rhythm?.completedAt&&
@@ -101,8 +104,8 @@ function model({state,ui,conversation,now=new Date(),today,companion,passage='Jo
     detail:!member?'Explore sample groups':chat.status==='unavailable'?'Conversation needs review':unread?words(unread):'All caught up',
     count:unread,action:go('group',member?'chat':''),available:true}),
   Object.freeze({id:'serving',kind:'gold',icon:'team',title:team?'Serving':'Find a team',
-    detail:!team?'See how to serve':s.teamStatus==='pending'?'Confirm your availability':
-      s.teamStatus==='confirmed'?'Confirmed on this device':'No upcoming shift',
+    detail:!team?'See how to serve':(ctx?.team.response||s.teamStatus)==='pending'?'Confirm your availability':
+      (ctx?.team.response||s.teamStatus)==='confirmed'?'Confirmed on this device':'No upcoming shift',
     action:go('team','schedule'),available:true}),
   Object.freeze({id:'scripture',kind:'blue',icon:'read',title:'Scripture',
     detail:due?'Your next step is due':s.read?'Read today · '+passage:passage,
@@ -120,10 +123,10 @@ function model({state,ui,conversation,now=new Date(),today,companion,passage='Jo
  } else if(member&&unread>0){
   addTask('chat-unread','message','Catch up with your group',words(unread)+' · Wednesday Group',go('group','chat'),'Open');
  }
- if(member&&s.rsvp!=='going'&&s.rsvp!=='maybe'){
+ if(member&&!(ctx?.group.rsvp||s.rsvp)){
   addTask('rsvp','calendar','RSVP for Wednesday Group',meetingText,act('f09-rsvp'),'RSVP');
  }
- if(team&&s.teamStatus==='pending'){
+ if(team&&(ctx?.team.response||s.teamStatus)==='pending'){
   addTask('serve','team','Confirm Sunday serving','Welcome Team · '+scheduleLabel,act('f09-serve'),'Confirm');
  }
  if(due){
@@ -137,17 +140,18 @@ function model({state,ui,conversation,now=new Date(),today,companion,passage='Jo
    member,team,unread,deferredIds,meetingLabel,meetingText,
    groupDate:gathered?.date||null,serveDate:serving?.date||null,
    groupLocation:gathered?.location||'',serveLocation:serving?.location||'',
-   leaderRemaining:member&&s.role==='leader'&&Array.isArray(sourceToday.leader?.remaining)?sourceToday.leader.remaining.length:0,
-   audience:!member&&!team?'newcomer':member&&s.role==='leader'?'leader':team&&!member?'volunteer':member&&team?'connected':'group-member',
+   leaderRemaining:ctx?ctx.leader.pendingIds.length:
+     member&&s.role==='leader'&&Array.isArray(sourceToday.leader?.remaining)?sourceToday.leader.remaining.length:0,
+   audience:!member&&!team?'newcomer':member&&(ctx?ctx.permissions.groupLeader:s.role==='leader')?'leader':team&&!member?'volunteer':member&&team?'connected':'group-member',
    serveDateLabel:serving?'Welcome Team · '+today.dateLabel(serving.date,now):'Explore serving',
-   serveStatus:team?s.teamStatus||'unknown':'none',
+   serveStatus:team?(ctx?.team.response||s.teamStatus||'unknown'):'none',
    readToday:!!s.read,rhythmDue:!!due,
    conversationStatus:member?chat.status:'not-joined',
-   served:s.teamStatus==='confirmed',rsvp:s.rsvp==='going'?'going':s.rsvp==='maybe'?'maybe':'',
+   served:(ctx?.team.response||s.teamStatus)==='confirmed',rsvp:ctx?.group.rsvp??(s.rsvp==='going'?'going':s.rsvp==='maybe'?'maybe':''),
    greeting:now.getHours()<12?'Good morning':now.getHours()<17?'Good afternoon':'Good evening',
    nowLabel:now.toLocaleDateString('en-US',{weekday:'long',month:'short',day:'numeric'}),
    name:String(ui?.name||'Friend').slice(0,20),passage:String(passage).slice(0,80),
-   source:'existing fictional browser-local fixtures'
+   memberContext:ctx,source:'existing fictional browser-local fixtures'
  });
 }
 function attr(a){

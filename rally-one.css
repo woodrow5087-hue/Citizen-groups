@@ -1,0 +1,336 @@
+.ro-welcome.rp-gateway {
+  --ro-red: #c90030;
+  --ro-charcoal: #1c1c20;
+  --ro-surface: #29292e;
+  --ro-muted: #c9c3bd;
+  --ro-accent: #ff7288;
+  --ro-cream: #fff8ef;
+  --ro-line: #555358;
+  background: var(--ro-charcoal);
+  color: var(--ro-cream);
+  color-scheme: dark;
+}
+.ro-welcome.rp-gateway:after { display: none; }
+.ro-welcome .rp-entry {
+  color: #fff;
+  min-height: 100%;
+  display: grid;
+  grid-template-rows: 1fr auto;
+  background: var(--ro-charcoal);
+  padding-inline: 0;
+  align-content: center;
+  justify-items: center;
+  padding: max(16px, env(safe-area-inset-top)) 0 max(16px, env(safe-area-inset-bottom));
+}
+.ro-welcome .rp-entry-logo,
+.ro-welcome .rp-entry-church,
+.ro-welcome .rp-welcome-copy { display: none; }
+.ro-welcome .rp-entry-brand,
+.ro-welcome.rp-gateway--ready .rp-entry-brand {
+  position: static;
+  grid-row: 1;
+  align-self: center;
+  width: 100%;
+  height: auto;
+  transform: translateY(8px);
+  transition: opacity .55s ease, transform .55s ease;
+}
+.ro-welcome.rp-gateway--reveal .rp-entry-brand { transform: none; }
+.ro-welcome .ro-title-card {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.ro-welcome .rp-small-brand em { color: #ef4545; font-style: normal; }
+.ro-welcome .rp-entry-actions {
+  position: static;
+  grid-row: 2;
+  align-self: end;
+  width: calc(100% - 40px);
+  max-width: 360px;
+  margin-top: 12px;
+}
+.ro-welcome .rp-entry-button,
+.ro-welcome .rp-onboard-continue {
+  background: var(--ro-red);
+  color: #fff;
+  border: 1px solid transparent;
+  box-shadow: none;
+  letter-spacing: 0;
+}
+.ro-welcome .rp-entry-button--login { background: transparent; border-color: #fff8; }
+.ro-welcome .rp-entry-note { color: #fff9; letter-spacing: .025em; font-size: 11px; }
+.ro-welcome .rp-onboard-top {
+  margin: calc(-25px - var(--safe-top,0px)) -24px 26px;
+  padding: calc(8px + var(--safe-top,0px)) 24px 8px;
+  background: var(--ro-charcoal);
+  color: #fff;
+}
+.ro-welcome .rp-small-brand small,
+.ro-welcome .rp-kicker > span { display: none; }
+.ro-welcome .rp-small-brand > img { width: 29px; height: 24px; filter: none; }
+.ro-welcome .rp-small-brand b { font-size: 20px; letter-spacing: -.02em; }
+.ro-welcome .rp-kicker { color: var(--ro-accent); }
+.ro-welcome .rp-screen-heading h2,
+.ro-welcome .rp-onboard-card-copy strong,
+.ro-welcome .rp-login-field input,
+.ro-welcome .rp-login-field button,
+.ro-welcome .rp-forgot,
+.ro-welcome .rp-create-link { color: var(--ro-cream); }
+.ro-welcome .rp-screen-heading > p:not(.rp-kicker),
+.ro-welcome .rp-onboard-card-copy small,
+.ro-welcome .rp-onboard-confirm p,
+.ro-welcome .rp-auth-note,
+.ro-welcome .rp-auth-methods,
+.ro-welcome .rp-login-feedback,
+.ro-welcome .rp-onboard-foot { color: var(--ro-muted); }
+.ro-welcome .rp-onboard-card,
+.ro-welcome .rp-onboard-confirm,
+.ro-welcome .rp-login-field,
+.ro-welcome .rp-onboard-field input {
+  background: var(--ro-surface);
+  border-color: var(--ro-line);
+  color: var(--ro-cream);
+  border-radius: 16px;
+}
+.ro-welcome .rp-onboard-field input::placeholder { color: var(--ro-muted); opacity: 1; }
+.ro-welcome .rp-onboard-card-icon { background: #3c3a40; color: var(--ro-cream); }
+.ro-welcome .rp-onboard-card-check { border-color: #928b90; }
+.ro-welcome .rp-onboard-card[aria-pressed="true"] {
+  background: #35282e;
+  border-color: var(--ro-accent);
+  box-shadow: 0 0 0 1px var(--ro-accent);
+}
+.ro-welcome .rp-campus-card[aria-pressed="true"] { border-color: var(--ro-accent); box-shadow: 0 0 0 1px var(--ro-accent); }
+.ro-welcome .rp-onboard-card[aria-pressed="true"] .rp-onboard-card-check,
+.ro-welcome .rp-campus-check { background: var(--ro-red); color: #fff; border-color: var(--ro-accent); }
+.ro-welcome .rp-onboard-continue:disabled,
+.ro-welcome.rp-gateway[data-screen="login"] .rp-onboard-continue:disabled { background: #343338; color: #b5aeb1; border-color: var(--ro-line); }
+.ro-welcome .rp-auth-methods { border-color: var(--ro-line); }
+.ro-welcome :is(.rp-onboard-card, .rp-campus-card, .rp-onboard-field input, .rp-login-field input, .rp-onboard-continue, .rp-create-link, .rp-forgot):focus-visible { outline-color: var(--ro-accent); }
+@media (prefers-reduced-motion: reduce) {
+  .ro-welcome *, .ro-welcome.rp-gateway { transition: none !important; }
+}
+
+
+/* Keep choices and the next action visible on short phone viewports. */
+.ro-welcome .rp-onboard {
+  padding: calc(12px + var(--safe-top, 0px)) 16px calc(12px + var(--safe-bottom, 0px));
+}
+.ro-welcome .rp-onboard-top,
+.ro-welcome.rp-gateway[data-screen="campus"] .rp-onboard-top {
+  margin: calc(-12px - var(--safe-top, 0px)) -16px 14px;
+  padding: calc(4px + var(--safe-top, 0px)) 16px 4px;
+}
+.ro-welcome .rp-onboard-tools { height: 44px; display: grid; place-items: center; }
+.ro-welcome .rp-step-dots { position: static; transform: none; }
+.ro-welcome .rp-screen-heading,
+.ro-welcome.rp-gateway[data-screen="campus"] .rp-screen-heading { margin-bottom: 12px; }
+.ro-welcome .rp-screen-heading h2,
+.ro-welcome.rp-gateway[data-screen="campus"] .rp-screen-heading h2 {
+  font-size: clamp(26px, 8vw, 34px);
+  margin-bottom: 6px;
+}
+.ro-welcome .rp-kicker { margin-bottom: 4px; }
+.ro-welcome .rp-screen-heading > p:not(.rp-kicker) { font-size: 14px; }
+.ro-welcome .rp-campus-card { grid-column: auto; height: clamp(76px, 15svh, 124px); border-radius: 16px; border-color: var(--ro-line); box-shadow: 0 3px 8px #0003; }
+.ro-welcome .rp-campus-copy strong { font-size: clamp(15px, 5vw, 22px); }
+.ro-welcome .rp-campus-copy small { margin-top: 4px; }
+.ro-welcome .rp-campus-copy { bottom: 8px; }
+.ro-welcome .rp-onboard-options { gap: 8px; margin: 0 0 10px; }
+.ro-welcome .rp-onboard-card { min-height: 62px; padding: 8px 10px; }
+.ro-welcome .rp-onboard-field { margin-bottom: 8px; gap: 5px; }
+.ro-welcome .rp-onboard-field input { min-height: 44px; padding-block: 8px; }
+.ro-welcome .rp-onboard-confirm { padding: 10px 12px; margin-bottom: 8px; }
+.ro-welcome .rp-onboard-confirm strong { margin-bottom: 4px; font-size: 14px; }
+.ro-welcome .rp-onboard-spacer { min-height: 0; }
+.ro-welcome .rp-onboard-continue { min-height: 46px; margin-top: 8px; }
+.ro-welcome .rp-onboard-foot { margin-top: 5px; }
+.ro-welcome .rp-login-fields { gap: 8px; margin-top: 0; }
+.ro-welcome .rp-login-field { min-height: 48px; }
+.ro-welcome .rp-login-field input { min-height: 44px; padding-block: 8px; }
+.ro-welcome .rp-forgot { margin-top: 0; }
+.ro-welcome.rp-gateway[data-screen="login"] .rp-button-charcoal { margin-top: 10px; }
+
+.ro-welcome .rp-campus-card[aria-pressed="true"] > img { filter: none; }
+.ro-welcome .rp-onboard-content { display: flow-root; }
+.ro-welcome .rp-step-dots i.is-current { background: var(--ro-accent); }
+@media (prefers-reduced-motion: no-preference) {
+  .ro-welcome .rp-onboard-content--enter { animation: ro-onboard-enter .18s ease-out both; }
+}
+@keyframes ro-onboard-enter {
+  from { opacity: .65; transform: translateY(5px); }
+  to { opacity: 1; transform: none; }
+}
+
+@media (max-height: 620px) {
+  .ro-welcome.rp-gateway[data-screen="connect"] .rp-screen-heading h2 br { display: none; }
+  .ro-welcome.rp-gateway[data-screen="connect"] .rp-onboard-top { margin-bottom: 8px; }
+  .ro-welcome.rp-gateway[data-screen="connect"] .rp-onboard-card { min-height: 54px; padding-block: 6px; }
+}
+
+/* Rally One shares the production-shaped fixture screens and their controls. */
+.rally-one .phone-inner.premium-alive:not(.is-play-v08) > .header {
+  background: #242424;
+  border: 0;
+  box-shadow: none;
+  color: #fff8ef;
+}
+.rally-one .phone-inner.premium-alive:not(.is-play-v08) > .header::before { display: none; }
+.rally-one .phone-inner.premium-alive:not(.is-play-v08) .brand-home span {
+  color: #fff8ef;
+  font-size: clamp(15px, 4.5vw, 21px);
+  white-space: nowrap;
+}
+.rally-one .brand-home em { color: #ff6776; font-style: normal; }
+.rally-one .phone-inner.premium-alive:not(.is-play-v08) .header :is(button, a):focus-visible {
+  outline: 3px solid #ffb2ba;
+  outline-offset: 2px;
+}
+.rally-one .phone-inner.premium-alive:not(.is-play-v08) .header :is(.header-button, .profile-avatar, .spotify-link) {
+  background: #353333;
+  color: #fff8ef;
+  border: 1px solid #625b57;
+  box-shadow: none;
+}
+.rally-one .phone-inner.premium-alive:not(.is-play-v08) .header .spotify-link img { filter: brightness(0) invert(1); opacity: 1; }
+.ro-welcome .rp-onboard-back:focus-visible { outline-color: #ffb2ba; }
+
+.rally-one .premium-alive.is-f09-board .f09-board { background: #fff8ef; }
+.rally-one .f09-board::before { display: none; }
+.rally-one .f09-board .f09-greeting { min-height: auto; margin: 10px 5px 15px; }
+.rally-one .f09-preview-label { color: #725b53; }
+.rally-one .f09-greeting h1 br { display: none; }
+.ro-campus {
+  color: #584e44;
+  font-size: 11px;
+  font-weight: 800;
+  margin-left: 9px;
+}
+.ro-campus::before { content: "·"; padding-right: 8px; }
+
+.rally-one .f09b-priorities {
+  grid-template-columns: minmax(0, 1.12fr) minmax(0, 1fr);
+  grid-auto-rows: auto;
+  gap: 8px;
+}
+.rally-one .f09b-hero {
+  grid-row: span 2;
+  display: grid;
+  grid-template-rows: auto 1fr;
+  align-content: start;
+  gap: 6px;
+  border-radius: 17px;
+  padding: 12px 10px;
+  align-self: stretch;
+}
+.rally-one .f09b-hero-symbol {
+  width: 35px;
+  height: 35px;
+  border-radius: 11px;
+  margin: 0;
+}
+.rally-one .f09b-hero-symbol .f09b-icon { width: 21px; height: 21px; }
+.rally-one .f09b-hero-main { display: flex; flex-direction: column; align-items: flex-start; }
+.rally-one .f09b-overline { font-size: 8px; letter-spacing: .07em; padding: 5px 6px; }
+.rally-one .f09b-hero h2 { font-size: clamp(20px, 6.3vw, 32px); overflow-wrap: normal; }
+.rally-one .f09b-hero-main > p { font-size: 11px; }
+.rally-one .f09b-hero-bottom { width: 100%; margin-top: auto; padding-top: 8px; }
+.rally-one .f09b-primary { flex-basis: 100%; max-width: none; white-space: normal; gap: 5px; }
+.rally-one .f09b-faces img, .rally-one .f09b-faces span { width: 28px; height: 28px; }
+.rally-one .f09b-row-stack { display: contents; }
+.rally-one .f09b-row {
+  flex-wrap: wrap;
+  align-content: start;
+  gap: 5px;
+  border-radius: 17px;
+  padding: 8px;
+}
+.rally-one .f09b-row:first-child { background: #cee8f5; }
+.rally-one .f09b-row:nth-child(2) { background: #f8dfb5; }
+.rally-one .f09b-row:nth-child(3) {
+  grid-column: 1 / -1;
+  align-items: center;
+  flex-wrap: nowrap;
+}
+.rally-one .f09b-row-icon { width: 34px; height: 34px; border-radius: 11px; }
+.rally-one .f09b-row-icon .f09b-icon { width: 20px; height: 20px; }
+.rally-one .f09b-row-cta { max-width: none; }
+.rally-one .f09b-row:not(:last-child) .f09b-row-cta { width: 100%; }
+.rally-one .f09b-mission {
+  min-height: 160px;
+  background: linear-gradient(90deg, #181614e8, #1816144d), url('assets/rally-one/community.webp') center / cover;
+}
+.rally-one .f09b-mission::before { display: none; }
+
+@media (max-width: 600px) {
+  .rally-one .premium-alive.is-f09-board .f09-board { padding-inline: 9px; }
+}
+
+#connect-entry { display: none; }
+.rally-one #connect-entry {
+  display: flex; flex: 0 0 auto; justify-content: space-between; align-items: center;
+  width: 100%; min-height: 44px; padding: 5px 19px; border: 0; border-bottom: 1px solid #c5aa94;
+  background: #f3e5d6; color: #242322; font: inherit; text-align: left;
+}
+#connect-entry strong { font-size: 22px; letter-spacing: -.065em; line-height: 1.1; }
+#connect-entry strong span, #connect-entry b { color: #bb0024; }
+#connect-entry > span { font-size: 15px; font-weight: 650; }
+#connect-entry b { margin-left: 5px; font-size: 20px; }
+.rally-one :is(.is-play-v08, .phone-inner:has(#rp-gateway:not([hidden]))) #connect-entry { display: none; }
+.connect-overlay[open] {
+  position: fixed; margin: 0; padding: 0; max-width: none; max-height: none;
+  border: 0; border-radius: inherit; overflow: hidden; background: #242322;
+  display: flex; flex-direction: column;
+}
+.connect-overlay::backdrop { background: rgba(24,23,22,.35); }
+.connect-overlay > button {
+  min-height: 44px; flex: 0 0 auto; text-align: left; padding: 8px 18px;
+  background: #242322; color: #fff8ef; border: 0; font: inherit; font-weight: 700;
+}
+.connect-overlay iframe { border: 0; width: 100%; flex: 1; min-height: 0; }
+
+/* Current Rally One review prototype: graphite Today, warm-paper Connect. */
+.rally-one .premium-alive.is-f09-board #view,
+.rally-one .premium-alive.is-f09-board .f09-board { background: #222120; }
+.rally-one .f09-board .f09-greeting h1 { color: #fff6e9; }
+.rally-one .f09-board .f09-greeting h1 em { color: #ff405b; }
+.rally-one .f09-board :is(.f09-preview-label,.f09-date,.ro-campus,.f09b-footer) { color: #ded0c1; }
+.rally-one .f09b-footer a { color: #ffadbc; }
+.rally-one .is-f09-board :is(.f10-entry,.f09b-glance,.f09b-row) {
+  border: 1px solid #524b44;
+  box-shadow: inset 0 1px 0 #ffffff13, 0 3px 8px #100e0d38;
+}
+.rally-one .is-f09-board .f10-entry,
+.rally-one .f09b-glance { background: #302e2c; color: #fff5e8; }
+.rally-one .f09b-glance-heading h2,
+.rally-one .f09b-agenda-copy strong { color: #fff5e8; }
+.rally-one .f09b-glance-heading span { color: #ffacbb; }
+.rally-one .f09b-agenda-row { border-color: #514a44; }
+.rally-one .f09b-agenda-copy small { color: #ddcec2; }
+.rally-one .f09b-hero:not(.is-settled) {
+  background: #c90031;
+  border-color: #e52a50;
+  box-shadow: inset 0 1px 0 #ffffff20, 0 4px 10px #130e0e42;
+}
+.rally-one .f09b-hero:not(.is-settled)::before {
+  inset: 0; width: 100%; height: 100%;
+  background: url('assets/rally-one/community.webp') center bottom / cover;
+  opacity: .26; filter: grayscale(1); mix-blend-mode: luminosity;
+}
+.rally-one .f09b-hero:not(.is-settled)::after {
+  background: linear-gradient(160deg,#ce0030 10%,#bd002adb 48%,#8b052a44);
+}
+.rally-one .f09b-row-stack .f09b-row { background: #343230; }
+.rally-one .f09b-row-stack .f09b-row:nth-child(2) { background: #f4dfbd; }
+.rally-one .f09b-row:not(:nth-child(2)) .f09b-row-copy strong { color: #fff5e8; }
+.rally-one .f09b-row:not(:nth-child(2)) .f09b-row-copy small { color: #e1d5cb; }
+.rally-one .f09b-row:not(:nth-child(2)) .f09b-row-cta { background: #f9e0dc; color: #752036; }
+.rally-one .is-f09-board #nav { background: #282624; border-color: #524b44; box-shadow: 0 -2px 10px #18131038; }
+.rally-one .is-f09-board #nav button { background: transparent; color: #f6eadd; }
+.rally-one .is-f09-board #nav button.active { background: #c60030; color: white; }
+.rally-one .phone-inner.is-f09-board { background: #222120; }
+.rally-one .f09b-row[data-row^="scripture"] .f09b-row-cta { background: #4c4641; color: #fff5e8; border-color: #67605a; }
+.rally-one .f09-board .pa-people-heading h2 { color: #fff5e8; }
+.rally-one .f09-board .pa-people-heading > span,
+.rally-one .f09-board .pa-person-name { color: #dfd1c4; }
