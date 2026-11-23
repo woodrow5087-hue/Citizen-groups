@@ -43,7 +43,7 @@ function renderHome(data={}){
  '<button type="button" class="gv2-widget gv2-widget-gather" data-action="pane" data-area="group" data-value="gather" aria-label="Open Wednesday Group gathering details and RSVP">'+
  '<span class="gv2-widget-icon" aria-hidden="true">▦</span><strong>This week</strong><span>'+safe(data.nextDate||'Wednesday')+' · 6:30 PM</span><b class="gv2-widget-cta"> '+safe(response)+' <i aria-hidden="true">↗</i></b></button></div>'+
  '<button type="button" class="gv2-care" data-action="pane" data-area="group" data-value="prayer" aria-label="Open group prayer and care"><span class="gv2-care-icon" aria-hidden="true">♡</span><span><strong>Prayer & care</strong><small>'+safe(prayerCount?prayerCount+' sample prayer '+(prayerCount===1?'request':'requests'):'Encourage someone in your circle')+'</small></span><b aria-hidden="true">↗</b></button>'+
- '<div class="gv2-more"><button type="button" data-action="pane" data-area="group" data-value="people">All members ↗</button><button type="button" data-action="browse">Explore groups ↗</button>'+
+ '<div class="gv2-more"><button type="button" data-action="pane" data-area="group" data-value="people">All members ↗</button><button type="button" data-action="browse">Explore groups ↗</button><button type="button" data-action="connect-inbox">Inbox ↗</button>'+
  (data.canLead?'<button type="button" data-action="pane" data-area="group" data-value="leader">Leader tools ↗</button>':'')+'</div>'+
  '<p class="gv2-safety-note">Demo portraits and group activity. No actual messages or invitations are sent.</p></section>';
 }
