@@ -151,7 +151,7 @@ function model({state,ui,conversation,context=null,now=new Date(),today,companio
    greeting:now.getHours()<12?'Good morning':now.getHours()<17?'Good afternoon':'Good evening',
    nowLabel:now.toLocaleDateString('en-US',{weekday:'long',month:'short',day:'numeric'}),
    name:String(ui?.name||'Friend').slice(0,20),passage:String(passage).slice(0,80),
-   memberContext:ctx,source:'existing fictional browser-local fixtures; canonical Connect read cursor'
+   memberContext:ctx,source:'existing fictional browser-local fixtures'
  });
 }
 function attr(a){
