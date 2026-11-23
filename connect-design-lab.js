@@ -40,6 +40,7 @@
     if(!Object.prototype.hasOwnProperty.call(screens,name))return;
     if(member && !member.allowed(name))return;
     rememberScroll(activeScreen,activeDirect);
+    if(document.activeElement?.matches('.composer textarea'))document.activeElement.blur();
     if(activeScreen==='direct')directDrafts.set(activeDirect,$('#direct-input').value);
     if(name==='direct')activeDirect=person;
     const priorScreen=activeScreen;
@@ -75,7 +76,8 @@
   }
   function selectRoomTab(name){
     if(!['chat','plans','people'].includes(name))return;
-    $$('.room-tabs [role=tab]').forEach(button=>{
+    if(name!=='chat'&&document.activeElement?.matches('#room-input'))document.activeElement.blur();
+    $('.room-tabs [role=tab]').forEach(button=>{
       const on=button.dataset.roomTab===name;
       button.setAttribute('aria-selected',String(on));
       button.tabIndex=on?0:-1;
@@ -171,7 +173,7 @@
     searchWrap.hidden=!open;
     searchButton.setAttribute('aria-expanded',String(open));
     if(open)search.focus();
-    else{search.value='';filterConversations();}
+    else{search.blur();search.value='';filterConversations();}
   }
   searchButton.addEventListener('click',()=>toggleSearch());
   search.addEventListener('input',filterConversations);
