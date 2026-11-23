@@ -34,6 +34,7 @@ test('every main action routes through an existing function and does not invent 
  one('.gv2-widget-chat',{go:'group',pane:'chat'});
  one('.gv2-widget-gather',{action:'pane',value:'gather'});
  one('.gv2-care',{action:'pane',value:'prayer'});
+ one('.gv2-more [data-action="connect-inbox"]',{action:'connect-inbox'});
  assert.equal(document.querySelector('[data-value="leader"]'),null);
  assert.ok(parse(api().renderHome({canLead:true})).querySelector('[data-value="leader"]'));
 });
@@ -77,6 +78,7 @@ test('HTML escapes interpolated fixture text; CSS honors touch/accessibility',()
  assert.match(css,/overflow-x:auto/);assert.match(css,/scroll-snap-type:x proximity/);
  assert.match(css,/min-height:44px/);assert.match(css,/focus-visible/);
  assert.match(css,/prefers-reduced-motion:no-preference/);
+ assert.match(css,/is-groups-v07 #connect-entry\{display:none\}/);
  const index=read('index.html'),build=read('scripts/build.cjs');
  for(const file of ['rally-one-groups-v2.js','rally-one-groups-v2.css']){assert.ok(index.includes(file));assert.ok(build.includes("'"+file+"'"));}
 });
