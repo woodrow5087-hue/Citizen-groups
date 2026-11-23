@@ -59,6 +59,25 @@ test('real picture tap opens a profile, never a fake private account or delivery
  }
  assert.equal(module.renderProfile('unknown'),'');
 });
+test('nonmembers see real-photo sample rail without My group or private actions',()=>{
+ const module=api(),doc=parse(module.renderDiscoveryRail());
+ assert.equal(doc.querySelectorAll('.gv2-rail-button[data-person]').length,6);
+ assert.equal(doc.querySelector('.gv2-rail [data-value="people"]'),null,
+   'Nonmembers cannot be shown a My group membership');
+ assert.match(doc.body.textContent,/not verified group accounts/);
+ const publicProfile=parse(module.renderProfile('aiden',{member:false}));
+ assert.ok(publicProfile.querySelector('.gv2-photo-aiden'));
+ assert.ok(publicProfile.querySelector('[data-action="gv2-back-discovery"]'));
+ assert.equal(publicProfile.querySelector('[data-go="group"][data-pane="chat"]'),null);
+ assert.equal(publicProfile.querySelector('[data-value="people"]'),null);
+ const src=read('rallypoint.js');
+ assert.match(src,/if\(!todayUI\.memberships\.group\)return groupBrowse\(\)/);
+ assert.match(src,/renderDiscoveryRail\(\)/);
+ assert.match(src,/renderProfile\(groupsV2ActiveProfile,\{member:false\}\)/);
+ assert.match(src,/if\(a==='gv2-back-discovery'/);
+ const welcome=read('rallypoint-welcome.js');
+ assert.match(welcome,/app\.groupPane=rallyOne\?'overview':'chat'/);
+});
 test('member permission and discovery guards remain before Groups home',()=>{
  const source=read('rallypoint.js');
  const check=source.indexOf('if(!todayUI.memberships.group)return groupBrowse();');
@@ -66,7 +85,7 @@ test('member permission and discovery guards remain before Groups home',()=>{
  assert.ok(check>0&&overview>check);
  assert.match(source,/groupPane:'chat'/); // Legacy default remains intact.
  assert.match(source,/if\(rallyOne\)s\.groupPane=pane\|\|'overview'/);
- assert.match(source,/if\(a==='gv2-profile'&&s\.view==='group'/);
+ assert.match(source,/if\(a==='gv2-profile'&&rallyOne&&s\.view==='group'/);
  assert.match(source,/openConnect\('thread'\);return;/);
  assert.doesNotMatch(read('rally-one-groups-v2.js'),/localStorage|sessionStorage|fetch\s*\(|WebSocket/);
 });
