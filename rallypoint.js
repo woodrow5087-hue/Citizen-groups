@@ -705,7 +705,14 @@ if(dialog==='f10-companion'&&f10Preview){
    state:s,ui:todayUI,conversation:chat,now,today:T,
    companion:window.RallyCompanionDecision,passage:currentReading().passage
  });
- const board=window.RallyPriorityBoard.derive(model,now);
+ const baselineBoard=window.RallyPriorityBoard.derive(model,now);
+ // Ask Rally explains the SAME visible priority as Today; it does not
+ // invent a second ranking or treat optional prayer as an obligation.
+ const care=window.RallyCareFlow?.derive({state:s,member:todayUI.memberships.group,now});
+ const focus=rallyOne?window.RallyUnifiedFocus?.focus({board:baselineBoard,model,care,now}):null;
+ const board=focus?.hero?{
+   ...baselineBoard,hero:focus.hero,rows:focus.rows
+ }:baselineBoard;
  f10Active=window.RallyPersonalCompanion.respond(f10Prompt,{model,board,now,goalMode:f103Preview},f10Prior);
  body=window.RallyPersonalCompanion.render(
    f10Active.response,f10Asked,f10Notice,f10Turns,f10Active.suggestions
