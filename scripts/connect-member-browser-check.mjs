@@ -75,8 +75,14 @@ try {
     await capture('room');
     await audit('Room '+width);
     await exit();
+    // Groups 2.0 is an overview; the actual modern thread lives in Connect.
+    // Entering that thread still sees the exact previously sent saved message.
     await page.locator('#nav [data-go="group"]').click();
-    await page.locator('#rpx-chat').getByText('Fictional saved draft',{exact:true}).waitFor();
+    await page.locator('.gv2-home').waitFor();
+    await page.locator('.gv2-widget-chat').click();
+    await frame.locator('#screen-thread:not([hidden])').waitFor();
+    await frame.getByText('Fictional saved draft',{exact:true}).waitFor();
+    await exit();
     await page.locator('#nav [data-go="team"]').click();
     await page.locator('.tabs [data-area="team"][data-value="chat"]').click();
     await page.getByRole('button',{name:/Open Citizen Serve Team Rally Room/}).click();
