@@ -1,0 +1,72 @@
+/* Connect · #104 graphite parity
+ * The inbox inherits the Today graphite frame; chat retains readable contrasting bubbles.
+ * Pure presentation, used in both embedded Connect and its comparison lab.
+ */
+:root{
+  --rg-canvas:#222120;--rg-panel:#302e2c;--rg-raised:#343230;
+  --rg-line:#524b44;--rg-ink:#fff5e8;--rg-muted:#dfd1c4;
+  --rg-red:#c90031;--rg-blush:#f9e0dc;--rg-parchment:#f4dfbd;
+  --red:var(--rg-red);
+}
+.app-frame,.screen-inbox,.mock-status{background:var(--rg-canvas);color:var(--rg-ink)}
+.inbox-header{background:var(--rg-canvas)}
+.brand span,.inbox-headline h2,.section-top h3{color:var(--rg-ink)}
+.inbox-headline h2{font-size:clamp(37px,11vw,45px);letter-spacing:-.055em}
+.inbox-headline p,.section-note{color:var(--rg-muted)}
+.full-stop{color:#ff405b}
+.search-wrap label{color:var(--rg-muted)}
+.search-wrap input{
+  background:var(--rg-panel);border:1px solid var(--rg-line);
+  color:var(--rg-ink);border-radius:13px;
+}
+.search-wrap input::placeholder{color:#d6c8ba}
+.person{color:var(--rg-ink)}
+.story-ring{border-color:#e7294e}
+.moment-card{
+  background:linear-gradient(155deg,#cf0035 9%,#b6002eed 78%),url('assets/rally-one/community.webp') center/cover;
+  border:1px solid #e52a50;box-shadow:inset 0 1px 0 #ffffff21,0 4px 9px #0f0d0d3d;
+  border-radius:17px;
+}
+.moment-card:hover{background-color:#b80030}
+.conversations-heading{margin-top:22px}
+.conversation-list{gap:8px}
+.conversation-row{
+  background:var(--rg-panel);border:1px solid var(--rg-line);
+  border-radius:17px;padding:10px 12px;min-height:75px;
+  color:var(--rg-ink);box-shadow:inset 0 1px 0 #ffffff13,0 3px 8px #100e0d38;
+}
+.conversation-row:hover{background:#3a3633}
+.conversation-copy strong{color:var(--rg-ink)}
+.conversation-copy>span,.conversation-side time{color:var(--rg-muted)}
+.inbox-footnote,.no-results{color:var(--rg-muted)}
+.unread{background:var(--rg-red)}
+.bottom-nav{
+  background:#282624;border-top:1px solid var(--rg-line);color:var(--rg-ink);
+}
+.bottom-nav button,.bottom-nav a{color:#f6eadd}
+.bottom-nav .nav-selected{background:#c60030;color:white}
+.screen-dark{background:var(--rg-canvas)}
+.chat-header{background:#282624;border-bottom-color:var(--rg-line)}
+.chat-scroll,.room-scroll{background:var(--rg-canvas)}
+.composer{background:#282624;border-top-color:var(--rg-line)}
+.composer textarea{background:#403c39;border-color:#71665f;color:var(--rg-ink)}
+.composer textarea::placeholder{color:#dfd1c4}
+.message.incoming .bubble{background:#f4e7d8;color:#302822}
+.message.outgoing .bubble{background:var(--rg-red);color:white}
+.room-tabs{background:var(--rg-canvas)}
+.room-tabs button{background:var(--rg-panel);border-color:var(--rg-line)}
+.prayer-card,.plan-block{background:var(--rg-parchment);color:#242322;border:1px solid #e8d0ac;border-radius:17px}
+.event-card{border:1px solid var(--rg-line);border-radius:17px}
+.new-dialog{background:#fff8ef;color:#242322}
+button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible{
+  outline:3px solid #ffb2ba;outline-offset:2px;
+}
+@media(max-width:350px){
+  .inbox-body{padding-left:14px;padding-right:14px}
+  .inbox-header{padding-left:14px;padding-right:14px}
+  .conversation-row{gap:8px;padding:10px}
+  .list-avatar{width:46px;height:46px}
+}
+@media(prefers-reduced-motion:reduce){
+  .moment-card,.conversation-row{transition:none;animation:none}
+}
