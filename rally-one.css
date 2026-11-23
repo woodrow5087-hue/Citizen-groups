@@ -41,6 +41,8 @@
   width: 100%;
   height: auto;
 }
+.ro-welcome .ro-title-card-wrap { position: relative; width: 100%; }
+.ro-welcome .ro-title-tagline { position: absolute; inset: 0; display: block; width: 100%; height: 100%; pointer-events: none; }
 .ro-welcome .rp-small-brand em { color: #ef4545; font-style: normal; }
 .ro-welcome .rp-entry-actions {
   position: static;

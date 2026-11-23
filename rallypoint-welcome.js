@@ -17,9 +17,19 @@
     titleCard.src='assets/rally-one/title-card.jpg';
     titleCard.width=1536;
     titleCard.height=864;
-    titleCard.alt='Rally One. We rally so no one stands alone. Citizen Church.';
+    titleCard.alt='Rally One. We rally together so no one stands alone. Citizen Church.';
+    // Keep the approved artwork unchanged; replace only its baked-in tagline.
+    const titleWrap=document.createElement('div');
+    titleWrap.className='ro-title-card-wrap';
+    titleWrap.appendChild(titleCard);
+    titleWrap.insertAdjacentHTML('beforeend',`<svg class="ro-title-tagline" viewBox="0 0 1536 864" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg">
+      <svg x="0" y="525" width="1536" height="86" viewBox="0 615 1536 62" preserveAspectRatio="none" overflow="hidden">
+        <image href="assets/rally-one/title-card.jpg" width="1536" height="864"/>
+      </svg>
+      <text x="768" y="590" fill="#fff" text-anchor="middle" font-family="Manrope, Arial, sans-serif" font-size="61" font-weight="700" textLength="1240" lengthAdjust="spacingAndGlyphs">We rally together so no one stands alone.</text>
+    </svg>`);
     brand.removeAttribute('aria-label');
-    brand.replaceChildren(titleCard);
+    brand.replaceChildren(titleWrap);
     entry.querySelector('.rp-splash-tagline').hidden=true;
     entry.querySelector('[data-welcome="create"]').lastChild.textContent='Create account';
     entry.querySelector('[data-welcome="login"]').lastChild.textContent='Sign in';
