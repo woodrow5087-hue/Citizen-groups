@@ -1,0 +1,128 @@
+/* Rally One · Tonight's showcase polish, review-only.
+ * No new layout system, tab, imagery, or fake member state.
+ * Motion draws attention to the user's actual next action, then stops.
+ * Scoped to Rally One; disabled under reduced-motion preferences.
+ */
+.rally-one {
+ --showcase-ease:cubic-bezier(.19,1,.25,1);
+}
+/* Editorial contrast and a small physical sense of depth, no rebranding. */
+.rally-one .premium-alive.is-f09-board .f09b-hero {
+ box-shadow:0 13px 25px #7b092a38,inset 0 1px 0 #ffffff47;
+}
+.rally-one .premium-alive.is-f09-board .f09b-row-stack .f09b-row {
+ box-shadow:0 5px 14px #0d080922,inset 0 1px 0 #ffffff13;
+}
+.rally-one .premium-alive.is-f09-board .f10-entry {
+ box-shadow:0 7px 18px #130f1026,inset 0 1px 0 #ffffff1b;
+}
+.rally-one .premium-alive.is-f09-board .f09b-feedback {
+ position:relative;
+ background:#f0e6d5;
+ color:#542b32;
+ border:1px solid #cdac9c;
+ border-left:4px solid #c90031;
+ border-radius:13px;
+ box-shadow:0 5px 12px #150c101a;
+ font-size:11px;line-height:1.45;
+ padding:10px 12px;
+}
+.rally-one .toast {
+ background:#292625;
+ border:1px solid #6e5552;
+ color:#fff4e8;
+ box-shadow:0 12px 24px #0009,inset 0 1px 0 #ffffff1a;
+ border-radius:16px;
+ padding:13px 14px;
+ z-index:300;
+}
+.rally-one .premium-alive.is-f09-board :is(.f09b-primary,.f09b-row-cta,.f10-entry-button),
+.rally-one .premium-alive.is-groups-v07 :is(.gv2-group-hero,.gv2-rail-button,.gv2-widget),
+.rally-one .premium-alive.is-team-v08 button,
+.rally-one .premium-alive.is-read-v09 button {
+ -webkit-tap-highlight-color:transparent;
+ touch-action:manipulation;
+}
+.rally-one .premium-alive.is-f09-board .f09b-primary:focus-visible,
+.rally-one .premium-alive.is-f09-board .f09b-row-cta:focus-visible,
+.rally-one .premium-alive.is-groups-v07 .gv2-rail-button:focus-visible {
+ outline:3px solid #f4dfbd;outline-offset:3px;
+}
+/* The real supplied portraits are unchanged. Rings get a more tactile feel. */
+.rally-one .gv2-today-people .gv2-ring,
+.rally-one .premium-alive.is-groups-v07 .gv2-rail .gv2-ring {
+ box-shadow:0 0 0 1px #ffedde27,0 5px 13px #0008;
+}
+@media (prefers-reduced-motion:no-preference) {
+ @keyframes ro-show-rise {
+  from {opacity:.15;transform:translate3d(0,12px,0) scale(.985)}
+  to {opacity:1;transform:translate3d(0,0,0) scale(1)}
+ }
+ @keyframes ro-show-appear {
+  from {opacity:.2;transform:translate3d(0,8px,0)}
+  to {opacity:1;transform:translate3d(0,0,0)}
+ }
+ @keyframes ro-show-ring {
+  from {opacity:.55;transform:scale(.87)}
+  to {opacity:1;transform:scale(1)}
+ }
+ @keyframes ro-show-confirm {
+  from{opacity:.25;transform:translateY(-7px) scale(.98)}
+  to{opacity:1;transform:translateY(0) scale(1)}
+ }
+ /* Each view change and genuine next-action update replays the entrance once.
+  * All transitions settle; nothing loops or flashes indefinitely. */
+ .rally-one .premium-alive.is-f09-board .f09b-hero {
+  animation:ro-show-rise 440ms var(--showcase-ease) both;
+ }
+ .rally-one .premium-alive.is-f09-board .f09b-row-stack .f09b-row {
+  animation:ro-show-appear 370ms var(--showcase-ease) 90ms both;
+ }
+ .rally-one .premium-alive.is-f09-board :is(.f10-entry,.f09b-glance) {
+  animation:ro-show-appear 400ms var(--showcase-ease) 130ms both;
+ }
+ .rally-one .premium-alive.is-f09-board .gv2-today-people {
+  animation:ro-show-appear 460ms var(--showcase-ease) 170ms both;
+ }
+ .rally-one .premium-alive.is-f09-board .f09b-feedback {
+  animation:ro-show-confirm 320ms var(--showcase-ease) both;
+ }
+ .rally-one .premium-alive.is-groups-v07 .gv2-home > :is(.gv2-heading,.gv2-group-hero) {
+  animation:ro-show-appear 400ms var(--showcase-ease) both;
+ }
+ .rally-one .premium-alive.is-groups-v07 .gv2-home > .gv2-rail-wrap {
+  animation:ro-show-appear 440ms var(--showcase-ease) 90ms both;
+ }
+ .rally-one .premium-alive.is-groups-v07 .gv2-rail-item:nth-child(-n+7) .gv2-ring,
+ .rally-one .premium-alive.is-f09-board .gv2-today-people .gv2-rail-item:nth-child(-n+7) .gv2-ring {
+  animation:ro-show-ring 390ms var(--showcase-ease) both;
+ }
+ .rally-one .premium-alive:is(.is-f09-board,.is-groups-v07) .gv2-rail-item:nth-child(2) .gv2-ring {animation-delay:55ms}
+ .rally-one .premium-alive:is(.is-f09-board,.is-groups-v07) .gv2-rail-item:nth-child(3) .gv2-ring {animation-delay:95ms}
+ .rally-one .premium-alive:is(.is-f09-board,.is-groups-v07) .gv2-rail-item:nth-child(4) .gv2-ring {animation-delay:135ms}
+ .rally-one .premium-alive:is(.is-f09-board,.is-groups-v07) .gv2-rail-item:nth-child(5) .gv2-ring {animation-delay:175ms}
+ .rally-one .premium-alive:is(.is-f09-board,.is-groups-v07) .gv2-rail-item:nth-child(6) .gv2-ring {animation-delay:215ms}
+ .rally-one .premium-alive:is(.is-f09-board,.is-groups-v07) .gv2-rail-item:nth-child(7) .gv2-ring {animation-delay:255ms}
+ .rally-one .premium-alive.is-f09-board :is(.f09b-primary,.f09b-row-cta,.f10-entry-button),
+ .rally-one .premium-alive.is-groups-v07 .gv2-rail-button {
+  transition:transform 180ms var(--showcase-ease),box-shadow 180ms ease;
+ }
+ .rally-one .premium-alive.is-f09-board :is(.f09b-primary,.f09b-row-cta,.f10-entry-button):active,
+ .rally-one .premium-alive.is-groups-v07 .gv2-rail-button:active {
+  transform:scale(.967);
+ }
+ .rally-one .premium-alive:is(.is-f09-board,.is-groups-v07) .gv2-rail-button:active .gv2-ring {
+  box-shadow:0 0 0 2px #ff6c8b,0 8px 19px #0008;
+ }
+}
+/* Respect reduced-motion preferences and users who need static content. */
+@media(prefers-reduced-motion:reduce){
+ .rally-one .premium-alive :is(.f09b-hero,.f09b-row,.f10-entry,.f09b-glance,
+  .gv2-today-people,.gv2-heading,.gv2-group-hero,.gv2-rail-wrap,.gv2-ring,.f09b-feedback) {
+  animation:none!important;transition:none!important;
+ }
+}
+/* iPhone narrow screens: protect the fixed M5 full-width row geometry. */
+@media(max-width:359px){
+ .rally-one .premium-alive.is-f09-board .f09b-hero{box-shadow:0 8px 16px #7b092a27}
+}
