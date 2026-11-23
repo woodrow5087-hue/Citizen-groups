@@ -10,8 +10,10 @@
   <link rel="preload" href="assets/fonts/Manrope.ttf" as="font" type="font/ttf" crossorigin>
   <link rel="stylesheet" href="connect-design-lab.css">
   <link rel="stylesheet" href="connect-graphite-parity.css">
+  <link rel="stylesheet" href="connect-alive.css">
   <script src="connect-member.js" defer></script>
   <script src="connect-design-lab.js" defer></script>
+  <script src="connect-alive.js" defer></script>
 </head>
 <body>
   <svg class="sprite" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
@@ -58,14 +60,14 @@
                   <button class="icon-btn" id="compose-toggle" type="button" aria-label="New conversation"><svg class="icon"><use href="#i-edit"/></svg></button>
                 </div>
               </div>
-              <div class="inbox-headline"><h2>Connect<span class="full-stop">.</span></h2><p>Your people, right here.</p></div>
+              <div class="inbox-headline"><span class="connect-alive-eyebrow">CITIZEN CHURCH · YOUR CIRCLE</span><h2>Connect<span class="full-stop">.</span></h2><p>Your people. One conversation at a time.</p></div>
               <div id="search-wrap" class="search-wrap" hidden>
                 <label for="conversation-search">Find a conversation</label>
                 <input id="conversation-search" type="search" autocomplete="off" placeholder="Search your conversations">
               </div>
             </header>
             <div class="inbox-body scroll-area">
-              <div class="section-top"><h3>Your circle</h3><span class="section-note">PEOPLE & GROUPS</span></div>
+              <div class="section-top"><h3>Your circle</h3><span class="section-note">THE PEOPLE YOU KNOW</span></div>
               <div class="people-rail" role="group" aria-label="People and groups">
                 <button class="person" type="button" data-person="Jess"><span class="story-ring"><img src="assets/today-priority/jess.webp" alt=""></span><span>Jess</span></button>
                 <button class="person" type="button" data-person="Alex Morgan"><span class="story-ring"><img src="assets/today-priority/marcus.webp" alt=""></span><span>Alex</span></button>
@@ -123,7 +125,7 @@
               <button type="button" class="chat-info" id="thread-info" aria-label="About this conversation"><svg class="icon"><use href="#i-info"/></svg></button>
             </header>
             <div class="chat-scroll scroll-area" id="thread-scroll">
-              <div class="date-break"><span>WEDNESDAY GROUP</span></div>
+              <div class="date-break"><span>WEDNESDAY GROUP · LOCAL DEMO</span></div>
               <div class="message incoming">
                 <img class="message-avatar" src="assets/today-priority/anna.webp" alt="">
                 <div class="message-stack"><span class="message-author">Sarah</span><div class="bubble">Hey crew! How's everyone doing this week?</div><time>6:58 PM</time></div>
@@ -143,6 +145,20 @@
               </article>
               <p class="chat-caption">Only the people in this group can see this demo thread.</p>
               <div id="thread-new-messages" class="added-messages"></div>
+              <section class="care-cues" aria-label="Optional message ideas">
+                <span>KEEP THE CONNECTION GOING</span>
+                <p>A small check-in can go a long way.</p>
+                <div class="care-cues-actions">
+                  <button type="button" data-care-cue="I'm praying for you.">I'm praying</button>
+                  <button type="button" data-care-cue="How can I help this week?">Offer help</button>
+                  <button type="button" data-care-cue="Looking forward to seeing you Wednesday!">See you Wednesday</button>
+                </div>
+                <small>Tap to draft · Nothing sends until you choose Send.</small>
+              </section>
+            </div>
+            <div id="reply-context" class="reply-context" aria-label="Replying to a message" hidden>
+              <span><strong>REPLYING TO</strong><span id="reply-context-text"></span></span>
+              <button id="reply-cancel" type="button" aria-label="Cancel reply">✕</button>
             </div>
             <form class="composer" id="thread-form">
               <label for="thread-input" class="sr-only">Message Wednesday Crew</label>
