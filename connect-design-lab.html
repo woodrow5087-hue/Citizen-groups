@@ -1,0 +1,227 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#242322">
+  <meta name="description" content="Rally One Connect: isolated, fictional messaging design preview for Citizen Church.">
+  <title>Connect — Rally One Messaging Design Lab</title>
+  <link rel="icon" href="assets/citizen-flag.svg" type="image/svg+xml">
+  <link rel="preload" href="assets/fonts/Manrope.ttf" as="font" type="font/ttf" crossorigin>
+  <link rel="stylesheet" href="connect-design-lab.css">
+  <script src="connect-design-lab.js" defer></script>
+</head>
+<body>
+  <svg class="sprite" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+    <symbol id="i-search" viewBox="0 0 24 24"><circle cx="10.8" cy="10.8" r="6.8"/><path d="m16 16 5 5"/></symbol>
+    <symbol id="i-edit" viewBox="0 0 24 24"><path d="M12 5H5a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-7"/><path d="m15 5 4-4 4 4-11 11-5 1 1-5z"/></symbol>
+    <symbol id="i-back" viewBox="0 0 24 24"><path d="m15 4-8 8 8 8"/></symbol>
+    <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M4 12h16m-7-7 7 7-7 7"/></symbol>
+    <symbol id="i-close" viewBox="0 0 24 24"><path d="M5 5 19 19M19 5 5 19"/></symbol>
+    <symbol id="i-heart" viewBox="0 0 24 24"><path d="M20.8 4.6a5.6 5.6 0 0 0-7.9 0l-.9.9-.9-.9a5.6 5.6 0 0 0-7.9 7.9 5.6 5.6 0 0 0 0 7.9L12 21l8.8-8.5a5.6 5.6 0 0 0 0-7.9z"/></symbol>
+    <symbol id="i-people" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><path d="M3 21v-2a6 6 0 0 1 12 0v2M17 5a3 3 0 0 1 0 6m1 5a5 5 0 0 1 3 5"/></symbol>
+    <symbol id="i-bubble" viewBox="0 0 24 24"><path d="M20 11.5a8 8 0 0 1-8.5 8 9 9 0 0 1-4-.9L3 20l1.4-4.5A8.4 8.4 0 0 1 3 11.5a8.5 8.5 0 0 1 17 0z"/></symbol>
+    <symbol id="i-house" viewBox="0 0 24 24"><path d="m3 11 9-8 9 8v10h-7v-7h-4v7H3z"/></symbol>
+    <symbol id="i-team" viewBox="0 0 24 24"><circle cx="12" cy="7" r="3"/><path d="M5 21v-2a7 7 0 0 1 14 0v2M5 9a3 3 0 0 0 0 6M19 9a3 3 0 0 1 0 6"/></symbol>
+    <symbol id="i-book" viewBox="0 0 24 24"><path d="M12 5C9 3 6 3 2 4v16c4-1 7-1 10 1 3-2 6-2 10-1V4c-4-1-7-1-10 1zm0 0v16"/></symbol>
+    <symbol id="i-calendar" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M7 2v6M17 2v6M3 10h18"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="m4 12 5 5L20 6"/></symbol>
+    <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 4v16M4 12h16"/></symbol>
+    <symbol id="i-send" viewBox="0 0 24 24"><path d="M4 12h16m-7-7 7 7-7 7"/></symbol>
+    <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v6m0-10v.5"/></symbol>
+    <symbol id="i-pray" viewBox="0 0 24 24"><path d="m6 3 5 8-3 5-4-3-2 5 7 3 4-7m5-11-5 8 3 5 4-3 2 5-7 3-4-7"/></symbol>
+  </svg>
+  <div class="studio">
+    <aside class="studio-notes">
+      <div class="studio-kicker"><img src="assets/citizen-flag.svg" alt=""> CITIZEN CHURCH / EXPERIENCE STUDY</div>
+      <h1>Connection,<br><em>not clutter.</em></h1>
+      <p>One polished design system for the moments between Sundays.</p>
+      <div class="studio-rule"></div>
+      <div class="study-index"><span>01 — Connect inbox</span><span>02 — Living conversation</span><span>03 — Rally room</span></div>
+      <p class="studio-small">Design lab only. All people, conversations, requests and gatherings are fictional. Nothing sends to another person.</p>
+      <a class="studio-return" href="/">Return to current Rally Point preview <svg class="icon"><use href="#i-arrow"/></svg></a>
+    </aside>
+
+    <div class="device-wrap">
+      <div class="device" aria-label="Interactive Rally One messaging prototype">
+        <div class="app-frame">
+          <div class="mock-status" aria-hidden="true"><strong>9:41</strong><span>●●●  ▰</span></div>
+
+          <section id="screen-inbox" class="screen screen-inbox" aria-label="Connect inbox">
+            <header class="inbox-header">
+              <div class="topline">
+                <div class="brand"><img src="assets/citizen-flag.svg" alt=""><span>RALLY ONE</span></div>
+                <div class="head-actions">
+                  <button class="icon-btn" id="search-toggle" type="button" aria-label="Search conversations" aria-expanded="false" aria-controls="search-wrap"><svg class="icon"><use href="#i-search"/></svg></button>
+                  <button class="icon-btn" id="compose-toggle" type="button" aria-label="New conversation"><svg class="icon"><use href="#i-edit"/></svg></button>
+                </div>
+              </div>
+              <div class="inbox-headline"><h2>Connect<span class="full-stop">.</span></h2><p>Your people, right here.</p></div>
+              <div id="search-wrap" class="search-wrap" hidden>
+                <label for="conversation-search">Find a conversation</label>
+                <input id="conversation-search" type="search" autocomplete="off" placeholder="Search your conversations">
+              </div>
+            </header>
+            <div class="inbox-body scroll-area">
+              <div class="section-top"><h3>Your circle</h3><span class="section-note">PEOPLE & GROUPS</span></div>
+              <div class="people-rail" role="group" aria-label="People and groups">
+                <button class="person" type="button" data-person="Jess"><span class="story-ring"><img src="assets/today-priority/jess.webp" alt=""></span><span>Jess</span></button>
+                <button class="person" type="button" data-person="Alex Morgan"><span class="story-ring"><img src="assets/today-priority/marcus.webp" alt=""></span><span>Alex</span></button>
+                <button class="person" type="button" data-person="Anna"><span class="story-ring"><img src="assets/today-priority/anna.webp" alt=""></span><span>Anna</span></button>
+                <button class="person" type="button" data-open="room"><span class="story-ring"><img src="assets/today-priority/group.webp" alt=""></span><span>Serve Team</span></button>
+              </div>
+
+              <button type="button" class="moment-card" id="moment-open">
+                <span class="moment-eyebrow"><svg class="icon"><use href="#i-heart"/></svg> A MOMENT TO CONNECT</span>
+                <strong>Show up for someone.</strong>
+                <span>Anna shared a prayer request with your group.</span>
+                <span class="moment-action">Open conversation <svg class="icon"><use href="#i-arrow"/></svg></span>
+              </button>
+
+              <div class="section-top conversations-heading"><h3>Conversations</h3><span class="section-note">RECENT</span></div>
+              <div id="conversation-list" class="conversation-list">
+                <button type="button" class="conversation-row" data-open="thread" data-search="wednesday crew sarah group">
+                  <span class="list-avatar"><img src="assets/today-priority/group.webp" alt=""></span>
+                  <span class="conversation-copy"><strong>Wednesday Crew</strong><span>Sarah: Can't wait to see you!</span></span>
+                  <span class="conversation-side"><time>2m</time><span class="unread">3</span></span>
+                </button>
+                <button type="button" class="conversation-row" data-person="Alex Morgan" data-search="alex morgan thanks for checking in">
+                  <span class="list-avatar"><img src="assets/today-priority/marcus.webp" alt=""></span>
+                  <span class="conversation-copy"><strong>Alex Morgan</strong><span>Thanks for checking in!</span></span>
+                  <span class="conversation-side"><time>11m</time></span>
+                </button>
+                <button type="button" class="conversation-row" data-open="room" data-search="citizen serve team serving plan">
+                  <span class="list-avatar"><img src="assets/today-priority/group.webp" alt=""></span>
+                  <span class="conversation-copy"><strong>Citizen Serve Team</strong><span>Your serving plan is ready.</span></span>
+                  <span class="conversation-side"><time>1h</time><span class="unread">1</span></span>
+                </button>
+                <button type="button" class="conversation-row" data-person="Jess" data-search="jess hey see you soon">
+                  <span class="list-avatar"><img src="assets/today-priority/jess.webp" alt=""></span>
+                  <span class="conversation-copy"><strong>Jess</strong><span>Hey! See you soon.</span></span>
+                  <span class="conversation-side"><time>Yesterday</time></span>
+                </button>
+              </div>
+              <p id="no-results" class="no-results" hidden>No conversations found. Try another name.</p>
+              <p class="inbox-footnote">A private space for genuine conversation.</p>
+            </div>
+            <nav class="bottom-nav" aria-label="Messaging concept navigation">
+              <a href="/" aria-label="Return to app Today"><svg class="icon"><use href="#i-house"/></svg><span>Today</span></a>
+              <button type="button" data-open="room"><svg class="icon"><use href="#i-people"/></svg><span>Groups</span></button>
+              <button class="nav-selected" type="button" data-open="inbox" aria-current="page"><svg class="icon"><use href="#i-bubble"/></svg><span>Connect</span></button>
+              <button type="button" data-open="room"><svg class="icon"><use href="#i-team"/></svg><span>Team</span></button>
+              <a href="/" aria-label="Return to app Read"><svg class="icon"><use href="#i-book"/></svg><span>Read</span></a>
+            </nav>
+          </section>
+
+          <section id="screen-thread" class="screen screen-dark" aria-label="Wednesday Crew conversation" hidden>
+            <header class="chat-header">
+              <button type="button" class="back-btn" data-open="inbox" aria-label="Back to Connect"><svg class="icon"><use href="#i-back"/></svg></button>
+              <img class="chat-header-face" src="assets/today-priority/group.webp" alt="">
+              <div class="chat-header-title"><h2>Wednesday Crew</h2><p>8 members · Small Group</p></div>
+              <button type="button" class="chat-info" id="thread-info" aria-label="About this conversation"><svg class="icon"><use href="#i-info"/></svg></button>
+            </header>
+            <div class="chat-scroll scroll-area" id="thread-scroll">
+              <div class="date-break"><span>WEDNESDAY GROUP</span></div>
+              <div class="message incoming">
+                <img class="message-avatar" src="assets/today-priority/anna.webp" alt="">
+                <div class="message-stack"><span class="message-author">Sarah</span><div class="bubble">Hey crew! How's everyone doing this week?</div><time>6:58 PM</time></div>
+              </div>
+              <div class="message outgoing">
+                <div class="message-stack"><div class="bubble">Tired but grateful. Yesterday's message really stayed with me.</div><time>7:04 PM</time></div>
+              </div>
+              <div class="message incoming">
+                <img class="message-avatar" src="assets/today-priority/marcus.webp" alt="">
+                <div class="message-stack"><span class="message-author">Dustin</span><div class="bubble">Same here. That reminder that we're not doing life alone.</div><div class="react-line"><button type="button" class="reaction" id="chat-reaction" aria-pressed="false" aria-label="React with heart">♡ <span id="chat-reaction-count">5</span></button></div><time>7:08 PM</time></div>
+              </div>
+              <article id="prayer-moment" class="prayer-card">
+                <div class="prayer-head"><svg class="icon"><use href="#i-pray"/></svg><span>PRAYER REQUEST</span></div>
+                <h3>Could you pray for my dad?</h3>
+                <p>He has a procedure tomorrow morning. We're praying for peace and a smooth recovery.</p>
+                <div class="prayer-bottom"><span>Anna · Shared with this group</span><button id="prayer-action" type="button" aria-pressed="false">I'm praying <svg class="icon"><use href="#i-heart"/></svg></button></div>
+              </article>
+              <p class="chat-caption">Only the people in this group can see this demo thread.</p>
+              <div id="thread-new-messages" class="added-messages"></div>
+            </div>
+            <form class="composer" id="thread-form">
+              <label for="thread-input" class="sr-only">Message Wednesday Crew</label>
+              <textarea id="thread-input" placeholder="Message the crew…" rows="1" maxlength="700"></textarea>
+              <button type="submit" class="send-btn" aria-label="Send local demo message" disabled><svg class="icon"><use href="#i-send"/></svg></button>
+            </form>
+          </section>
+
+          <section id="screen-room" class="screen screen-dark" aria-label="Citizen Serve Team room" hidden>
+            <header class="room-hero">
+              <div class="room-hero-image"></div>
+              <div class="room-hero-toolbar"><button type="button" class="back-btn" data-open="inbox" aria-label="Back to Connect"><svg class="icon"><use href="#i-back"/></svg></button><span class="room-label">RALLY ROOM</span><img class="hero-flag" src="assets/citizen-flag.svg" alt=""></div>
+              <div class="room-identity"><div class="room-mark"><img src="assets/citizen-flag.svg" alt=""></div><div><h2>Citizen<br>Serve Team</h2><p>24 members · ABQ Campus</p></div></div>
+            </header>
+            <div class="room-tabs" role="tablist" aria-label="Citizen Serve Team sections">
+              <button type="button" role="tab" id="tab-room-chat" aria-selected="true" aria-controls="room-panel-chat" data-room-tab="chat">Chat</button>
+              <button type="button" role="tab" id="tab-room-plans" aria-selected="false" aria-controls="room-panel-plans" data-room-tab="plans">Plans</button>
+              <button type="button" role="tab" id="tab-room-people" aria-selected="false" aria-controls="room-panel-people" data-room-tab="people">People</button>
+            </div>
+            <div class="room-scroll scroll-area" id="room-scroll">
+              <div id="room-panel-chat" role="tabpanel" aria-labelledby="tab-room-chat" class="room-panel">
+                <div class="message incoming">
+                  <img class="message-avatar" src="assets/today-priority/taylor.webp" alt="">
+                  <div class="message-stack"><span class="message-author">Megan</span><div class="bubble">Here's our serving plan for Sunday. So thankful for this crew!</div><time>8:21 AM</time></div>
+                </div>
+                <article class="event-card">
+                  <div class="event-eyebrow"><svg class="icon"><use href="#i-calendar"/></svg> SERVE TOGETHER</div>
+                  <h3>Sunday Teams</h3>
+                  <p>ABQ Campus · 8:00 AM</p>
+                  <button type="button" id="rsvp-action" class="rsvp-action" aria-pressed="false">Count me in <svg class="icon"><use href="#i-arrow"/></svg></button>
+                  <span class="event-disclaimer">SAMPLE EVENT</span>
+                </article>
+                <div class="message incoming">
+                  <img class="message-avatar" src="assets/today-priority/marcus.webp" alt="">
+                  <div class="message-stack"><span class="message-author">Tyler</span><div class="bubble">Can't wait. Parking team is ready.</div><time>8:37 AM</time></div>
+                </div>
+                <div id="room-new-messages" class="added-messages"></div>
+              </div>
+              <div id="room-panel-plans" role="tabpanel" aria-labelledby="tab-room-plans" class="room-panel" hidden>
+                <p class="panel-kicker">WHAT'S COMING UP</p>
+                <h3 class="panel-title">Show up.<br>Serve together.</h3>
+                <article class="plan-block"><span>UP NEXT · SAMPLE</span><h4>Sunday Teams</h4><p>ABQ Campus · 8:00 AM</p><p>Gather with your crew, find your assignment, and serve with joy.</p><button class="plan-rsvp" data-rsvp-mirror type="button">Count me in <svg class="icon"><use href="#i-arrow"/></svg></button></article>
+                <p class="panel-note">Live serving schedules will require a verified church-system integration. Nothing is being scheduled here.</p>
+              </div>
+              <div id="room-panel-people" role="tabpanel" aria-labelledby="tab-room-people" class="room-panel" hidden>
+                <p class="panel-kicker">THE PEOPLE BEHIND THE TEAM</p><h3 class="panel-title">You're part<br>of something.</h3>
+                <div class="member"><img src="assets/today-priority/taylor.webp" alt=""><div><strong>Megan</strong><span>Team lead · sample member</span></div></div>
+                <div class="member"><img src="assets/today-priority/marcus.webp" alt=""><div><strong>Tyler</strong><span>Serving team · sample member</span></div></div>
+                <div class="member"><img src="assets/today-priority/anna.webp" alt=""><div><strong>Anna</strong><span>Serving team · sample member</span></div></div>
+                <p class="panel-note">Member lists and visibility will be permission-controlled before any live pilot.</p>
+              </div>
+            </div>
+            <form id="room-form" class="composer"><label for="room-input" class="sr-only">Message Citizen Serve Team</label><textarea id="room-input" placeholder="Message your team…" rows="1" maxlength="700"></textarea><button type="submit" class="send-btn" aria-label="Send local demo message" disabled><svg class="icon"><use href="#i-send"/></svg></button></form>
+          </section>
+
+          <section id="screen-direct" class="screen screen-dark" aria-label="Direct conversation" hidden>
+            <header class="chat-header">
+              <button type="button" class="back-btn" data-open="inbox" aria-label="Back to Connect"><svg class="icon"><use href="#i-back"/></svg></button>
+              <img id="direct-avatar" class="chat-header-face" src="assets/today-priority/marcus.webp" alt="">
+              <div class="chat-header-title"><h2 id="direct-name">Alex Morgan</h2><p>Direct conversation · Fictional demo</p></div>
+            </header>
+            <div class="chat-scroll scroll-area" id="direct-scroll">
+              <div class="date-break"><span>JUST BETWEEN YOU TWO</span></div>
+              <div class="message incoming"><img id="direct-message-avatar" class="message-avatar" src="assets/today-priority/marcus.webp" alt=""><div class="message-stack"><span id="direct-author" class="message-author">Alex</span><div id="direct-first-message" class="bubble">Thanks for checking in. It meant a lot.</div><time>11:24 AM</time></div></div>
+              <div id="direct-new-messages" class="added-messages"></div>
+            </div>
+            <form class="composer" id="direct-form"><label for="direct-input" class="sr-only">Write a direct message</label><textarea id="direct-input" placeholder="Write a message…" rows="1" maxlength="700"></textarea><button type="submit" class="send-btn" aria-label="Send local demo message" disabled><svg class="icon"><use href="#i-send"/></svg></button></form>
+          </section>
+        </div>
+      </div>
+      <p class="device-caption">Interactive concept · Mobile first · No real messaging</p>
+    </div>
+  </div>
+
+  <dialog id="new-dialog" class="new-dialog" aria-labelledby="dialog-title">
+    <div class="dialog-heading"><div><span>START A CONVERSATION</span><h2 id="dialog-title">Reach out.</h2></div><button type="button" id="dialog-close" aria-label="Close new conversation"><svg class="icon"><use href="#i-close"/></svg></button></div>
+    <button class="dialog-person" type="button" data-person="Jess"><img src="assets/today-priority/jess.webp" alt=""><span>Jess</span><svg class="icon"><use href="#i-arrow"/></svg></button>
+    <button class="dialog-person" type="button" data-person="Alex Morgan"><img src="assets/today-priority/marcus.webp" alt=""><span>Alex Morgan</span><svg class="icon"><use href="#i-arrow"/></svg></button>
+    <button class="dialog-person" type="button" data-person="Anna"><img src="assets/today-priority/anna.webp" alt=""><span>Anna</span><svg class="icon"><use href="#i-arrow"/></svg></button>
+    <p>Only fictional demo people are available in this design preview.</p>
+  </dialog>
+  <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+</body>
+</html>
