@@ -13,6 +13,8 @@ await import('./groups-v2-browser-check.mjs');
 await import('./groups-v2-onboarding-browser-check.mjs');
 // Human-led Companion Care flow: one journey across Today, Groups and local DM.
 await import('./companion-care-browser-check.mjs');
+// M5C: actual visitor, member, serving and authorized leader end-to-end journeys.
+await import('./m5-member-journeys-browser-check.mjs');
 const out='test-results/preview-today';
 await mkdir(out,{recursive:true});
 const executablePath=process.env.BROWSER_PATH||(existsSync('/usr/bin/chromium')?'/usr/bin/chromium':undefined);
@@ -174,7 +176,8 @@ try{
     await openTab('today');
     assert.equal(await agendaStatus('serve'),'Confirmed');
     assert.equal(await priority('serve-response').count(),0);
-    assert.equal(await priority('caught-up').count(),1);
+    assert.equal(await priority('care-prayer').count(),1,
+      'after handling urgent group and serving commitments, an optional named prayer is next');
 
     await openTab('read');
     await page.locator('[data-action="read"]').click();
