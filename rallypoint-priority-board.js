@@ -234,8 +234,9 @@ function render(d,peopleRail='',portraits=[],now=new Date()){
    '</aside>':'';
  return '<section class="f09-dashboard f09-board" data-audience="'+esc(b.audience)+'" data-caught-up="'+b.caughtUp+'" aria-label="F-09 Smart Priority Board preview">'+
   '<header class="f09-greeting"><span class="f09-preview-label">TODAY · YOUR PRIORITIES</span>'+
-    '<h1>'+esc(d.greeting||'Welcome back')+',<br><em>'+esc(d.name||'Friend')+'.</em></h1>'+
-    '<span class="f09-date">'+esc(d.nowLabel||'')+'</span></header>'+feedback+companionEntry+
+    '<h1>'+esc(d.greeting||'Welcome back')+',<br> <em>'+esc(d.name||'Friend')+'.</em></h1>'+
+    '<span class="f09-date">'+esc(d.nowLabel||'')+'</span>'+
+    (d.campus?'<span class="ro-campus">'+esc(d.campus)+' campus</span>':'')+'</header>'+feedback+companionEntry+
   '<div class="f09b-priorities" aria-label="Visible priorities">'+hero+
    '<div class="f09b-row-stack">'+rows+'</div></div>'+
   '<section class="f09b-glance" aria-label="Today at a Glance">'+
@@ -250,7 +251,7 @@ function render(d,peopleRail='',portraits=[],now=new Date()){
    '<span class="f09b-mission-arrow" aria-hidden="true">›</span></button>'+
   '<footer class="f09b-footer"><span>FICTIONAL LOCAL DEMO · NO LIVE CHURCH ACTIVITY</span>'+
    '<a href="?f09=1&skipWelcome=1">Compare Smart Stack</a>'+
-   '<a href="./">Original Today</a></footer></section>';
+   '<a href="?f09=legacy&skipWelcome=1">Original Today</a></footer></section>';
 }
 return Object.freeze({derive,render});
 });

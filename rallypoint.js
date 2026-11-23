@@ -3,8 +3,22 @@
 const key='rallypoint-phase1-2026';
 // Preview builds choose the default layout. Experiments remain explicit URL choices.
 const previewParams=new URLSearchParams(window.location.search);
+const rallyOne=previewParams.has('rallyOne')?previewParams.get('rallyOne')==='1':
+ document.documentElement.dataset.defaultExperience==='rally-one'&&
+ !['f09','f10','f103'].some(flag=>previewParams.has(flag));
+if(rallyOne){
+ document.body.classList.add('rally-one');
+ const brand=document.querySelector('.brand-home');
+ brand?.setAttribute('aria-label','Rally One, Today');
+ if(brand)brand.querySelector('span').innerHTML='RALLY <em>ONE.</em>';
+ const pitch=document.querySelector('.pitch .brand');
+ if(pitch)pitch.innerHTML='RALLY<br>ONE.';
+ const caption=document.querySelector('.phone-caption');
+ if(caption)caption.textContent='Rally One · Fictional activity · Private to this browser';
+ document.querySelector('meta[name="apple-mobile-web-app-title"]')?.setAttribute('content','Rally One');
+}
 const f103Preview=previewParams.get('f103')==='1';
-const f10Preview=f103Preview||previewParams.get('f10')==='1';
+const f10Preview=rallyOne||f103Preview||previewParams.get('f10')==='1';
 const defaultToday=document.documentElement.dataset.defaultToday;
 const f09Mode=f10Preview?'board':(previewParams.get('f09')??defaultToday);
 const f09Board=f09Mode==='board';
@@ -20,6 +34,7 @@ function f10ClearSession(){
 const defaults=()=>({role:'member',groupPane:'chat',directPerson:'anna',directMessages:{},teamPane:'schedule',view:'today',discover:false,groupMessages:[{name:'Jess W.',time:'Yesterday',text:'What stood out to you in John 15 this week?'},{name:'Anna L.',time:'Today',text:'Looking forward to seeing everyone Wednesday.'}],teamMessages:[{name:'Sam R.',time:'Yesterday',text:'Welcome team — thank you for helping people feel at home!'}],prayers:[{name:'Marcus C.',time:'Yesterday',text:'Praying for wisdom with an upcoming decision.'}],rsvp:'',teamStatus:'pending',coverage:false,attendance:{anna:'here',jess:'here',marcus:'unknown',taylor:'unknown'},reached:[],interest:[],plan:'sermon',planQuestions:{},memoryTextRevision:'BSB-2026-1',memoryGames:{},memoryMode:'solo',memoryActive:null,memoryPassTurn:1,memoryTarget:null,question:'How can we love one another as Jesus has loved us?',read:false,prayed:false,companionCare:{},companionChoices:{snoozedUntil:{}},rhythm:{}});
 let s;try{s={...defaults(),...JSON.parse(localStorage.getItem(key)||'null')}}catch(_){s=defaults()}
 if(!s||!s.groupMessages||!Array.isArray(s.groupMessages))s=defaults();
+if(rallyOne)s.view='today';
  if(!s.directMessages||typeof s.directMessages!=='object'||Array.isArray(s.directMessages))s.directMessages={};
  if(!s.planQuestions||typeof s.planQuestions!=='object'||Array.isArray(s.planQuestions))s.planQuestions={};
 if(!s.companionCare||typeof s.companionCare!=='object'||Array.isArray(s.companionCare))s.companionCare={};
@@ -38,7 +53,7 @@ if(s.memoryTextRevision!==M.textRevision){s.memoryGames={};s.memoryTextRevision=
 const storageGuard=window.RallyStorageGuard.create({getItem:k=>localStorage.getItem(k),setItem:(k,v)=>localStorage.setItem(k,v),removeItem:k=>localStorage.removeItem(k)});
  let todayUI=T.load({getItem:k=>localStorage.getItem(k)}),dialog=null,dialogTrigger=null,storageWarning=storageGuard.status().reason||'',drafts={},companionFocus=null;
 const $=x=>document.getElementById(x), e=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const save=()=>{const result=storageGuard.save({primaryRaw:JSON.stringify(s),todayRaw:JSON.stringify(todayUI)});storageWarning=result.ok?'':result.reason;};
+const save=()=>{const result=storageGuard.save({primaryRaw:JSON.stringify(s),todayRaw:JSON.stringify(todayUI)});storageWarning=result.ok?'':result.reason;return result.ok;};
 const canLead=area=>s.role==='leader'&&!!todayUI.memberships[area];
 // Shared read-only projection of the same F-02 snapshot mounted in Groups.
 // Legacy groupMessages remain an independent historical archive.
@@ -50,6 +65,7 @@ const conversation=()=>{
 };
 const pill=(t,light=false)=>`<span class="pill ${light?'light':''}">${e(t)}</span>`;
 const icons={home:'⌂',group:'♙',team:'♡',read:'▤',arrow:'↗'};
+let groupsV2ActiveProfile='dustin';
 const sampleGroupPeople=[{id:'anna',name:'Anna L.',initials:'AL'},{id:'jess',name:'Jess W.',initials:'JW'},{id:'marcus',name:'Marcus C.',initials:'MC'},{id:'taylor',name:'Taylor D.',initials:'TD'}];
  if(!sampleGroupPeople.some(p=>p.id===s.directPerson))s.directPerson='anna';
 const readingLibrary={
@@ -111,6 +127,7 @@ function renderPeople(snapshot,chat){
     </div>
   </section>`;
 }
+const campusNames={central:'Central',north:'North',maui:'Maui',online:'Online'};
 function f09Today(){
  const now=new Date(),chat=conversation(),model=window.RallySmartDashboard.model({
    state:s,ui:todayUI,conversation:chat,now,today:T,
@@ -118,15 +135,17 @@ function f09Today(){
  });
  f09Index=Math.max(0,Math.min(f09Index,model.stack.length-1));
  if(f09Board){
-   const portraits=H.portraits.map(person=>({...person,image:`assets/today-priority/${person.id}.webp`}));
+   const portraitFolder=rallyOne?'rally-one':'today-priority';
+   const portraits=H.portraits.map(person=>({...person,image:`assets/${portraitFolder}/${person.id}.webp`}));
    const peopleRail=H.peopleRail(todayUI,'today',portraits,'assets/today-priority/group.webp');
-   return window.RallyPriorityBoard.render({...model,feedback:f09Feedback,f10Enabled:f10Preview},peopleRail,portraits,now);
+   const campus=rallyOne?campusNames[todayUI.campus]:'';
+   return window.RallyPriorityBoard.render({...model,feedback:f09Feedback,f10Enabled:f10Preview,campus},peopleRail,portraits,now);
  }
  return window.RallySmartDashboard.render(model,f09Index,H.peopleRail(todayUI,'today'),H.portraits);
 }
 function today(){
   const chat=conversation(),snapshot=T.snapshot(s,todayUI,new Date(),chat),event=snapshot.upNext;
-  const campusLabel=({central:'Central',north:'North',maui:'Maui',online:'Online'})[todayUI.campus]||'';
+  const campusLabel=campusNames[todayUI.campus]||'';
   const day=event?.date.toLocaleDateString('en-US',{weekday:'short'})||'';
   const hour=event?.date.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'})||'';
   const target=event?.id==='group'?'Groups':'My Schedule';
@@ -254,6 +273,21 @@ function connectedGroup(){
 function group(){
 if(!todayUI.memberships.group)return groupBrowse();
 if(s.discover)return groupBrowse();
+const GroupsV2=window.RallyGroupsV2;
+if(rallyOne&&GroupsV2&&s.groupPane==='overview'){
+  const latest=conversation(),activity=GX.snapshot(s,true,latest);
+  return GroupsV2.renderHome({
+    unreadCount:latest.unreadCount,
+    conversationStatus:latest.status,
+    prayerCount:activity.prayerCount,
+    nextDate:wed(),
+    rsvp:s.rsvp,
+    canLead:canLead('group')
+  });
+}
+if(rallyOne&&GroupsV2&&s.groupPane==='profile'){
+  return GroupsV2.renderProfile(groupsV2ActiveProfile);
+}
 const unreadGroup=s.groupPane==='chat'?0:conversation().unreadCount;
  const opts=[['chat',unreadGroup?`Conversation (${unreadGroup} unread)`:'Conversation'],['people','People'],...(s.groupPane==='direct'?[['direct','Direct message']]:[]),['gather','Gathering'],['prayer','Prayer'],...(canLead('group')?[['leader','Leader tools']]:[])];
 let body='';
@@ -272,6 +306,10 @@ if(s.groupPane==='people')body=`<div class="card group-people-card">
   <button type="button" class="group-people-chat-link" data-action="pane" data-area="group" data-value="chat">Open your group conversation ${icon('arrow')}</button>
   <p class="fine-note">Profiles and direct messages here are fictional browser-only data. No messages leave your device.</p>
 </div>`;
+if(s.groupPane==='people'&&rallyOne&&GroupsV2){
+ body=GroupsV2.renderDirectory()+
+ '<details class="gv2-legacy-contacts"><summary>Try fictional message contacts</summary>'+body+'</details>';
+}
 if(s.groupPane==='direct'){
   const person=sampleGroupPeople.find(p=>p.id===s.directPerson)||sampleGroupPeople[0];
   const messages=Array.isArray(s.directMessages[person.id])?s.directMessages[person.id]:[];
@@ -290,6 +328,12 @@ if(s.groupPane==='direct'){
 if(s.groupPane==='gather')body=`<div class="card"><div class="kicker">NEXT GROUP GATHERING · SAMPLE</div><h3>${wed()} · 6:30 PM</h3><p>${e(currentReading().passage)} · ${e(s.question)}</p><p class="group-gather-rsvp" role="status">${s.rsvp==='going'?'You’re going · saved on this device':s.rsvp==='maybe'?'Maybe · saved on this device':'Your response is still open'}</p><div class="actions"><button class="btn ${s.rsvp==='going'?'chosen':'outline'}" data-action="rsvp" data-value="going" aria-pressed="${s.rsvp==='going'}">I'm going</button><button class="btn ${s.rsvp==='maybe'?'chosen':'outline'}" data-action="rsvp" data-value="maybe" aria-pressed="${s.rsvp==='maybe'}">Maybe</button></div><div class="group-gather-next"><span>STAY CONNECTED</span><button type="button" data-action="pane" data-area="group" data-value="chat">Talk with your group ${icon('arrow')}</button><button type="button" data-go="read" data-reading="scripture">Read ${e(currentReading().passage)} ${icon('arrow')}</button></div></div><div class="card"><h3>Connected beyond the semester.</h3><p>Continuity is a proposed model, not an approved policy. Groups may continue through breaks, subject to church leadership decisions.</p></div>`;
 if(s.groupPane==='prayer')body=`<div class="card"><div class="kicker">PEOPLE BEFORE POSTS · LOCAL DEMO</div><h3>Pray for one another.</h3><p>Use fictional examples here—do not enter private real requests into this demo.</p>${prayerList()}${compose('prayer','Add a sample prayer request','What can your group pray about?')}<div class="group-prayer-next"><span>CONTINUE THE CONVERSATION</span><button type="button" data-action="pane" data-area="group" data-value="people">Check in with someone ${icon('arrow')}</button></div></div>`;
 if(s.groupPane==='leader')body=lead();
+if(rallyOne&&GroupsV2){
+ return '<section class="group-screen-v07 gv2-detail">'+
+ GroupsV2.detailHeading(s.groupPane,canLead('group'))+
+ GroupsV2.detailTabs(s.groupPane,canLead('group'))+
+ body+footer()+'</section>';
+}
 return `<section class="group-screen-v07">
   <div class="group-community-hero">
     <div class="group-hero-overline">MY COMMUNITY ${canLead('group')?pill('LEADER VIEW'):''}</div>
@@ -362,6 +406,7 @@ function team(){
   </button>
   <div class="card team-huddle"><div class="kicker">THIS SUNDAY</div><h3>Team huddle</h3><p>Arrive at 8:40 AM; huddle begins at 8:45 AM. These are fictional example times.</p><button type="button" class="text-button" data-action="pane" data-area="team" data-value="chat">Coordinate with your team ↗</button></div>`;
  if(s.teamPane==='chat')body=`<div class="card team-chat-card"><div class="kicker">WELCOME TEAM · LOCAL DEMO</div><h2>Stay in the loop.</h2><p>Share relevant updates with the people serving alongside you. Messages stay in this browser.</p>${teamList()}${compose('team','Send a team update','Share an update with your team…')}</div>`;
+ if(rallyOne && s.teamPane==='chat' && todayUI.memberships.team)body+='<button type="button" class="text-button" data-action="connect-room">Open Citizen Serve Team Rally Room ↗</button>';
  if(s.teamPane==='leader')body=`<div class="card team-leader-card"><div class="kicker">AUTHORIZED TEAM LEADER · FIXTURE</div><h2>Care for your team.</h2><p>Review the sample schedule and communication. A confirmed shift is not proof of attendance.</p><div class="team-leader-status"><strong>Coverage requests</strong><span>${s.coverage?'One sample coverage request':'No active sample requests'}</span></div><button type="button" class="btn red" data-action="pane" data-area="team" data-value="chat">Open team conversation ${icon('arrow')}</button></div><div class="card"><h3>Follow-up needs human judgment.</h3><p>The proposed future leader system requires approved definitions, actual participation records, restricted access, and a clear pastoral follow-up process before real alerts can be enabled.</p></div>`;
  return `<section class="team-screen-v08">
   <div class="team-v08-hero">
@@ -457,7 +502,7 @@ function render(){
 const view=$('view'),position=view.scrollTop;
 view.querySelectorAll('textarea').forEach(field=>{drafts[field.id]=field.value});
 if(!['today','group','team','read','play'].includes(s.view))s.view='today';
-if(s.role!=='leader'){if(s.groupPane==='leader')s.groupPane='chat';if(s.teamPane==='leader')s.teamPane='schedule';}
+if(s.role!=='leader'){if(s.groupPane==='leader')s.groupPane=rallyOne?'overview':'chat';if(s.teamPane==='leader')s.teamPane='schedule';}
 save();
 const hybridShell=document.querySelector('.phone-inner');
 hybridShell.classList.add('premium-alive');
@@ -510,14 +555,102 @@ $('profile-initials').textContent=(todayUI.name||'Jonathan').split(/\s+/).map(v=
 const snapshot=T.snapshot(s,todayUI,new Date(),conversation());$('activity-dot').hidden=!snapshot.attention&&!snapshot.leader;
 view.scrollTop=position;
 }
+function openConnect(screen='inbox', person=''){
+ if(!rallyOne || !$('rp-gateway').hidden)return;
+ const opener=document.activeElement;
+ closeDialog(false);
+ const overlay=document.createElement('dialog');
+ overlay.className='connect-overlay';
+ overlay.setAttribute('aria-label','Connect messaging');
+ const phone=document.querySelector('.phone-inner');
+ const fit=()=>{
+   const rect=phone.getBoundingClientRect();
+   // On iPhone Safari the software keyboard can shrink the visual viewport
+   // without resizing the page or our app shell. Keep the composer above it.
+   const viewport=window.visualViewport;
+   const touch=window.matchMedia('(pointer: coarse)').matches;
+   const top=viewport&&touch?Math.max(rect.top,viewport.offsetTop):rect.top;
+   const bottom=viewport&&touch?Math.min(rect.bottom,viewport.offsetTop+viewport.height):rect.bottom;
+   const left=viewport&&touch?Math.max(rect.left,viewport.offsetLeft):rect.left;
+   const right=viewport&&touch?Math.min(rect.right,viewport.offsetLeft+viewport.width):rect.right;
+   Object.assign(overlay.style,{
+     left:left+'px',top:top+'px',
+     width:Math.max(1,right-left)+'px',height:Math.max(1,bottom-top)+'px'
+   });
+ };
+ const frame=document.createElement('iframe');
+ frame.title='Connect messaging inbox and conversations';
+ const back=document.createElement('button');
+ back.type='button';
+ const area={today:'Today',group:'Groups',team:'Team',read:'Read',play:'Read'}[s.view];
+ back.textContent='‹  Back to '+area;
+ const access=()=>({...todayUI.memberships});
+ const ids={Jess:'jess',Anna:'anna','Alex Morgan':'connect-alex'};
+ const messages=name=>s.directMessages[ids[name]]||[];
+ const room=()=>s.connectRoom||{};
+ frame.connectMember={
+   screen,person,access,conversation,
+   readModel:window.RallyConversationRead,domain:window.RallyChatDomain,
+   messages, room, praying:()=>!!s.connectPraying,
+   write(kind,value,name){
+     if(storageWarning)return false;
+     const previous={room:s.connectRoom,praying:s.connectPraying,direct:s.directMessages};
+     if(kind==='room'||kind==='rsvp'){
+       if(!access().team)return false;
+       s.connectRoom={...room()};
+       if(kind==='room')s.connectRoom.messages=[...(room().messages||[]),value];
+       else s.connectRoom.rsvp=value;
+     }else{
+       if(!access().group)return false;
+       if(kind==='direct' && Object.hasOwn(ids,name)){
+         s.directMessages={...s.directMessages,[ids[name]]:[...messages(name),{name:'You',time:'Just now',text:value}]};
+       }else if(kind==='prayer')s.connectPraying=value;
+       else return false;
+     }
+     if(save())return true;
+     s.connectRoom=previous.room;s.connectPraying=previous.praying;s.directMessages=previous.direct;
+     return false;
+   }
+ };
+ frame.src='connect-design-lab.html';
+ overlay.append(back,frame);
+ phone.append(overlay);
+ fit();
+ overlay.showModal();
+ const observer=new ResizeObserver(fit);
+ observer.observe(phone);
+ window.addEventListener('resize',fit);
+ window.visualViewport?.addEventListener('resize',fit);
+ window.visualViewport?.addEventListener('scroll',fit);
+ history.pushState({rallyConnect:true},'');
+ function close(){
+   observer.disconnect();
+   window.removeEventListener('resize',fit);
+   window.visualViewport?.removeEventListener('resize',fit);
+   window.visualViewport?.removeEventListener('scroll',fit);
+   window.removeEventListener('popstate',close);
+   overlay.close();overlay.remove();
+   render();
+   if(opener?.isConnected)opener.focus();
+   else $('connect-entry').focus();
+ }
+ window.addEventListener('popstate',close,{once:true});
+ back.onclick=()=>history.back();
+ overlay.addEventListener('cancel',ev=>{ev.preventDefault();history.back();});
+}
 function navigate(view,pane,reading){
+ if(rallyOne && view==='group' && pane==='chat' && todayUI.memberships.group){
+   openConnect('thread');return;
+ }
 closeDialog(false);
 s.view=view;
 if(view!=='today')f09Feedback='';
 if(view==='today'&&f09Preview)f09Index=0;
 if(view==='group'){
-s.discover=false;if(pane)s.groupPane=pane;
-if(pane==='leader'&&!(s.role==='leader'&&todayUI.memberships.group))s.groupPane='chat';
+s.discover=false;
+if(rallyOne)s.groupPane=pane||'overview';
+else if(pane)s.groupPane=pane;
+if(pane==='leader'&&!(s.role==='leader'&&todayUI.memberships.group))s.groupPane=rallyOne?'overview':'chat';
 }
 if(view==='team'&&pane)s.teamPane=pane;
 render();$('view').scrollTop=0;
@@ -582,7 +715,7 @@ function notify(text){const x=$('toast');x.textContent=text;x.hidden=false;clear
 document.addEventListener('click',ev=>{
 const b=ev.target.closest('button');if(!b)return;
 if(b.type==='submit'&&b.form)return;
-if(b.id==='role'){s.role=s.role==='leader'?'member':'leader';s.groupPane='chat';s.teamPane='schedule';render();renderDialog();notify(s.role==='leader'?'Scoped leader fixture enabled':'Member fixture enabled');return}
+if(b.id==='role'){s.role=s.role==='leader'?'member':'leader';s.groupPane=rallyOne?'overview':'chat';s.teamPane='schedule';render();renderDialog();notify(s.role==='leader'?'Scoped leader fixture enabled':'Member fixture enabled');return}
 if(b.dataset.go){navigate(b.dataset.go,b.dataset.pane||((b.dataset.leader)?'leader':''),b.dataset.reading);return}
 const a=b.dataset.action,v=b.dataset.value||'',person=b.dataset.person;
 if(f09Preview&&!f09Board&&s.view==='today'&&a==='f09-stack'){
@@ -626,6 +759,14 @@ if(f10Preview&&dialog==='f10-companion'&&a==='f10-confirm'&&s.view==='today'){
    f10Notice='Your sample serving availability is now Confirmed on this device.';
  }else{f10Notice='That sample action is already handled or unavailable for this profile.';}
  f09Feedback='';render();renderDialog();return;
+}
+if(a==='gv2-profile'&&s.view==='group'&&todayUI.memberships.group&&window.RallyGroupsV2?.profiles.some(p=>p.id===person)){
+ groupsV2ActiveProfile=person;s.groupPane='profile';render();$('view').scrollTop=0;return;
+}
+if(a==='connect-room' && todayUI.memberships.team){openConnect('room');return;}
+if(a==='connect-inbox'){openConnect();return;}
+if(rallyOne && ['hybrid-person','message-person'].includes(a) && todayUI.memberships.group && ['anna','jess'].includes(person)){
+ openConnect('direct',person==='anna'?'Anna':'Jess');return;
 }
 if(a==='memorize-preview'){navigate('read',null,'memorize');return}
 if(['notifications','demo-controls','team-preview','quick-actions'].includes(a)){showDialog(a,b);return}
@@ -737,8 +878,8 @@ if(a==='companion-starter'){
 }
 if(a==='hybrid-person'){if(!todayUI.memberships.group)return;const member=sampleGroupPeople.find(p=>p.id===person);if(!member)return;s.directPerson=member.id;navigate('group','direct');return;}
 if(a==='message-person'){if(!todayUI.memberships.group)return;const member=sampleGroupPeople.find(p=>p.id===person);if(!member)return;s.directPerson=member.id;s.groupPane='direct';render();return}
- if(a==='pane'){if(v==='leader'&&!canLead(b.dataset.area))return;if(b.dataset.area==='group')s.groupPane=v;else s.teamPane=v;render();return}
-if(a==='browse'){s.discover=!s.discover;render();return}
+ if(a==='pane'){if(v==='leader'&&!canLead(b.dataset.area))return;if(b.dataset.area==='group')s.groupPane=v;else s.teamPane=v;render();if(rallyOne&&b.dataset.area==='group')$('view').scrollTop=0;return}
+if(a==='browse'){s.discover=!s.discover;render();if(rallyOne&&s.view==='group')$('view').scrollTop=0;return}
 if(a==='rsvp'){s.rsvp=s.rsvp===v?'':v;render();notify('Sample RSVP updated');return}
 if(a==='interest'){s.interest=s.interest.includes(v)?s.interest.filter(x=>x!==v):[...s.interest,v];render();notify('Interest saved locally, not submitted');return}
 if(a==='send'){
