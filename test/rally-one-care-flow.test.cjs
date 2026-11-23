@@ -92,7 +92,8 @@ test('integration is scoped to Rally One existing surfaces and no new storage ow
   assert.ok(html.includes(f));assert.ok(build.includes("'"+f+"'"));
  }
  assert.match(js,/if\(rallyOne&&window\.RallyCareFlow\)/);
- assert.match(js,/\.f09b-glance/);
+ assert.match(js,/window\.RallyUnifiedFocus\?\.focus/);
+ assert.doesNotMatch(js,/RallyCareFlow\.render\(care,\{placement:'today'\}\)/);
  assert.match(js,/\.gv2-care/);
  assert.match(js,/\.gv2-detail-tabs/);
  const css=read('rally-one-care-flow.css');
