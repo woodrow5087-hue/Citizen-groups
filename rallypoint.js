@@ -945,7 +945,8 @@ if(a==='send'){
   s.directMessages[s.directPerson].push(item);
   // The care loop remembers only that the optional action occurred; content remains in the existing local DM.
   if(s.directPerson==='marcus'&&s.prayers.some(p=>p?.name==='Marcus C.')){
-   s.companionCare.marcus={completedAt:new Date().toISOString()};
+   s.companionCare.marcus={...(s.companionCare.marcus||{}),completedAt:new Date().toISOString()};
+   delete s.companionCare.marcus.snoozedUntil;
   }
   companionFocus=null;
  }else s.prayers.push(item);
