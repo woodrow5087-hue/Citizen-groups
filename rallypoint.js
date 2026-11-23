@@ -543,10 +543,7 @@ if(rallyOne&&window.RallyCareFlow){
     state:s,member:todayUI.memberships.group,now:new Date()
   });
   if(care){
-    if(s.view==='today'&&f09Board){
-      view.querySelector('.f09b-glance')?.insertAdjacentHTML(
-        'beforebegin',window.RallyCareFlow.render(care,{placement:'today'}));
-    }else if(s.view==='group'&&s.groupPane==='overview'){
+    if(s.view==='group'&&s.groupPane==='overview'){
       view.querySelector('.gv2-care')?.insertAdjacentHTML(
         'afterend',window.RallyCareFlow.render(care,{placement:'group'}));
     }else if(s.view==='group'&&s.groupPane==='prayer'){
