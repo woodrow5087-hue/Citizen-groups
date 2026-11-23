@@ -7,3 +7,7 @@ The only player-visible Rally One addition is a Read tab card using the existing
 The production main, PR #115, PR #118, and their visual code are unchanged. The original extracted Verse Circuit CSS and its animation are unchanged. The static build copies only the game runtime, passage content and original HTML fixture; development tests, QA screenshots, and docs are not shipped under dist.
 
 The preview PR is targeted to `rally-point/develop` **only to obtain a Netlify preview** using the existing CI trigger; its diff includes all unmerged PR #115 changes and must **never be merged to older develop**. Verify the Netlify preview at the actual deployed commit, then manually inspect Read → Verse Circuit → TRACE → LINK → ECHO → victory → Afterglow on mobile. Recheck Blank Battle and leadership interactions. This note is a test plan, not a claim QA has passed.
+
+## Regression safeguard
+
+The initial inline Read card failed frozen SHA checks for `rallypoint.js` and a Read selector assumption. The bridge is now an independent, idempotent DOM enhancement loaded by `index.html`. The exact PR #115 `rallypoint.js` blob is restored with SHA `70c8297ba8f67f3258be702ae4fbf8b9e9559c26`; the existing Read markup and game code remain byte-identical. A new targeted JS regression verifies the card appears only on Read and survives navigation without duplication.

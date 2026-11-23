@@ -513,13 +513,6 @@ function read(){
       <button type="button" class="rp-game-entry-play" data-go="play" aria-label="Play Blank Battle">${icon('check')} PLAY BLANK BATTLE ${icon('arrow')}</button>
       <small>Private, on-device puzzle · No online opponents</small>
    </section>
-   <section class="card read-verse-circuit-entry" aria-labelledby="read-verse-circuit-heading">
-     <div class="read-section-label"><span>VERSEPLAY · NEW GAME</span><i></i></div>
-     <h2 id="read-verse-circuit-heading">Verse Circuit</h2>
-     <p>Trace the phrases, reconnect the verse, and recall it from memory.</p>
-     <a class="btn red" href="verse-circuit-playground.html" aria-label="Play Verse Circuit, standalone game">PLAY VERSE CIRCUIT ↗</a>
-     <p class="fine-note">John 15:12 · Mobile game preview · Progress stays in this browser.</p>
-   </section>
    <div class="rp-game-classic-label"><strong>MORE WAYS TO PRACTICE</strong><span>Classic &amp; two-player pass-and-play</span></div>
    ${VP.render(s,e,icon)}
    <div class="read-focus-card">
