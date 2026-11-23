@@ -139,7 +139,17 @@ function f09Today(){
    const portraits=H.portraits.map(person=>({...person,image:`assets/${portraitFolder}/${person.id}.webp`}));
    const peopleRail=H.peopleRail(todayUI,'today',portraits,'assets/today-priority/group.webp');
    const campus=rallyOne?campusNames[todayUI.campus]:'';
-   return window.RallyPriorityBoard.render({...model,feedback:f09Feedback,f10Enabled:f10Preview,campus},peopleRail,portraits,now);
+   const baselineBoard=window.RallyPriorityBoard.derive(model,now);
+   const care=window.RallyCareFlow?.derive({
+     state:s,member:todayUI.memberships.group,now
+   });
+   const unifiedFocus=rallyOne?window.RallyUnifiedFocus?.focus({
+     board:baselineBoard,model,care
+   }):null;
+   return window.RallyPriorityBoard.render({
+     ...model,feedback:f09Feedback,f10Enabled:f10Preview,campus,
+     ...(unifiedFocus?{unifiedFocus}:{})
+   },peopleRail,portraits,now);
  }
  return window.RallySmartDashboard.render(model,f09Index,H.peopleRail(todayUI,'today'),H.portraits);
 }
