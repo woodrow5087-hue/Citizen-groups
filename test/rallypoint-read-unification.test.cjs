@@ -20,7 +20,7 @@ const frozen=Object.freeze({
  /* Companion Care flow: scoped UI insertion and explicit action only; no other tab redesign. */
  /* M5B: scoped, read-only Unified Focus ranking within existing Today Priority Board. */
  /* M6: controlled member context read and explicit action transitions; old tabs retain same surfaces. */
- 'rallypoint.js':'6d99b1aef6b5e845ffa2e36d3bac247044161139',
+ 'rallypoint.js':'7ec9cb9c4d92137d440743e74b106de99beb1bfb',
  'rallypoint-phase1.css':'db0bbe26f995fbde1e35a1e4c3a5ef3a6d799833',
  'rallypoint-groups-v07.css':'513c03013506bdaa0d9a99ced6c4d455fd15c386',
  'rallypoint-team-v08.css':'dff9ce0ef59d02a4752bf740407b08324f0459ac',
