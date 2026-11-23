@@ -19,3 +19,18 @@
 .rally-one .premium-alive.is-groups-v07 .group-discovery-notice {
   color:#ead7c9;
 }
+
+/* Additional existing 390px pulse labels are inherited from the pre-graphite
+   palette and need actual accessible foreground colors on each surface. */
+.rally-one .premium-alive.is-groups-v07 .group-pulse-top > span:first-child {
+  color:#f9e4d6;
+}
+.rally-one .premium-alive.is-groups-v07 .group-pulse-route .group-pulse-route-kind {
+  color:#efddce;
+  opacity:1;
+}
+.rally-one .premium-alive.is-groups-v07 .group-pulse-route:nth-child(2) .group-pulse-route-kind,
+.rally-one .premium-alive.is-groups-v07 .group-pulse-route[data-value="gather"] .group-pulse-route-kind {
+  color:#55443b;
+  opacity:1;
+}
