@@ -41,6 +41,11 @@ try{
   await page.locator('.gv2-directory-person[data-person="dom"]').click();
   await page.locator('.gv2-profile h1').getByText('Dom').waitFor();
   await page.locator('.gv2-profile .gv2-back').click();
+  // Leadership demo restores the exact portrait origin (directory, not overview).
+  // Assert the restored route before explicitly returning to the Groups home.
+  await page.locator('.gv2-directory-list').waitFor();
+  await page.locator('.gv2-detail-heading .gv2-back').click();
+  await page.locator('.gv2-home').waitFor();
 
   await page.locator('.gv2-widget-gather').click();
   await page.locator('.group-gather-rsvp').waitFor();
