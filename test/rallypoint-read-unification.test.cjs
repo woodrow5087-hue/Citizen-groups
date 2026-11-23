@@ -15,7 +15,11 @@ const route='.premium-alive.is-read-v09:not(.is-play-v08)';
 /* Exact approved Develop Git blob SHA hashes after Team PR #96 was merged.
  * Protect Today, Groups, Team, Reader source and ALL Blank Battle assets. */
 const frozen=Object.freeze({
- 'rallypoint.js':'8be0b6e5517ebcf7e0ee72602a9d06fbfcbb6133',
+ /* Connect usability v2: approved openConnect keyboard viewport change; pin remains exact. */
+ /* Groups v2 isolated overview routing + preserved Connect and other tab behavior. */
+ /* Companion Care flow: scoped UI insertion and explicit action only; no other tab redesign. */
+ /* M5B: scoped, read-only Unified Focus ranking within existing Today Priority Board. */
+ 'rallypoint.js':'13669050af62557bd0a9a8089ee3323153d943e1',
  'rallypoint-phase1.css':'db0bbe26f995fbde1e35a1e4c3a5ef3a6d799833',
  'rallypoint-groups-v07.css':'513c03013506bdaa0d9a99ced6c4d455fd15c386',
  'rallypoint-team-v08.css':'dff9ce0ef59d02a4752bf740407b08324f0459ac',

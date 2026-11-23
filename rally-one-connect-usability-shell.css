@@ -1,0 +1,57 @@
+/* Connect usability milestone — finish the interaction, preserve the design.
+ * Only iOS viewport/keyboard affordances and targeted inherited contrast defects.
+ */
+.rally-one .connect-overlay[open] {
+  min-width:0;
+  min-height:0;
+  overflow:hidden;
+}
+.rally-one .connect-overlay > button {
+  -webkit-tap-highlight-color:transparent;
+  touch-action:manipulation;
+}
+/* Three legacy small labels fell below WCAG contrast after the graphite restyle.
+   These are text-only corrections, not a Groups redesign. */
+.rally-one .premium-alive.is-groups-v07 .group-discovery-hero-strip > span,
+.rally-one .premium-alive.is-groups-v07 .group-discovery-head > span {
+  color:#ffc4ce;
+}
+.rally-one .premium-alive.is-groups-v07 .group-discovery-notice {
+  color:#ead7c9;
+}
+
+/* Additional existing 390px pulse labels are inherited from the pre-graphite
+   palette and need actual accessible foreground colors on each surface. */
+.rally-one .premium-alive.is-groups-v07 .group-pulse-top > span:first-child {
+  color:#f9e4d6;
+}
+.rally-one .premium-alive.is-groups-v07 .group-pulse-route .group-pulse-route-kind {
+  color:#efddce;
+  opacity:1;
+}
+.rally-one .premium-alive.is-groups-v07 .group-pulse-route:nth-child(2) .group-pulse-route-kind,
+.rally-one .premium-alive.is-groups-v07 .group-pulse-route[data-value="gather"] .group-pulse-route-kind {
+  color:#55443b;
+  opacity:1;
+}
+
+/* Read's classic-game labels came from the warm pre-graphite theme.
+   Keep their existing typography/layout but make both readable on charcoal. */
+.rally-one .premium-alive.is-read-v09 .rp-game-classic-label > strong {
+  color:#f6e2d3;
+}
+.rally-one .premium-alive.is-read-v09 .rp-game-classic-label > span {
+  color:#e7d3c4;
+}
+
+/* The small subtitle shares the same parchment contrast requirement as
+   the route kind above; apply consistent text contrast to both. */
+.rally-one .premium-alive.is-groups-v07 .group-pulse-route > small {
+  color:#efddce;
+  opacity:1;
+}
+.rally-one .premium-alive.is-groups-v07 .group-pulse-route:nth-child(2) > small,
+.rally-one .premium-alive.is-groups-v07 .group-pulse-route[data-value="gather"] > small {
+  color:#55443b;
+  opacity:1;
+}
