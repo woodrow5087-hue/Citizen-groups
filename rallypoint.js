@@ -136,8 +136,15 @@ function f09Today(){
  f09Index=Math.max(0,Math.min(f09Index,model.stack.length-1));
  if(f09Board){
    const portraitFolder=rallyOne?'rally-one':'today-priority';
-   const portraits=H.portraits.map(person=>({...person,image:`assets/${portraitFolder}/${person.id}.webp`}));
-   const peopleRail=H.peopleRail(todayUI,'today',portraits,'assets/today-priority/group.webp');
+   const groupsProfiles=window.RallyGroupsV2?.profiles;
+   const portraits=rallyOne&&Array.isArray(groupsProfiles)?
+     groupsProfiles.map(person=>({...person,imageSprite:true})):
+     H.portraits.map(person=>({...person,image:`assets/${portraitFolder}/${person.id}.webp`}));
+   // Today and Groups now share the exact same source portraits and profile
+   // navigation, not separately generated or old fictional lookalikes.
+   const peopleRail=rallyOne&&window.RallyGroupsV2?.renderTodayRail?
+     window.RallyGroupsV2.renderTodayRail(todayUI.memberships.group):
+     H.peopleRail(todayUI,'today',portraits,'assets/today-priority/group.webp');
    const campus=rallyOne?campusNames[todayUI.campus]:'';
    const baselineBoard=window.RallyPriorityBoard.derive(model,now);
    const care=window.RallyCareFlow?.derive({
@@ -802,8 +809,12 @@ if(f10Preview&&dialog==='f10-companion'&&a==='f10-confirm'&&s.view==='today'){
  }else{f10Notice='That sample action is already handled or unavailable for this profile.';}
  f09Feedback='';render();renderDialog();return;
 }
-if(a==='gv2-profile'&&rallyOne&&s.view==='group'&&window.RallyGroupsV2?.profiles.some(p=>p.id===person)){
- groupsV2ActiveProfile=person;s.groupPane='profile';render();$('view').scrollTop=0;return;
+if(a==='gv2-profile'&&rallyOne&&
+  (s.view==='group'||s.view==='today')&&
+  window.RallyGroupsV2?.profiles.some(p=>p.id===person)){
+ groupsV2ActiveProfile=person;
+ if(s.view==='today'){navigate('group','profile');return;}
+ s.groupPane='profile';render();$('view').scrollTop=0;return;
 }
 if(a==='gv2-back-discovery'&&rallyOne&&s.view==='group'){
   s.groupPane='overview';
