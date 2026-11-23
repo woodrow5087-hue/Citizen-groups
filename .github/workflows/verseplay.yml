@@ -1,0 +1,40 @@
+name: VersePlay foundation
+on:
+  pull_request:
+    branches: [rally-one/showcase-evening-polish]
+    paths:
+      - 'verseplay/**'
+      - 'verse-circuit-playground.html'
+      - 'scripts/build.cjs'
+      - 'package*.json'
+      - '.github/workflows/verseplay.yml'
+permissions:
+  contents: read
+jobs:
+  regression:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm test && npm run test:verseplay && npm run build
+      - run: npx playwright install --with-deps chromium
+      - name: Browser and visual regression
+        run: |
+          python3 -m http.server 8000 --directory dist > /tmp/verseplay-server.log 2>&1 &
+          for attempt in $(seq 1 20); do curl -fsS http://127.0.0.1:8000/verse-circuit-playground.html > /dev/null && break; sleep 1; done
+          BROWSER_PATH="$(node --input-type=module -e 'import {chromium} from "playwright"; process.stdout.write(chromium.executablePath())')" npm run test:verseplay:browser
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: verseplay-regression-evidence
+          path: test-results/verseplay
+      - uses: actions/upload-artifact@v4
+        if: success()
+        with:
+          name: verseplay-static-preview
+          path: dist/

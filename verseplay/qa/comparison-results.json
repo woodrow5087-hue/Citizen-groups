@@ -1,0 +1,2942 @@
+{
+  "browser": "156.0.8078.79",
+  "base": "http://127.0.0.1:8000",
+  "viewports": [
+    {
+      "kind": "before",
+      "width": 320,
+      "height": 844,
+      "fonts": {
+        "oxanium": true,
+        "manrope": true,
+        "loadedFamilies": [
+          "Manrope",
+          "Manrope",
+          "Manrope",
+          "Manrope",
+          "Manrope",
+          "Oxanium",
+          "Oxanium",
+          "Oxanium",
+          "Oxanium"
+        ]
+      }
+    },
+    {
+      "kind": "before",
+      "width": 375,
+      "height": 844,
+      "fonts": {
+        "oxanium": true,
+        "manrope": true,
+        "loadedFamilies": [
+          "Manrope",
+          "Manrope",
+          "Manrope",
+          "Manrope",
+          "Manrope",
+          "Oxanium",
+          "Oxanium",
+          "Oxanium",
+          "Oxanium"
+        ]
+      }
+    },
+    {
+      "kind": "before",
+      "width": 390,
+      "height": 844,
+      "fonts": {
+        "oxanium": true,
+        "manrope": true,
+        "loadedFamilies": [
+          "Manrope",
+          "Manrope",
+          "Manrope",
+          "Manrope",
+          "Manrope",
+          "Oxanium",
+          "Oxanium",
+          "Oxanium",
+          "Oxanium"
+        ]
+      }
+    },
+    {
+      "kind": "before",
+      "width": 430,
+      "height": 844,
+      "fonts": {
+        "oxanium": true,
+        "manrope": true,
+        "loadedFamilies": [
+          "Manrope",
+          "Manrope",
+          "Manrope",
+          "Manrope",
+          "Manrope",
+          "Oxanium",
+          "Oxanium",
+          "Oxanium",
+          "Oxanium"
+        ]
+      }
+    },
+    {
+      "kind": "after",
+      "width": 320,
+      "height": 844,
+      "fonts": {
+        "oxanium": true,
+        "manrope": true,
+        "loadedFamilies": [
+          "Manrope",
+          "Manrope",
+          "Manrope",
+          "Manrope",
+          "Manrope",
+          "Oxanium",
+          "Oxanium",
+          "Oxanium",
+          "Oxanium"
+        ]
+      }
+    },
+    {
+      "kind": "after",
+      "width": 375,
+      "height": 844,
+      "fonts": {
+        "oxanium": true,
+        "manrope": true,
+        "loadedFamilies": [
+          "Manrope",
+          "Manrope",
+          "Manrope",
+          "Manrope",
+          "Manrope",
+          "Oxanium",
+          "Oxanium",
+          "Oxanium",
+          "Oxanium"
+        ]
+      }
+    },
+    {
+      "kind": "after",
+      "width": 390,
+      "height": 844,
+      "fonts": {
+        "oxanium": true,
+        "manrope": true,
+        "loadedFamilies": [
+          "Manrope",
+          "Manrope",
+          "Manrope",
+          "Manrope",
+          "Manrope",
+          "Oxanium",
+          "Oxanium",
+          "Oxanium",
+          "Oxanium"
+        ]
+      }
+    },
+    {
+      "kind": "after",
+      "width": 430,
+      "height": 844,
+      "fonts": {
+        "oxanium": true,
+        "manrope": true,
+        "loadedFamilies": [
+          "Manrope",
+          "Manrope",
+          "Manrope",
+          "Manrope",
+          "Manrope",
+          "Oxanium",
+          "Oxanium",
+          "Oxanium",
+          "Oxanium"
+        ]
+      }
+    }
+  ],
+  "comparisons": [
+    {
+      "viewport": 320,
+      "state": "arcade",
+      "equal": true,
+      "byteIdentical": true,
+      "sameDimensions": true,
+      "width": 320,
+      "height": 914,
+      "rawDifferentPixels": 0,
+      "differentPixels": 0,
+      "antiAliasPixels": 0,
+      "comparison": {
+        "threshold": 0,
+        "includeAA": false
+      },
+      "beforeSha256": "b6a5897f1045e5b314cd1b1cb6740e5794d9d6bf32ae222ac21d9e00f719c322",
+      "afterSha256": "b6a5897f1045e5b314cd1b1cb6740e5794d9d6bf32ae222ac21d9e00f719c322"
+    },
+    {
+      "viewport": 320,
+      "state": "introduction",
+      "equal": true,
+      "byteIdentical": true,
+      "sameDimensions": true,
+      "width": 320,
+      "height": 856,
+      "rawDifferentPixels": 0,
+      "differentPixels": 0,
+      "antiAliasPixels": 0,
+      "comparison": {
+        "threshold": 0,
+        "includeAA": false
+      },
+      "beforeSha256": "bd5366e1966111d8c207deff2bc5b0c342ac07b238891654792066092f20aea5",
+      "afterSha256": "bd5366e1966111d8c207deff2bc5b0c342ac07b238891654792066092f20aea5"
+    },
+    {
+      "viewport": 320,
+      "state": "trace",
+      "equal": true,
+      "byteIdentical": true,
+      "sameDimensions": true,
+      "width": 320,
+      "height": 844,
+      "rawDifferentPixels": 0,
+      "differentPixels": 0,
+      "antiAliasPixels": 0,
+      "comparison": {
+        "threshold": 0,
+        "includeAA": false
+      },
+      "beforeSha256": "c13bc8a06db2e7506581f4ef9cac7785b6bfff1877f66c4c2389219a004f5ccf",
+      "afterSha256": "c13bc8a06db2e7506581f4ef9cac7785b6bfff1877f66c4c2389219a004f5ccf"
+    },
+    {
+      "viewport": 320,
+      "state": "trace-complete",
+      "equal": true,
+      "byteIdentical": true,
+      "sameDimensions": true,
+      "width": 320,
+      "height": 844,
+      "rawDifferentPixels": 0,
+      "differentPixels": 0,
+      "antiAliasPixels": 0,
+      "comparison": {
+        "threshold": 0,
+        "includeAA": false
+      },
+      "beforeSha256": "78208f7873ba787dce509e835dfb823a8ab01f95391a6489e9a533aab319a2ce",
+      "afterSha256": "78208f7873ba787dce509e835dfb823a8ab01f95391a6489e9a533aab319a2ce"
+    },
+    {
+      "viewport": 320,
+      "state": "link",
+      "equal": true,
+      "byteIdentical": true,
+      "sameDimensions": true,
+      "width": 320,
+      "height": 1172,
+      "rawDifferentPixels": 0,
+      "differentPixels": 0,
+      "antiAliasPixels": 0,
+      "comparison": {
+        "threshold": 0,
+        "includeAA": false
+      },
+      "beforeSha256": "a44bb7882a40cb633853ece3b45fb746557d33baca5373d3736f06c8f3032747",
+      "afterSha256": "a44bb7882a40cb633853ece3b45fb746557d33baca5373d3736f06c8f3032747"
+    },
+    {
+      "viewport": 320,
+      "state": "link-incorrect",
+      "equal": true,
+      "byteIdentical": true,
+      "sameDimensions": true,
+      "width": 320,
+      "height": 1172,
+      "rawDifferentPixels": 0,
+      "differentPixels": 0,
+      "antiAliasPixels": 0,
+      "comparison": {
+        "threshold": 0,
+        "includeAA": false
+      },
+      "beforeSha256": "47031bfebbe50b45beef7552089b1b662e0787a12144eab64efa54d90e6e98e2",
+      "afterSha256": "47031bfebbe50b45beef7552089b1b662e0787a12144eab64efa54d90e6e98e2"
+    },
+    {
+      "viewport": 320,
+      "state": "link-complete",
+      "equal": true,
+      "byteIdentical": true,
+      "sameDimensions": true,
+      "width": 320,
+      "height": 1051,
+      "rawDifferentPixels": 0,
+      "differentPixels": 0,
+      "antiAliasPixels": 0,
+      "comparison": {
+        "threshold": 0,
+        "includeAA": false
+      },
+      "beforeSha256": "d359ee2f4627af1de9a4025f9e6cf449ed97158eac4955fbfceced310e24b3d7",
+      "afterSha256": "d359ee2f4627af1de9a4025f9e6cf449ed97158eac4955fbfceced310e24b3d7"
+    },
+    {
+      "viewport": 320,
+      "state": "echo",
+      "equal": true,
+      "byteIdentical": true,
+      "sameDimensions": true,
+      "width": 320,
+      "height": 1013,
+      "rawDifferentPixels": 0,
+      "differentPixels": 0,
+      "antiAliasPixels": 0,
+      "comparison": {
+        "threshold": 0,
+        "includeAA": false
+      },
+      "beforeSha256": "37543b279fb313e3001bfb5452943d560a4ef1160db7cd6f0283b521d5bd901e",
+      "afterSha256": "37543b279fb313e3001bfb5452943d560a4ef1160db7cd6f0283b521d5bd901e"
+    },
+    {
+      "viewport": 320,
+      "state": "echo-incorrect",
+      "equal": true,
+      "byteIdentical": true,
+      "sameDimensions": true,
+      "width": 320,
+      "height": 1013,
+      "rawDifferentPixels": 0,
+      "differentPixels": 0,
+      "antiAliasPixels": 0,
+      "comparison": {
+        "threshold": 0,
+        "includeAA": false
+      },
+      "beforeSha256": "00fc14fdd8781d919ada698fb6da60ca14bac868558e435f6f333f3bc66e1b99",
+      "afterSha256": "00fc14fdd8781d919ada698fb6da60ca14bac868558e435f6f333f3bc66e1b99"
+    },
+    {
+      "viewport": 320,
+      "state": "echo-complete",
+      "equal": true,
+      "byteIdentical": true,
+      "sameDimensions": true,
+      "width": 320,
+      "height": 1013,
+      "rawDifferentPixels": 0,
+      "differentPixels": 0,
+      "antiAliasPixels": 0,
+      "comparison": {
+        "threshold": 0,
+        "includeAA": false
+      },
+      "beforeSha256": "9a0d309b26783822aa78cc1b73917d0130e1defc3a6d00598a488c08ce35b32c",
+      "afterSha256": "9a0d309b26783822aa78cc1b73917d0130e1defc3a6d00598a488c08ce35b32c"
+    },
+    {
+      "viewport": 320,
+      "state": "victory",
+      "equal": true,
+      "byteIdentical": true,
+      "sameDimensions": true,
+      "width": 320,
+      "height": 943,
+      "rawDifferentPixels": 0,
+      "differentPixels": 0,
+      "antiAliasPixels": 0,
+      "comparison": {
+        "threshold": 0,
+        "includeAA": false
+      },
+      "beforeSha256": "2cf985b03b34e5c37ebe764bc8e7b769e01f9883c661be96c86831b7111f6a11",
+      "afterSha256": "2cf985b03b34e5c37ebe764bc8e7b769e01f9883c661be96c86831b7111f6a11"
+    },
+    {
+      "viewport": 320,
+      "state": "afterglow",
+      "equal": true,
+      "byteIdentical": true,
+      "sameDimensions": true,
+      "width": 320,
+      "height": 1131,
+      "rawDifferentPixels": 0,
+      "differentPixels": 0,
+      "antiAliasPixels": 0,
+      "comparison": {
+        "threshold": 0,
+        "includeAA": false
+      },
+      "beforeSha256": "23126a76815798efdb6edc1133b79bd58482df4b85aebb635c728da9c57120c7",
+      "afterSha256": "23126a76815798efdb6edc1133b79bd58482df4b85aebb635c728da9c57120c7"
+    },
+    {
+      "viewport": 375,
+      "state": "arcade",
+      "equal": true,
+      "byteIdentical": true,
+      "sameDimensions": true,
+      "width": 375,
+      "height": 902,
+      "rawDifferentPixels": 0,
+      "differentPixels": 0,
+      "antiAliasPixels": 0,
+      "comparison": {
+        "threshold": 0,
+        "includeAA": false
+      },
+      "beforeSha256": "d89f8c72936dd4a11577b87a58a15ea443c0280334adbe1dfb1e591ea9d8e999",
+      "afterSha256": "d89f8c72936dd4a11577b87a58a15ea443c0280334adbe1dfb1e591ea9d8e999"
+    },
+    {
+      "viewport": 375,
+      "state": "introduction",
+      "equal": true,
+      "byteIdentical": true,
+      "sameDimensions": true,
+      "width": 375,
+      "height": 853,
+      "rawDifferentPixels": 0,
+      "differentPixels": 0,
+      "antiAliasPixels": 0,
+      "comparison": {
+        "threshold": 0,
+        "includeAA": false
+      },
+      "beforeSha256": "3b22f83172af181509ffa1c1703bd741ec27ccc6042259442a6be08faf207ec8",
+      "afterSha256": "3b22f83172af181509ffa1c1703bd741ec27ccc6042259442a6be08faf207ec8"
+    },
+    {
+      "viewport": 375,
+      "state": "trace",
+      "equal": true,
+      "byteIdentical": true,
+      "sameDimensions": true,
+      "width": 375,
+      "height": 844,
+      "rawDifferentPixels": 0,
+      "differentPixels": 0,
+      "antiAliasPixels": 0,
+      "comparison": {
+        "threshold": 0,
+        "includeAA": false
+      },
+      "beforeSha256": "14870598a24016884fc6cf03262a311906072351d3f380c1ae4ca100ef03dbfe",
+      "afterSha256": "14870598a24016884fc6cf03262a311906072351d3f380c1ae4ca100ef03dbfe"
+    },
+    {
+      "viewport": 375,
+      "state": "trace-complete",
+      "equal": true,
+      "byteIdentical": true,
+      "sameDimensions": true,
+      "width": 375,
+      "height": 844,
+      "rawDifferentPixels": 0,
+      "differentPixels": 0,
+      "antiAliasPixels": 0,
+      "comparison": {
+        "threshold": 0,
+        "includeAA": false
+      },
+      "beforeSha256": "67c2ef74718c20091b07b37cfe5abaebea339912181d9e7bf8d5d3268479a15e",
+      "afterSha256": "67c2ef74718c20091b07b37cfe5abaebea339912181d9e7bf8d5d3268479a15e"
+    },
+    {
+      "viewport": 375,
+      "state": "link",
+      "equal": true,
+      "byteIdentical": true,
+      "sameDimensions": true,
+      "width": 375,
+      "height": 1174,
+      "rawDifferentPixels": 0,
+      "differentPixels": 0,
+      "antiAliasPixels": 0,
+      "comparison": {
+        "threshold": 0,
+        "includeAA": false
+      },
+      "beforeSha256": "0f3c40ed0a828f6b30dab7d2ae99b0645c2218776bc00c24ff59f8a860a96a91",
+      "afterSha256": "0f3c40ed0a828f6b30dab7d2ae99b0645c2218776bc00c24ff59f8a860a96a91"
+    },
+    {
+      "viewport": 375,
+      "state": "link-incorrect",
+      "equal": true,
+      "byteIdentical": true,
+      "sameDimensions": true,
+      "width": 375,
+      "height": 1174,
+      "rawDifferentPixels": 0,
+      "differentPixels": 0,
+      "antiAliasPixels": 0,
+      "comparison": {
+        "threshold": 0,
+        "includeAA": false
+      },
+      "beforeSha256": "64f4583a3183ea288dedd4ac4dce5f60af5fb3808f862d854b516be9ede9699b",
+      "afterSha256": "64f4583a3183ea288dedd4ac4dce5f60af5fb3808f862d854b516be9ede9699b"
+    },
+    {
+      "viewport": 375,
+      "state": "link-complete",
+      "equal": true,
+      "byteIdentical": true,
+      "sameDimensions": true,
+      "width": 375,
+      "height": 1032,
+      "rawDifferentPixels": 0,
+      "differentPixels": 0,
+      "antiAliasPixels": 0,
+      "comparison": {
+        "threshold": 0,
+        "includeAA": false
+      },
+      "beforeSha256": "e314da0e0fde33b7e226338f1f61f5a6584650a681a7c3dbd3dfbe163913a689",
+      "afterSha256": "e314da0e0fde33b7e226338f1f61f5a6584650a681a7c3dbd3dfbe163913a689"
+    },
+    {
+      "viewport": 375,
+      "state": "echo",
+      "equal": true,
+      "byteIdentical": true,
+      "sameDimensions": true,
+      "width": 375,
+      "height": 981,
+      "rawDifferentPixels": 0,
+      "differentPixels": 0,
+      "antiAliasPixels": 0,
+      "comparison": {
+        "threshold": 0,
+        "includeAA": false
+      },
+      "beforeSha256": "374204dfdf46fd5185173e3f1d50d197682930c10cab4a9a45c7c76b75850db7",
+      "afterSha256": "374204dfdf46fd5185173e3f1d50d197682930c10cab4a9a45c7c76b75850db7"
+    },
+    {
+      "viewport": 375,
+      "state": "echo-incorrect",
+      "equal": true,
+      "byteIdentical": true,
+      "sameDimensions": true,
+      "width": 375,
+      "height": 981,
+      "rawDifferentPixels": 0,
+      "differentPixels": 0,
+      "antiAliasPixels": 0,
+      "comparison": {
+        "threshold": 0,
+        "includeAA": false
+      },
+      "beforeSha256": "cbb5136e09cb3034c86dc5fb64afcd10f243108881868a35c3438d2a931e16b7",
+      "afterSha256": "cbb5136e09cb3034c86dc5fb64afcd10f243108881868a35c3438d2a931e16b7"
+    },
+    {
+      "viewport": 375,
+      "state": "echo-complete",
+      "equal": true,
+      "byteIdentical": true,
+      "sameDimensions": true,
+      "width": 375,
+      "height": 1021,
+      "rawDifferentPixels": 0,
+      "differentPixels": 0,
+      "antiAliasPixels": 0,
+      "comparison": {
+        "threshold": 0,
+        "includeAA": false
+      },
+      "beforeSha256": "1d9f466a8dc4ad27432ad82b6991fea760efaecd27b6798e356bd4027a5a2334",
+      "afterSha256": "1d9f466a8dc4ad27432ad82b6991fea760efaecd27b6798e356bd4027a5a2334"
+    },
+    {
+      "viewport": 375,
+      "state": "victory",
+      "equal": true,
+      "byteIdentical": true,
+      "sameDimensions": true,
+      "width": 375,
+      "height": 943,
+      "rawDifferentPixels": 0,
+      "differentPixels": 0,
+      "antiAliasPixels": 0,
+      "comparison": {
+        "threshold": 0,
+        "includeAA": false
+      },
+      "beforeSha256": "7b4bd8a9a779b709e225a80b471367a24a49446e0b74dba6df3007168f374bbe",
+      "afterSha256": "7b4bd8a9a779b709e225a80b471367a24a49446e0b74dba6df3007168f374bbe"
+    },
+    {
+      "viewport": 375,
+      "state": "afterglow",
+      "equal": true,
+      "byteIdentical": true,
+      "sameDimensions": true,
+      "width": 375,
+      "height": 1093,
+      "rawDifferentPixels": 0,
+      "differentPixels": 0,
+      "antiAliasPixels": 0,
+      "comparison": {
+        "threshold": 0,
+        "includeAA": false
+      },
+      "beforeSha256": "0402163022bbf1066f39cb080cdb9f433bc7b1cd6a79a6a967d25aa5745b4c8c",
+      "afterSha256": "0402163022bbf1066f39cb080cdb9f433bc7b1cd6a79a6a967d25aa5745b4c8c"
+    },
+    {
+      "viewport": 390,
+      "state": "arcade",
+      "equal": true,
+      "byteIdentical": true,
+      "sameDimensions": true,
+      "width": 390,
+      "height": 903,
+      "rawDifferentPixels": 0,
+      "differentPixels": 0,
+      "antiAliasPixels": 0,
+      "comparison": {
+        "threshold": 0,
+        "includeAA": false
+      },
+      "beforeSha256": "bd0a0cdf33d2ea73a5215d44a6e36d094f7656a236c20ade30f50472810a505e",
+      "afterSha256": "bd0a0cdf33d2ea73a5215d44a6e36d094f7656a236c20ade30f50472810a505e"
+    },
+    {
+      "viewport": 390,
+      "state": "introduction",
+      "equal": true,
+      "byteIdentical": true,
+      "sameDimensions": true,
+      "width": 390,
+      "height": 856,
+      "rawDifferentPixels": 0,
+      "differentPixels": 0,
+      "antiAliasPixels": 0,
+      "comparison": {
+        "threshold": 0,
+        "includeAA": false
+      },
+      "beforeSha256": "85beb305b7771edb8b43762dfeb571c860942edbfd3dfe805d6921eb749bb723",
+      "afterSha256": "85beb305b7771edb8b43762dfeb571c860942edbfd3dfe805d6921eb749bb723"
+    },
+    {
+      "viewport": 390,
+      "state": "trace",
+      "equal": true,
+      "byteIdentical": true,
+      "sameDimensions": true,
+      "width": 390,
+      "height": 844,
+      "rawDifferentPixels": 0,
+      "differentPixels": 0,
+      "antiAliasPixels": 0,
+      "comparison": {
+        "threshold": 0,
+        "includeAA": false
+      },
+      "beforeSha256": "d693790ad2f34a478be6dd94fb324ec388176f060ad72060a7fc4b6dc7d2a949",
+      "afterSha256": "d693790ad2f34a478be6dd94fb324ec388176f060ad72060a7fc4b6dc7d2a949"
+    },
+    {
+      "viewport": 390,
+      "state": "trace-complete",
+      "equal": true,
+      "byteIdentical": true,
+      "sameDimensions": true,
+      "width": 390,
+      "height": 844,
+      "rawDifferentPixels": 0,
+      "differentPixels": 0,
+      "antiAliasPixels": 0,
+      "comparison": {
+        "threshold": 0,
+        "includeAA": false
+      },
+      "beforeSha256": "0ff6a2e42146e43c6607932d22f846ce0eb993617351fae27b58d6ef4328fa2a",
+      "afterSha256": "0ff6a2e42146e43c6607932d22f846ce0eb993617351fae27b58d6ef4328fa2a"
+    },
+    {
+      "viewport": 390,
+      "state": "link",
+      "equal": true,
+      "byteIdentical": true,
+      "sameDimensions": true,
+      "width": 390,
+      "height": 1177,
+      "rawDifferentPixels": 0,
+      "differentPixels": 0,
+      "antiAliasPixels": 0,
+      "comparison": {
+        "threshold": 0,
+        "includeAA": false
+      },
+      "beforeSha256": "68a53490a2f28d4d150f5590b569e33f16d8db601a6dc5c149161c80167fcb8e",
+      "afterSha256": "68a53490a2f28d4d150f5590b569e33f16d8db601a6dc5c149161c80167fcb8e"
+    },
+    {
+      "viewport": 390,
+      "state": "link-incorrect",
+      "equal": true,
+      "byteIdentical": true,
+      "sameDimensions": true,
+      "width": 390,
+      "height": 1177,
+      "rawDifferentPixels": 0,
+      "differentPixels": 0,
+      "antiAliasPixels": 0,
+      "comparison": {
+        "threshold": 0,
+        "includeAA": false
+      },
+      "beforeSha256": "55aa3ed9c05a4eda1673f2cef41995641969ea8dc9625a1236674e3e27585c9a",
+      "afterSha256": "55aa3ed9c05a4eda1673f2cef41995641969ea8dc9625a1236674e3e27585c9a"
+    },
+    {
+      "viewport": 390,
+      "state": "link-complete",
+      "equal": true,
+      "byteIdentical": true,
+      "sameDimensions": true,
+      "width": 390,
+      "height": 1036,
+      "rawDifferentPixels": 0,
+      "differentPixels": 0,
+      "antiAliasPixels": 0,
+      "comparison": {
+        "threshold": 0,
+        "includeAA": false
+      },
+      "beforeSha256": "028bdaed1a96fa8bf1676622592e9fc6e52910bd86a4af34f2fbcb7a06e54c5d",
+      "afterSha256": "028bdaed1a96fa8bf1676622592e9fc6e52910bd86a4af34f2fbcb7a06e54c5d"
+    },
+    {
+      "viewport": 390,
+      "state": "echo",
+      "equal": true,
+      "byteIdentical": true,
+      "sameDimensions": true,
+      "width": 390,
+      "height": 981,
+      "rawDifferentPixels": 0,
+      "differentPixels": 0,
+      "antiAliasPixels": 0,
+      "comparison": {
+        "threshold": 0,
+        "includeAA": false
+      },
+      "beforeSha256": "d7f8b3eec835b127fe739f2ecc2022bc375a066f50ff8c10b092934c00623cf8",
+      "afterSha256": "d7f8b3eec835b127fe739f2ecc2022bc375a066f50ff8c10b092934c00623cf8"
+    },
+    {
+      "viewport": 390,
+      "state": "echo-incorrect",
+      "equal": true,
+      "byteIdentical": true,
+      "sameDimensions": true,
+      "width": 390,
+      "height": 981,
+      "rawDifferentPixels": 0,
+      "differentPixels": 0,
+      "antiAliasPixels": 0,
+      "comparison": {
+        "threshold": 0,
+        "includeAA": false
+      },
+      "beforeSha256": "f78991fe51dd9409e91cb879732c831fe43a8d9597d0f03ad87536cddf422340",
+      "afterSha256": "f78991fe51dd9409e91cb879732c831fe43a8d9597d0f03ad87536cddf422340"
+    },
+    {
+      "viewport": 390,
+      "state": "echo-complete",
+      "equal": true,
+      "byteIdentical": true,
+      "sameDimensions": true,
+      "width": 390,
+      "height": 981,
+      "rawDifferentPixels": 0,
+      "differentPixels": 0,
+      "antiAliasPixels": 0,
+      "comparison": {
+        "threshold": 0,
+        "includeAA": false
+      },
+      "beforeSha256": "aec37eb7e2d512d873bd47a089f34420d4cbc1327751f9a40f77c6fda7b33461",
+      "afterSha256": "aec37eb7e2d512d873bd47a089f34420d4cbc1327751f9a40f77c6fda7b33461"
+    },
+    {
+      "viewport": 390,
+      "state": "victory",
+      "equal": true,
+      "byteIdentical": true,
+      "sameDimensions": true,
+      "width": 390,
+      "height": 943,
+      "rawDifferentPixels": 0,
+      "differentPixels": 0,
+      "antiAliasPixels": 0,
+      "comparison": {
+        "threshold": 0,
+        "includeAA": false
+      },
+      "beforeSha256": "ba3cd5cb49d2b4c15def8c10d76151ce71c1dca3dff420a09a8ea898e37acfc5",
+      "afterSha256": "ba3cd5cb49d2b4c15def8c10d76151ce71c1dca3dff420a09a8ea898e37acfc5"
+    },
+    {
+      "viewport": 390,
+      "state": "afterglow",
+      "equal": true,
+      "byteIdentical": true,
+      "sameDimensions": true,
+      "width": 390,
+      "height": 1071,
+      "rawDifferentPixels": 0,
+      "differentPixels": 0,
+      "antiAliasPixels": 0,
+      "comparison": {
+        "threshold": 0,
+        "includeAA": false
+      },
+      "beforeSha256": "6dc49ef7a9eadffa12a6c2de9dbb70f585ee440cca64beb0db695fc95e84d4fb",
+      "afterSha256": "6dc49ef7a9eadffa12a6c2de9dbb70f585ee440cca64beb0db695fc95e84d4fb"
+    },
+    {
+      "viewport": 430,
+      "state": "arcade",
+      "equal": true,
+      "byteIdentical": true,
+      "sameDimensions": true,
+      "width": 430,
+      "height": 907,
+      "rawDifferentPixels": 0,
+      "differentPixels": 0,
+      "antiAliasPixels": 0,
+      "comparison": {
+        "threshold": 0,
+        "includeAA": false
+      },
+      "beforeSha256": "5cef52f3850bedad842a168466f85142dc00fbbb952fd6f5ac4da6a1e8585e34",
+      "afterSha256": "5cef52f3850bedad842a168466f85142dc00fbbb952fd6f5ac4da6a1e8585e34"
+    },
+    {
+      "viewport": 430,
+      "state": "introduction",
+      "equal": true,
+      "byteIdentical": true,
+      "sameDimensions": true,
+      "width": 430,
+      "height": 845,
+      "rawDifferentPixels": 0,
+      "differentPixels": 0,
+      "antiAliasPixels": 0,
+      "comparison": {
+        "threshold": 0,
+        "includeAA": false
+      },
+      "beforeSha256": "f3dec50cdba1e6997d7afd2e62af90b5f7173a4cfdc9eb1312fd9db3a5f93536",
+      "afterSha256": "f3dec50cdba1e6997d7afd2e62af90b5f7173a4cfdc9eb1312fd9db3a5f93536"
+    },
+    {
+      "viewport": 430,
+      "state": "trace",
+      "equal": true,
+      "byteIdentical": true,
+      "sameDimensions": true,
+      "width": 430,
+      "height": 844,
+      "rawDifferentPixels": 0,
+      "differentPixels": 0,
+      "antiAliasPixels": 0,
+      "comparison": {
+        "threshold": 0,
+        "includeAA": false
+      },
+      "beforeSha256": "7cee0bb34d6aefae1a1646f82d1e04b2d8c73c9f4e0a051aadeb85ffe66e674b",
+      "afterSha256": "7cee0bb34d6aefae1a1646f82d1e04b2d8c73c9f4e0a051aadeb85ffe66e674b"
+    },
+    {
+      "viewport": 430,
+      "state": "trace-complete",
+      "equal": true,
+      "byteIdentical": true,
+      "sameDimensions": true,
+      "width": 430,
+      "height": 844,
+      "rawDifferentPixels": 0,
+      "differentPixels": 0,
+      "antiAliasPixels": 0,
+      "comparison": {
+        "threshold": 0,
+        "includeAA": false
+      },
+      "beforeSha256": "16911b7fa1f25d84a3b588efe6d08068719ff32ff96fba45eb6e74215b3210b1",
+      "afterSha256": "16911b7fa1f25d84a3b588efe6d08068719ff32ff96fba45eb6e74215b3210b1"
+    },
+    {
+      "viewport": 430,
+      "state": "link",
+      "equal": true,
+      "byteIdentical": true,
+      "sameDimensions": true,
+      "width": 430,
+      "height": 1165,
+      "rawDifferentPixels": 0,
+      "differentPixels": 0,
+      "antiAliasPixels": 0,
+      "comparison": {
+        "threshold": 0,
+        "includeAA": false
+      },
+      "beforeSha256": "575b3a34c05f43685e24036e52fb3593e2b7e02ca65e7639604734f9e09817f1",
+      "afterSha256": "575b3a34c05f43685e24036e52fb3593e2b7e02ca65e7639604734f9e09817f1"
+    },
+    {
+      "viewport": 430,
+      "state": "link-incorrect",
+      "equal": true,
+      "byteIdentical": true,
+      "sameDimensions": true,
+      "width": 430,
+      "height": 1165,
+      "rawDifferentPixels": 0,
+      "differentPixels": 0,
+      "antiAliasPixels": 0,
+      "comparison": {
+        "threshold": 0,
+        "includeAA": false
+      },
+      "beforeSha256": "727ea19403c5668dfb8b1f0113d8d550dd8c533a4818a5fae227db70899753be",
+      "afterSha256": "727ea19403c5668dfb8b1f0113d8d550dd8c533a4818a5fae227db70899753be"
+    },
+    {
+      "viewport": 430,
+      "state": "link-complete",
+      "equal": true,
+      "byteIdentical": true,
+      "sameDimensions": true,
+      "width": 430,
+      "height": 1023,
+      "rawDifferentPixels": 0,
+      "differentPixels": 0,
+      "antiAliasPixels": 0,
+      "comparison": {
+        "threshold": 0,
+        "includeAA": false
+      },
+      "beforeSha256": "dfddcd57e53d2aa35be51df03a602e4883184f85539b93c18d4d7aa2a4bd6c26",
+      "afterSha256": "dfddcd57e53d2aa35be51df03a602e4883184f85539b93c18d4d7aa2a4bd6c26"
+    },
+    {
+      "viewport": 430,
+      "state": "echo",
+      "equal": true,
+      "byteIdentical": true,
+      "sameDimensions": true,
+      "width": 430,
+      "height": 962,
+      "rawDifferentPixels": 0,
+      "differentPixels": 0,
+      "antiAliasPixels": 0,
+      "comparison": {
+        "threshold": 0,
+        "includeAA": false
+      },
+      "beforeSha256": "82bf5e09cd66502c8cc7fbc8cbf4ae684539993aa7bbeec44b6dc5916f8c4eb5",
+      "afterSha256": "82bf5e09cd66502c8cc7fbc8cbf4ae684539993aa7bbeec44b6dc5916f8c4eb5"
+    },
+    {
+      "viewport": 430,
+      "state": "echo-incorrect",
+      "equal": true,
+      "byteIdentical": true,
+      "sameDimensions": true,
+      "width": 430,
+      "height": 962,
+      "rawDifferentPixels": 0,
+      "differentPixels": 0,
+      "antiAliasPixels": 0,
+      "comparison": {
+        "threshold": 0,
+        "includeAA": false
+      },
+      "beforeSha256": "c2581f80ff699cae0ff613881230aea41e692f0f9dc83fa8d761ce5fff18f5a8",
+      "afterSha256": "c2581f80ff699cae0ff613881230aea41e692f0f9dc83fa8d761ce5fff18f5a8"
+    },
+    {
+      "viewport": 430,
+      "state": "echo-complete",
+      "equal": true,
+      "byteIdentical": true,
+      "sameDimensions": true,
+      "width": 430,
+      "height": 962,
+      "rawDifferentPixels": 0,
+      "differentPixels": 0,
+      "antiAliasPixels": 0,
+      "comparison": {
+        "threshold": 0,
+        "includeAA": false
+      },
+      "beforeSha256": "3a479535a83c61c40c2b436b0e1672784f98f0119af2c114b837df5a4d5b5e6f",
+      "afterSha256": "3a479535a83c61c40c2b436b0e1672784f98f0119af2c114b837df5a4d5b5e6f"
+    },
+    {
+      "viewport": 430,
+      "state": "victory",
+      "equal": true,
+      "byteIdentical": true,
+      "sameDimensions": true,
+      "width": 430,
+      "height": 900,
+      "rawDifferentPixels": 0,
+      "differentPixels": 0,
+      "antiAliasPixels": 0,
+      "comparison": {
+        "threshold": 0,
+        "includeAA": false
+      },
+      "beforeSha256": "dedd1cd6762dfc14a7809772ae7695a7fa1aaf374a5de7deda018ba27b21396b",
+      "afterSha256": "dedd1cd6762dfc14a7809772ae7695a7fa1aaf374a5de7deda018ba27b21396b"
+    },
+    {
+      "viewport": 430,
+      "state": "afterglow",
+      "equal": true,
+      "byteIdentical": true,
+      "sameDimensions": true,
+      "width": 430,
+      "height": 1028,
+      "rawDifferentPixels": 0,
+      "differentPixels": 0,
+      "antiAliasPixels": 0,
+      "comparison": {
+        "threshold": 0,
+        "includeAA": false
+      },
+      "beforeSha256": "981fc13918b11e552f65a26d3ceb8f77b9755129ac4ee593ab20ca9dc81beeac",
+      "afterSha256": "981fc13918b11e552f65a26d3ceb8f77b9755129ac4ee593ab20ca9dc81beeac"
+    },
+    {
+      "viewport": 390,
+      "state": "victory-normal-900ms",
+      "equal": true,
+      "byteIdentical": true,
+      "sameDimensions": true,
+      "width": 390,
+      "height": 943,
+      "rawDifferentPixels": 0,
+      "differentPixels": 0,
+      "antiAliasPixels": 0,
+      "comparison": {
+        "threshold": 0,
+        "includeAA": false
+      },
+      "beforeSha256": "97ede6ae66cd578b0eb1e30c31e36b4f7d81393c927c6fb24ddd3777956c22dd",
+      "afterSha256": "97ede6ae66cd578b0eb1e30c31e36b4f7d81393c927c6fb24ddd3777956c22dd"
+    }
+  ],
+  "checks": 467,
+  "axe": [
+    {
+      "kind": "before",
+      "state": "arcade",
+      "colorContrast": {
+        "passedNodes": 0,
+        "violations": [],
+        "incomplete": [
+          {
+            "target": [
+              ".brand > small"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".app-badge"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".overline"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".screen-title"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              "em"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".deck"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".eyebrow"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              "div:nth-child(2) > h2"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              "div:nth-child(2) > p"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".section-heading > h2"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".section-heading > span"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".rush"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              "button[data-value=\"rush\"] > span:nth-child(2) > strong"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              "button[data-value=\"rush\"] > span:nth-child(2) > small"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".cross"
+            ],
+            "summary": "Fix any of the following:\n  Element content contains only non-text characters"
+          },
+          {
+            "target": [
+              "button[data-value=\"cross\"] > span:nth-child(2) > strong"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              "button[data-value=\"cross\"] > span:nth-child(2) > small"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".threads"
+            ],
+            "summary": "Fix any of the following:\n  Element content contains only non-text characters"
+          },
+          {
+            "target": [
+              "button[data-value=\"threads\"] > span:nth-child(2) > strong"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              "button[data-value=\"threads\"] > span:nth-child(2) > small"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".fineprint"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          }
+        ]
+      },
+      "violations": []
+    },
+    {
+      "kind": "before",
+      "state": "introduction",
+      "colorContrast": {
+        "passedNodes": 0,
+        "violations": [],
+        "incomplete": [
+          {
+            "target": [
+              ".brand > small"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".app-badge"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".nav-back"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".overline"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".screen-title"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              "em"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".deck"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".stage-card:nth-child(1) > span"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".stage-card:nth-child(1) > strong"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".stage-card:nth-child(1) > small"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".stage-card:nth-child(2) > span"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".stage-card:nth-child(2) > strong"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".stage-card:nth-child(2) > small"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".stage-card:nth-child(3) > span"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".stage-card:nth-child(3) > strong"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".stage-card:nth-child(3) > small"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".symbol"
+            ],
+            "summary": "Fix any of the following:\n  Element content contains only non-text characters"
+          },
+          {
+            "target": [
+              ".instruction > span:nth-child(2)"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".primary-btn"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".primary-btn > span[aria-hidden=\"true\"]"
+            ],
+            "summary": "Fix any of the following:\n  Element content contains only non-text characters"
+          },
+          {
+            "target": [
+              ".bottom-caption"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          }
+        ]
+      },
+      "violations": []
+    },
+    {
+      "kind": "before",
+      "state": "trace",
+      "colorContrast": {
+        "passedNodes": 0,
+        "violations": [],
+        "incomplete": [
+          {
+            "target": [
+              "small"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".app-badge"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".stage-chip"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".stage-count"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".overline"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".game-title"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".game-title > span"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".game-subtitle"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".passage-ref"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".verse-copy"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              "button[data-value=\"commandment\"]"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              "button[data-value=\"love one another\"]"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              "button[data-value=\"loved you\"]"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".symbol"
+            ],
+            "summary": "Fix any of the following:\n  Element content contains only non-text characters"
+          },
+          {
+            "target": [
+              ".instruction > span:nth-child(2)"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".status"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".nav-back"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          }
+        ]
+      },
+      "violations": [
+        {
+          "id": "aria-prohibited-attr",
+          "impact": "serious",
+          "description": "Ensure ARIA attributes are not prohibited for an element's role",
+          "nodes": [
+            {
+              "target": [
+                ".meter"
+              ],
+              "summary": "Fix all of the following:\n  aria-label attribute cannot be used on \"div\" elements with no valid role attribute."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "kind": "before",
+      "state": "link",
+      "colorContrast": {
+        "passedNodes": 0,
+        "violations": [],
+        "incomplete": [
+          {
+            "target": [
+              "small"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".app-badge"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".stage-chip"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".stage-count"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".overline"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".game-title"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".game-title > span"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".game-subtitle"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".step > span:nth-child(1)"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".step > span:nth-child(2)"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              "text[x=\"25\"]"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              "text[x=\"150\"]"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              "text[x=\"275\"]"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".passage-ref:nth-child(6)"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".assembled.placeholder:nth-child(1)"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".assembled.placeholder:nth-child(2)"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".assembled.placeholder:nth-child(3)"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".passage-ref:nth-child(8)"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              "button[data-value=\"2\"] > span:nth-child(1)"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              "button[data-value=\"0\"] > span:nth-child(1)"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              "button[data-value=\"1\"] > span:nth-child(1)"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              "#link-feedback"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              "button[data-action=\"hint\"]"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".nav-back"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          }
+        ]
+      },
+      "violations": [
+        {
+          "id": "aria-prohibited-attr",
+          "impact": "serious",
+          "description": "Ensure ARIA attributes are not prohibited for an element's role",
+          "nodes": [
+            {
+              "target": [
+                ".meter"
+              ],
+              "summary": "Fix all of the following:\n  aria-label attribute cannot be used on \"div\" elements with no valid role attribute."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "kind": "before",
+      "state": "echo",
+      "colorContrast": {
+        "passedNodes": 0,
+        "violations": [],
+        "incomplete": [
+          {
+            "target": [
+              "small"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".app-badge"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".stage-chip"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".stage-count"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".overline"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".game-title"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".game-title > span"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".game-subtitle"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".passage-ref"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".echo-verse"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".blank:nth-child(1)"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".blank:nth-child(2)"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".blank:nth-child(3)"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".echo-guide"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              "button[data-value=\"one another\"]"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              "button[data-value=\"loved\"]"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              "button[data-value=\"commandment\"]"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              "button[data-value=\"know\"]"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              "button[data-value=\"listen\"]"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              "#echo-feedback"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              "button[data-action=\"hint\"]"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".nav-back"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          }
+        ]
+      },
+      "violations": [
+        {
+          "id": "aria-prohibited-attr",
+          "impact": "serious",
+          "description": "Ensure ARIA attributes are not prohibited for an element's role",
+          "nodes": [
+            {
+              "target": [
+                ".meter"
+              ],
+              "summary": "Fix all of the following:\n  aria-label attribute cannot be used on \"div\" elements with no valid role attribute."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "kind": "before",
+      "state": "victory",
+      "colorContrast": {
+        "passedNodes": 0,
+        "violations": [],
+        "incomplete": [
+          {
+            "target": [
+              "small"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".app-badge"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".overline"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".win-title"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".win-title > span"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".win-text"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".eyebrow"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".discovery > strong"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".discovery > p"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".primary-btn"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".primary-btn > span[aria-hidden=\"true\"]"
+            ],
+            "summary": "Fix any of the following:\n  Element content contains only non-text characters"
+          },
+          {
+            "target": [
+              ".secondary-btn"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".bottom-caption"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          }
+        ]
+      },
+      "violations": []
+    },
+    {
+      "kind": "before",
+      "state": "afterglow",
+      "colorContrast": {
+        "passedNodes": 0,
+        "violations": [],
+        "incomplete": [
+          {
+            "target": [
+              "small"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".app-badge"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".nav-back"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".overline"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".afterglow-title"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".deck"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".ref-card:nth-child(3) > .ref-tag"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".ref-card:nth-child(3) > h3"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".ref-card:nth-child(3) > p"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".connection"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".ref-card:nth-child(5) > .ref-tag"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".ref-card:nth-child(5) > h3"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".ref-card:nth-child(5) > p"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".eyebrow"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".discovery > strong"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".discovery > p"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".content-caution"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".primary-btn"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".primary-btn > span[aria-hidden=\"true\"]"
+            ],
+            "summary": "Fix any of the following:\n  Element content contains only non-text characters"
+          }
+        ]
+      },
+      "violations": [
+        {
+          "id": "heading-order",
+          "impact": "moderate",
+          "description": "Ensure the order of headings is semantically correct",
+          "nodes": [
+            {
+              "target": [
+                ".ref-card:nth-child(3) > h3"
+              ],
+              "summary": "Fix any of the following:\n  Heading order invalid"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "kind": "after",
+      "state": "arcade",
+      "colorContrast": {
+        "passedNodes": 0,
+        "violations": [],
+        "incomplete": [
+          {
+            "target": [
+              ".brand > small"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".app-badge"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".overline"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".screen-title"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              "em"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".deck"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".eyebrow"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              "div:nth-child(2) > h2"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              "div:nth-child(2) > p"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".section-heading > h2"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".section-heading > span"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".rush"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              "button[data-value=\"rush\"] > span:nth-child(2) > strong"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              "button[data-value=\"rush\"] > span:nth-child(2) > small"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".cross"
+            ],
+            "summary": "Fix any of the following:\n  Element content contains only non-text characters"
+          },
+          {
+            "target": [
+              "button[data-value=\"cross\"] > span:nth-child(2) > strong"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              "button[data-value=\"cross\"] > span:nth-child(2) > small"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".threads"
+            ],
+            "summary": "Fix any of the following:\n  Element content contains only non-text characters"
+          },
+          {
+            "target": [
+              "button[data-value=\"threads\"] > span:nth-child(2) > strong"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              "button[data-value=\"threads\"] > span:nth-child(2) > small"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".fineprint"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          }
+        ]
+      },
+      "violations": []
+    },
+    {
+      "kind": "after",
+      "state": "introduction",
+      "colorContrast": {
+        "passedNodes": 0,
+        "violations": [],
+        "incomplete": [
+          {
+            "target": [
+              ".brand > small"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".app-badge"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".nav-back"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".overline"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".screen-title"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              "em"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".deck"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".stage-card:nth-child(1) > span"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".stage-card:nth-child(1) > strong"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".stage-card:nth-child(1) > small"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".stage-card:nth-child(2) > span"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".stage-card:nth-child(2) > strong"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".stage-card:nth-child(2) > small"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".stage-card:nth-child(3) > span"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".stage-card:nth-child(3) > strong"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".stage-card:nth-child(3) > small"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".symbol"
+            ],
+            "summary": "Fix any of the following:\n  Element content contains only non-text characters"
+          },
+          {
+            "target": [
+              ".instruction > span:nth-child(2)"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".primary-btn"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".primary-btn > span[aria-hidden=\"true\"]"
+            ],
+            "summary": "Fix any of the following:\n  Element content contains only non-text characters"
+          },
+          {
+            "target": [
+              ".bottom-caption"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          }
+        ]
+      },
+      "violations": []
+    },
+    {
+      "kind": "after",
+      "state": "trace",
+      "colorContrast": {
+        "passedNodes": 0,
+        "violations": [],
+        "incomplete": [
+          {
+            "target": [
+              "small"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".app-badge"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".stage-chip"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".stage-count"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".overline"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".game-title"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".game-title > span"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".game-subtitle"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".passage-ref"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".verse-copy"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              "button[data-value=\"commandment\"]"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              "button[data-value=\"love-one-another\"]"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              "button[data-value=\"loved-you\"]"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".symbol"
+            ],
+            "summary": "Fix any of the following:\n  Element content contains only non-text characters"
+          },
+          {
+            "target": [
+              ".instruction > span:nth-child(2)"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".status"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".nav-back"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          }
+        ]
+      },
+      "violations": []
+    },
+    {
+      "kind": "after",
+      "state": "link",
+      "colorContrast": {
+        "passedNodes": 0,
+        "violations": [],
+        "incomplete": [
+          {
+            "target": [
+              "small"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".app-badge"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".stage-chip"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".stage-count"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".overline"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".game-title"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".game-title > span"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".game-subtitle"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".step > span:nth-child(1)"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".step > span:nth-child(2)"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              "text[x=\"25\"]"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              "text[x=\"150\"]"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              "text[x=\"275\"]"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".passage-ref:nth-child(6)"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".assembled.placeholder:nth-child(1)"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".assembled.placeholder:nth-child(2)"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".assembled.placeholder:nth-child(3)"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".passage-ref:nth-child(8)"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              "button[data-value=\"segment-3\"] > span:nth-child(1)"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              "button[data-value=\"segment-1\"] > span:nth-child(1)"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              "button[data-value=\"segment-2\"] > span:nth-child(1)"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              "#link-feedback"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              "button[data-action=\"hint\"]"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".nav-back"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          }
+        ]
+      },
+      "violations": []
+    },
+    {
+      "kind": "after",
+      "state": "echo",
+      "colorContrast": {
+        "passedNodes": 0,
+        "violations": [],
+        "incomplete": [
+          {
+            "target": [
+              "small"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".app-badge"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".stage-chip"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".stage-count"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".overline"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".game-title"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".game-title > span"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".game-subtitle"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".passage-ref"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".echo-verse"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".blank:nth-child(1)"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".blank:nth-child(2)"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".blank:nth-child(3)"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".echo-guide"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              "button[data-value=\"answer-one-another\"]"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              "button[data-value=\"answer-loved\"]"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              "button[data-value=\"answer-commandment\"]"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              "button[data-value=\"distractor-know\"]"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              "button[data-value=\"distractor-listen\"]"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              "#echo-feedback"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              "button[data-action=\"hint\"]"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".nav-back"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          }
+        ]
+      },
+      "violations": []
+    },
+    {
+      "kind": "after",
+      "state": "victory",
+      "colorContrast": {
+        "passedNodes": 0,
+        "violations": [],
+        "incomplete": [
+          {
+            "target": [
+              "small"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".app-badge"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".overline"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".win-title"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".win-title > span"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".win-text"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".eyebrow"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".discovery > strong"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".discovery > p"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".primary-btn"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".primary-btn > span[aria-hidden=\"true\"]"
+            ],
+            "summary": "Fix any of the following:\n  Element content contains only non-text characters"
+          },
+          {
+            "target": [
+              ".secondary-btn"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".bottom-caption"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          }
+        ]
+      },
+      "violations": []
+    },
+    {
+      "kind": "after",
+      "state": "afterglow",
+      "colorContrast": {
+        "passedNodes": 0,
+        "violations": [],
+        "incomplete": [
+          {
+            "target": [
+              "small"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".app-badge"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".nav-back"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".overline"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".afterglow-title"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".deck"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".ref-card:nth-child(3) > .ref-tag"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".ref-card:nth-child(3) > h3"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".ref-card:nth-child(3) > p"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".connection"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".ref-card:nth-child(5) > .ref-tag"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".ref-card:nth-child(5) > h3"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".ref-card:nth-child(5) > p"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".eyebrow"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".discovery > strong"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".discovery > p"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".content-caution"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".primary-btn"
+            ],
+            "summary": "Fix any of the following:\n  Element's background color could not be determined due to a pseudo element"
+          },
+          {
+            "target": [
+              ".primary-btn > span[aria-hidden=\"true\"]"
+            ],
+            "summary": "Fix any of the following:\n  Element content contains only non-text characters"
+          }
+        ]
+      },
+      "violations": []
+    }
+  ],
+  "consoleErrors": [],
+  "fontFailures": [],
+  "status": "passed",
+  "executionPasses": {
+    "fullInteractionRun": {
+      "passedAssertions": 366,
+      "note": "All interaction, reload, keyboard, recovery, font and console assertions passed; original overly strict image gate stopped on rasterization differences. Capture instrumentation was then aligned before/after."
+    },
+    "finalTargetedVerification": {
+      "passedAssertions": 101,
+      "note": "Matched instrumentation at390, final7-screen axe, exact CSS/motion signature, normal-motion camera origin and paused900ms victory sample."
+    }
+  },
+  "cameraOffsets": [
+    {
+      "kind": "before",
+      "windowX": 0,
+      "shellX": 22,
+      "bodyX": 0
+    },
+    {
+      "kind": "after",
+      "windowX": 0,
+      "shellX": 22,
+      "bodyX": 0
+    }
+  ],
+  "referenceCommit": "3304a141270d3f1f912149f7a8c7af30f8b4de7f",
+  "baselineCommit": "9a0f878a3ad13f099cb8ca5e0bf9bb94f3ecf635",
+  "runDate": "2026-11-23",
+  "screenshotCount": 98,
+  "assetHashes": {
+    "verseplay/reference/verse-circuit-original.html": "f152ca15b38b3fe137f0370633d3afd64c560d9b08b73d6d43c7e72781e9d9b8",
+    "verseplay/games/verse-circuit/verse-circuit.css": "c42b8ee09ff388a766a06be16b1f089d88d3613d6e35dc94bbc898a1aa2f6fbc"
+  }
+}
