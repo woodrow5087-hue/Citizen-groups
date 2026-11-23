@@ -28,3 +28,155 @@
 .rp-entry>.spotify-link{position:absolute;z-index:2;right:12px;top:calc(27px + var(--safe-top,0px));opacity:0;visibility:hidden;pointer-events:none;transition:opacity .3s ease .2s}
 .rp-gateway--ready .rp-entry>.spotify-link{opacity:1;visibility:visible;pointer-events:auto}
 .rp-onboard-tools{position:relative;width:44px;height:46px;flex:none}.rp-onboard-tools .rp-step-dots{position:absolute;bottom:-8px;left:50%;transform:translateX(-50%);margin:0}
+
+
+/* Rally One entry and onboarding */
+.ro-welcome.rp-gateway {
+  --ro-red: #c90030;
+  --ro-charcoal: #242424;
+  --ro-cream: #fff8ef;
+  --ro-line: #d9ccbd;
+  background: var(--ro-cream);
+  color: var(--ro-charcoal);
+}
+.ro-welcome.rp-gateway:after { display: none; }
+.ro-welcome .rp-entry {
+  color: #fff;
+  min-height: 100%;
+  display: grid;
+  grid-template-rows: 1fr auto;
+  background: #1c1c20;
+  padding-inline: 0;
+  align-content: center;
+  justify-items: center;
+  padding: max(16px, env(safe-area-inset-top)) 0 max(16px, env(safe-area-inset-bottom));
+}
+.ro-welcome .rp-entry-logo,
+.ro-welcome .rp-entry-church,
+.ro-welcome .rp-welcome-copy { display: none; }
+.ro-welcome .rp-entry-brand,
+.ro-welcome.rp-gateway--ready .rp-entry-brand {
+  position: static;
+  grid-row: 1;
+  align-self: center;
+  width: 100%;
+  height: auto;
+  transform: translateY(8px);
+  transition: opacity .55s ease, transform .55s ease;
+}
+.ro-welcome.rp-gateway--reveal .rp-entry-brand { transform: none; }
+.ro-welcome .ro-title-card {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.ro-welcome .rp-small-brand em { color: #ef4545; font-style: normal; }
+.ro-welcome .rp-entry-actions {
+  position: static;
+  grid-row: 2;
+  align-self: end;
+  width: calc(100% - 40px);
+  max-width: 360px;
+  margin-top: 12px;
+}
+.ro-welcome .rp-entry-button,
+.ro-welcome .rp-onboard-continue {
+  background: var(--ro-red);
+  color: #fff;
+  border: 1px solid transparent;
+  box-shadow: none;
+  letter-spacing: 0;
+}
+.ro-welcome .rp-entry-button--login { background: transparent; border-color: #fff8; }
+.ro-welcome .rp-entry-note { color: #fff9; letter-spacing: .025em; font-size: 11px; }
+.ro-welcome .rp-onboard-top {
+  margin: calc(-25px - var(--safe-top,0px)) -24px 26px;
+  padding: calc(8px + var(--safe-top,0px)) 24px 8px;
+  background: var(--ro-charcoal);
+  color: #fff;
+}
+.ro-welcome .rp-small-brand > img,
+.ro-welcome .rp-small-brand small,
+.ro-welcome .rp-kicker > span { display: none; }
+.ro-welcome .rp-small-brand b { font-size: 20px; letter-spacing: -.02em; }
+.ro-welcome .rp-kicker { color: var(--ro-red); }
+.ro-welcome .rp-screen-heading h2,
+.ro-welcome .rp-onboard-card-copy strong,
+.ro-welcome .rp-login-field input,
+.ro-welcome .rp-login-field button,
+.ro-welcome .rp-forgot,
+.ro-welcome .rp-create-link { color: var(--ro-charcoal); }
+.ro-welcome .rp-screen-heading > p:not(.rp-kicker),
+.ro-welcome .rp-onboard-card-copy small,
+.ro-welcome .rp-onboard-confirm p,
+.ro-welcome .rp-auth-note,
+.ro-welcome .rp-auth-methods,
+.ro-welcome .rp-login-feedback,
+.ro-welcome .rp-onboard-foot { color: #5e5349; }
+.ro-welcome .rp-onboard-card,
+.ro-welcome .rp-onboard-confirm,
+.ro-welcome .rp-login-field,
+.ro-welcome .rp-onboard-field input {
+  background: #fffaf4;
+  border-color: var(--ro-line);
+  color: var(--ro-charcoal);
+  border-radius: 16px;
+}
+.ro-welcome .rp-onboard-field input::placeholder { color: #625951; opacity: 1; }
+.ro-welcome .rp-onboard-card-icon { background: #cee8f5; }
+.ro-welcome .rp-onboard-card-check { border-color: #8b7d70; }
+.ro-welcome .rp-onboard-card[aria-pressed="true"] {
+  background: #fae4c1;
+  border-color: var(--ro-red);
+  box-shadow: 0 0 0 1px var(--ro-red);
+}
+.ro-welcome .rp-campus-card[aria-pressed="true"] { border-color: var(--ro-red); box-shadow: 0 0 0 2px var(--ro-red); }
+.ro-welcome .rp-onboard-card[aria-pressed="true"] .rp-onboard-card-check,
+.ro-welcome .rp-campus-check { background: var(--ro-red); color: #fff; }
+.ro-welcome .rp-onboard-continue:disabled,
+.ro-welcome.rp-gateway[data-screen="login"] .rp-onboard-continue:disabled { background: #ebdfd1; color: #685e55; }
+.ro-welcome .rp-auth-methods { border-color: var(--ro-line); }
+.ro-welcome :is(.rp-onboard-card, .rp-campus-card, .rp-onboard-field input, .rp-login-field input, .rp-onboard-continue, .rp-create-link, .rp-forgot):focus-visible { outline-color: var(--ro-red); }
+@media (prefers-reduced-motion: reduce) {
+  .ro-welcome *, .ro-welcome.rp-gateway { transition: none !important; }
+}
+
+
+/* Keep choices and the next action visible on short phone viewports. */
+.ro-welcome .rp-onboard {
+  padding: calc(12px + var(--safe-top, 0px)) 16px calc(12px + var(--safe-bottom, 0px));
+}
+.ro-welcome .rp-onboard-top,
+.ro-welcome.rp-gateway[data-screen="campus"] .rp-onboard-top {
+  margin: calc(-12px - var(--safe-top, 0px)) -16px 14px;
+  padding: calc(4px + var(--safe-top, 0px)) 16px 4px;
+}
+.ro-welcome .rp-onboard-tools { height: 44px; display: grid; place-items: center; }
+.ro-welcome .rp-step-dots { position: static; transform: none; }
+.ro-welcome .rp-screen-heading,
+.ro-welcome.rp-gateway[data-screen="campus"] .rp-screen-heading { margin-bottom: 12px; }
+.ro-welcome .rp-screen-heading h2,
+.ro-welcome.rp-gateway[data-screen="campus"] .rp-screen-heading h2 {
+  font-size: clamp(26px, 8vw, 34px);
+  margin-bottom: 6px;
+}
+.ro-welcome .rp-kicker { margin-bottom: 4px; }
+.ro-welcome .rp-screen-heading > p:not(.rp-kicker) { font-size: 14px; }
+.ro-welcome .rp-campus-card { grid-column: auto; height: clamp(76px, 15svh, 124px); border-radius: 16px; }
+.ro-welcome .rp-campus-copy strong { font-size: clamp(15px, 5vw, 22px); }
+.ro-welcome .rp-campus-copy small { margin-top: 4px; }
+.ro-welcome .rp-campus-copy { bottom: 8px; }
+.ro-welcome .rp-onboard-options { gap: 8px; margin: 0 0 10px; }
+.ro-welcome .rp-onboard-card { min-height: 62px; padding: 8px 10px; }
+.ro-welcome .rp-onboard-field { margin-bottom: 8px; gap: 5px; }
+.ro-welcome .rp-onboard-field input { min-height: 44px; padding-block: 8px; }
+.ro-welcome .rp-onboard-confirm { padding: 10px 12px; margin-bottom: 8px; }
+.ro-welcome .rp-onboard-confirm strong { margin-bottom: 4px; font-size: 14px; }
+.ro-welcome .rp-onboard-spacer { min-height: 0; }
+.ro-welcome .rp-onboard-continue { min-height: 46px; margin-top: 8px; }
+.ro-welcome .rp-onboard-foot { margin-top: 5px; }
+.ro-welcome .rp-login-fields { gap: 8px; margin-top: 0; }
+.ro-welcome .rp-login-field { min-height: 48px; }
+.ro-welcome .rp-login-field input { min-height: 44px; padding-block: 8px; }
+.ro-welcome .rp-forgot { margin-top: 0; }
+.ro-welcome.rp-gateway[data-screen="login"] .rp-button-charcoal { margin-top: 10px; }

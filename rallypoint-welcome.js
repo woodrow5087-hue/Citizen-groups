@@ -3,10 +3,30 @@
   'use strict';
   const gateway=document.getElementById('rp-gateway');if(!gateway)return;
   const entry=document.getElementById('rp-entry'),onboard=document.getElementById('rp-onboard'),actions=document.getElementById('rp-entry-actions');
+  const rallyOne = new URLSearchParams(location.search).get('rallyOne') === '1';
+  const brandName = rallyOne ? 'Rally One' : 'Rally Point';
   const theme=document.querySelector('meta[name="theme-color"]'),params=new URLSearchParams(location.search);
   // Reuse the shared header link so every entry screen opens the same playlist.
   const playlistLink=document.querySelector('.header .spotify-link')?.outerHTML||'';
-  entry.insertAdjacentHTML('afterbegin',playlistLink);
+  if (rallyOne) {
+    gateway.classList.add('ro-welcome');
+    gateway.setAttribute('aria-label', 'Welcome to Rally One');
+    const brand = entry.querySelector('.rp-entry-brand');
+    const titleCard = document.createElement('img');
+    titleCard.className = 'ro-title-card';
+    titleCard.src = 'assets/rally-one/title-card.jpg';
+    titleCard.width = 1536;
+    titleCard.height = 864;
+    titleCard.alt = 'Rally One. We rally so no one stands alone. Citizen Church.';
+    brand.removeAttribute('aria-label');
+    brand.replaceChildren(titleCard);
+    entry.querySelector('.rp-splash-tagline').hidden = true;
+    entry.querySelector('[data-welcome="create"]').lastChild.textContent = 'Create account';
+    entry.querySelector('[data-welcome="login"]').lastChild.textContent = 'Sign in';
+    entry.querySelector('.rp-entry-note').textContent = 'Interactive demo';
+  } else {
+    entry.insertAdjacentHTML('afterbegin', playlistLink);
+  }
   const SESSION_KEY='rallypoint-welcome-preview-session',UI_KEY='rallypoint-today-ui-v1',APP_KEY='rallypoint-phase1-2026';
   const reduced=window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
   const appTargets=[...document.querySelectorAll('.phone-inner > .header,.phone-inner > main,.phone-inner > nav,#dialog-root')];
@@ -18,28 +38,29 @@
   const initial=read(UI_KEY);
   let flow='campus',campus=campuses.some(c=>c[0]===initial.campus)?initial.campus:'',kind='',name='',membership={group:false,team:false},editingCampus=false,opened=false,error='';
   function setAppInert(value){appTargets.forEach(el=>{el.inert=value;if(value)el.setAttribute('aria-hidden','true');else el.removeAttribute('aria-hidden');});}
-  function themeEntry(){gateway.classList.remove('rp-gateway--exiting');gateway.hidden=false;setAppInert(true);document.body.classList.add('rp-welcome-active');if(theme)theme.content='#E3002B';}
-  function welcome(){flow='campus';onboard.hidden=true;entry.hidden=false;gateway.dataset.screen='welcome';gateway.setAttribute('aria-label','Welcome to Rally Point');entry.querySelector('[data-welcome="create"]').focus({preventScroll:true});}
+  function themeEntry(){gateway.classList.remove('rp-gateway--exiting');gateway.hidden=false;setAppInert(true);document.body.classList.add('rp-welcome-active');if(theme)theme.content=rallyOne?'#242424':'#E3002B';}
+  function welcome(){flow='campus';onboard.hidden=true;entry.hidden=false;gateway.dataset.screen='welcome';gateway.setAttribute('aria-label','Welcome to '+brandName);entry.querySelector('[data-welcome="create"]').focus({preventScroll:true});}
   function showApp(){
     if(opened)return;opened=true;
     try{sessionStorage.setItem(SESSION_KEY,'entered');}catch{}
     const next=new URL(location.href);next.searchParams.delete('welcome');history.replaceState(null,'',next.pathname+next.search+next.hash);
     gateway.classList.add('rp-gateway--exiting');
-    setTimeout(()=>{gateway.hidden=true;setAppInert(false);document.body.classList.remove('rp-welcome-active');if(theme)theme.content='#E3002B';document.title='Rally Point — Today · Demo';document.querySelector('.brand-home')?.click();document.getElementById('view')?.focus({preventScroll:true});},reduced?0:240);
+    setTimeout(()=>{gateway.hidden=true;setAppInert(false);document.body.classList.remove('rp-welcome-active');if(theme)theme.content='#E3002B';document.title=brandName+' — Today · Demo';document.querySelector('.brand-home')?.click();document.getElementById('view')?.focus({preventScroll:true});},reduced?0:240);
   }
   function begin(){
+    if (rallyOne) document.title = 'Rally One — Today · Demo';
     let entered=false;try{entered=sessionStorage.getItem(SESSION_KEY)==='entered';}catch{}
     if(params.get('skipWelcome')==='1'||(entered&&params.get('welcome')!=='1')){gateway.hidden=true;if(theme)theme.content='#E3002B';return;}
-    themeEntry();document.title='Rally Point — Welcome · Demo';actions.inert=true;gateway.dataset.screen='splash';
+    themeEntry();document.title=brandName+' — Welcome · Demo';actions.inert=true;gateway.dataset.screen='splash';
     const ready=()=>{gateway.classList.add('rp-gateway--ready');gateway.dataset.screen='welcome';actions.inert=false;};
     if(reduced){gateway.classList.add('rp-gateway--reveal');ready();return;}
     setTimeout(()=>gateway.classList.add('rp-gateway--reveal'),300);setTimeout(ready,1500);
   }
-  function smallBrand(){return '<span class="rp-small-brand"><img src="assets/citizen-flag.svg" alt=""><span><b>RALLY POINT</b><small>CITIZEN CHURCH</small></span></span>';}
-  function header(){return '<div class="rp-onboard-top"><button class="rp-onboard-back" type="button" data-welcome="back" aria-label="Back">'+icon('back')+'</button>'+smallBrand()+'<span class="rp-onboard-tools">'+playlistLink+'<span class="rp-step-dots" role="img" aria-label="'+(flow==='login'?'Login preview':'Step '+({campus:1,choose:2,connect:3}[flow]||1)+' of 3')+'">'+[1,2,3].map(n=>'<i class="'+(n===({campus:1,choose:2,connect:3}[flow]||1)?'is-current':'')+'"></i>').join('')+'</span></span></div>';}
+  function smallBrand(){return '<span class="rp-small-brand"><img src="assets/citizen-flag.svg" alt=""><span><b>'+(rallyOne?'RALLY <em>ONE.</em>':'RALLY POINT')+'</b><small>CITIZEN CHURCH</small></span></span>';}
+  function header(){return '<div class="rp-onboard-top"><button class="rp-onboard-back" type="button" data-welcome="back" aria-label="Back">'+icon('back')+'</button>'+smallBrand()+'<span class="rp-onboard-tools">'+(rallyOne?'':playlistLink)+'<span class="rp-step-dots" role="img" aria-label="'+(flow==='login'?'Login preview':'Step '+({campus:1,choose:2,connect:3}[flow]||1)+' of 3')+'">'+[1,2,3].map(n=>'<i class="'+(n===({campus:1,choose:2,connect:3}[flow]||1)?'is-current':'')+'"></i>').join('')+'</span></span></div>';}
   function option(value,title,description,glyph,selected,attr='role'){return '<button type="button" class="rp-onboard-card" data-welcome-'+attr+'="'+value+'" aria-pressed="'+selected+'"><span class="rp-onboard-card-icon">'+icon(glyph)+'</span><span class="rp-onboard-card-copy"><strong>'+title+'</strong><small>'+description+'</small></span><span class="rp-onboard-card-check" aria-hidden="true">'+(selected?'✓':'')+'</span></button>';}
   function campusCards(){return '<div class="rp-campus-grid" role="group" aria-label="Choose your campus">'+campuses.map(([id,title,place])=>'<button type="button" class="rp-campus-card rp-campus-'+id+'" data-welcome-campus="'+id+'" aria-pressed="'+(campus===id)+'" aria-label="'+title+' Campus'+(id==='online'?', wherever you are':'')+'"><img src="assets/campuses/'+id+'.jpg" alt=""><span class="rp-campus-shade"></span><span class="rp-campus-copy"><strong>'+icon(id==='online'?'screen':id==='maui'?'waves':'pin')+title.toUpperCase()+'</strong><small>'+place+'</small></span><span class="rp-campus-check" aria-hidden="true">'+icon('check')+'</span></button>').join('')+'</div>';}
-  function login(){return '<div class="rp-screen-heading"><p class="rp-kicker">LOG IN <span></span></p><h2 tabindex="-1">Welcome<br>Back</h2><p>Explore the Rally Point login preview.</p></div><div class="rp-login-fields"><div class="rp-login-field">'+icon('email')+'<label for="rp-login-email" class="rp-sr-only">Email preview, locked sample</label><input id="rp-login-email" type="email" value="alex@example.test" readonly autocomplete="off" aria-describedby="rp-auth-note"></div><div class="rp-login-field">'+icon('lock')+'<label for="rp-login-password" class="rp-sr-only">Password preview, locked sample</label><input id="rp-login-password" type="password" value="demo-only" readonly autocomplete="off" aria-describedby="rp-auth-note"><button type="button" data-welcome="show-password" aria-label="Show sample password" aria-pressed="false">'+icon('eye')+'</button></div><button type="button" class="rp-forgot" data-welcome="forgot">Forgot password?</button></div><p id="rp-auth-note" class="rp-auth-note">Prototype only. Fields are locked sample values.<br>Do not enter real credentials.</p><button type="button" class="rp-onboard-continue" disabled>LOG IN · UNAVAILABLE '+icon('lock')+'</button><p class="rp-auth-methods">Email, Apple and Google authentication are not connected in this prototype.</p><p id="rp-login-feedback" class="rp-login-feedback" role="status"></p><button type="button" class="rp-onboard-continue rp-button-charcoal" data-welcome="demo">ENTER EXISTING TODAY DEMO '+icon('arrow')+'</button><button type="button" class="rp-create-link" data-welcome="create">New here? <u>Create a demo profile</u></button>';}
+  function login(){return '<div class="rp-screen-heading"><p class="rp-kicker">'+(rallyOne?'SIGN IN':'LOG IN')+' <span></span></p><h2 tabindex="-1">Welcome<br>Back</h2><p>Explore the '+brandName+' sign-in preview.</p></div><div class="rp-login-fields"><div class="rp-login-field">'+icon('email')+'<label for="rp-login-email" class="rp-sr-only">Email preview, locked sample</label><input id="rp-login-email" type="email" value="alex@example.test" readonly autocomplete="off" aria-describedby="rp-auth-note"></div><div class="rp-login-field">'+icon('lock')+'<label for="rp-login-password" class="rp-sr-only">Password preview, locked sample</label><input id="rp-login-password" type="password" value="demo-only" readonly autocomplete="off" aria-describedby="rp-auth-note"><button type="button" data-welcome="show-password" aria-label="Show sample password" aria-pressed="false">'+icon('eye')+'</button></div><button type="button" class="rp-forgot" data-welcome="forgot">Forgot password?</button></div><p id="rp-auth-note" class="rp-auth-note">Prototype only. Fields are locked sample values.<br>Do not enter real credentials.</p><button type="button" class="rp-onboard-continue" disabled>LOG IN · UNAVAILABLE '+icon('lock')+'</button><p class="rp-auth-methods">Email, Apple and Google authentication are not connected in this prototype.</p><p id="rp-login-feedback" class="rp-login-feedback" role="status"></p><button type="button" class="rp-onboard-continue rp-button-charcoal" data-welcome="demo">Continue to demo '+icon('arrow')+'</button><button type="button" class="rp-create-link" data-welcome="create">New here? <u>Create a demo profile</u></button>';}
   function render(){
     entry.hidden=true;onboard.hidden=false;onboard.scrollTop=0;gateway.scrollTop=0;gateway.dataset.screen=flow;let main='';
     if(flow==='campus')main='<div class="rp-screen-heading"><p class="rp-kicker">YOUR CAMPUS <span></span></p><h2 tabindex="-1">Where do you<br>call home?</h2><p>We’ll bring your campus community<br>a little closer.</p></div>'+campusCards();
@@ -51,8 +72,16 @@
       main+='<label class="rp-onboard-field">What should we call you?<input id="rp-onboard-name" type="text" autocomplete="given-name" maxlength="24" placeholder="First name (optional)" value="'+html(name)+'"></label>';
       if(kind==='leader')main+='<div class="rp-onboard-confirm"><strong>Leadership needs verification</strong><p>Choosing Leader does not unlock private attendance or follow-up tools. A future church-authorized process must verify permissions. This preview opens as a member.</p></div>';
     }else if(flow==='login')main=login();
+    if (rallyOne) main = main.replaceAll('<br>', ' ');
+    if (rallyOne && flow === 'login') {
+      main = main
+        .replace('Welcome Back', 'Welcome back')
+        .replace('<p>Explore the Rally One sign-in preview.</p>', '')
+        .replace('Prototype only. Fields are locked sample values.<br>Do not enter real credentials.', 'Demo sign-in uses sample credentials.')
+        .replace('<p class="rp-auth-methods">Email, Apple and Google authentication are not connected in this prototype.</p>', '');
+    }
     const disabled=flow==='campus'?!campus:flow==='choose'?!kind:flow==='connect'&&kind!=='guest'&&!membership.group&&!membership.team;
-    const footer=flow==='login'?'':'<div class="rp-onboard-spacer"></div>'+(error?'<p class="rp-save-error" role="alert">'+html(error)+'</p>':'')+'<button class="rp-onboard-continue" type="button" data-welcome="'+(flow==='connect'?'finish':'next')+'" '+(disabled?'disabled':'')+'>'+(flow==='connect'?'OPEN MY TODAY DEMO':'CONTINUE')+' '+icon('arrow')+'</button>'+(error?'<button type="button" class="rp-create-link" data-welcome="unsaved">Enter demo without saving</button>':'')+'<small class="rp-onboard-foot">LOCAL DEMO · NO REAL ACCOUNT CREATED</small>';
+    const footer=flow==='login'?'':'<div class="rp-onboard-spacer"></div>'+(error?'<p class="rp-save-error" role="alert">'+html(error)+'</p>':'')+'<button class="rp-onboard-continue" type="button" data-welcome="'+(flow==='connect'?'finish':'next')+'" '+(disabled?'disabled':'')+'>'+(flow==='connect'?'Open Today':'CONTINUE')+' '+icon('arrow')+'</button>'+(error?'<button type="button" class="rp-create-link" data-welcome="unsaved">Enter demo without saving</button>':'')+'<small class="rp-onboard-foot">Demo profile · saved on this device</small>';
     onboard.innerHTML=header()+main+footer;gateway.setAttribute('aria-label',flow==='login'?'Login preview':flow==='campus'?'Choose your campus':'Personalize your demo');
     const heading=onboard.querySelector('h2');heading?.focus({preventScroll:true});gateway.scrollTop=0;gateway.scrollLeft=0;
   }
