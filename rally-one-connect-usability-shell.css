@@ -34,3 +34,12 @@
   color:#55443b;
   opacity:1;
 }
+
+/* Read's classic-game labels came from the warm pre-graphite theme.
+   Keep their existing typography/layout but make both readable on charcoal. */
+.rally-one .premium-alive.is-read-v09 .rp-game-classic-label > strong {
+  color:#f6e2d3;
+}
+.rally-one .premium-alive.is-read-v09 .rp-game-classic-label > span {
+  color:#e7d3c4;
+}
