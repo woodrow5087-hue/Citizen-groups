@@ -180,7 +180,7 @@ function f09Today(){
    // Today and Groups now share the exact same source portraits and profile
    // navigation, not separately generated or old fictional lookalikes.
    const peopleRail=rallyOne&&window.RallyGroupsV2?.renderTodayRail?
-     window.RallyGroupsV2.renderTodayRail(todayUI.memberships.group):
+     window.RallyGroupsV2.renderTodayRail(memberContext()?.permissions.group===true):
      H.peopleRail(todayUI,'today',portraits,'assets/today-priority/group.webp');
    const campus=rallyOne?campusNames[todayUI.campus]:'';
    const baselineBoard=window.RallyPriorityBoard.derive(model,now);
