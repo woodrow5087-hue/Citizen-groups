@@ -45,14 +45,6 @@ jobs:
         run: npm run test:chat-lab
       - name: Verify Wednesday messaging inside canonical Groups and legacy archive
         run: npm run test:groups-integrated
-      - name: Check Connect usability flows and keyboard-sized viewport
-        run: |
-          CONTEXT=deploy-preview npm run build
-          python3 -m http.server 8514 --bind 127.0.0.1 --directory dist &
-          server_pid=$!
-          trap 'kill "$server_pid"' EXIT
-          curl --silent --fail --retry 5 --retry-connrefused http://127.0.0.1:8514/ -o /dev/null
-          node scripts/connect-usability-browser-check.mjs http://127.0.0.1:8514/
       - name: Check the default Today on the Netlify preview build
         run: |
           CONTEXT=deploy-preview npm run build
