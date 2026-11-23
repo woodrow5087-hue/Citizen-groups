@@ -5,6 +5,8 @@ import AxeBuilder from '@axe-core/playwright';
 import {chromium} from 'playwright';
 
 const base=process.argv[2];
+// Validate the newest interaction milestone before the broader route audits.
+await import('./connect-usability-browser-check.mjs');
 const out='test-results/preview-today';
 await mkdir(out,{recursive:true});
 const executablePath=process.env.BROWSER_PATH||(existsSync('/usr/bin/chromium')?'/usr/bin/chromium':undefined);
@@ -184,4 +186,4 @@ try{
 // Exercise the integrated four-tab entry against the same review build.
 await import('./connect-member-browser-check.mjs');
 // Final Connect usability pass piggybacks on the established preview QA run.
-await import('./connect-usability-browser-check.mjs');
+// Moved into preflight below so Connect is exercised even if an unrelated legacy theme audit fails.
