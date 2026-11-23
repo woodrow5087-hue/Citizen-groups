@@ -539,7 +539,18 @@ function openConnect(screen='inbox', person=''){
  const phone=document.querySelector('.phone-inner');
  const fit=()=>{
    const rect=phone.getBoundingClientRect();
-   Object.assign(overlay.style,{left:rect.left+'px',top:rect.top+'px',width:rect.width+'px',height:rect.height+'px'});
+   // On iPhone Safari the software keyboard can shrink the visual viewport
+   // without resizing the page or our app shell. Keep the composer above it.
+   const viewport=window.visualViewport;
+   const touch=window.matchMedia('(pointer: coarse)').matches;
+   const top=viewport&&touch?Math.max(rect.top,viewport.offsetTop):rect.top;
+   const bottom=viewport&&touch?Math.min(rect.bottom,viewport.offsetTop+viewport.height):rect.bottom;
+   const left=viewport&&touch?Math.max(rect.left,viewport.offsetLeft):rect.left;
+   const right=viewport&&touch?Math.min(rect.right,viewport.offsetLeft+viewport.width):rect.right;
+   Object.assign(overlay.style,{
+     left:left+'px',top:top+'px',
+     width:Math.max(1,right-left)+'px',height:Math.max(1,bottom-top)+'px'
+   });
  };
  const frame=document.createElement('iframe');
  frame.title='Connect messaging inbox and conversations';
@@ -582,9 +593,15 @@ function openConnect(screen='inbox', person=''){
  overlay.showModal();
  const observer=new ResizeObserver(fit);
  observer.observe(phone);
+ window.addEventListener('resize',fit);
+ window.visualViewport?.addEventListener('resize',fit);
+ window.visualViewport?.addEventListener('scroll',fit);
  history.pushState({rallyConnect:true},'');
  function close(){
    observer.disconnect();
+   window.removeEventListener('resize',fit);
+   window.visualViewport?.removeEventListener('resize',fit);
+   window.visualViewport?.removeEventListener('scroll',fit);
    window.removeEventListener('popstate',close);
    overlay.close();overlay.remove();
    render();
