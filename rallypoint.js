@@ -409,7 +409,7 @@ function read(){
      <h2>Start with Scripture.</h2><p>${e(plan.title)} · ${e(plan.name)}</p><div class="read-focus-detail"><strong>${e(plan.passage)}</strong><small>${e(plan.description)}</small></div>
    </div>
    <section class="card read-scripture-card read-reader" id="reading-scripture" tabindex="-1" aria-label="Scripture reading">
-     <div class="read-section-label">${icon('read')} <span>01 / READ · BEREAN STANDARD BIBLE</span><i></i></div>
+     <div class="read-section-label">${icon('read')} <span>01 / READ · BSB · BEREAN STANDARD BIBLE</span><i></i></div>
      <div class="read-reader-top"><div><span class="read-reader-eyebrow">TODAY'S SCRIPTURE FOCUS</span><h2>${e(plan.passage)}</h2></div><span class="read-reader-translation">BSB</span></div>
      <div class="read-reader-controls" role="group" aria-label="Reading preferences">
        <button type="button" data-action="reader-size" aria-pressed="${s.readerPreferences.size==='large'}" aria-label="Toggle larger Scripture text">Aa <span>${s.readerPreferences.size==='large'?'Standard size':'Larger text'}</span></button>
