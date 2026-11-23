@@ -183,3 +183,5 @@ try{
 
 // Exercise the integrated four-tab entry against the same review build.
 await import('./connect-member-browser-check.mjs');
+// Final Connect usability pass piggybacks on the established preview QA run.
+await import('./connect-usability-browser-check.mjs');
