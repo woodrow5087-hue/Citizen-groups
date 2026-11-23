@@ -22,14 +22,14 @@
  box-sizing:border-box;color:#302620;background:#f5e4cc;border:1px solid #cebba3;border-radius:18px
 }
 .rally-one .r1-receipt{
- display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;padding:8px 12px;margin-bottom:10px;
+ display:grid;grid-template-columns:25px minmax(0,1fr) auto;align-items:center;gap:8px;padding:8px 12px;
  font-size:.92rem;font-weight:800
 }
 .rally-one .r1-check{display:grid;place-items:center;width:25px;height:25px;border-radius:50%;background:#a60030;color:white}
 .rally-one .r1-receipt button,.rally-one .r1-request button{
  font:inherit;min-height:44px;padding:7px 10px;cursor:pointer;border-radius:10px
 }
-.rally-one .r1-receipt button{margin-left:auto;color:#7a1434;background:none;border:0;text-decoration:underline;text-underline-offset:3px}
+.rally-one .r1-receipt button{font-size:.78rem;white-space:nowrap;color:#7a1434;background:none;border:0;text-decoration:underline;text-underline-offset:3px}
 .rally-one .r1-request{margin:14px 0;padding:20px;text-align:left;box-shadow:inset 4px 0 #b70037}
 .rally-one .r1-request small{font-size:.65rem;letter-spacing:.08em;font-weight:850;color:#84304a}
 .rally-one .r1-request h2{color:#302620;font-size:1.55rem;line-height:1.08;letter-spacing:-.04em;margin:10px 0}

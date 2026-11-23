@@ -120,7 +120,7 @@ function leaderRequestCard(){
  const reviewed=s.reached.includes('taylor');
  return `<article class="r1-request"><small>WEDNESDAY GROUP · FICTIONAL REQUEST</small>
  <h2>Taylor asked for a check-in.</h2><blockquote>“Could someone check in with me after Wednesday? I’m new to the group and would love to talk.”</blockquote>
- <div class="r1-request-actions"><button type="button" data-action="leader-write">Write to Taylor ↗</button>
+ <div class="r1-request-actions"><button type="button" data-action="leader-write">Write to Taylor ›</button>
  <button type="button" data-action="reached" data-person="taylor" aria-pressed="${reviewed}">${reviewed?'Reviewed ✓':'Mark reviewed'}</button></div></article>`;
 }
 const sampleGroupPeople=[{id:'anna',name:'Anna L.',initials:'AL'},{id:'jess',name:'Jess W.',initials:'JW'},{id:'marcus',name:'Marcus C.',initials:'MC'},{id:'taylor',name:'Taylor D.',initials:'TD'}];

@@ -242,7 +242,7 @@ function render(d,peopleRail='',portraits=[],now=new Date()){
    d?.receipt==='team'?{text:'You’re confirmed for Sunday.',go:'team',pane:'schedule',link:'View shift'}:null;
  const feedback=receipt?
    '<div class="r1-receipt"><span class="r1-check" aria-hidden="true">✓</span><span role="status">'+receipt.text+
-   '</span><button type="button" data-go="'+receipt.go+'" data-pane="'+receipt.pane+'" aria-label="'+receipt.text+' '+receipt.link+'">'+receipt.link+' ↗</button></div>':typeof d?.feedback==='string'&&d.feedback.trim()?
+   '</span><button type="button" data-go="'+receipt.go+'" data-pane="'+receipt.pane+'" aria-label="'+receipt.text+' '+receipt.link+'">'+receipt.link+' ›</button></div>':typeof d?.feedback==='string'&&d.feedback.trim()?
   '<div class="f09b-feedback" role="status" aria-live="polite">'+esc(d.feedback.slice(0,120))+'</div>':'';
  const companionEntry=d?.f10Enabled?
   '<aside class="f10-entry" aria-label="Ask Rally companion">'+
