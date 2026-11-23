@@ -283,3 +283,8 @@
 .rally-one .premium-alive.is-groups-v07 .gv2-legacy-contacts[open] .card{
  margin:13px 0 0;
 }
+
+/* Groups has an intentional contextual inbox shortcut in its footer and a
+   dedicated Conversation widget. Remove the redundant global cream Connect
+   strip on this tab so the photo rail sits directly beneath the brand header. */
+.rally-one .phone-inner.is-groups-v07 #connect-entry{display:none}
