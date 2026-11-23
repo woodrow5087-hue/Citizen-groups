@@ -34,6 +34,17 @@ function f10ClearSession(){
 const defaults=()=>({role:'member',groupPane:'chat',directPerson:'anna',directMessages:{},teamPane:'schedule',view:'today',discover:false,groupMessages:[{name:'Jess W.',time:'Yesterday',text:'What stood out to you in John 15 this week?'},{name:'Anna L.',time:'Today',text:'Looking forward to seeing everyone Wednesday.'}],teamMessages:[{name:'Sam R.',time:'Yesterday',text:'Welcome team — thank you for helping people feel at home!'}],prayers:[{name:'Marcus C.',time:'Yesterday',text:'Praying for wisdom with an upcoming decision.'}],rsvp:'',teamStatus:'pending',coverage:false,attendance:{anna:'here',jess:'here',marcus:'unknown',taylor:'unknown'},reached:[],interest:[],plan:'sermon',planQuestions:{},memoryTextRevision:'BSB-2026-1',memoryGames:{},memoryMode:'solo',memoryActive:null,memoryPassTurn:1,memoryTarget:null,question:'How can we love one another as Jesus has loved us?',read:false,prayed:false,companionCare:{},companionChoices:{snoozedUntil:{}},rhythm:{}});
 let s;try{s={...defaults(),...JSON.parse(localStorage.getItem(key)||'null')}}catch(_){s=defaults()}
 if(!s||!s.groupMessages||!Array.isArray(s.groupMessages))s=defaults();
+// Sprint 7B: render malformed local fixtures safely while the storage guard
+// preserves the ORIGINAL bytes and refuses writes until explicit recovery.
+const validSampleMessage=m=>m&&typeof m==='object'&&!Array.isArray(m)&&
+ typeof m.name==='string'&&typeof m.text==='string';
+for(const field of ['groupMessages','teamMessages','prayers']){
+ s[field]=Array.isArray(s[field])?s[field].filter(validSampleMessage):[];
+}
+s.reached=Array.isArray(s.reached)?s.reached.filter(id=>typeof id==='string'):[];
+if(!s.attendance||typeof s.attendance!=='object'||Array.isArray(s.attendance))
+ s.attendance=defaults().attendance;
+
 if(rallyOne)s.view='today';
  if(!s.directMessages||typeof s.directMessages!=='object'||Array.isArray(s.directMessages))s.directMessages={};
  if(!s.planQuestions||typeof s.planQuestions!=='object'||Array.isArray(s.planQuestions))s.planQuestions={};
