@@ -409,7 +409,7 @@ function read(){
      <button type="button" class="btn dark-btn" data-action="question">Save local question</button>
      <p class="fine-note">Real publishing permissions, content review, group overrides, and licensing remain undecided.</p>
    </section>`:''}
-   <div class="read-memory-heading" id="reading-memorize" tabindex="-1"><span>03 / REMEMBER</span><h2>Make it memorable.</h2><p>Practice what you've read with a short, interactive Scripture challenge.</p></div>
+   <div class="read-memory-heading" id="reading-memory-intro" tabindex="-1"><span>03 / REMEMBER</span><h2>Make it memorable.</h2><p>Practice what you've read with a short, interactive Scripture challenge.</p></div>
    <section class="rp-game-entry" aria-label="VersePlay Blank Battle">
       <div class="rp-game-entry-top"><span>VERSEPLAY · FEATURED GAME</span><span aria-hidden="true">✳</span></div>
       <h2>Make the words<br><em>click.</em></h2>
