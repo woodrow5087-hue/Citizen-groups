@@ -17,7 +17,7 @@ const route='.premium-alive.is-read-v09:not(.is-play-v08)';
 const frozen=Object.freeze({
  /* Connect usability v2: approved openConnect keyboard viewport change; pin remains exact. */
  /* Groups v2 isolated overview routing + preserved Connect and other tab behavior. */
- 'rallypoint.js':'9a07c54d074bf87d1a52f4e023badc7d1cc027d0',
+ 'rallypoint.js':'8634e7a9e2a1301a4ce0b5d09290dd48f28bdfcb',
  'rallypoint-phase1.css':'db0bbe26f995fbde1e35a1e4c3a5ef3a6d799833',
  'rallypoint-groups-v07.css':'513c03013506bdaa0d9a99ced6c4d455fd15c386',
  'rallypoint-team-v08.css':'dff9ce0ef59d02a4752bf740407b08324f0459ac',
