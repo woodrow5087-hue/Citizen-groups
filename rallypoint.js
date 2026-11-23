@@ -65,6 +65,11 @@ const readingLibrary={
  year:{name:'Bible in One Year',title:'Daily Bible Reading',passage:'Psalm 23:1–2',excerpt:'The LORD is my shepherd; I shall not want. He makes me lie down in green pastures; He leads me beside quiet waters.',question:'How does this passage speak to the care and guidance you need?',description:'Illustrative daily passage, not a licensed Bible reading calendar'}
 };
 const currentReading=()=>readingLibrary[s.plan]||readingLibrary.sermon;
+const reflectionPrompts={
+ sermon:{notice:'Which words stand out to you?',meaning:'What does loving one another look like in this passage?',action:'Who could you encourage with a small act of love this week?'},
+ study:{notice:'What instruction or contrast catches your attention?',meaning:'How does hearing differ from doing in this verse?',action:'What is one concrete step you can take today?'},
+ year:{notice:'What image in this passage feels most vivid?',meaning:'What does this excerpt suggest about guidance and rest?',action:'Where might you make space for rest or offer care today?'}
+};
 const weeklyJourney=[
  {day:'SUN',name:'Gather',title:'Hear the Word',body:'Begin with the Scripture focus from the sample sermon pathway.',step:'Open today’s reading',target:'scripture'},
  {day:'MON',name:'Read',title:'Sit with the passage',body:'Read slowly. Notice one phrase you want to carry into the day.',step:'Open Scripture',target:'scripture'},
@@ -432,7 +437,7 @@ function read(){
      </div>
      <div class="read-reflect-guidance">
        <span>YOUR REFLECTION PROMPT</span>
-       <p>${e(({sermon:{notice:'Which words stand out to you?',meaning:'What does loving one another look like in this passage?',action:'Who could you encourage with a small act of love this week?'},study:{notice:'What instruction or contrast catches your attention?',meaning:'How does hearing differ from doing in this verse?',action:'What is one concrete step you can take today?'},year:{notice:'What image in this passage feels most vivid?',meaning:'What does this excerpt suggest about guidance and rest?',action:'Where might you make space for rest or offer care today?' }[s.plan]||{})[s.reflectionPrompt]||'What stands out to you in these words?')}</p>
+       <p>${e((reflectionPrompts[s.plan]||{})[s.reflectionPrompt]||'What stands out to you in these words?')}</p>
      </div>
      <label class="read-reflect-label" for="reflection-response">Your response <small>Private · saved on this device</small></label>
      <textarea id="reflection-response" rows="3" maxlength="1200" placeholder="Write a thought, a prayer, or one small next step...">${e(s.reflectionResponses[s.plan]||'')}</textarea>
