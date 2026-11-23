@@ -16,7 +16,8 @@ const frozen=Object.freeze({
   /* Connect usability v2: approved openConnect keyboard viewport change; pin remains exact. */
  /* Groups v2 isolated overview routing + preserved Connect and other tab behavior. */
  /* Companion Care flow: scoped UI insertion and explicit action only; no other tab redesign. */
- 'rallypoint.js':'cd5b387fa3d95cec291b1c34bdddf81d94660cf4',
+ /* M5B: scoped, read-only Unified Focus ranking within existing Today Priority Board. */
+ 'rallypoint.js':'19e3177f433575aabb51a7d01f651a8fbd7cf768',
   'rallypoint-phase1.css':'db0bbe26f995fbde1e35a1e4c3a5ef3a6d799833',
   'rallypoint-groups-v07.css':'513c03013506bdaa0d9a99ced6c4d455fd15c386',
   'rallypoint-team-v08.css':'dff9ce0ef59d02a4752bf740407b08324f0459ac',
