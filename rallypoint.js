@@ -63,6 +63,26 @@ const conversation=()=>{
   })||{status:'unavailable',lastMessage:null,unreadCount:0};}
   catch(_){return {status:'unavailable',lastMessage:null,unreadCount:0};}
 };
+// Shared read-only projection for Today, Groups, Team and Connect. All source
+// fields stay in their existing owners; no parallel member/action storage.
+const memberContext=(now=new Date(),chat)=>window.RallyMemberContext?.snapshot({
+ state:s,ui:todayUI,conversation:chat??conversation(),now
+})||null;
+// Explicit, permission-checked mutations of PRE-EXISTING fixture fields.
+// The storage guard remains the sole persistent write owner.
+function applyLocalAction(command){
+ const reducer=window.RallyMemberContext;
+ if(!rallyOne||!reducer)return false;
+ const changed=reducer.transition({
+   state:s,ui:todayUI,conversation:conversation(),command,now:new Date()
+ });
+ if(!changed.ok)return false;
+ const before=s;
+ s=changed.state;
+ if(save())return true;
+ s=before;
+ return false;
+}
 const pill=(t,light=false)=>`<span class="pill ${light?'light':''}">${e(t)}</span>`;
 const icons={home:'⌂',group:'♙',team:'♡',read:'▤',arrow:'↗'};
 let groupsV2ActiveProfile='dustin';
