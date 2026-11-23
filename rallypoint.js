@@ -149,8 +149,9 @@ function renderPeople(snapshot,chat){
 }
 const campusNames={central:'Central',north:'North',maui:'Maui',online:'Online'};
 function f09Today(){
- const now=new Date(),chat=conversation(),model=window.RallySmartDashboard.model({
-   state:s,ui:todayUI,conversation:chat,now,today:T,
+ const now=new Date(),chat=conversation(),context=rallyOne?memberContext(now,chat):null;
+ const model=window.RallySmartDashboard.model({
+   state:s,ui:todayUI,conversation:chat,context,now,today:T,
    companion:window.RallyCompanionDecision,passage:currentReading().passage
  });
  f09Index=Math.max(0,Math.min(f09Index,model.stack.length-1));
@@ -310,6 +311,7 @@ function connectedGroup(){
 }
 function group(){
 const GroupsV2=window.RallyGroupsV2;
+const context=rallyOne?memberContext():null;
 if(rallyOne&&GroupsV2&&s.groupPane==='profile'&&(!todayUI.memberships.group||s.discover)){
   // Browsing demo portraits is public; member-only group data is still gated.
   return GroupsV2.renderProfile(groupsV2ActiveProfile,{member:false});
@@ -317,14 +319,14 @@ if(rallyOne&&GroupsV2&&s.groupPane==='profile'&&(!todayUI.memberships.group||s.d
 if(!todayUI.memberships.group)return groupBrowse();
 if(s.discover)return groupBrowse();
 if(rallyOne&&GroupsV2&&s.groupPane==='overview'){
-  const latest=conversation(),activity=GX.snapshot(s,true,latest);
+  const activity=GX.snapshot(s,true,conversation());
   return GroupsV2.renderHome({
-    unreadCount:latest.unreadCount,
-    conversationStatus:latest.status,
+    unreadCount:context?.group.unreadCount??0,
+    conversationStatus:context?.group.status||'unavailable',
     prayerCount:activity.prayerCount,
     nextDate:wed(),
-    rsvp:s.rsvp,
-    canLead:canLead('group')
+    rsvp:context?.group.rsvp||'',
+    canLead:context?.permissions.groupLeader===true
   });
 }
 if(rallyOne&&GroupsV2&&s.groupPane==='profile'){
@@ -395,7 +397,8 @@ return `<section class="group-screen-v07">
 </section>`;
 }
 function team(){
- if(!todayUI.memberships.team)return `<section class="team-screen-v08 team-empty-v08" aria-label="Discover serving">
+ const context=rallyOne?memberContext():null;
+ if(!(context?.team.member??todayUI.memberships.team))return `<section class="team-screen-v08 team-empty-v08" aria-label="Discover serving">
   <div class="team-v08-hero team-empty-hero">
     <div class="team-v08-kicker">SERVE · CONNECT · BELONG</div>
     <h1>There's room<br>to serve<span>.</span></h1>
@@ -418,7 +421,8 @@ function team(){
   ${footer()}
 </section>`;
  const opts=[['schedule','My Schedule'],['chat','Team chat'],...(canLead('team')?[['leader','Leader tools']]:[])];let body='';
- const stateLabel=s.teamStatus==='confirmed'?'Confirmed':s.teamStatus==='declined'?'Unable to serve':'Awaiting response';
+ const response=context?.team.response||s.teamStatus;
+ const stateLabel=response==='confirmed'?'Confirmed':response==='declined'?'Unable to serve':'Awaiting response';
  const message=s.teamMessages.length?s.teamMessages[s.teamMessages.length-1]:null;
  if(s.teamPane==='schedule')body=`
   <div class="card team-schedule-card">
@@ -646,7 +650,11 @@ function openConnect(screen='inbox', person=''){
  back.type='button';
  const area={today:'Today',group:'Groups',team:'Team',read:'Read',play:'Read'}[s.view];
  back.textContent='‹  Back to '+area;
- const access=()=>({...todayUI.memberships});
+ const access=()=>{
+   const context=rallyOne?memberContext():null;
+   return context?{group:context.permissions.group,team:context.permissions.team}:
+     {...todayUI.memberships};
+ };
  const ids={Jess:'jess',Anna:'anna','Alex Morgan':'connect-alex'};
  const messages=name=>s.directMessages[ids[name]]||[];
  const room=()=>s.connectRoom||{};
@@ -728,8 +736,9 @@ function renderDialog(){
 let title='',body='';const chat=conversation(),snapshot=T.snapshot(s,todayUI,new Date(),chat);
 if(dialog==='f10-companion'&&f10Preview){
  title='Ask Rally.';
- const now=new Date(),model=window.RallySmartDashboard.model({
-   state:s,ui:todayUI,conversation:chat,now,today:T,
+ const now=new Date(),context=rallyOne?memberContext(now,chat):null;
+ const model=window.RallySmartDashboard.model({
+   state:s,ui:todayUI,conversation:chat,context,now,today:T,
    companion:window.RallyCompanionDecision,passage:currentReading().passage
  });
  const baselineBoard=window.RallyPriorityBoard.derive(model,now);
