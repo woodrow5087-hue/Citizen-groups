@@ -521,6 +521,29 @@ if(s.view==='group'&&s.groupPane==='chat'&&todayUI.memberships.group){
   try{window.RallyConversationRead?.markRead({storage:localStorage,domain:window.RallyChatDomain,member:true});}catch(_){}
 }
 view.innerHTML=(storageWarning?`<p class="storage-notice" role="status">${e(storageWarning)}</p>`:'')+(s.view==='today'?(f09Preview?f09Today():today()):s.view==='group'?group():s.view==='team'?team():s.view==='play'?play():read());
+if(rallyOne&&window.RallyCareFlow){
+  // ONE source projection across Today → Groups → the existing local DM.
+  // Rendering this card is read-only; no message cursor or prayer is marked.
+  const care=window.RallyCareFlow.derive({
+    state:s,member:todayUI.memberships.group,now:new Date()
+  });
+  if(care){
+    if(s.view==='today'&&f09Board){
+      view.querySelector('.f09b-glance')?.insertAdjacentHTML(
+        'beforebegin',window.RallyCareFlow.render(care,{placement:'today'}));
+    }else if(s.view==='group'&&s.groupPane==='overview'){
+      view.querySelector('.gv2-care')?.insertAdjacentHTML(
+        'afterend',window.RallyCareFlow.render(care,{placement:'group'}));
+    }else if(s.view==='group'&&s.groupPane==='prayer'){
+      view.querySelector('.gv2-detail-tabs')?.insertAdjacentHTML(
+        'afterend',window.RallyCareFlow.render(care,{placement:'prayer'}));
+    }else if(s.view==='group'&&s.groupPane==='direct'&&
+             s.directPerson==='marcus'&&companionFocus==='marcus'){
+      view.querySelector('.gv2-detail-tabs')?.insertAdjacentHTML(
+        'afterend',window.RallyCareFlow.renderDraftHint(care));
+    }
+  }
+}
 if(s.view==='play')mountBlankBattle();
 view.querySelectorAll('textarea').forEach(field=>{if(drafts[field.id]!==undefined)field.value=drafts[field.id]});
 if(s.view==='group'&&s.groupPane==='chat'&&todayUI.memberships.group&&$('rpx-chat')){
@@ -866,6 +889,29 @@ if(a==='companion-snooze'){
   s.companionCare.marcus={...(s.companionCare.marcus||{}),snoozedUntil:new Date(Date.now()+24*60*60*1000).toISOString()};
   render();notify('This fictional suggestion will return in about a day.');return;
 }
+if(a==='care-open-prayer'||a==='care-mark-prayed'||
+   a==='care-resume'||a==='care-open-groups'){
+  const care=window.RallyCareFlow?.derive({
+    state:s,member:todayUI.memberships.group,now:new Date()
+  });
+  if(!care)return;
+  if(a==='care-open-prayer'){navigate('group','prayer');return;}
+  if(a==='care-open-groups'){navigate('group','overview');return;}
+  if(a==='care-mark-prayed'&&!care.paused&&!care.completed){
+    s.companionCare.marcus={
+      ...(s.companionCare.marcus||{}),
+      prayedAt:new Date().toISOString()
+    };
+    render();notify('You marked a fictional prayer moment on this device.');return;
+  }
+  if(a==='care-resume'&&care.paused){
+    const next={...(s.companionCare.marcus||{})};
+    delete next.snoozedUntil;
+    s.companionCare.marcus=next;
+    render();notify('Your local care reminder is available again.');return;
+  }
+  return;
+}
 if(a==='companion-encourage'){
   if(!todayUI.memberships.group||!s.prayers.some(p=>p?.name==='Marcus C.'))return;
   companionFocus='marcus';s.directPerson='marcus';navigate('group','direct');return;
@@ -873,7 +919,13 @@ if(a==='companion-encourage'){
 if(a==='companion-starter'){
   if(companionFocus!=='marcus'||s.groupPane!=='direct'||s.directPerson!=='marcus')return;
   const field=$('direct-input');
-  if(field){field.value='Hey Marcus, I saw your note in our group. Thinking of you and praying for you.';field.focus();}
+  if(field){
+    if(field.value.trim()){
+      field.focus();notify('Existing draft preserved. Edit it or choose to send.');return;
+    }
+    field.value='Hey Marcus, I saw your note in our group. Thinking of you and praying for you.';
+    field.focus();
+  }
   return;
 }
 if(a==='hybrid-person'){if(!todayUI.memberships.group)return;const member=sampleGroupPeople.find(p=>p.id===person);if(!member)return;s.directPerson=member.id;navigate('group','direct');return;}
