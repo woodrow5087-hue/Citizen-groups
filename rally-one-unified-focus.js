@@ -22,6 +22,14 @@ const score=Object.freeze({
  'scripture-step':56
 });
 const groupIds=new Set(['group-rsvp','group-unavailable','group-unread','leader-checkins']);
+function activeScore(id,model,now){
+ const date=id==='group-rsvp'?model.groupDate:id==='serve-response'?model.serveDate:null;
+ if(!(date instanceof Date)||!Number.isFinite(date.getTime()))return score[id]||0;
+ const delta=date.getTime()-now.getTime();
+ if(id==='group-rsvp')return delta>=0&&delta<=24*3600000?100:70;
+ if(id==='serve-response')return delta>=0&&delta<=48*3600000?95:65;
+ return score[id]||0;
+}
 const sourceLabels=Object.freeze({
  'group-rsvp':'Your saved fictional Wednesday Group RSVP is unanswered.',
  'serve-response':'Your fictional Welcome Team serving response is pending.',
@@ -40,10 +48,10 @@ function permitted(id,model){
  if(id==='scripture-step'&&!model?.rhythmDue)return false;
  return Object.hasOwn(score,id);
 }
-function fromHero(h,model){
+function fromHero(h,model,now){
  if(!h||!permitted(h.id,model)||!h.primary)return null;
  return Object.freeze({
-  id:h.id,score:score[h.id],family:h.id.startsWith('group-')?
+  id:h.id,score:activeScore(h.id,model,now),family:h.id.startsWith('group-')?
      h.id==='group-rsvp'?'gather':'messages':h.id==='serve-response'?'serve':h.id==='scripture-step'?'reading':'leader',
   tone:'rose',icon:h.heroType||'people',
   title:h.title,detail:h.subtitle,
@@ -51,10 +59,10 @@ function fromHero(h,model){
   why:h.why||sourceLabels[h.id],hasPeople:!!h.hasPeople
  });
 }
-function fromRow(r,model){
+function fromRow(r,model,now){
  if(!r||!r.requiresResponse||r.deferred||!permitted(r.id,model)||!r.action)return null;
  return Object.freeze({
-  id:r.id,score:score[r.id],family:r.family||r.id,
+  id:r.id,score:activeScore(r.id,model,now),family:r.family||r.id,
   tone:r.tone||'rose',icon:r.icon||'people',title:r.title,detail:r.detail,
   action:r.action,label:r.label,
   why:r.why||sourceLabels[r.id],hasPeople:!!model.member&&groupIds.has(r.id)
@@ -76,10 +84,10 @@ function fromCare(care,model){
   hasPeople:true
  });
 }
-function focus({board,model,care}={}){
+function focus({board,model,care,now=new Date()}={}){
  const b=board&&typeof board==='object'?board:{};
  const d=model&&typeof model==='object'?model:{};
- const candidates=[fromHero(b.hero,d),...(Array.isArray(b.rows)?b.rows:[]).map(r=>fromRow(r,d)),fromCare(care,d)]
+ const candidates=[fromHero(b.hero,d,now),...(Array.isArray(b.rows)?b.rows:[]).map(r=>fromRow(r,d,now)),fromCare(care,d)]
   .filter(Boolean).sort((a,b)=>b.score-a.score||a.id.localeCompare(b.id));
  const selected=[],families=new Set();
  for(const candidate of candidates){
@@ -91,7 +99,8 @@ function focus({board,model,care}={}){
   // The existing board owns the truthful "caught up" and visitor states.
   // Optional invitations are not counted or labeled as required tasks.
   return Object.freeze({audience:d.audience||'newcomer',
-   hero:b.hero||null,rows:Object.freeze((b.rows||[]).filter(r=>!r.requiresResponse).slice(0,1)),
+   hero:b.hero||null,rows:Object.freeze((b.rows||[]).filter(r=>!r.requiresResponse&&
+    !(b.hero?.id==='welcome-community'&&['find-people','community'].includes(r.id))).slice(0,1)),
    selectedIds:Object.freeze([]),actionCount:0,
    explanation:'No response-needed sample action remains.'});
  }
