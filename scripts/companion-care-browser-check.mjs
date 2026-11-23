@@ -20,19 +20,24 @@ try{
   await page.locator('[data-welcome="demo"]:visible').click();
   await page.locator('#rp-gateway').waitFor({state:'hidden'});
   const card=page.locator('#view .ro-care');
-  await page.locator('.ro-care--today[data-care-stage="ready"]').waitFor();
+  // M5B does not add another card to Today. Prayer is still explicitly
+  // available in its existing Groups surface, with its own local state.
+  await page.locator('.f09-board').waitFor();
+  assert.equal(await page.locator('.ro-care--today').count(),0);
+  await page.locator('#nav [data-go="group"]').click();
+  await page.locator('.ro-care--group[data-care-stage="ready"]').waitFor();
   const readCursor=()=>page.evaluate(()=>localStorage.getItem('rallypoint-wednesday-chat-lab-v1'));
   const cursorBefore=await readCursor();
 
   // Opening and postponing a suggestion must never acknowledge messages.
-  await page.locator('.ro-care--today [data-action="companion-snooze"]').click();
-  await page.locator('.ro-care--today[data-care-stage="paused"]').waitFor();
+  await page.locator('.ro-care--group [data-action="companion-snooze"]').click();
+  await page.locator('.ro-care--group[data-care-stage="paused"]').waitFor();
   assert.equal(await readCursor(),cursorBefore);
-  await page.locator('.ro-care--today [data-action="care-resume"]').click();
-  await page.locator('.ro-care--today[data-care-stage="ready"]').waitFor();
+  await page.locator('.ro-care--group [data-action="care-resume"]').click();
+  await page.locator('.ro-care--group[data-care-stage="ready"]').waitFor();
 
   // Today → Groups Prayer; preview state updates only after human confirmation.
-  await page.locator('.ro-care--today [data-action="care-open-prayer"]').click();
+  await page.locator('.ro-care--group [data-action="care-open-prayer"]').click();
   await page.locator('.ro-care--prayer[data-care-stage="ready"]').waitFor();
   assert.equal(await page.locator('#nav [aria-current="page"]').getAttribute('data-go'),'group');
   assert.equal(await readCursor(),cursorBefore,'reading a prayer does not mark chat read');
@@ -56,8 +61,10 @@ try{
 
   // Existing group state owns the local message; the care card only projects it.
   await page.locator('#nav [data-go="today"]').click();
-  await page.locator('.ro-care--today[data-care-stage="followed-up"]').waitFor();
-  assert.match(await card.textContent(),/No real message was delivered/);
+  await page.locator('.f09-board').waitFor();
+  assert.equal(await page.locator('.ro-care--today').count(),0);
+  assert.equal(await page.locator('.f09b-hero[data-priority^="care-"]').count(),0,
+   'completed care is no longer a suggested action in Today');
   await page.locator('#nav [data-go="group"]').click();
   await page.locator('.ro-care--group[data-care-stage="followed-up"]').waitFor();
   assert.equal(await page.locator('.ro-care--group .ro-care-steps li.is-complete').count(),3);
