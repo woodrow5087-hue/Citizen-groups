@@ -195,7 +195,10 @@ function render(d,peopleRail='',portraits=[],now=new Date()){
  // M5B: reuse the exact approved Priority Board surfaces. Rally One may
  // provide one focused hero + at most one row; other demos remain unchanged.
  const f=d?.unifiedFocus;
- const b=f?.hero&&Array.isArray(f.rows)?{...baseline,hero:f.hero,rows:f.rows}:baseline;
+ const b=f?.hero&&Array.isArray(f.rows)?{
+  ...baseline,hero:f.hero,rows:f.rows,
+  caughtUp:f.hero.id==='caught-up'
+ }:baseline;
  const h=b.hero;
  const faces=h.hasPeople&&b.hasPeople?
   '<div class="f09b-faces" role="group" aria-label="Fictional group members">'+
