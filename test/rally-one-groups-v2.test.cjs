@@ -78,6 +78,27 @@ test('nonmembers see real-photo sample rail without My group or private actions'
  const welcome=read('rallypoint-welcome.js');
  assert.match(welcome,/app\.groupPane=rallyOne\?'overview':'chat'/);
 });
+test('Today and Groups use identical six real-photo demo profiles',()=>{
+ const module=api();
+ const member=parse(module.renderTodayRail(true));
+ const publicPreview=parse(module.renderTodayRail(false));
+ const group=parse(module.renderHome({}));
+ const readNames=doc=>[...doc.querySelectorAll('.gv2-rail-button[data-person]')].map(b=>b.dataset.person);
+ assert.deepEqual(readNames(member),readNames(group));
+ assert.deepEqual(readNames(publicPreview),readNames(group));
+ assert.deepEqual(readNames(member),['dustin','mandy','garrett','nick','aiden','dom']);
+ assert.ok(member.querySelector('[data-go="group"][data-pane="people"]'));
+ assert.equal(publicPreview.querySelector('[data-value="people"]'),null);
+ assert.equal(publicPreview.querySelector('[data-pane="people"]'),null);
+ assert.match(publicPreview.body.textContent,/no connected group account/);
+ const source=read('rallypoint.js');
+ assert.match(source,/renderTodayRail\(todayUI\.memberships\.group\)/);
+ assert.match(source,/navigate\('group','profile'\)/);
+ const css=read('rally-one-m5-mobile-parity.css');
+ assert.match(css,/groups-v2-people\.webp/);
+ assert.match(css,/\.gv2-photo-aiden/);
+ assert.match(css,/\.gv2-photo-dom/);
+});
 test('member permission and discovery guards remain before Groups home',()=>{
  const source=read('rallypoint.js');
  const check=source.indexOf('if(!todayUI.memberships.group)return groupBrowse();');
@@ -85,7 +106,7 @@ test('member permission and discovery guards remain before Groups home',()=>{
  assert.ok(check>0&&overview>check);
  assert.match(source,/groupPane:'chat'/); // Legacy default remains intact.
  assert.match(source,/if\(rallyOne\)s\.groupPane=pane\|\|'overview'/);
- assert.match(source,/if\(a==='gv2-profile'&&rallyOne&&s\.view==='group'/);
+ assert.match(source,/if\(a==='gv2-profile'&&rallyOne&&/);
  assert.match(source,/openConnect\('thread'\);return;/);
  assert.doesNotMatch(read('rally-one-groups-v2.js'),/localStorage|sessionStorage|fetch\s*\(|WebSocket/);
 });
