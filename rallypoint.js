@@ -31,7 +31,7 @@ let f10Turns=[],f10Prior={},f10Active=null;
 function f10ClearSession(){
  f10Prompt='week';f10Asked='';f10Notice='';f10Turns=[];f10Prior={};f10Active=null;
 }
-const defaults=()=>({role:'member',groupPane:'chat',directPerson:'anna',directMessages:{},teamPane:'schedule',view:'today',discover:false,groupMessages:[{name:'Jess W.',time:'Yesterday',text:'What stood out to you in John 15 this week?'},{name:'Anna L.',time:'Today',text:'Looking forward to seeing everyone Wednesday.'}],teamMessages:[{name:'Sam R.',time:'Yesterday',text:'Welcome team — thank you for helping people feel at home!'}],prayers:[{name:'Marcus C.',time:'Yesterday',text:'Praying for wisdom with an upcoming decision.'}],rsvp:'',teamStatus:'pending',coverage:false,attendance:{anna:'here',jess:'here',marcus:'unknown',taylor:'unknown'},reached:[],interest:[],plan:'sermon',planQuestions:{},memoryTextRevision:'BSB-2026-1',memoryGames:{},memoryMode:'solo',memoryActive:null,memoryPassTurn:1,memoryTarget:null,question:'How can we love one another as Jesus has loved us?',read:false,prayed:false,companionCare:{},companionChoices:{snoozedUntil:{}},rhythm:{}});
+const defaults=()=>({role:'member',groupPane:'overview',directPerson:'anna',directMessages:{},teamPane:'schedule',view:'today',discover:false,groupMessages:[{name:'Jess W.',time:'Yesterday',text:'What stood out to you in John 15 this week?'},{name:'Anna L.',time:'Today',text:'Looking forward to seeing everyone Wednesday.'}],teamMessages:[{name:'Sam R.',time:'Yesterday',text:'Welcome team — thank you for helping people feel at home!'}],prayers:[{name:'Marcus C.',time:'Yesterday',text:'Praying for wisdom with an upcoming decision.'}],rsvp:'',teamStatus:'pending',coverage:false,attendance:{anna:'here',jess:'here',marcus:'unknown',taylor:'unknown'},reached:[],interest:[],plan:'sermon',planQuestions:{},memoryTextRevision:'BSB-2026-1',memoryGames:{},memoryMode:'solo',memoryActive:null,memoryPassTurn:1,memoryTarget:null,question:'How can we love one another as Jesus has loved us?',read:false,prayed:false,companionCare:{},companionChoices:{snoozedUntil:{}},rhythm:{}});
 let s;try{s={...defaults(),...JSON.parse(localStorage.getItem(key)||'null')}}catch(_){s=defaults()}
 if(!s||!s.groupMessages||!Array.isArray(s.groupMessages))s=defaults();
 if(rallyOne)s.view='today';
@@ -65,6 +65,7 @@ const conversation=()=>{
 };
 const pill=(t,light=false)=>`<span class="pill ${light?'light':''}">${e(t)}</span>`;
 const icons={home:'⌂',group:'♙',team:'♡',read:'▤',arrow:'↗'};
+let groupsV2ActiveProfile='dustin';
 const sampleGroupPeople=[{id:'anna',name:'Anna L.',initials:'AL'},{id:'jess',name:'Jess W.',initials:'JW'},{id:'marcus',name:'Marcus C.',initials:'MC'},{id:'taylor',name:'Taylor D.',initials:'TD'}];
  if(!sampleGroupPeople.some(p=>p.id===s.directPerson))s.directPerson='anna';
 const readingLibrary={
@@ -272,6 +273,21 @@ function connectedGroup(){
 function group(){
 if(!todayUI.memberships.group)return groupBrowse();
 if(s.discover)return groupBrowse();
+const GroupsV2=window.RallyGroupsV2;
+if(rallyOne&&GroupsV2&&s.groupPane==='overview'){
+  const latest=conversation(),activity=GX.snapshot(s,true,latest);
+  return GroupsV2.renderHome({
+    unreadCount:latest.unreadCount,
+    conversationStatus:latest.status,
+    prayerCount:activity.prayerCount,
+    nextDate:wed(),
+    rsvp:s.rsvp,
+    canLead:canLead('group')
+  });
+}
+if(rallyOne&&GroupsV2&&s.groupPane==='profile'){
+  return GroupsV2.renderProfile(groupsV2ActiveProfile);
+}
 const unreadGroup=s.groupPane==='chat'?0:conversation().unreadCount;
  const opts=[['chat',unreadGroup?`Conversation (${unreadGroup} unread)`:'Conversation'],['people','People'],...(s.groupPane==='direct'?[['direct','Direct message']]:[]),['gather','Gathering'],['prayer','Prayer'],...(canLead('group')?[['leader','Leader tools']]:[])];
 let body='';
@@ -290,6 +306,10 @@ if(s.groupPane==='people')body=`<div class="card group-people-card">
   <button type="button" class="group-people-chat-link" data-action="pane" data-area="group" data-value="chat">Open your group conversation ${icon('arrow')}</button>
   <p class="fine-note">Profiles and direct messages here are fictional browser-only data. No messages leave your device.</p>
 </div>`;
+if(s.groupPane==='people'&&rallyOne&&GroupsV2){
+ body=GroupsV2.renderDirectory()+
+ '<details class="gv2-legacy-contacts"><summary>Try fictional message contacts</summary>'+body+'</details>';
+}
 if(s.groupPane==='direct'){
   const person=sampleGroupPeople.find(p=>p.id===s.directPerson)||sampleGroupPeople[0];
   const messages=Array.isArray(s.directMessages[person.id])?s.directMessages[person.id]:[];
@@ -308,6 +328,12 @@ if(s.groupPane==='direct'){
 if(s.groupPane==='gather')body=`<div class="card"><div class="kicker">NEXT GROUP GATHERING · SAMPLE</div><h3>${wed()} · 6:30 PM</h3><p>${e(currentReading().passage)} · ${e(s.question)}</p><p class="group-gather-rsvp" role="status">${s.rsvp==='going'?'You’re going · saved on this device':s.rsvp==='maybe'?'Maybe · saved on this device':'Your response is still open'}</p><div class="actions"><button class="btn ${s.rsvp==='going'?'chosen':'outline'}" data-action="rsvp" data-value="going" aria-pressed="${s.rsvp==='going'}">I'm going</button><button class="btn ${s.rsvp==='maybe'?'chosen':'outline'}" data-action="rsvp" data-value="maybe" aria-pressed="${s.rsvp==='maybe'}">Maybe</button></div><div class="group-gather-next"><span>STAY CONNECTED</span><button type="button" data-action="pane" data-area="group" data-value="chat">Talk with your group ${icon('arrow')}</button><button type="button" data-go="read" data-reading="scripture">Read ${e(currentReading().passage)} ${icon('arrow')}</button></div></div><div class="card"><h3>Connected beyond the semester.</h3><p>Continuity is a proposed model, not an approved policy. Groups may continue through breaks, subject to church leadership decisions.</p></div>`;
 if(s.groupPane==='prayer')body=`<div class="card"><div class="kicker">PEOPLE BEFORE POSTS · LOCAL DEMO</div><h3>Pray for one another.</h3><p>Use fictional examples here—do not enter private real requests into this demo.</p>${prayerList()}${compose('prayer','Add a sample prayer request','What can your group pray about?')}<div class="group-prayer-next"><span>CONTINUE THE CONVERSATION</span><button type="button" data-action="pane" data-area="group" data-value="people">Check in with someone ${icon('arrow')}</button></div></div>`;
 if(s.groupPane==='leader')body=lead();
+if(rallyOne&&GroupsV2){
+ return '<section class="group-screen-v07 gv2-detail">'+
+ GroupsV2.detailHeading(s.groupPane,canLead('group'))+
+ GroupsV2.detailTabs(s.groupPane,canLead('group'))+
+ body+footer()+'</section>';
+}
 return `<section class="group-screen-v07">
   <div class="group-community-hero">
     <div class="group-hero-overline">MY COMMUNITY ${canLead('group')?pill('LEADER VIEW'):''}</div>
@@ -476,7 +502,7 @@ function render(){
 const view=$('view'),position=view.scrollTop;
 view.querySelectorAll('textarea').forEach(field=>{drafts[field.id]=field.value});
 if(!['today','group','team','read','play'].includes(s.view))s.view='today';
-if(s.role!=='leader'){if(s.groupPane==='leader')s.groupPane='chat';if(s.teamPane==='leader')s.teamPane='schedule';}
+if(s.role!=='leader'){if(s.groupPane==='leader')s.groupPane='overview';if(s.teamPane==='leader')s.teamPane='schedule';}
 save();
 const hybridShell=document.querySelector('.phone-inner');
 hybridShell.classList.add('premium-alive');
@@ -621,8 +647,8 @@ s.view=view;
 if(view!=='today')f09Feedback='';
 if(view==='today'&&f09Preview)f09Index=0;
 if(view==='group'){
-s.discover=false;if(pane)s.groupPane=pane;
-if(pane==='leader'&&!(s.role==='leader'&&todayUI.memberships.group))s.groupPane='chat';
+s.discover=false;s.groupPane=pane||'overview';
+if(pane==='leader'&&!(s.role==='leader'&&todayUI.memberships.group))s.groupPane='overview';
 }
 if(view==='team'&&pane)s.teamPane=pane;
 render();$('view').scrollTop=0;
@@ -687,7 +713,7 @@ function notify(text){const x=$('toast');x.textContent=text;x.hidden=false;clear
 document.addEventListener('click',ev=>{
 const b=ev.target.closest('button');if(!b)return;
 if(b.type==='submit'&&b.form)return;
-if(b.id==='role'){s.role=s.role==='leader'?'member':'leader';s.groupPane='chat';s.teamPane='schedule';render();renderDialog();notify(s.role==='leader'?'Scoped leader fixture enabled':'Member fixture enabled');return}
+if(b.id==='role'){s.role=s.role==='leader'?'member':'leader';s.groupPane='overview';s.teamPane='schedule';render();renderDialog();notify(s.role==='leader'?'Scoped leader fixture enabled':'Member fixture enabled');return}
 if(b.dataset.go){navigate(b.dataset.go,b.dataset.pane||((b.dataset.leader)?'leader':''),b.dataset.reading);return}
 const a=b.dataset.action,v=b.dataset.value||'',person=b.dataset.person;
 if(f09Preview&&!f09Board&&s.view==='today'&&a==='f09-stack'){
@@ -731,6 +757,9 @@ if(f10Preview&&dialog==='f10-companion'&&a==='f10-confirm'&&s.view==='today'){
    f10Notice='Your sample serving availability is now Confirmed on this device.';
  }else{f10Notice='That sample action is already handled or unavailable for this profile.';}
  f09Feedback='';render();renderDialog();return;
+}
+if(a==='gv2-profile'&&s.view==='group'&&todayUI.memberships.group&&window.RallyGroupsV2?.profiles.some(p=>p.id===person)){
+ groupsV2ActiveProfile=person;s.groupPane='profile';render();$('view').scrollTop=0;return;
 }
 if(a==='connect-room' && todayUI.memberships.team){openConnect('room');return;}
 if(a==='connect-inbox'){openConnect();return;}
