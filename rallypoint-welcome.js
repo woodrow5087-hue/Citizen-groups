@@ -92,7 +92,7 @@
       ui.campus=campus;
       if(!campusOnly){ui.name=name.trim()||ui.name||'Friend';ui.memberships={...ui.memberships,group:kind==='guest'?false:membership.group,team:kind==='guest'?false:membership.team};ui.seenGroupSignature='';ui.onboarding={version:2,connection:kind,completed:true};}
       const app=JSON.parse(localStorage.getItem(APP_KEY)||'null')||{};
-      if(!campusOnly){app.role='member';app.view='today';app.groupPane='chat';app.teamPane='schedule';}
+      if(!campusOnly){app.role='member';app.view='today';app.groupPane=rallyOne?'overview':'chat';app.teamPane='schedule';}
       localStorage.setItem(UI_KEY,JSON.stringify(ui));if(!campusOnly)localStorage.setItem(APP_KEY,JSON.stringify(app));
     }catch{error='This browser could not save your preferences. Existing demo data has not been reset. Try again, or enter without saving.';render();return;}
     returnToApp();
