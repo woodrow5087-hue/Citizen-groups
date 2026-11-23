@@ -77,7 +77,7 @@
   function selectRoomTab(name){
     if(!['chat','plans','people'].includes(name))return;
     if(name!=='chat'&&document.activeElement?.matches('#room-input'))document.activeElement.blur();
-    $('.room-tabs [role=tab]').forEach(button=>{
+    $$('.room-tabs [role=tab]').forEach(button=>{
       const on=button.dataset.roomTab===name;
       button.setAttribute('aria-selected',String(on));
       button.tabIndex=on?0:-1;
