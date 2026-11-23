@@ -63,6 +63,7 @@ function render(m,{placement='today'}={}){
   (!compact?'<blockquote class="ro-care-source"><span>FROM YOUR GROUP · SAMPLE REQUEST</span><p>'+escape(m.person)+': '+escape(m.request)+'</p></blockquote>':'')+
   steps+
   '<div class="ro-care-actions">'+actionMarkup(m)+'</div>'+
+  (placement==='today'&&!m.paused?'<button type="button" class="ro-care-connect-link" data-go="group" data-pane="chat" aria-label="Open the existing Wednesday Group conversation in Connect">Open group conversation in Connect <span aria-hidden="true">↗</span></button>':'')+
   '<small class="ro-care-disclaimer">Fictional scenario · human-led · no automatic outreach</small>'+
   '</section>';
 }
