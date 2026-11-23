@@ -13,7 +13,13 @@ const esc=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&
 const call=(kind,id,pane='')=>Object.freeze({kind,id,pane});
 const go=(id,pane='')=>call('go',id,pane);
 const act=id=>call('action',id);
-const face=(id,name,src)=>{
+const face=(id,name,src,imageSprite=false)=>{
+ // Approved real-image demo sprite is shared with Groups 2.0.
+ // Never infer user identity, status or private-message membership.
+ if(imageSprite===true&&['dustin','mandy','garrett','nick','aiden','dom'].includes(id)){
+  return '<span role="img" class="f09b-real-photo gv2-photo-'+id+
+   '" aria-label="'+esc(name)+'"></span>';
+ }
  const safe=String(src||'');
  return safe&&(/^(?:assets\/|https:\/\/images\.unsplash\.com\/photo-[A-Za-z0-9-]+\?|data:image\/(?:png|jpeg|webp);base64,)/).test(safe)?
   '<img src="'+esc(safe)+'" alt="'+esc(name)+'" loading="lazy" decoding="async">':
@@ -191,10 +197,18 @@ function derive(d,now=new Date()){
  });
 }
 function render(d,peopleRail='',portraits=[],now=new Date()){
- const b=derive(d,now),h=b.hero;
+ const baseline=derive(d,now);
+ // M5B: reuse the exact approved Priority Board surfaces. Rally One may
+ // provide one focused hero + at most one row; other demos remain unchanged.
+ const f=d?.unifiedFocus;
+ const b=f?.hero&&Array.isArray(f.rows)?{
+  ...baseline,hero:f.hero,rows:f.rows,
+  caughtUp:f.hero.id==='caught-up'
+ }:baseline;
+ const h=b.hero;
  const faces=h.hasPeople&&b.hasPeople?
   '<div class="f09b-faces" role="group" aria-label="Fictional group members">'+
-   (Array.isArray(portraits)?portraits.slice(0,3).map(p=>face(p.id,p.name,p.image)).join(''):'')+
+   (Array.isArray(portraits)?portraits.slice(0,3).map(p=>face(p.id,p.name,p.image,p.imageSprite===true)).join(''):'')+
    (Array.isArray(portraits)&&portraits.length>3?'<span aria-label="'+(portraits.length-3)+' additional fictional group member">+'+(portraits.length-3)+'</span>':'')+
   '</div>':'';
  const hero=
@@ -224,7 +238,11 @@ function render(d,peopleRail='',portraits=[],now=new Date()){
    '<span class="f09b-status '+esc(row.statusTone)+'" aria-label="'+esc(row.title+': '+row.status)+'">'+
     esc(row.status)+'</span>'+
   '</div>').join('');
- const feedback=typeof d?.feedback==='string'&&d.feedback.trim()?
+ const receipt=d?.receipt==='group'?{text:'You’re going Wednesday.',go:'group',pane:'gather',link:'View gathering'}:
+   d?.receipt==='team'?{text:'You’re confirmed for Sunday.',go:'team',pane:'schedule',link:'View shift'}:null;
+ const feedback=receipt?
+   '<div class="r1-receipt"><span class="r1-check" aria-hidden="true">✓</span><span role="status">'+receipt.text+
+   '</span><button type="button" data-go="'+receipt.go+'" data-pane="'+receipt.pane+'" aria-label="'+receipt.text+' '+receipt.link+'">'+receipt.link+' ›</button></div>':typeof d?.feedback==='string'&&d.feedback.trim()?
   '<div class="f09b-feedback" role="status" aria-live="polite">'+esc(d.feedback.slice(0,120))+'</div>':'';
  const companionEntry=d?.f10Enabled?
   '<aside class="f10-entry" aria-label="Ask Rally companion">'+
@@ -234,9 +252,10 @@ function render(d,peopleRail='',portraits=[],now=new Date()){
    '</aside>':'';
  return '<section class="f09-dashboard f09-board" data-audience="'+esc(b.audience)+'" data-caught-up="'+b.caughtUp+'" aria-label="F-09 Smart Priority Board preview">'+
   '<header class="f09-greeting"><span class="f09-preview-label">TODAY · YOUR PRIORITIES</span>'+
-    '<h1>'+esc(d.greeting||'Welcome back')+',<br><em>'+esc(d.name||'Friend')+'.</em></h1>'+
-    '<span class="f09-date">'+esc(d.nowLabel||'')+'</span></header>'+feedback+companionEntry+
-  '<div class="f09b-priorities" aria-label="Visible priorities">'+hero+
+    '<h1>'+esc(d.greeting||'Welcome back')+',<br> <em>'+esc(d.name||'Friend')+'.</em></h1>'+
+    '<span class="f09-date">'+esc(d.nowLabel||'')+'</span>'+
+    (d.campus?'<span class="ro-campus">'+esc(d.campus)+' campus</span>':'')+'</header>'+(receipt?'':feedback)+companionEntry+
+  '<div class="f09b-priorities" aria-label="Visible priorities">'+(receipt?feedback:'')+hero+
    '<div class="f09b-row-stack">'+rows+'</div></div>'+
   '<section class="f09b-glance" aria-label="Today at a Glance">'+
    '<div class="f09b-glance-heading"><h2>Today at a Glance</h2>'+
@@ -250,7 +269,7 @@ function render(d,peopleRail='',portraits=[],now=new Date()){
    '<span class="f09b-mission-arrow" aria-hidden="true">›</span></button>'+
   '<footer class="f09b-footer"><span>FICTIONAL LOCAL DEMO · NO LIVE CHURCH ACTIVITY</span>'+
    '<a href="?f09=1&skipWelcome=1">Compare Smart Stack</a>'+
-   '<a href="./">Original Today</a></footer></section>';
+   '<a href="?f09=legacy&skipWelcome=1">Original Today</a></footer></section>';
 }
 return Object.freeze({derive,render});
 });

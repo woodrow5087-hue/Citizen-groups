@@ -22,6 +22,26 @@ function parse(raw,kind){
         return {ok:false,reason:'Saved group messages have an incompatible shape'};
       if(parsed.memoryGames!==undefined&&!object(parsed.memoryGames))
         return {ok:false,reason:'Saved VersePlay progress has an incompatible shape'};
+      // Sprint 7B: do not silently overwrite malformed sample care/team data.
+      for(const name of ['prayers','teamMessages','reached']){
+        if(parsed[name]!==undefined&&!Array.isArray(parsed[name]))
+          return {ok:false,reason:'Saved '+name+' has an incompatible shape'};
+      }
+      for(const name of ['directMessages','companionCare','attendance']){
+        if(parsed[name]!==undefined&&!object(parsed[name]))
+          return {ok:false,reason:'Saved '+name+' has an incompatible shape'};
+      }
+      for(const name of ['groupMessages','prayers','teamMessages']){
+        if(Array.isArray(parsed[name])&&parsed[name].some(m=>
+          !object(m)||typeof m.name!=='string'||typeof m.text!=='string'||
+          (m.time!==undefined&&typeof m.time!=='string')))
+          return {ok:false,reason:'Saved '+name+' contains an incompatible message'};
+      }
+      if(Array.isArray(parsed.reached)&&parsed.reached.some(id=>typeof id!=='string'))
+        return {ok:false,reason:'Saved leader review has an incompatible identifier'};
+      if(object(parsed.directMessages)&&Object.values(parsed.directMessages).some(messages=>!
+        Array.isArray(messages)||messages.some(m=>!object(m)||typeof m.text!=='string')))
+        return {ok:false,reason:'Saved direct conversation has an incompatible shape'};
     }
     if(kind==='today'&&parsed.memberships!==undefined&&!object(parsed.memberships))
       return {ok:false,reason:'Saved membership demo settings have an incompatible shape'};

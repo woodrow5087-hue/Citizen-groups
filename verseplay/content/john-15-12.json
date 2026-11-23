@@ -1,0 +1,176 @@
+{
+  "schemaVersion": 1,
+  "id": "john-15-12",
+  "version": 1,
+  "ref": "JOHN 15:12",
+  "reference": "John 15:12",
+  "translation": {
+    "id": "BSB",
+    "name": "Berean Standard Bible",
+    "caption": "Berean Standard Bible (public domain)"
+  },
+  "text": "This is My commandment, that you love one another as I have loved you.",
+  "source": {
+    "url": "https://biblehub.com/bsb/john/15.htm",
+    "reference": "John 15:12",
+    "text": "This is My commandment, that you love one another as I have loved you.",
+    "verifiedOn": "2026-11-23",
+    "verification": "Exact text compared with the BSB verse on the cited page during engineering refactor; this is source verification, not church editorial approval."
+  },
+  "review": {
+    "status": "source-verified-editorial-pending",
+    "editorialAttribution": "Original Verse Circuit prototype; author identity not recorded. Extracted without editorial changes.",
+    "approvedBy": null
+  },
+  "rights": {
+    "status": "public-domain",
+    "attribution": "Berean Standard Bible",
+    "url": "https://berean.bible/licensing.htm",
+    "verifiedOn": "2026-11-23",
+    "note": "Publisher states Berean Bible texts entered the public domain April 30, 2023."
+  },
+  "phrases": [
+    {
+      "id": "commandment",
+      "text": "commandment"
+    },
+    {
+      "id": "love-one-another",
+      "text": "love one another"
+    },
+    {
+      "id": "loved-you",
+      "text": "loved you"
+    }
+  ],
+  "segments": [
+    {
+      "id": "segment-1",
+      "text": "This is My commandment",
+      "following": ", ",
+      "hint": "This is My"
+    },
+    {
+      "id": "segment-2",
+      "text": "that you love one another",
+      "following": " ",
+      "hint": "that you love"
+    },
+    {
+      "id": "segment-3",
+      "text": "as I have loved you",
+      "following": ".",
+      "hint": "as I have"
+    }
+  ],
+  "sequence": [
+    "segment-1",
+    "segment-2",
+    "segment-3"
+  ],
+  "linkOrder": [
+    "segment-3",
+    "segment-1",
+    "segment-2"
+  ],
+  "answers": [
+    {
+      "id": "answer-commandment",
+      "text": "commandment",
+      "hint": "C"
+    },
+    {
+      "id": "answer-one-another",
+      "text": "one another",
+      "hint": "O"
+    },
+    {
+      "id": "answer-loved",
+      "text": "loved",
+      "hint": "L"
+    }
+  ],
+  "answerSequence": [
+    "answer-commandment",
+    "answer-one-another",
+    "answer-loved"
+  ],
+  "distractors": [
+    {
+      "id": "distractor-know",
+      "text": "know"
+    },
+    {
+      "id": "distractor-listen",
+      "text": "listen"
+    }
+  ],
+  "echoOrder": [
+    "answer-one-another",
+    "answer-loved",
+    "answer-commandment",
+    "distractor-know",
+    "distractor-listen"
+  ],
+  "traceTokens": [
+    {
+      "text": "This is My "
+    },
+    {
+      "phraseId": "commandment"
+    },
+    {
+      "text": ", that you "
+    },
+    {
+      "phraseId": "love-one-another"
+    },
+    {
+      "text": " as I have "
+    },
+    {
+      "phraseId": "loved-you"
+    },
+    {
+      "text": "."
+    }
+  ],
+  "echoTokens": [
+    {
+      "text": "This is My "
+    },
+    {
+      "answerId": "answer-commandment"
+    },
+    {
+      "text": ", that you love "
+    },
+    {
+      "answerId": "answer-one-another"
+    },
+    {
+      "text": " as I have "
+    },
+    {
+      "answerId": "answer-loved"
+    },
+    {
+      "text": " you."
+    }
+  ],
+  "afterglow": {
+    "id": "john-15-12-mark-12-31",
+    "status": "illustrative",
+    "editorialAttribution": "Original Verse Circuit prototype; author identity not recorded.",
+    "approvedBy": null,
+    "completedReference": "JOHN 15:12",
+    "completedSummary": "Jesus commands his followers to love one another as he has loved them.",
+    "relatedSummary": "Jesus identifies love for one's neighbor as one of the greatest commandments.",
+    "title": "A command that moves toward people.",
+    "caution": "Illustrative, author-written discovery note. Scripture references and teaching copy require editorial review before any church-wide release.",
+    "prompt": "What does John 15:12 share with another teaching of Jesus?",
+    "relatedRef": "MARK 12:31",
+    "label": "LOVE IN ACTION",
+    "body": "Both passages place love at the center of how people treat one another. John 15:12 focuses on Jesus' love as the pattern; Mark 12:31 names love for one's neighbor as a central command."
+  }
+}
