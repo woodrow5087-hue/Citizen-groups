@@ -51,7 +51,7 @@
     return {repository,...fields};
   }
   function drawThread(){
-    const {repository,draft}=thread();
+    const {repository,draft,replyTo}=thread();
     const snapshot=repository.getSnapshot();
     const messages=repository.listMessages(actor);
     threadList.replaceChildren();
@@ -59,6 +59,13 @@
       const author=snapshot.users.find(person=>person.id===item.authorId);
       const time=new Date(item.createdAt).toLocaleTimeString([], {hour:'numeric',minute:'2-digit'});
       const row=message(item.body,author?.displayName,time,item.authorId===actor.userId,senderPhotos[item.authorId]);
+      row.dataset.messageId=item.id;
+      const stack=row.querySelector('.message-stack');
+      const quoted=messages.find(entry=>entry.id===item.replyToMessageId);
+      if(quoted){
+        const quotedBy=snapshot.users.find(person=>person.id===quoted.authorId)?.displayName||'Member';
+        stack.insertBefore(element('div','message-reply',quotedBy+': '+quoted.body.slice(0,110)),stack.querySelector('.bubble'));
+      }
       if(item.deliveryStatus==='sent'){
         const reactions=snapshot.reactions.filter(r=>r.messageId===item.id&&r.emoji==='❤️');
         const button=element('button','reaction','♡ '+reactions.length);
@@ -68,11 +75,27 @@
         button.onclick=()=>safeThread(()=>{
           thread(repo=>repo.toggleReaction({...actor,messageId:item.id,emoji:'❤️'}));drawThread();
         });
-        row.querySelector('.message-stack').append(button);
+        stack.append(button);
+        const replyButton=element('button','message-reply-action','↩ Reply');
+        replyButton.type='button';
+        replyButton.setAttribute('aria-label','Reply to '+(author?.displayName||'member')+' message');
+        replyButton.addEventListener('click',()=>safeThread(()=>{
+          thread((_repo,fields)=>{fields.replyTo=item.id;});
+          drawThread();
+          threadInput.focus();
+        }));
+        stack.append(replyButton);
       }
       threadList.append(row);
     }
     threadInput.value=draft;
+    const quoted=messages.find(entry=>entry.id===replyTo);
+    const context=$('#reply-context');
+    context.hidden=!quoted;
+    if(quoted){
+      const name=snapshot.users.find(person=>person.id===quoted.authorId)?.displayName||'Member';
+      $('#reply-context-text').textContent=name+': '+quoted.body.slice(0,130);
+    }
     $('#thread-form .send-btn').disabled=!draft.trim();
   }
   function safeThread(action){
@@ -165,6 +188,11 @@
     prayer.before(threadList);
     $('.chat-header-title p').textContent='Wednesday Group · Small Group';
     threadInput.addEventListener('input',()=>safeThread(()=>thread((repo,fields)=>{fields.draft=threadInput.value;})));
+    $('#reply-cancel').addEventListener('click',()=>safeThread(()=>{
+      thread((_repo,fields)=>{fields.replyTo=null;});
+      drawThread();
+      threadInput.focus();
+    }));
   }
   window.RallyConnectMember={initial:host,allowed,allowsRow,setup,show,send,
     pray(){if(host.write('prayer',!host.praying()))showPrayer();},
