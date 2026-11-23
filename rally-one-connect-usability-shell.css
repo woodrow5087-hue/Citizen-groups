@@ -1,0 +1,21 @@
+/* Connect usability milestone — finish the interaction, preserve the design.
+ * Only iOS viewport/keyboard affordances and targeted inherited contrast defects.
+ */
+.rally-one .connect-overlay[open] {
+  min-width:0;
+  min-height:0;
+  overflow:hidden;
+}
+.rally-one .connect-overlay > button {
+  -webkit-tap-highlight-color:transparent;
+  touch-action:manipulation;
+}
+/* Three legacy small labels fell below WCAG contrast after the graphite restyle.
+   These are text-only corrections, not a Groups redesign. */
+.rally-one .premium-alive.is-groups-v07 .group-discovery-hero-strip > span,
+.rally-one .premium-alive.is-groups-v07 .group-discovery-head > span {
+  color:#ffc4ce;
+}
+.rally-one .premium-alive.is-groups-v07 .group-discovery-notice {
+  color:#ead7c9;
+}
