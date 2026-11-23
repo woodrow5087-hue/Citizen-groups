@@ -75,7 +75,8 @@
         button.onclick=()=>safeThread(()=>{
           thread(repo=>repo.toggleReaction({...actor,messageId:item.id,emoji:'❤️'}));drawThread();
         });
-        stack.append(button);
+        const actions=element('div','message-actions');
+        actions.append(button);
         const replyButton=element('button','message-reply-action','↩ Reply');
         replyButton.type='button';
         replyButton.setAttribute('aria-label','Reply to '+(author?.displayName||'member')+' message');
@@ -84,7 +85,8 @@
           drawThread();
           threadInput.focus();
         }));
-        stack.append(replyButton);
+        actions.append(replyButton);
+        stack.append(actions);
       }
       threadList.append(row);
     }
