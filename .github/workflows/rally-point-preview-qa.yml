@@ -5,10 +5,12 @@ on:
     branches:
       - 'rally-point/v10-pilot-readiness'
       - 'rally-point/develop'
+      - 'rally-one/develop'
   pull_request:
     branches:
       - main
       - 'rally-point/develop'
+      - 'rally-one/develop'
 
 permissions:
   contents: read
