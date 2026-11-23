@@ -47,6 +47,14 @@ function renderHome(data={}){
  (data.canLead?'<button type="button" data-action="pane" data-area="group" data-value="leader">Leader tools ↗</button>':'')+'</div>'+
  '<p class="gv2-safety-note">Demo portraits and group activity. No actual messages or invitations are sent.</p></section>';
 }
+function renderDirectory(){
+ return '<section class="gv2-directory" aria-label="Group member photo gallery">'+
+ '<p class="gv2-directory-intro">Get to know your people. These six photos are examples, not connected member accounts.</p>'+
+ '<div class="gv2-directory-list">'+profiles.map(p=>
+ '<button type="button" class="gv2-directory-person" data-action="gv2-profile" data-person="'+p.id+'" aria-label="View '+safe(p.name)+' demo profile">'+
+ '<span class="gv2-directory-face">'+personPhoto(p)+'</span><span class="gv2-directory-name">'+safe(p.name)+'</span><span aria-hidden="true">↗</span></button>').join('')+'</div>'+
+ '</section>';
+}
 function renderProfile(id){
  const p=profiles.find(item=>item.id===id);
  if(!p)return '';
@@ -68,5 +76,5 @@ function detailTabs(active,leader){
  return '<div class="gv2-detail-tabs" role="group" aria-label="Group details">'+entries.map(([id,label])=>
  '<button type="button" data-action="pane" data-area="group" data-value="'+id+'" '+(active===id?'aria-current="page"':'')+'>'+label+'</button>').join('')+'</div>';
 }
-root.RallyGroupsV2=Object.freeze({profiles,renderHome,renderProfile,detailHeading,detailTabs});
+root.RallyGroupsV2=Object.freeze({profiles,renderHome,renderProfile,renderDirectory,detailHeading,detailTabs});
 })(typeof window!=='undefined'?window:globalThis);
