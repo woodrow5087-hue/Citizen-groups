@@ -20,6 +20,7 @@ try{
   await page.locator('#rp-gateway').waitFor({state:'hidden'});
   await page.locator('#nav [data-go="group"]').click();
   await page.locator('.gv2-home').waitFor();
+  if(width===390){await page.locator('#view').evaluate(el=>el.scrollTop=0);await page.screenshot({path:folder+'/overview-first-open-390.png',animations:'disabled'});}
   assert.equal(await page.locator('.gv2-rail-button').count(),7,'group + six real photos');
   const rail=page.locator('.gv2-rail');
   assert.ok(await rail.evaluate(el=>el.scrollWidth>el.clientWidth),'profile rail should scroll, not shrink');
@@ -33,6 +34,7 @@ try{
   await page.locator('.gv2-profile h1').getByText('Aiden').waitFor();
   assert.match(await page.locator('.gv2-profile-card p').textContent(),/not connected/);
   await page.locator('.gv2-profile .gv2-back').click();
+  assert.equal(await page.locator('#view').evaluate(el=>el.scrollTop),0,'profile back restores rail top');
   await page.locator('.gv2-group-hero').click();
   await page.locator('.gv2-directory-list').waitFor();
   assert.equal(await page.locator('.gv2-directory-person').count(),6);
