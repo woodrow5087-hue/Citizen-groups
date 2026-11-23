@@ -58,6 +58,7 @@ test('one explicit RSVP feeds context, Today priority and Groups without creatin
  const acted=Context.transition({state:s,ui:u,conversation:c,command:{type:'group-rsvp',value:'going'},now});
  assert.equal(acted.ok,true);assert.equal(s.rsvp,'','pure transition cannot mutate original');
  assert.equal(acted.state.rsvp,'going');
+ assert.equal(Object.isFrozen(acted.state),false,'the existing app state must remain editable after local transition');
  const after=next(acted.state,u,c);
  assert.equal(after.member.group.rsvp,'going');
  assert.equal(after.m.rsvp,'going');
