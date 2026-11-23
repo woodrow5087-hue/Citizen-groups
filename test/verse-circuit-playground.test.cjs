@@ -7,8 +7,8 @@ const path = require('node:path');
 const vm = require('node:vm');
 
 const html = fs.readFileSync(path.join(__dirname, '..', 'verse-circuit-playground.html'), 'utf8');
-const inlineScript = html.match(/<script>([\s\S]*?)<\/script>/)?.[1];
-assert.ok(inlineScript, 'Standalone game script exists');
+const scripts = [...html.matchAll(/<script src="(verse-circuit-[^"]+\.js)"><\/script>/g)].map(m=>m[1]);
+assert.equal(scripts.length, 3, 'Content, engine and presentation scripts exist');
 const storage = new Map();
 const listeners = {};
 const game = {
@@ -51,7 +51,8 @@ const context = {
   setTimeout() {},
   console
 };
-vm.runInNewContext(inlineScript, context, { filename: 'verse-circuit-playground.html', timeout: 3000 });
+vm.createContext(context);
+for(const file of scripts)vm.runInContext(fs.readFileSync(path.join(__dirname,'..',file),'utf8'),context,{filename:file,timeout:3000});
 
 function click(action, value) {
   const btn = {
@@ -97,3 +98,16 @@ listeners['audio:click']();
 assert.equal(state().sound, true, 'Audio preference can be changed');
 assert.equal(audio.attributes['aria-pressed'], 'true');
 console.log('Verse Circuit state-machine smoke test: PASS (arcade, stage gating, wrong answers, hints, completion, afterglow, replay, audio).');
+
+// Pure engine edge cases, independent of UI.
+const {VerseCircuitEngine:E,VerseCircuitContent:C}=context;
+const p=C.passage;
+assert.equal(E.transition(E.defaults(),'next',null,p).kind,'ignored');
+assert.equal(E.normalize({screen:'win',trace:['invalid'],link:[2],echo:[2],completed:true},p).screen,'trace');
+let s=E.transition(E.transition(E.defaults(),'launch',null,p).state,'start',null,p).state;
+for(const x of p.anchors)s=E.transition(s,'trace',x,p).state;
+s=E.transition(s,'next',null,p).state;
+for(const i of [0,1,2])s=E.transition(s,'link',i,p).state;
+assert.equal(E.transition(s,'hint',null,p).kind,'ignored');
+assert.equal(E.transition(s,'resetlink',null,p).state.link.length,2);
+assert.equal(s.link.length,3,'Transitions must not mutate the previous state');
