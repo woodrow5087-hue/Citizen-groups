@@ -1,0 +1,67 @@
+/* Connect usability v2 — no design direction change.
+   iPhone safe areas, comfortable focus, and stable chat scrolling. */
+.connect-member,.connect-member .studio,.connect-member .device,
+.connect-member .device-wrap,.connect-member .app-frame {
+  min-height:0;
+  max-height:100%;
+}
+.connect-member .app-frame {overscroll-behavior:contain}
+.screen,.screen-dark {min-height:0}
+.scroll-area {
+  -webkit-overflow-scrolling:touch;
+  overscroll-behavior-y:contain;
+  scroll-padding-bottom:18px;
+}
+.chat-scroll,.room-scroll {
+  min-height:0;
+  touch-action:pan-y;
+}
+.chat-header,.room-tabs,.composer,.reply-context {flex-shrink:0}
+#thread-scroll .added-messages .message {animation:none}
+/* The keyboard and a multiline draft should never crowd out the chat. */
+.composer textarea {
+  font-size:16px;
+  line-height:1.4;
+  -webkit-text-size-adjust:100%;
+  overscroll-behavior:contain;
+}
+.composer .send-btn {
+  min-width:46px;
+  min-height:46px;
+  touch-action:manipulation;
+}
+.composer:focus-within {border-top-color:#ad8490}
+.composer textarea:focus-visible,
+#reply-cancel:focus-visible,
+.message-reply-action:focus-visible,
+.care-cues-actions button:focus-visible {
+  outline:3px solid #ffb5c2;
+  outline-offset:2px;
+}
+#thread-scroll .message-actions button,
+#thread-scroll .prayer-bottom button {touch-action:manipulation}
+.reply-context {max-width:100%;min-width:0}
+#reply-context-text {white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#thread-scroll .message-reply {white-space:pre-wrap}
+#thread-scroll #prayer-moment {scroll-margin-top:20px}
+#toast {pointer-events:none}
+/* Small heights occur with a mobile software keyboard visible. Make
+   the Chat/Plans/People room header compact instead of hiding the composer. */
+@media(max-height:540px){
+  .room-hero {min-height:113px;padding-bottom:8px}
+  .room-identity h2 {font-size:22px;margin-bottom:2px}
+  .room-identity p {font-size:10px}
+  .room-mark {width:40px;height:40px}
+  .room-mark img {width:25px;height:24px}
+  .room-tabs {padding-block:7px}
+  .chat-header {min-height:57px;padding-block:6px}
+  .chat-scroll,.room-scroll {padding-top:8px}
+  .care-cues {margin-bottom:12px}
+}
+@media(max-width:359px){
+  .composer {gap:7px;padding-inline:9px}
+  .chat-scroll {padding-inline:11px}
+}
+@media(prefers-reduced-motion:reduce){
+  .screen,.screen-dark,.scroll-area {scroll-behavior:auto}
+}
