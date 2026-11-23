@@ -60,7 +60,11 @@ function snapshot({state,ui,conversation,now=new Date()}={}){
  });
 }
 function denied(state,reason){return frozen({ok:false,reason,state});}
-function applied(state,details){return frozen({ok:true,reason:'explicit-local-action',state:frozen(state),details});}
+function applied(state,details){
+ // The context snapshot is frozen, NOT the app's existing mutable state.
+ // The caller adopts this fresh state and navigates/edits its own fields.
+ return frozen({ok:true,reason:'explicit-local-action',state,details});
+}
 /* All writes are to pre-existing fields in the pre-existing app state.
  * Callers remain responsible for saving/rolling back via RallyStorageGuard.
  * Navigation and viewing do not call transition().
