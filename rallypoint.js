@@ -221,6 +221,7 @@ function today(){
 function groupBrowse(){
  const sampleGroups=[['The Table','Community · Wednesday','Albuquerque'],['Weekend Hikers','Activity · Saturday','Northeast Heights'],['Young Families','Community · Sunday','North Campus']];
  return `<section class="group-screen-v07 group-discovery-v07" aria-label="Discover community">
+  ${rallyOne&&window.RallyGroupsV2?.renderDiscoveryRail?window.RallyGroupsV2.renderDiscoveryRail():''}
   <div class="group-community-hero group-discovery-hero">
     <div class="group-hero-overline">FIND COMMUNITY · LOCAL DEMO</div>
     <h1>Find your<br>people<span>.</span></h1>
@@ -271,9 +272,13 @@ function connectedGroup(){
   </section>`;
 }
 function group(){
+const GroupsV2=window.RallyGroupsV2;
+if(rallyOne&&GroupsV2&&s.groupPane==='profile'&&(!todayUI.memberships.group||s.discover)){
+  // Browsing demo portraits is public; member-only group data is still gated.
+  return GroupsV2.renderProfile(groupsV2ActiveProfile,{member:false});
+}
 if(!todayUI.memberships.group)return groupBrowse();
 if(s.discover)return groupBrowse();
-const GroupsV2=window.RallyGroupsV2;
 if(rallyOne&&GroupsV2&&s.groupPane==='overview'){
   const latest=conversation(),activity=GX.snapshot(s,true,latest);
   return GroupsV2.renderHome({
@@ -783,8 +788,13 @@ if(f10Preview&&dialog==='f10-companion'&&a==='f10-confirm'&&s.view==='today'){
  }else{f10Notice='That sample action is already handled or unavailable for this profile.';}
  f09Feedback='';render();renderDialog();return;
 }
-if(a==='gv2-profile'&&s.view==='group'&&todayUI.memberships.group&&window.RallyGroupsV2?.profiles.some(p=>p.id===person)){
+if(a==='gv2-profile'&&rallyOne&&s.view==='group'&&window.RallyGroupsV2?.profiles.some(p=>p.id===person)){
  groupsV2ActiveProfile=person;s.groupPane='profile';render();$('view').scrollTop=0;return;
+}
+if(a==='gv2-back-discovery'&&rallyOne&&s.view==='group'){
+  s.groupPane='overview';
+  s.discover=true;
+  render();$('view').scrollTop=0;return;
 }
 if(a==='connect-room' && todayUI.memberships.team){openConnect('room');return;}
 if(a==='connect-inbox'){openConnect();return;}
