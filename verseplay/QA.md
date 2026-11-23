@@ -44,11 +44,14 @@ The normal-motion completion flow produces an inherited `.app-shell.scrollLeft` 
 | Existing repository unit tests (`npm test`) | 293 passed, 0 failed |
 | VersePlay engine/content/storage tests | 172 passed, 0 failed: 83 engine, 89 content/storage |
 | Combined unit total | 465 passed, 0 failed |
+| Final Verse Circuit browser assertions | 467 successful assertions across the documented full and targeted passes |
+| Final screenshot comparisons | 49/49 pairs matched byte for byte; 98 screenshots; 0 raw/non-antialias differences |
+| Final Verse Circuit axe scans | 7 screens, 0 reported violations; contrast requires manual review because pseudo-element backgrounds prevent evaluation |
 | Existing Phase 1 browser checks | 8 cases passed |
 | Existing onboarding browser checks | 6 viewport cases; 30 axe scans passed |
 | Existing Blank Battle browser checks | 2 viewport cases; 2 axe scans passed |
 | Existing Groups safety, chat lab and integrated Groups checks | Passed; chat lab exercised 5 widths |
-| Build and built-output complete game loop | Passed; parent engineer independently exercised normal/reduced-motion loops against built output |
+| Build and built-output complete game loop | Passed; parent engineer independently exercised a reduced-motion full loop against built output. Normal-motion validation is covered by this source-browser suite. |
 
 The repository checks above were executed and reported by the parent engineer in the same workspace. The dedicated Verse Circuit browser result and screenshots are recorded by this suite.
 
