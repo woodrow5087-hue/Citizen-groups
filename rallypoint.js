@@ -68,12 +68,14 @@ const storageGuard=window.RallyStorageGuard.create({getItem:k=>localStorage.getI
  let sprint7Session=null;
 const $=x=>document.getElementById(x), e=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const save=()=>{const result=storageGuard.save({primaryRaw:JSON.stringify(s),todayRaw:JSON.stringify(todayUI)});storageWarning=result.ok?'':result.reason;return result.ok;};
-const canLead=area=>s.role==='leader'&&!!todayUI.memberships[area];
+const canLead=area=>s.role==='leader'&&(
+   rallyOne?memberContext()?.permissions[area==='group'?'groupLeader':'teamLeader']===true:
+   !!todayUI.memberships[area]);
 // Shared read-only projection of the same F-02 snapshot mounted in Groups.
 // Legacy groupMessages remain an independent historical archive.
 const conversation=()=>{
   try{return window.RallyConversationRead?.peek({
-    storage:localStorage,domain:window.RallyChatDomain,member:todayUI.memberships.group
+    storage:localStorage,domain:window.RallyChatDomain,member:todayUI.memberships.group===true
   })||{status:'unavailable',lastMessage:null,unreadCount:0};}
   catch(_){return {status:'unavailable',lastMessage:null,unreadCount:0};}
 };
@@ -183,7 +185,7 @@ function f09Today(){
    const campus=rallyOne?campusNames[todayUI.campus]:'';
    const baselineBoard=window.RallyPriorityBoard.derive(model,now);
    const care=window.RallyCareFlow?.derive({
-     state:s,member:todayUI.memberships.group,now
+     state:s,member:todayUI.memberships.group===true,now
    });
    const unifiedFocus=rallyOne?window.RallyUnifiedFocus?.focus({
      board:baselineBoard,model,care,now
@@ -326,11 +328,12 @@ function connectedGroup(){
 function group(){
 const GroupsV2=window.RallyGroupsV2;
 const context=rallyOne?memberContext():null;
-if(rallyOne&&GroupsV2&&s.groupPane==='profile'&&(!todayUI.memberships.group||s.discover)){
+const groupAllowed=rallyOne?context?.permissions.group===true:!!todayUI.memberships.group;
+if(rallyOne&&GroupsV2&&s.groupPane==='profile'&&(!groupAllowed||s.discover)){
   // Browsing demo portraits is public; member-only group data is still gated.
   return GroupsV2.renderProfile(groupsV2ActiveProfile,{member:false});
 }
-if(!todayUI.memberships.group)return groupBrowse();
+if(!groupAllowed)return groupBrowse();
 if(s.discover)return groupBrowse();
 if(rallyOne&&GroupsV2&&s.groupPane==='overview'){
   const activity=GX.snapshot(s,true,conversation());
@@ -585,7 +588,7 @@ if(rallyOne&&window.RallyCareFlow){
   // ONE source projection across Today → Groups → the existing local DM.
   // Rendering this card is read-only; no message cursor or prayer is marked.
   const care=window.RallyCareFlow.derive({
-    state:s,member:todayUI.memberships.group,now:new Date()
+    state:s,member:todayUI.memberships.group===true,now:new Date()
   });
   if(care){
     if(s.view==='group'&&s.groupPane==='overview'){
@@ -621,7 +624,7 @@ if(s.view==='group'&&s.groupPane==='chat'&&todayUI.memberships.group&&$('rpx-cha
     // The shared adapter preserves draft/reply fields and refuses malformed storage.
     if(authorize('read')){
       window.RallyConversationRead?.markRead({
-        storage:localStorage,domain:Domain,member:todayUI.memberships.group
+        storage:localStorage,domain:Domain,member:todayUI.memberships.group===true
       });
     }
   }else{
@@ -723,7 +726,7 @@ function openConnect(screen='inbox', person=''){
  overlay.addEventListener('cancel',ev=>{ev.preventDefault();history.back();});
 }
 function navigate(view,pane,reading){
- if(rallyOne && view==='group' && pane==='chat' && todayUI.memberships.group){
+ if(rallyOne && view==='group' && pane==='chat' && memberContext()?.permissions.group===true){
    openConnect('thread');return;
  }
 closeDialog(false);
@@ -734,7 +737,7 @@ if(view==='group'){
 s.discover=false;
 if(rallyOne)s.groupPane=pane||'overview';
 else if(pane)s.groupPane=pane;
-if(pane==='leader'&&!(s.role==='leader'&&todayUI.memberships.group))s.groupPane=rallyOne?'overview':'chat';
+if(pane==='leader'&&!canLead('group'))s.groupPane=rallyOne?'overview':'chat';
 }
 if(view==='team'&&pane)s.teamPane=pane;
 render();$('view').scrollTop=0;
@@ -758,7 +761,7 @@ if(dialog==='f10-companion'&&f10Preview){
  const baselineBoard=window.RallyPriorityBoard.derive(model,now);
  // Ask Rally explains the SAME visible priority as Today; it does not
  // invent a second ranking or treat optional prayer as an obligation.
- const care=window.RallyCareFlow?.derive({state:s,member:todayUI.memberships.group,now});
+ const care=window.RallyCareFlow?.derive({state:s,member:todayUI.memberships.group===true,now});
  const focus=rallyOne?window.RallyUnifiedFocus?.focus({board:baselineBoard,model,care,now}):null;
  const board=focus?.hero?{
    ...baselineBoard,hero:focus.hero,rows:focus.rows
@@ -888,9 +891,9 @@ if(a==='gv2-back-discovery'&&rallyOne&&s.view==='group'){
   s.discover=true;
   render();$('view').scrollTop=0;return;
 }
-if(a==='connect-room' && todayUI.memberships.team){openConnect('room');return;}
+if(a==='connect-room' && (rallyOne?memberContext()?.permissions.team===true:!!todayUI.memberships.team)){openConnect('room');return;}
 if(a==='connect-inbox'){openConnect();return;}
-if(rallyOne && ['hybrid-person','message-person'].includes(a) && todayUI.memberships.group && ['anna','jess'].includes(person)){
+if(rallyOne && ['hybrid-person','message-person'].includes(a) && memberContext()?.permissions.group===true && ['anna','jess'].includes(person)){
  openConnect('direct',person==='anna'?'Anna':'Jess');return;
 }
 if(a==='memorize-preview'){navigate('read',null,'memorize');return}
@@ -918,7 +921,7 @@ todayUI.memberships={group:v!=='no-memberships',team:v!=='no-memberships'};
 if(v==='connected'){s.teamStatus='pending';}
 if(v==='caught-up'){s.teamStatus='confirmed';s.coverage=false;s.teamMessages=s.teamMessages.filter(m=>!m.coverage);
   // The demo control acknowledges the real modern cursor; it does not touch legacy messages.
-  try{window.RallyConversationRead?.markRead({storage:localStorage,domain:window.RallyChatDomain,member:todayUI.memberships.group});}catch(_){}
+  try{window.RallyConversationRead?.markRead({storage:localStorage,domain:window.RallyChatDomain,member:todayUI.memberships.group===true});}catch(_){}
  }
 s.view='today';closeDialog(false);render();$('view').scrollTop=0;notify('Local Today fixture updated. No data was sent.');return;
 }
@@ -1010,7 +1013,7 @@ if(a==='companion-snooze'){
 if(a==='care-open-prayer'||a==='care-mark-prayed'||
    a==='care-resume'||a==='care-open-groups'){
   const care=window.RallyCareFlow?.derive({
-    state:s,member:todayUI.memberships.group,now:new Date()
+    state:s,member:todayUI.memberships.group===true,now:new Date()
   });
   if(!care)return;
   if(a==='care-open-prayer'){navigate('group','prayer');return;}
