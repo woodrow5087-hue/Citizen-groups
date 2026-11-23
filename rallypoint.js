@@ -17,7 +17,7 @@ let f10Turns=[],f10Prior={},f10Active=null;
 function f10ClearSession(){
  f10Prompt='week';f10Asked='';f10Notice='';f10Turns=[];f10Prior={};f10Active=null;
 }
-const defaults=()=>({role:'member',groupPane:'chat',directPerson:'anna',directMessages:{},teamPane:'schedule',view:'today',discover:false,groupMessages:[{name:'Jess W.',time:'Yesterday',text:'What stood out to you in John 15 this week?'},{name:'Anna L.',time:'Today',text:'Looking forward to seeing everyone Wednesday.'}],teamMessages:[{name:'Sam R.',time:'Yesterday',text:'Welcome team — thank you for helping people feel at home!'}],prayers:[{name:'Marcus C.',time:'Yesterday',text:'Praying for wisdom with an upcoming decision.'}],rsvp:'',teamStatus:'pending',coverage:false,attendance:{anna:'here',jess:'here',marcus:'unknown',taylor:'unknown'},reached:[],interest:[],plan:'sermon',planQuestions:{},memoryTextRevision:'BSB-2026-1',memoryGames:{},memoryMode:'solo',memoryActive:null,memoryPassTurn:1,memoryTarget:null,question:'How can we love one another as Jesus has loved us?',read:false,prayed:false,readerPreferences:{size:'regular',highlighted:{}},readerNotes:{},companionCare:{},companionChoices:{snoozedUntil:{}},rhythm:{}});
+const defaults=()=>({role:'member',groupPane:'chat',directPerson:'anna',directMessages:{},teamPane:'schedule',view:'today',discover:false,groupMessages:[{name:'Jess W.',time:'Yesterday',text:'What stood out to you in John 15 this week?'},{name:'Anna L.',time:'Today',text:'Looking forward to seeing everyone Wednesday.'}],teamMessages:[{name:'Sam R.',time:'Yesterday',text:'Welcome team — thank you for helping people feel at home!'}],prayers:[{name:'Marcus C.',time:'Yesterday',text:'Praying for wisdom with an upcoming decision.'}],rsvp:'',teamStatus:'pending',coverage:false,attendance:{anna:'here',jess:'here',marcus:'unknown',taylor:'unknown'},reached:[],interest:[],plan:'sermon',planQuestions:{},memoryTextRevision:'BSB-2026-1',memoryGames:{},memoryMode:'solo',memoryActive:null,memoryPassTurn:1,memoryTarget:null,question:'How can we love one another as Jesus has loved us?',read:false,prayed:false,reflectionPrompt:'notice',reflectionResponses:{},readerPreferences:{size:'regular',highlighted:{}},readerNotes:{},companionCare:{},companionChoices:{snoozedUntil:{}},rhythm:{}});
 let s;try{s={...defaults(),...JSON.parse(localStorage.getItem(key)||'null')}}catch(_){s=defaults()}
 if(!s||!s.groupMessages||!Array.isArray(s.groupMessages))s=defaults();
  if(!s.directMessages||typeof s.directMessages!=='object'||Array.isArray(s.directMessages))s.directMessages={};
@@ -32,6 +32,8 @@ if(!s.readerPreferences||typeof s.readerPreferences!=='object'||Array.isArray(s.
 if(!['regular','large'].includes(s.readerPreferences.size))s.readerPreferences.size='regular';
 if(!s.readerPreferences.highlighted||typeof s.readerPreferences.highlighted!=='object'||Array.isArray(s.readerPreferences.highlighted))s.readerPreferences.highlighted={};
 if(!s.readerNotes||typeof s.readerNotes!=='object'||Array.isArray(s.readerNotes))s.readerNotes={};
+if(!['notice','meaning','action'].includes(s.reflectionPrompt))s.reflectionPrompt='notice';
+if(!s.reflectionResponses||typeof s.reflectionResponses!=='object'||Array.isArray(s.reflectionResponses))s.reflectionResponses={};
 if(!['solo','pass'].includes(s.memoryMode))s.memoryMode='solo';
 if(!['sermon','study','year','romans'].includes(s.memoryActive))s.memoryActive=null;
 if(![1,2].includes(s.memoryPassTurn))s.memoryPassTurn=1;
@@ -410,10 +412,25 @@ function read(){
      </div>
      <p class="fine-note">Berean Standard Bible excerpt · Sample reading, not a full chapter or assigned calendar. Notes remain in this browser; avoid sensitive information on shared devices.</p>
    </section>
-   <section class="card read-question-card" id="reading-questions" tabindex="-1">
-     <div class="read-section-label">${icon('message')} <span>02 / REFLECT TOGETHER</span><i></i></div>
-     <h2>A question worth sharing.</h2><p>${e(s.question)}</p>
-     <button type="button" class="read-discuss-action" data-go="group" data-pane="chat">${icon('group')} Open group conversation ${icon('arrow')}</button>
+   <section class="card read-question-card read-reflect" id="reading-questions" tabindex="-1">
+     <div class="read-section-label">${icon('message')} <span>02 / REFLECT · GUIDED PRACTICE</span><i></i></div>
+     <span class="read-reflect-eyebrow">FROM WORDS TO LIFE</span>
+     <h2>Let it stay with you.</h2>
+     <p class="read-reflect-question">${e(s.question)}</p>
+     <div class="read-reflect-prompts" role="group" aria-label="Choose a reflection prompt">
+       ${[['notice','NOTICE'],['meaning','CONSIDER'],['action','RESPOND']].map(([id,label])=>`<button type="button" data-action="reflect-prompt" data-value="${id}" aria-pressed="${s.reflectionPrompt===id}">${label}</button>`).join('')}
+     </div>
+     <div class="read-reflect-guidance">
+       <span>YOUR REFLECTION PROMPT</span>
+       <p>${e(({sermon:{notice:'Which words stand out to you?',meaning:'What does loving one another look like in this passage?',action:'Who could you encourage with a small act of love this week?'},study:{notice:'What instruction or contrast catches your attention?',meaning:'How does hearing differ from doing in this verse?',action:'What is one concrete step you can take today?'},year:{notice:'What image in this passage feels most vivid?',meaning:'What does this excerpt suggest about guidance and rest?',action:'Where might you make space for rest or offer care today?' }[s.plan]||{})[s.reflectionPrompt]||'What stands out to you in these words?')}</p>
+     </div>
+     <label class="read-reflect-label" for="reflection-response">Your response <small>Private · saved on this device</small></label>
+     <textarea id="reflection-response" rows="3" maxlength="1200" placeholder="Write a thought, a prayer, or one small next step...">${e(s.reflectionResponses[s.plan]||'')}</textarea>
+     <div class="read-reflect-actions">
+       <button type="button" class="read-reflect-save" data-action="reflect-save">Save my reflection</button>
+       <button type="button" class="read-discuss-action" data-go="group" data-pane="chat">${icon('group')} Open group conversation ${icon('arrow')}</button>
+     </div>
+     <p class="fine-note">Prompts are prewritten sample guidance, not AI-generated interpretation or official Citizen Church teaching. Your private response is never posted to the group automatically.</p>
      ${H.rhythmEditor(s,plan)}
    </section>
    ${canLead('group')?`<section class="card read-leader-card">
@@ -790,6 +807,8 @@ if(a==='shift'){s.teamStatus=v;if(v==='confirmed'){s.coverage=false;s.teamMessag
 if(a==='cover'){s.coverage=!s.coverage;s.teamMessages=s.teamMessages.filter(x=>!x.coverage);if(s.coverage)s.teamMessages.push({name:'You',time:'Just now',text:'Could someone cover my Sunday 9:00 AM shift?',coverage:true});render();notify(s.coverage?'Sample coverage request posted':'Sample request withdrawn');return}
 if(a==='plan'&&canLead('group')&&readingLibrary[v]){s.planQuestions[s.plan]=s.question;s.plan=v;s.memoryActive=v;s.memoryTarget=null;s.question=s.planQuestions[v]||readingLibrary[v].question;render();notify('Sample reading pathway selected locally');return}
 if(a==='question'&&canLead('group')){const txt=$('question')?.value.trim();if(!txt){notify('Enter a question first');return}s.question=txt;s.planQuestions[s.plan]=txt;render();notify('Sample group question updated locally');return}
+if(a==='reflect-prompt'){s.reflectionResponses[s.plan]=($('reflection-response')?.value||'').slice(0,1200);s.reflectionPrompt=['notice','meaning','action'].includes(v)?v:'notice';render();return}
+if(a==='reflect-save'){s.reflectionResponses[s.plan]=($('reflection-response')?.value||'').slice(0,1200);render();notify('Reflection saved privately on this device');return}
 if(a==='reader-size'){s.readerNotes[s.plan]=($('reader-note')?.value||'').slice(0,1200);s.readerPreferences.size=s.readerPreferences.size==='large'?'regular':'large';render();return}
 if(a==='reader-highlight'){s.readerNotes[s.plan]=($('reader-note')?.value||'').slice(0,1200);s.readerPreferences.highlighted[s.plan]=!s.readerPreferences.highlighted[s.plan];render();return}
 if(a==='reader-save-note'){const note=$('reader-note')?.value||'';s.readerNotes[s.plan]=note.slice(0,1200);render();notify('Private reflection saved on this device');return}
