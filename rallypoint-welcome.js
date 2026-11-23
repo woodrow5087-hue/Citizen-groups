@@ -11,9 +11,16 @@
   if (rallyOne) {
     gateway.classList.add('ro-welcome');
     gateway.setAttribute('aria-label', 'Welcome to Rally One');
-    entry.querySelector('.rp-entry-brand').setAttribute('aria-label', 'Rally One by Citizen Church');
-    entry.querySelector('.rp-entry-title span + span').textContent = 'ONE.';
-    entry.querySelector('.rp-splash-tagline').textContent = 'We rally so no one stands alone.';
+    const brand = entry.querySelector('.rp-entry-brand');
+    const titleCard = document.createElement('img');
+    titleCard.className = 'ro-title-card';
+    titleCard.src = 'assets/rally-one/title-card.jpg';
+    titleCard.width = 1536;
+    titleCard.height = 864;
+    titleCard.alt = 'Rally One. We rally so no one stands alone. Citizen Church.';
+    brand.removeAttribute('aria-label');
+    brand.replaceChildren(titleCard);
+    entry.querySelector('.rp-splash-tagline').hidden = true;
     entry.querySelector('[data-welcome="create"]').lastChild.textContent = 'Create account';
     entry.querySelector('[data-welcome="login"]').lastChild.textContent = 'Sign in';
     entry.querySelector('.rp-entry-note').textContent = 'Interactive demo';
@@ -65,6 +72,14 @@
       main+='<label class="rp-onboard-field">What should we call you?<input id="rp-onboard-name" type="text" autocomplete="given-name" maxlength="24" placeholder="First name (optional)" value="'+html(name)+'"></label>';
       if(kind==='leader')main+='<div class="rp-onboard-confirm"><strong>Leadership needs verification</strong><p>Choosing Leader does not unlock private attendance or follow-up tools. A future church-authorized process must verify permissions. This preview opens as a member.</p></div>';
     }else if(flow==='login')main=login();
+    if (rallyOne) main = main.replaceAll('<br>', ' ');
+    if (rallyOne && flow === 'login') {
+      main = main
+        .replace('Welcome Back', 'Welcome back')
+        .replace('<p>Explore the Rally One sign-in preview.</p>', '')
+        .replace('Prototype only. Fields are locked sample values.<br>Do not enter real credentials.', 'Demo sign-in uses sample credentials.')
+        .replace('<p class="rp-auth-methods">Email, Apple and Google authentication are not connected in this prototype.</p>', '');
+    }
     const disabled=flow==='campus'?!campus:flow==='choose'?!kind:flow==='connect'&&kind!=='guest'&&!membership.group&&!membership.team;
     const footer=flow==='login'?'':'<div class="rp-onboard-spacer"></div>'+(error?'<p class="rp-save-error" role="alert">'+html(error)+'</p>':'')+'<button class="rp-onboard-continue" type="button" data-welcome="'+(flow==='connect'?'finish':'next')+'" '+(disabled?'disabled':'')+'>'+(flow==='connect'?'Open Today':'CONTINUE')+' '+icon('arrow')+'</button>'+(error?'<button type="button" class="rp-create-link" data-welcome="unsaved">Enter demo without saving</button>':'')+'<small class="rp-onboard-foot">Demo profile · saved on this device</small>';
     onboard.innerHTML=header()+main+footer;gateway.setAttribute('aria-label',flow==='login'?'Login preview':flow==='campus'?'Choose your campus':'Personalize your demo');
