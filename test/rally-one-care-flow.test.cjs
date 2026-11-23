@@ -53,6 +53,10 @@ test('Today and Groups show the same progression and ONLY explicit action button
  assert.ok(a.querySelector('[data-action="care-open-prayer"]'));
  assert.ok(a.querySelector('[data-action="care-mark-prayed"]'));
  assert.ok(a.querySelector('[data-action="companion-snooze"]'));
+ assert.ok(a.querySelector('[data-go="group"][data-pane="chat"]'),
+  'Today links into the existing Connect group thread');
+ assert.equal(b.querySelector('[data-go="group"][data-pane="chat"]'),null,
+  'Groups already has its own dedicated Connect conversation widget');
  assert.equal(b.querySelector('.ro-care-source'),null,'Groups compact card reduces duplication');
  assert.equal(Care.render(null,{placement:'today'}),'');
  assert.equal(Care.render(m,{placement:'unknown'}),'');
