@@ -150,9 +150,15 @@ try{
     assert.equal(await chatState(),initialChatState,'visiting Today never acknowledges the thread');
 
     await openTab('group');
-    await page.locator('#rpx-chat').waitFor({state:'visible'});
-    assert.notEqual(await chatState(),initialChatState,'opening the thread saves its read cursor');
-    await page.locator('.tabs [data-area="group"][data-value="gather"]').click();
+    await page.locator('.gv2-home').waitFor({state:'visible'});
+    assert.equal(await chatState(),initialChatState,'Groups overview must not acknowledge an unread thread');
+    await page.locator('.gv2-widget-chat').click();
+    const connectFrame=page.frameLocator('.connect-overlay iframe');
+    await connectFrame.locator('#screen-thread:not([hidden])').waitFor({state:'visible'});
+    assert.notEqual(await chatState(),initialChatState,'opening existing Connect thread saves its read cursor');
+    await page.locator('.connect-overlay > button').click();
+    await page.locator('.gv2-home').waitFor({state:'visible'});
+    await page.locator('.gv2-widget-gather').click();
     await page.locator('[data-action="rsvp"][data-value="going"]').click();
     await openTab('today');
     assert.equal(await agendaStatus('group'),'Going');
