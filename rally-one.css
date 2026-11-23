@@ -1,10 +1,14 @@
 .ro-welcome.rp-gateway {
   --ro-red: #c90030;
-  --ro-charcoal: #242424;
+  --ro-charcoal: #1c1c20;
+  --ro-surface: #29292e;
+  --ro-muted: #c9c3bd;
+  --ro-accent: #ff7288;
   --ro-cream: #fff8ef;
-  --ro-line: #d9ccbd;
-  background: var(--ro-cream);
-  color: var(--ro-charcoal);
+  --ro-line: #555358;
+  background: var(--ro-charcoal);
+  color: var(--ro-cream);
+  color-scheme: dark;
 }
 .ro-welcome.rp-gateway:after { display: none; }
 .ro-welcome .rp-entry {
@@ -12,7 +16,7 @@
   min-height: 100%;
   display: grid;
   grid-template-rows: 1fr auto;
-  background: #1c1c20;
+  background: var(--ro-charcoal);
   padding-inline: 0;
   align-content: center;
   justify-items: center;
@@ -66,44 +70,44 @@
 .ro-welcome .rp-kicker > span { display: none; }
 .ro-welcome .rp-small-brand > img { width: 29px; height: 24px; filter: none; }
 .ro-welcome .rp-small-brand b { font-size: 20px; letter-spacing: -.02em; }
-.ro-welcome .rp-kicker { color: var(--ro-red); }
+.ro-welcome .rp-kicker { color: var(--ro-accent); }
 .ro-welcome .rp-screen-heading h2,
 .ro-welcome .rp-onboard-card-copy strong,
 .ro-welcome .rp-login-field input,
 .ro-welcome .rp-login-field button,
 .ro-welcome .rp-forgot,
-.ro-welcome .rp-create-link { color: var(--ro-charcoal); }
+.ro-welcome .rp-create-link { color: var(--ro-cream); }
 .ro-welcome .rp-screen-heading > p:not(.rp-kicker),
 .ro-welcome .rp-onboard-card-copy small,
 .ro-welcome .rp-onboard-confirm p,
 .ro-welcome .rp-auth-note,
 .ro-welcome .rp-auth-methods,
 .ro-welcome .rp-login-feedback,
-.ro-welcome .rp-onboard-foot { color: #5e5349; }
+.ro-welcome .rp-onboard-foot { color: var(--ro-muted); }
 .ro-welcome .rp-onboard-card,
 .ro-welcome .rp-onboard-confirm,
 .ro-welcome .rp-login-field,
 .ro-welcome .rp-onboard-field input {
-  background: #fffaf4;
+  background: var(--ro-surface);
   border-color: var(--ro-line);
-  color: var(--ro-charcoal);
+  color: var(--ro-cream);
   border-radius: 16px;
 }
-.ro-welcome .rp-onboard-field input::placeholder { color: #625951; opacity: 1; }
-.ro-welcome .rp-onboard-card-icon { background: #cee8f5; }
-.ro-welcome .rp-onboard-card-check { border-color: #8b7d70; }
+.ro-welcome .rp-onboard-field input::placeholder { color: var(--ro-muted); opacity: 1; }
+.ro-welcome .rp-onboard-card-icon { background: #3c3a40; color: var(--ro-cream); }
+.ro-welcome .rp-onboard-card-check { border-color: #928b90; }
 .ro-welcome .rp-onboard-card[aria-pressed="true"] {
-  background: #fae4c1;
-  border-color: var(--ro-red);
-  box-shadow: 0 0 0 1px var(--ro-red);
+  background: #35282e;
+  border-color: var(--ro-accent);
+  box-shadow: 0 0 0 1px var(--ro-accent);
 }
-.ro-welcome .rp-campus-card[aria-pressed="true"] { border-color: var(--ro-red); box-shadow: 0 0 0 2px var(--ro-red); }
+.ro-welcome .rp-campus-card[aria-pressed="true"] { border-color: var(--ro-accent); box-shadow: 0 0 0 1px var(--ro-accent); }
 .ro-welcome .rp-onboard-card[aria-pressed="true"] .rp-onboard-card-check,
-.ro-welcome .rp-campus-check { background: var(--ro-red); color: #fff; }
+.ro-welcome .rp-campus-check { background: var(--ro-red); color: #fff; border-color: var(--ro-accent); }
 .ro-welcome .rp-onboard-continue:disabled,
-.ro-welcome.rp-gateway[data-screen="login"] .rp-onboard-continue:disabled { background: #ebdfd1; color: #685e55; }
+.ro-welcome.rp-gateway[data-screen="login"] .rp-onboard-continue:disabled { background: #343338; color: #b5aeb1; border-color: var(--ro-line); }
 .ro-welcome .rp-auth-methods { border-color: var(--ro-line); }
-.ro-welcome :is(.rp-onboard-card, .rp-campus-card, .rp-onboard-field input, .rp-login-field input, .rp-onboard-continue, .rp-create-link, .rp-forgot):focus-visible { outline-color: var(--ro-red); }
+.ro-welcome :is(.rp-onboard-card, .rp-campus-card, .rp-onboard-field input, .rp-login-field input, .rp-onboard-continue, .rp-create-link, .rp-forgot):focus-visible { outline-color: var(--ro-accent); }
 @media (prefers-reduced-motion: reduce) {
   .ro-welcome *, .ro-welcome.rp-gateway { transition: none !important; }
 }
@@ -129,7 +133,7 @@
 }
 .ro-welcome .rp-kicker { margin-bottom: 4px; }
 .ro-welcome .rp-screen-heading > p:not(.rp-kicker) { font-size: 14px; }
-.ro-welcome .rp-campus-card { grid-column: auto; height: clamp(76px, 15svh, 124px); border-radius: 16px; }
+.ro-welcome .rp-campus-card { grid-column: auto; height: clamp(76px, 15svh, 124px); border-radius: 16px; border-color: var(--ro-line); box-shadow: 0 3px 8px #0003; }
 .ro-welcome .rp-campus-copy strong { font-size: clamp(15px, 5vw, 22px); }
 .ro-welcome .rp-campus-copy small { margin-top: 4px; }
 .ro-welcome .rp-campus-copy { bottom: 8px; }
@@ -147,6 +151,23 @@
 .ro-welcome .rp-login-field input { min-height: 44px; padding-block: 8px; }
 .ro-welcome .rp-forgot { margin-top: 0; }
 .ro-welcome.rp-gateway[data-screen="login"] .rp-button-charcoal { margin-top: 10px; }
+
+.ro-welcome .rp-campus-card[aria-pressed="true"] > img { filter: none; }
+.ro-welcome .rp-onboard-content { display: flow-root; }
+.ro-welcome .rp-step-dots i.is-current { background: var(--ro-accent); }
+@media (prefers-reduced-motion: no-preference) {
+  .ro-welcome .rp-onboard-content--enter { animation: ro-onboard-enter .18s ease-out both; }
+}
+@keyframes ro-onboard-enter {
+  from { opacity: .65; transform: translateY(5px); }
+  to { opacity: 1; transform: none; }
+}
+
+@media (max-height: 620px) {
+  .ro-welcome.rp-gateway[data-screen="connect"] .rp-screen-heading h2 br { display: none; }
+  .ro-welcome.rp-gateway[data-screen="connect"] .rp-onboard-top { margin-bottom: 8px; }
+  .ro-welcome.rp-gateway[data-screen="connect"] .rp-onboard-card { min-height: 54px; padding-block: 6px; }
+}
 
 /* Rally One shares the production-shaped fixture screens and their controls. */
 .rally-one .phone-inner.premium-alive:not(.is-play-v08) > .header {
