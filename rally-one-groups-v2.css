@@ -283,3 +283,36 @@
 .rally-one .premium-alive.is-groups-v07 .gv2-legacy-contacts[open] .card{
  margin:13px 0 0;
 }
+
+
+/* Public-safe people preview for guest and serving-only onboarding.
+   No "My group" membership claim, private thread or leader actions. */
+.rally-one .premium-alive.is-groups-v07 .gv2-public-rail {
+ display:grid;gap:9px;margin:13px 13px 17px;padding:18px 14px 12px;
+ border-radius:20px;border:1px solid #5d5651;
+ background:#222120;color:#fff4e8;
+ box-shadow:0 5px 17px #0b08072e,inset 0 1px 0 #ffffff15;
+}
+.rally-one .premium-alive.is-groups-v07 .gv2-public-rail .gv2-heading-row {
+ display:flex;align-items:end;justify-content:space-between;gap:7px;
+}
+.rally-one .premium-alive.is-groups-v07 .gv2-public-rail .gv2-heading-row h2 {
+ font-size:clamp(27px,7.7vw,33px);letter-spacing:-.065em;
+ line-height:1.06;font-weight:950;color:#fff4e8;margin:0;
+}
+.rally-one .premium-alive.is-groups-v07 .gv2-public-rail .gv2-heading-row h2 span {
+ color:#ff466b;font-size:20px;vertical-align:4px;margin-left:4px;
+}
+.rally-one .premium-alive.is-groups-v07 .gv2-public-rail .gv2-heading-row small {
+ color:#dcc5bc;font-size:9px;font-weight:800;letter-spacing:.08em;
+}
+.rally-one .premium-alive.is-groups-v07 .gv2-public-rail .gv2-rail-wrap {
+ margin:0 -14px;
+}
+.rally-one .premium-alive.is-groups-v07 .gv2-public-rail .gv2-public-note {
+ margin:0;color:#e1d1c5;font-size:11px;line-height:1.45;
+}
+@media(max-width:359px) {
+ .rally-one .premium-alive.is-groups-v07 .gv2-public-rail {margin-inline:10px;padding-inline:11px}
+ .rally-one .premium-alive.is-groups-v07 .gv2-public-rail .gv2-heading-row h2{font-size:26px}
+}
