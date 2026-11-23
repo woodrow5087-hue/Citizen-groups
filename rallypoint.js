@@ -31,7 +31,7 @@ let f10Turns=[],f10Prior={},f10Active=null;
 function f10ClearSession(){
  f10Prompt='week';f10Asked='';f10Notice='';f10Turns=[];f10Prior={};f10Active=null;
 }
-const defaults=()=>({role:'member',groupPane:'overview',directPerson:'anna',directMessages:{},teamPane:'schedule',view:'today',discover:false,groupMessages:[{name:'Jess W.',time:'Yesterday',text:'What stood out to you in John 15 this week?'},{name:'Anna L.',time:'Today',text:'Looking forward to seeing everyone Wednesday.'}],teamMessages:[{name:'Sam R.',time:'Yesterday',text:'Welcome team — thank you for helping people feel at home!'}],prayers:[{name:'Marcus C.',time:'Yesterday',text:'Praying for wisdom with an upcoming decision.'}],rsvp:'',teamStatus:'pending',coverage:false,attendance:{anna:'here',jess:'here',marcus:'unknown',taylor:'unknown'},reached:[],interest:[],plan:'sermon',planQuestions:{},memoryTextRevision:'BSB-2026-1',memoryGames:{},memoryMode:'solo',memoryActive:null,memoryPassTurn:1,memoryTarget:null,question:'How can we love one another as Jesus has loved us?',read:false,prayed:false,companionCare:{},companionChoices:{snoozedUntil:{}},rhythm:{}});
+const defaults=()=>({role:'member',groupPane:'chat',directPerson:'anna',directMessages:{},teamPane:'schedule',view:'today',discover:false,groupMessages:[{name:'Jess W.',time:'Yesterday',text:'What stood out to you in John 15 this week?'},{name:'Anna L.',time:'Today',text:'Looking forward to seeing everyone Wednesday.'}],teamMessages:[{name:'Sam R.',time:'Yesterday',text:'Welcome team — thank you for helping people feel at home!'}],prayers:[{name:'Marcus C.',time:'Yesterday',text:'Praying for wisdom with an upcoming decision.'}],rsvp:'',teamStatus:'pending',coverage:false,attendance:{anna:'here',jess:'here',marcus:'unknown',taylor:'unknown'},reached:[],interest:[],plan:'sermon',planQuestions:{},memoryTextRevision:'BSB-2026-1',memoryGames:{},memoryMode:'solo',memoryActive:null,memoryPassTurn:1,memoryTarget:null,question:'How can we love one another as Jesus has loved us?',read:false,prayed:false,companionCare:{},companionChoices:{snoozedUntil:{}},rhythm:{}});
 let s;try{s={...defaults(),...JSON.parse(localStorage.getItem(key)||'null')}}catch(_){s=defaults()}
 if(!s||!s.groupMessages||!Array.isArray(s.groupMessages))s=defaults();
 if(rallyOne)s.view='today';
@@ -502,7 +502,7 @@ function render(){
 const view=$('view'),position=view.scrollTop;
 view.querySelectorAll('textarea').forEach(field=>{drafts[field.id]=field.value});
 if(!['today','group','team','read','play'].includes(s.view))s.view='today';
-if(s.role!=='leader'){if(s.groupPane==='leader')s.groupPane='overview';if(s.teamPane==='leader')s.teamPane='schedule';}
+if(s.role!=='leader'){if(s.groupPane==='leader')s.groupPane=rallyOne?'overview':'chat';if(s.teamPane==='leader')s.teamPane='schedule';}
 save();
 const hybridShell=document.querySelector('.phone-inner');
 hybridShell.classList.add('premium-alive');
@@ -647,8 +647,10 @@ s.view=view;
 if(view!=='today')f09Feedback='';
 if(view==='today'&&f09Preview)f09Index=0;
 if(view==='group'){
-s.discover=false;s.groupPane=pane||'overview';
-if(pane==='leader'&&!(s.role==='leader'&&todayUI.memberships.group))s.groupPane='overview';
+s.discover=false;
+if(rallyOne)s.groupPane=pane||'overview';
+else if(pane)s.groupPane=pane;
+if(pane==='leader'&&!(s.role==='leader'&&todayUI.memberships.group))s.groupPane=rallyOne?'overview':'chat';
 }
 if(view==='team'&&pane)s.teamPane=pane;
 render();$('view').scrollTop=0;
@@ -713,7 +715,7 @@ function notify(text){const x=$('toast');x.textContent=text;x.hidden=false;clear
 document.addEventListener('click',ev=>{
 const b=ev.target.closest('button');if(!b)return;
 if(b.type==='submit'&&b.form)return;
-if(b.id==='role'){s.role=s.role==='leader'?'member':'leader';s.groupPane='overview';s.teamPane='schedule';render();renderDialog();notify(s.role==='leader'?'Scoped leader fixture enabled':'Member fixture enabled');return}
+if(b.id==='role'){s.role=s.role==='leader'?'member':'leader';s.groupPane=rallyOne?'overview':'chat';s.teamPane='schedule';render();renderDialog();notify(s.role==='leader'?'Scoped leader fixture enabled':'Member fixture enabled');return}
 if(b.dataset.go){navigate(b.dataset.go,b.dataset.pane||((b.dataset.leader)?'leader':''),b.dataset.reading);return}
 const a=b.dataset.action,v=b.dataset.value||'',person=b.dataset.person;
 if(f09Preview&&!f09Board&&s.view==='today'&&a==='f09-stack'){
