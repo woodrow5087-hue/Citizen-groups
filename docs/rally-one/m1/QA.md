@@ -2,7 +2,13 @@
 
 The four shared destinations are Today, Groups, Team and Read. The labeled Connect / Message inbox strip opens the full inbox from each one, including at zero unread. Back returns to the originating area. The original five-tab comparison is available at `/connect-design-lab.html`.
 
-## Phone evidence
+## Current prototype
+
+The default Rally One review opens to graphite Today. The charcoal canvas, red photo priority widget, parchment secondary card and dark navigation follow the approved November 22 graphite study. The shared Connect entry opens the warm-paper inbox.
+
+![Current graphite Today at 390 CSS pixels](today-graphite.webp)
+
+## Earlier Milestone 1 comparison
 
 Captured in Chromium at 390 × 844 with fictional fixtures. Open each image for the device-scale capture.
 
