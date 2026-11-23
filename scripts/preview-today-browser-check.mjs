@@ -9,6 +9,8 @@ const base=process.argv[2];
 await import('./connect-usability-browser-check.mjs');
 // Verify Groups 2.0 interaction and member permissions before the broader dashboard audit.
 await import('./groups-v2-browser-check.mjs');
+// Human-led Companion Care flow: one journey across Today, Groups and local DM.
+await import('./companion-care-browser-check.mjs');
 const out='test-results/preview-today';
 await mkdir(out,{recursive:true});
 const executablePath=process.env.BROWSER_PATH||(existsSync('/usr/bin/chromium')?'/usr/bin/chromium':undefined);
