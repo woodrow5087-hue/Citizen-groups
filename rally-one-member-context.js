@@ -19,9 +19,9 @@ function snapshot({state,ui,conversation,now=new Date()}={}){
  const s=object(state),u=object(ui),m=object(u.memberships),c=object(conversation);
  const group=m.group===true,team=m.team===true;
  const leader=group&&s.role==='leader';
- const status=group?(c.status==='ok'?'ok':'unavailable'):'not-joined';
- const unreadCount=status==='ok'&&Number.isSafeInteger(c.unreadCount)&&c.unreadCount>=0&&c.unreadCount<=9999?
-    c.unreadCount:null; // unknown is NOT zero
+ const countValid=Number.isSafeInteger(c.unreadCount)&&c.unreadCount>=0&&c.unreadCount<=9999;
+ const status=group?(c.status==='ok'&&countValid?'ok':'unavailable'):'not-joined';
+ const unreadCount=status==='ok'?c.unreadCount:null; // unknown is NOT zero
  const rsvp=group&&['going','maybe'].includes(s.rsvp)?s.rsvp:'';
  const servingResponse=team&&['pending','confirmed','declined'].includes(s.teamStatus)?
     s.teamStatus:team?'unknown':'not-joined';
