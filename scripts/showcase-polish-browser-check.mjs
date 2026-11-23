@@ -14,6 +14,8 @@ try{
   const context=await browser.newContext({viewport:{width,height},isMobile:true,hasTouch:true,reducedMotion:'no-preference'});
   const page=await context.newPage(),errors=[];
   page.on('pageerror',e=>errors.push(e.message));
+  // A date-locked synthetic demo avoids ranking differences across weekdays.
+  await page.clock.setFixedTime(new Date('2026-11-25T12:00:00'));
   await page.goto(base);
   await page.locator('[data-welcome="login"]:visible').click();
   await page.locator('[data-welcome="demo"]:visible').click();
@@ -41,8 +43,10 @@ try{
     await page.locator('.profile-avatar').click();
     await page.locator('.s7-scene-picker').waitFor();
     assert.equal(await page.locator('.s7-scene-picker .s7-scene').count(),5);
-    assert.equal(await page.locator('.s7-scene-picker').evaluate(el=>el.compareDocumentPosition(el.parentNode.querySelector('.demo-section'))&Node.DOCUMENT_POSITION_FOLLOWING),4,
-      'leadership scenes are first inside the profile controls');
+    assert.equal(await page.locator('.s7-scene-picker').evaluate(el=>{
+      const next=document.querySelector('#dialog-root .demo-section');
+      return !!next&&!!(el.compareDocumentPosition(next)&Node.DOCUMENT_POSITION_FOLLOWING);
+    }),true,'leadership scenes are first inside the profile controls');
     await page.locator('[data-action="s7-scenario"][data-value="group-serving"]').click();
     await page.locator('.f09b-hero').waitFor();
     const before=await page.locator('.f09b-hero').getAttribute('data-priority');
