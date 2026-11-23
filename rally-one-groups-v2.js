@@ -16,12 +16,20 @@ const safe=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'
 function personPhoto(p){
  return '<span class="gv2-portrait gv2-photo-'+p.id+'" aria-hidden="true"></span>';
 }
-function peopleRail(){
+function peopleRail(includeMyGroup=true){
  const items=profiles.map(p=>'<li class="gv2-rail-item"><button type="button" class="gv2-rail-button" data-action="gv2-profile" data-person="'+p.id+'" aria-label="Open '+safe(p.name)+' demo profile">'+
  '<span class="gv2-ring gv2-ring-mint">'+personPhoto(p)+'</span><span class="gv2-rail-label">'+safe(p.name)+'</span></button></li>').join('');
- return '<nav class="gv2-rail-wrap" aria-label="Your group people"><ul class="gv2-rail">'+
- '<li class="gv2-rail-item"><button type="button" class="gv2-rail-button" data-action="pane" data-area="group" data-value="people" aria-label="Open My group member directory">'+
- '<span class="gv2-ring gv2-ring-red"><img src="assets/rally-one/community.webp" alt="" loading="lazy"></span><span class="gv2-rail-label">My group</span></button></li>'+items+'</ul></nav>';
+ return '<nav class="gv2-rail-wrap" aria-label="'+(includeMyGroup?'Your group people':'Sample community portraits')+'"><ul class="gv2-rail">'+
+ (includeMyGroup?'<li class="gv2-rail-item"><button type="button" class="gv2-rail-button" data-action="pane" data-area="group" data-value="people" aria-label="Open My group member directory">'+
+ '<span class="gv2-ring gv2-ring-red"><img src="assets/rally-one/community.webp" alt="" loading="lazy"></span><span class="gv2-rail-label">My group</span></button></li>':'')+items+'</ul></nav>';
+}
+function renderDiscoveryRail(){
+ return '<section class="gv2-public-rail" aria-label="Meet people in the Rally One demo">'+
+ '<div class="gv2-overline">GET TO KNOW THE COMMUNITY · PREVIEW</div>'+
+ '<div class="gv2-heading-row"><h2>Your people<span aria-hidden="true">✳</span></h2><small>PHOTO DEMO</small></div>'+
+ peopleRail(false)+
+ '<p class="gv2-public-note">Preview photos only. These are not verified group accounts or people you can privately contact in this demo.</p>'+
+ '</section>';
 }
 function renderHome(data={}){
  const unread=Number.isFinite(data.unreadCount)?Math.max(0,Math.trunc(data.unreadCount)):0;
@@ -55,15 +63,15 @@ function renderDirectory(){
  '<span class="gv2-directory-face">'+personPhoto(p)+'</span><span class="gv2-directory-name">'+safe(p.name)+'</span><span aria-hidden="true">↗</span></button>').join('')+'</div>'+
  '</section>';
 }
-function renderProfile(id){
+function renderProfile(id,{member=true}={}){
  const p=profiles.find(item=>item.id===id);
  if(!p)return '';
  return '<section class="group-screen-v07 gv2-profile" aria-label="'+safe(p.name)+' demo profile">'+
- '<button class="gv2-back" type="button" data-action="pane" data-area="group" data-value="overview">← Your people</button>'+
+ '<button class="gv2-back" type="button" '+(member?'data-action="pane" data-area="group" data-value="overview"':'data-action="gv2-back-discovery"')+' >← '+(member?'Your people':'Explore groups')+'</button>'+
  '<div class="gv2-profile-card"><span class="gv2-profile-ring">'+personPhoto(p)+'</span><div class="gv2-overline">COMMUNITY · DEMO PROFILE</div>'+
  '<h1>'+safe(p.name)+'</h1><p>This is a real photograph supplied for the prototype. It is not connected to an actual Rally One member account.</p>'+
- '<button type="button" class="gv2-profile-primary" data-go="group" data-pane="chat">Go to group conversation ↗</button>'+
- '<button type="button" class="gv2-profile-secondary" data-action="pane" data-area="group" data-value="people">View member directory ↗</button></div></section>';
+ (member?'<button type="button" class="gv2-profile-primary" data-go="group" data-pane="chat">Go to group conversation ↗</button>'+ 
+ '<button type="button" class="gv2-profile-secondary" data-action="pane" data-area="group" data-value="people">View member directory ↗</button>':'<button type="button" class="gv2-profile-secondary" data-action="gv2-back-discovery">Explore demo groups ↗</button>')+'</div></section>';
 }
 function detailHeading(pane,leader){
  const labels={people:'My group',gather:'Next gathering',prayer:'Prayer & care',leader:'Care for your people',direct:'Direct demo message',chat:'Group conversation'};
@@ -76,5 +84,5 @@ function detailTabs(active,leader){
  return '<div class="gv2-detail-tabs" role="group" aria-label="Group details">'+entries.map(([id,label])=>
  '<button type="button" data-action="pane" data-area="group" data-value="'+id+'" '+(active===id?'aria-current="page"':'')+'>'+label+'</button>').join('')+'</div>';
 }
-root.RallyGroupsV2=Object.freeze({profiles,renderHome,renderProfile,renderDirectory,detailHeading,detailTabs});
+root.RallyGroupsV2=Object.freeze({profiles,renderHome,renderProfile,renderDiscoveryRail,renderDirectory,detailHeading,detailTabs});
 })(typeof window!=='undefined'?window:globalThis);
