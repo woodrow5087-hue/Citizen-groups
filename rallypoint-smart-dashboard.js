@@ -22,7 +22,10 @@ function model({state,ui,conversation,context=null,now=new Date(),today,companio
  const ctx=context?.version===1?context:null;
  const member=ctx?ctx.memberships.group:!!ui?.memberships?.group;
  const team=ctx?ctx.memberships.team:!!ui?.memberships?.team;
- const chat=conversation&&typeof conversation==='object'?conversation:{status:'unavailable'};
+ const rawChat=conversation&&typeof conversation==='object'?conversation:{status:'unavailable'};
+ // The shared member projection is authoritative for availability and unread count.
+ // Do not turn an invalid or unavailable conversation into an 'all caught up' state.
+ const chat=ctx?{...rawChat,status:ctx.group.status,unreadCount:ctx.group.unreadCount}:rawChat;
  const sourceToday=today?.snapshot(s,ui,now,chat)||{upNext:null,events:[]};
  const result=companion?.choose({state:s,ui,conversation:chat,now})||{
    id:'explore-reading',title:'Your next step.',description:'Continue in Scripture.',
