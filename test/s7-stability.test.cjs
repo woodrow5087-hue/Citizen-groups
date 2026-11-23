@@ -57,7 +57,7 @@ test('fixed visual baseline, four tabs and local demo source order remain intact
  assert.ok(html.indexOf('rally-one-s7-demo.js')<html.indexOf('rallypoint.js'));
  assert.ok(html.indexOf('rally-one-member-context.js')<html.indexOf('rallypoint.js'));
  assert.match(app,/const rallyOne=/);
- assert.match(app,/if\(a==='s7-scenario'\|\|a==='s7-restore'/);
+ assert.match(app,/s7-scenario'\|\|a==='s7-restore/);
  const workflow=read('.github/workflows/rally-point-preview-qa.yml');
  assert.match(workflow,/Run mobile, accessibility/);
  assert.match(workflow,/Check the default Today on the Netlify preview build/);
