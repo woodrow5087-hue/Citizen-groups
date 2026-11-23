@@ -21,37 +21,57 @@
   let toastTimer=null;
   let activeScreen='inbox';
   let activeDirect='Alex Morgan';
+  const scrollPositions=new Map();
+  const directDrafts=new Map();
+  const scrollSelectors={inbox:'.inbox-body',thread:'#thread-scroll',room:'#room-scroll',direct:'#direct-scroll'};
+  const scrollElement=screen=>screens[screen]?.querySelector(scrollSelectors[screen]);
+  const scrollKey=(screen,person=activeDirect)=>screen==='direct'?'direct:'+person:screen;
+  function rememberScroll(screen,person=activeDirect){
+    const scroll=scrollElement(screen);
+    if(scroll && !screens[screen].hidden)scrollPositions.set(scrollKey(screen,person),scroll.scrollTop);
+  }
   function showToast(message){
     if(toastTimer!==null)clearTimeout(toastTimer);
     toast.textContent=message;
     toast.hidden=false;
     toastTimer=setTimeout(()=>{toast.hidden=true;toastTimer=null;},3100);
   }
-  function openScreen(name){
+  function openScreen(name,person=activeDirect){
     if(!Object.prototype.hasOwnProperty.call(screens,name))return;
     if(member && !member.allowed(name))return;
+    rememberScroll(activeScreen,activeDirect);
+    if(activeScreen==='direct')directDrafts.set(activeDirect,$('#direct-input').value);
+    if(name==='direct')activeDirect=person;
+    const priorScreen=activeScreen;
     activeScreen=name;
     Object.entries(screens).forEach(([key,screen])=>{screen.hidden=key!==name;});
     if(dialog.open)dialog.close();
-    if(name==='room')selectRoomTab('chat');
-    if(name==='thread')$('#thread-scroll').scrollTop=0;
-    if(name==='direct')$('#direct-scroll').scrollTop=0;
-    if(name==='inbox')$('#screen-inbox .inbox-body').scrollTop=0;
+    if(name==='room'&&priorScreen!=='room')selectRoomTab('chat');
+    if(name==='direct'){
+      $('#direct-input').value=directDrafts.get(activeDirect)||'';
+      syncComposer($('#direct-input'));
+    }
     member?.show(name,activeDirect);
+    if(name==='thread')syncComposer($('#thread-input'));
+    const scroller=scrollElement(name);
+    // Restore position after message rows have been reconciled with the
+    // existing repository; first-time conversations open at the latest.
+    requestAnimationFrame(()=>{
+      if(!scroller||screens[name].hidden)return;
+      const saved=scrollPositions.get(scrollKey(name,activeDirect));
+      scroller.scrollTop=typeof saved==='number'?saved:
+        name==='inbox'?0:scroller.scrollHeight;
+    });
     document.title=(name==='inbox'?'Connect':name==='thread'?'Wednesday Crew':name==='room'?'Citizen Serve Team':activeDirect)+' — Rally One';
   }
   function openDirect(name){
     if(!Object.prototype.hasOwnProperty.call(urls,name))return;
-    activeDirect=name;
     $('#direct-name').textContent=name;
     $('#direct-author').textContent=name.split(' ')[0];
     $('#direct-first-message').textContent=greetings[name];
     $('#direct-avatar').src=urls[name];
     $('#direct-message-avatar').src=urls[name];
-    $('#direct-new-messages').replaceChildren();
-    $('#direct-input').value='';
-    syncComposer($('#direct-input'));
-    openScreen('direct');
+    openScreen('direct',name);
   }
   function selectRoomTab(name){
     if(!['chat','plans','people'].includes(name))return;
@@ -89,7 +109,11 @@
     const form=$(formId),textarea=form.querySelector('textarea'),target=$(targetId);
     textarea.addEventListener('input',()=>syncComposer(textarea));
     textarea.addEventListener('keydown',event=>{
-      if(event.key==='Enter'&&!event.shiftKey){
+      // Soft-keyboard Return inserts a newline; users explicitly tap Send.
+      // Desktop Enter sends, Shift+Enter inserts a newline, and IME input
+      // must never submit an unfinished composition.
+      if(event.isComposing||event.keyCode===229)return;
+      if(event.key==='Enter'&&!event.shiftKey&&!window.matchMedia('(pointer: coarse)').matches){
         event.preventDefault();
         form.requestSubmit();
       }
@@ -104,7 +128,7 @@
       textarea.value='';
       syncComposer(textarea);
       const scroll=$(scrollId);
-      scroll.scrollTop=scroll.scrollHeight;
+      requestAnimationFrame(()=>{scroll.scrollTop=scroll.scrollHeight;});
       showToast('Message added to this fictional preview only.');
     });
     syncComposer(textarea);
