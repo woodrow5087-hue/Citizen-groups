@@ -172,3 +172,25 @@ test('all four roles use the same context source and no separate persistent owne
  assert.ok(html.includes('rally-one-member-context.js'));
  assert.ok(build.includes("'rally-one-member-context.js'"));
 });
+
+test('S8: malformed unread metadata is unavailable, not an empty or read conversation',()=>{
+ const s=state({rsvp:'going',teamStatus:'confirmed',read:true}),u=ui(true,false);
+ for(const unreadCount of [undefined,null,-1,10000,1.5,'0',NaN]){
+   const raw={status:'ok',unreadCount};
+   const result=next(s,u,raw);
+   assert.equal(result.member.group.status,'unavailable');
+   assert.equal(result.member.group.unreadCount,null);
+   assert.equal(result.m.conversationStatus,'unavailable');
+   assert.equal(result.m.modules.find(x=>x.id==='messages').detail,'Conversation needs review');
+   assert.ok(result.focus.selectedIds.includes('group-unavailable'));
+   assert.ok(!result.focus.selectedIds.includes('group-unread'));
+   assert.equal(raw.status,'ok','projection must not mutate the original record');
+ }
+ const known=next(s,u,chat(0));
+ assert.equal(known.member.group.status,'ok');
+ assert.equal(known.member.group.unreadCount,0);
+ assert.equal(known.m.modules.find(x=>x.id==='messages').detail,'All caught up');
+ const guest=next(s,ui(false,false),chat(3));
+ assert.equal(guest.m.conversationStatus,'not-joined');
+ assert.ok(!guest.focus.selectedIds.includes('group-unavailable'));
+});
