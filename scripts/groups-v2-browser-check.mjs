@@ -58,6 +58,12 @@ try{
   await page.locator('.connect-overlay > button').click();
   await page.locator('.gv2-home').waitFor();
   assert.equal(await page.locator('#nav [aria-current="page"]').getAttribute('data-go'),'group');
+  // Connect inbox is still available even though its redundant cream strip
+  // is hidden on Groups.
+  await page.locator('.gv2-more [data-action="connect-inbox"]').click();
+  await frame.locator('#screen-inbox:not([hidden])').waitFor();
+  await page.locator('.connect-overlay > button').click();
+  await page.locator('.gv2-home').waitFor();
 
   // Groups discovery remains a separate, guest-safe route.
   await page.locator('.gv2-more [data-action="browse"]').click();
