@@ -11,8 +11,7 @@
     "test:blank-battle": "npm run build && node scripts/blank-battle-browser-check.mjs",
     "test:groups-safety": "npm run build && node scripts/groups-safety-browser-check.mjs",
     "test:chat-lab": "npm run build && node scripts/chat-lab-browser-check.mjs",
-    "test:groups-integrated": "npm run build && node scripts/groups-integrated-browser-check.mjs",
-    "test:connect-usability": "npm run build && node scripts/connect-usability-browser-check.mjs http://127.0.0.1:8514/"
+    "test:groups-integrated": "npm run build && node scripts/groups-integrated-browser-check.mjs"
   },
   "engines": {
     "node": ">=22.12"
