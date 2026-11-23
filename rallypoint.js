@@ -790,8 +790,8 @@ if(a==='shift'){s.teamStatus=v;if(v==='confirmed'){s.coverage=false;s.teamMessag
 if(a==='cover'){s.coverage=!s.coverage;s.teamMessages=s.teamMessages.filter(x=>!x.coverage);if(s.coverage)s.teamMessages.push({name:'You',time:'Just now',text:'Could someone cover my Sunday 9:00 AM shift?',coverage:true});render();notify(s.coverage?'Sample coverage request posted':'Sample request withdrawn');return}
 if(a==='plan'&&canLead('group')&&readingLibrary[v]){s.planQuestions[s.plan]=s.question;s.plan=v;s.memoryActive=v;s.memoryTarget=null;s.question=s.planQuestions[v]||readingLibrary[v].question;render();notify('Sample reading pathway selected locally');return}
 if(a==='question'&&canLead('group')){const txt=$('question')?.value.trim();if(!txt){notify('Enter a question first');return}s.question=txt;s.planQuestions[s.plan]=txt;render();notify('Sample group question updated locally');return}
-if(a==='reader-size'){s.readerPreferences.size=s.readerPreferences.size==='large'?'regular':'large';render();return}
-if(a==='reader-highlight'){s.readerPreferences.highlighted[s.plan]=!s.readerPreferences.highlighted[s.plan];render();return}
+if(a==='reader-size'){s.readerNotes[s.plan]=($('reader-note')?.value||'').slice(0,1200);s.readerPreferences.size=s.readerPreferences.size==='large'?'regular':'large';render();return}
+if(a==='reader-highlight'){s.readerNotes[s.plan]=($('reader-note')?.value||'').slice(0,1200);s.readerPreferences.highlighted[s.plan]=!s.readerPreferences.highlighted[s.plan];render();return}
 if(a==='reader-save-note'){const note=$('reader-note')?.value||'';s.readerNotes[s.plan]=note.slice(0,1200);render();notify('Private reflection saved on this device');return}
 if(a==='read'){s.read=!s.read;render();return}
 if(a==='pray'){s.prayed=!s.prayed;render();return}
