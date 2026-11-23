@@ -15,6 +15,7 @@ await import('./groups-v2-onboarding-browser-check.mjs');
 await import('./companion-care-browser-check.mjs');
 // M5C: actual visitor, member, serving and authorized leader end-to-end journeys.
 await import('./m5-member-journeys-browser-check.mjs');
+await import('./m5-mobile-parity-browser-check.mjs');
 const out='test-results/preview-today';
 await mkdir(out,{recursive:true});
 const executablePath=process.env.BROWSER_PATH||(existsSync('/usr/bin/chromium')?'/usr/bin/chromium':undefined);
