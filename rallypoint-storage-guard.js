@@ -22,6 +22,15 @@ function parse(raw,kind){
         return {ok:false,reason:'Saved group messages have an incompatible shape'};
       if(parsed.memoryGames!==undefined&&!object(parsed.memoryGames))
         return {ok:false,reason:'Saved VersePlay progress has an incompatible shape'};
+      // Sprint 7B: do not silently overwrite malformed sample care/team data.
+      for(const name of ['prayers','teamMessages','reached']){
+        if(parsed[name]!==undefined&&!Array.isArray(parsed[name]))
+          return {ok:false,reason:'Saved '+name+' has an incompatible shape'};
+      }
+      for(const name of ['directMessages','companionCare','attendance']){
+        if(parsed[name]!==undefined&&!object(parsed[name]))
+          return {ok:false,reason:'Saved '+name+' has an incompatible shape'};
+      }
     }
     if(kind==='today'&&parsed.memberships!==undefined&&!object(parsed.memberships))
       return {ok:false,reason:'Saved membership demo settings have an incompatible shape'};
