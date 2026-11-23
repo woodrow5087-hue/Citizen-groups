@@ -248,3 +248,38 @@
  .rally-one .premium-alive.is-groups-v07 .gv2-widget:active,
  .rally-one .premium-alive.is-groups-v07 .gv2-care:active{transform:scale(.991)}
 }
+
+/* Profile gallery in the existing People pane; old local fixtures stay in a
+   disclosure for compatibility instead of misleadingly identifying real people. */
+.rally-one .premium-alive.is-groups-v07 .gv2-directory{margin:1px 0 13px}
+.rally-one .premium-alive.is-groups-v07 .gv2-directory-intro{
+ color:#e2d2c6;font-size:12px;line-height:1.5;margin:2px 3px 14px;
+}
+.rally-one .premium-alive.is-groups-v07 .gv2-directory-list{
+ display:grid;gap:8px;
+}
+.rally-one .premium-alive.is-groups-v07 .gv2-directory-person{
+ display:flex;gap:13px;align-items:center;text-align:left;
+ width:100%;min-height:69px;padding:9px 13px;
+ background:#34312f;color:#fff0e5;border:1px solid #685b53;
+ border-radius:16px;font-size:14px;font-weight:850;
+}
+.rally-one .premium-alive.is-groups-v07 .gv2-directory-face{
+ display:block;width:50px;height:50px;flex:none;border-radius:50%;
+ border:2px solid #a6dfcc;padding:3px;
+}
+.rally-one .premium-alive.is-groups-v07 .gv2-directory-name{flex:1}
+.rally-one .premium-alive.is-groups-v07 .gv2-directory-person>span:last-child{
+ color:#ffb3bd;font-size:22px;
+}
+.rally-one .premium-alive.is-groups-v07 .gv2-legacy-contacts{
+ border:1px solid #62564e;background:#292625;border-radius:15px;
+ color:#efe0d4;margin:15px 0;padding:11px 13px;
+}
+.rally-one .premium-alive.is-groups-v07 .gv2-legacy-contacts summary{
+ color:#ecd4c8;font-size:12px;font-weight:850;min-height:33px;
+ padding:8px 0;cursor:pointer;
+}
+.rally-one .premium-alive.is-groups-v07 .gv2-legacy-contacts[open] .card{
+ margin:13px 0 0;
+}
