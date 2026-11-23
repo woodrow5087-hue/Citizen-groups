@@ -80,7 +80,7 @@ test('companion draft starter explicitly opts in and preserves prior text',()=>{
  assert.match(source,/if\(a==='care-mark-prayed'|a==='care-mark-prayed'/);
  assert.match(source,/if\(a==='companion-encourage'\)/);
  assert.match(source,/s\.directMessages\[s\.directPerson\]\.push\(item\)/);
- assert.match(source,/s\.companionCare\.marcus=\{completedAt:/);
+ assert.match(source,/s\.companionCare\.marcus=\{\.\.\.\(s\.companionCare\.marcus\|\|\{\}\),completedAt:/);
 });
 test('integration is scoped to Rally One existing surfaces and no new storage owner',()=>{
  const html=read('index.html'),build=read('scripts/build.cjs'),js=read('rallypoint.js');
