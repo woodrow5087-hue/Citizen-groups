@@ -43,3 +43,15 @@
 .rally-one .premium-alive.is-read-v09 .rp-game-classic-label > span {
   color:#e7d3c4;
 }
+
+/* The small subtitle shares the same parchment contrast requirement as
+   the route kind above; apply consistent text contrast to both. */
+.rally-one .premium-alive.is-groups-v07 .group-pulse-route > small {
+  color:#efddce;
+  opacity:1;
+}
+.rally-one .premium-alive.is-groups-v07 .group-pulse-route:nth-child(2) > small,
+.rally-one .premium-alive.is-groups-v07 .group-pulse-route[data-value="gather"] > small {
+  color:#55443b;
+  opacity:1;
+}
