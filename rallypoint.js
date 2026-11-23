@@ -17,7 +17,7 @@ let f10Turns=[],f10Prior={},f10Active=null;
 function f10ClearSession(){
  f10Prompt='week';f10Asked='';f10Notice='';f10Turns=[];f10Prior={};f10Active=null;
 }
-const defaults=()=>({role:'member',groupPane:'chat',directPerson:'anna',directMessages:{},teamPane:'schedule',view:'today',discover:false,groupMessages:[{name:'Jess W.',time:'Yesterday',text:'What stood out to you in John 15 this week?'},{name:'Anna L.',time:'Today',text:'Looking forward to seeing everyone Wednesday.'}],teamMessages:[{name:'Sam R.',time:'Yesterday',text:'Welcome team — thank you for helping people feel at home!'}],prayers:[{name:'Marcus C.',time:'Yesterday',text:'Praying for wisdom with an upcoming decision.'}],rsvp:'',teamStatus:'pending',coverage:false,attendance:{anna:'here',jess:'here',marcus:'unknown',taylor:'unknown'},reached:[],interest:[],plan:'sermon',planQuestions:{},memoryTextRevision:'BSB-2026-1',memoryGames:{},memoryMode:'solo',memoryActive:null,memoryPassTurn:1,memoryTarget:null,question:'How can we love one another as Jesus has loved us?',read:false,prayed:false,companionCare:{},companionChoices:{snoozedUntil:{}},rhythm:{}});
+const defaults=()=>({role:'member',groupPane:'chat',directPerson:'anna',directMessages:{},teamPane:'schedule',view:'today',discover:false,groupMessages:[{name:'Jess W.',time:'Yesterday',text:'What stood out to you in John 15 this week?'},{name:'Anna L.',time:'Today',text:'Looking forward to seeing everyone Wednesday.'}],teamMessages:[{name:'Sam R.',time:'Yesterday',text:'Welcome team — thank you for helping people feel at home!'}],prayers:[{name:'Marcus C.',time:'Yesterday',text:'Praying for wisdom with an upcoming decision.'}],rsvp:'',teamStatus:'pending',coverage:false,attendance:{anna:'here',jess:'here',marcus:'unknown',taylor:'unknown'},reached:[],interest:[],plan:'sermon',planQuestions:{},memoryTextRevision:'BSB-2026-1',memoryGames:{},memoryMode:'solo',memoryActive:null,memoryPassTurn:1,memoryTarget:null,question:'How can we love one another as Jesus has loved us?',read:false,prayed:false,readerPreferences:{size:'regular',highlighted:{}},readerNotes:{},companionCare:{},companionChoices:{snoozedUntil:{}},rhythm:{}});
 let s;try{s={...defaults(),...JSON.parse(localStorage.getItem(key)||'null')}}catch(_){s=defaults()}
 if(!s||!s.groupMessages||!Array.isArray(s.groupMessages))s=defaults();
  if(!s.directMessages||typeof s.directMessages!=='object'||Array.isArray(s.directMessages))s.directMessages={};
@@ -28,6 +28,10 @@ if(!s.companionChoices.snoozedUntil||typeof s.companionChoices.snoozedUntil!=='o
    Array.isArray(s.companionChoices.snoozedUntil))s.companionChoices.snoozedUntil={};
 if(!s.rhythm||typeof s.rhythm!=='object'||Array.isArray(s.rhythm))s.rhythm={};
 if(!s.memoryGames||typeof s.memoryGames!=='object'||Array.isArray(s.memoryGames))s.memoryGames={};
+if(!s.readerPreferences||typeof s.readerPreferences!=='object'||Array.isArray(s.readerPreferences))s.readerPreferences={size:'regular',highlighted:{}};
+if(!['regular','large'].includes(s.readerPreferences.size))s.readerPreferences.size='regular';
+if(!s.readerPreferences.highlighted||typeof s.readerPreferences.highlighted!=='object'||Array.isArray(s.readerPreferences.highlighted))s.readerPreferences.highlighted={};
+if(!s.readerNotes||typeof s.readerNotes!=='object'||Array.isArray(s.readerNotes))s.readerNotes={};
 if(!['solo','pass'].includes(s.memoryMode))s.memoryMode='solo';
 if(!['sermon','study','year','romans'].includes(s.memoryActive))s.memoryActive=null;
 if(![1,2].includes(s.memoryPassTurn))s.memoryPassTurn=1;
@@ -387,11 +391,24 @@ function read(){
      <div class="read-focus-head"><span>01 / READ · YOUR READING PATH · SAMPLE</span>${icon('read')}</div>
      <h2>Start with Scripture.</h2><p>${e(plan.title)} · ${e(plan.name)}</p><div class="read-focus-detail"><strong>${e(plan.passage)}</strong><small>${e(plan.description)}</small></div>
    </div>
-   <section class="card read-scripture-card" id="reading-scripture" tabindex="-1">
-     <div class="read-section-label">${icon('read')} <span>SCRIPTURE · BSB</span><i></i></div>
-     <h2>${e(plan.passage)}</h2><blockquote>“${e(plan.excerpt)}”</blockquote>
-     <button type="button" class="btn ${s.read?'chosen':'red'}" data-action="read">${s.read?'✓ Read today':'Mark as read'}</button>
-     <p class="fine-note">Public-domain Berean Standard Bible excerpt · Illustrative passage, not an assigned reading calendar.</p>
+   <section class="card read-scripture-card read-reader" id="reading-scripture" tabindex="-1" aria-label="Scripture reading">
+     <div class="read-section-label">${icon('read')} <span>01 / READ · BEREAN STANDARD BIBLE</span><i></i></div>
+     <div class="read-reader-top"><div><span class="read-reader-eyebrow">TODAY'S SCRIPTURE FOCUS</span><h2>${e(plan.passage)}</h2></div><span class="read-reader-translation">BSB</span></div>
+     <div class="read-reader-controls" role="group" aria-label="Reading preferences">
+       <button type="button" data-action="reader-size" aria-pressed="${s.readerPreferences.size==='large'}" aria-label="Toggle larger Scripture text">Aa <span>${s.readerPreferences.size==='large'?'Standard size':'Larger text'}</span></button>
+       <button type="button" data-action="reader-highlight" aria-pressed="${!!s.readerPreferences.highlighted[s.plan]}" aria-label="Highlight this Scripture excerpt">${s.readerPreferences.highlighted[s.plan]?'★ Highlighted':'☆ Highlight'}</button>
+     </div>
+     <div class="read-reader-page ${s.readerPreferences.size==='large'?'read-reader-page--large':''} ${s.readerPreferences.highlighted[s.plan]?'read-reader-page--highlighted':''}">
+       <span class="read-reader-verse-number">SCRIPTURE EXCERPT</span>
+       <blockquote>${e(plan.excerpt)}</blockquote>
+       <span class="read-reader-page-end" aria-hidden="true">✦</span>
+     </div>
+     <div class="read-reader-note">
+       <label for="reader-note">Your private reflection <small>Saved on this device</small></label>
+       <textarea id="reader-note" rows="3" maxlength="1200" placeholder="What stands out to you in these words?">${e(s.readerNotes[s.plan]||'')}</textarea>
+       <div class="read-reader-note-actions"><button type="button" data-action="reader-save-note">Save reflection</button><button type="button" class="btn ${s.read?'chosen':'red'}" data-action="read">${s.read?'✓ Read today':'Mark as read'}</button></div>
+     </div>
+     <p class="fine-note">Berean Standard Bible excerpt · Sample reading, not a full chapter or assigned calendar. Notes remain in this browser; avoid sensitive information on shared devices.</p>
    </section>
    <section class="card read-question-card" id="reading-questions" tabindex="-1">
      <div class="read-section-label">${icon('message')} <span>02 / REFLECT TOGETHER</span><i></i></div>
@@ -773,6 +790,9 @@ if(a==='shift'){s.teamStatus=v;if(v==='confirmed'){s.coverage=false;s.teamMessag
 if(a==='cover'){s.coverage=!s.coverage;s.teamMessages=s.teamMessages.filter(x=>!x.coverage);if(s.coverage)s.teamMessages.push({name:'You',time:'Just now',text:'Could someone cover my Sunday 9:00 AM shift?',coverage:true});render();notify(s.coverage?'Sample coverage request posted':'Sample request withdrawn');return}
 if(a==='plan'&&canLead('group')&&readingLibrary[v]){s.planQuestions[s.plan]=s.question;s.plan=v;s.memoryActive=v;s.memoryTarget=null;s.question=s.planQuestions[v]||readingLibrary[v].question;render();notify('Sample reading pathway selected locally');return}
 if(a==='question'&&canLead('group')){const txt=$('question')?.value.trim();if(!txt){notify('Enter a question first');return}s.question=txt;s.planQuestions[s.plan]=txt;render();notify('Sample group question updated locally');return}
+if(a==='reader-size'){s.readerPreferences.size=s.readerPreferences.size==='large'?'regular':'large';render();return}
+if(a==='reader-highlight'){s.readerPreferences.highlighted[s.plan]=!s.readerPreferences.highlighted[s.plan];render();return}
+if(a==='reader-save-note'){const note=$('reader-note')?.value||'';s.readerNotes[s.plan]=note.slice(0,1200);render();notify('Private reflection saved on this device');return}
 if(a==='read'){s.read=!s.read;render();return}
 if(a==='pray'){s.prayed=!s.prayed;render();return}
 });
