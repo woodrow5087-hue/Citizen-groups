@@ -144,7 +144,7 @@ function f09Today(){
      state:s,member:todayUI.memberships.group,now
    });
    const unifiedFocus=rallyOne?window.RallyUnifiedFocus?.focus({
-     board:baselineBoard,model,care
+     board:baselineBoard,model,care,now
    }):null;
    return window.RallyPriorityBoard.render({
      ...model,feedback:f09Feedback,f10Enabled:f10Preview,campus,
