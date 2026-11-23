@@ -52,6 +52,9 @@ const T=window.RallyToday,U=window.RallyUI,M=window.RallyMemory,VP=window.RallyV
 if(s.memoryTextRevision!==M.textRevision){s.memoryGames={};s.memoryTextRevision=M.textRevision;s.memoryTarget=null;}
 const storageGuard=window.RallyStorageGuard.create({getItem:k=>localStorage.getItem(k),setItem:(k,v)=>localStorage.setItem(k,v),removeItem:k=>localStorage.removeItem(k)});
  let todayUI=T.load({getItem:k=>localStorage.getItem(k)}),dialog=null,dialogTrigger=null,storageWarning=storageGuard.status().reason||'',drafts={},companionFocus=null;
+ // Sprint 7 scenarios are session-local overlays on existing fictional fixtures.
+ // Never maintain another member store, and never reset Connect history silently.
+ let sprint7Session=null;
 const $=x=>document.getElementById(x), e=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const save=()=>{const result=storageGuard.save({primaryRaw:JSON.stringify(s),todayRaw:JSON.stringify(todayUI)});storageWarning=result.ok?'':result.reason;return result.ok;};
 const canLead=area=>s.role==='leader'&&!!todayUI.memberships[area];
@@ -757,6 +760,17 @@ if(dialog==='f10-companion'&&f10Preview){
 if(dialog==='demo-controls'){
 title='Your local preview';body=`<p><strong>Rally Point · Phase 1</strong><br>Fictional people, messages and schedules. No account or integration is connected.</p><form data-form="demo-name" class="rp-stack"><label class="demo-field" for="demo-name">First name for this demo<input id="demo-name" name="name" maxlength="20" value="${e(todayUI.name)}" autocomplete="nickname" required></label><button type="submit" class="btn red">Save local name</button></form><div class="demo-section"><h3>Role preview</h3><button type="button" id="role" class="role" aria-label="Toggle member or leader preview">${s.role==='leader'?'Leader demo · Switch to member':'Member demo · Try leader tools'}</button><p class="fine-note">This grants fixture permissions only for Wednesday Group and Welcome Team when you belong to them. It is not a real account, authority grant or secure backend.</p></div><div class="demo-section"><h3>Try a Today state</h3><div class="rp-stack"><button type="button" class="demo-option" data-action="scenario" data-value="connected"><span>${icon('group')}</span><span><strong>Connected & actionable</strong><small>Group update and a pending serving response.</small></span></button><button type="button" class="demo-option" data-action="scenario" data-value="caught-up"><span>${icon('check')}</span><span><strong>All caught up</strong><small>Acknowledge updates and confirm the sample schedule.</small></span></button><button type="button" class="demo-option" data-action="scenario" data-value="no-memberships"><span>${icon('heart')}</span><span><strong>No group or team yet</strong><small>Welcoming empty state with Scripture and discovery paths.</small></span></button></div><p class="fine-note">Fixture controls change your local sample response and Today memberships. Your messages, prayer posts, RSVP and saved leader/reading choices are kept.</p></div><div class="demo-section"><h3>Today dashboard experiment</h3><p class="fine-note">Explore F-09 with the same fictional people, group, serving and Scripture data. This preview does not replace the approved Today screen.</p><a href="?f10=1&skipWelcome=1">Open F-10 Ask Rally lab</a> · <a href="?f09=board&skipWelcome=1">Open Smart Priority Board</a> · <a href="?f09=1&skipWelcome=1">Compare Smart Stack</a> · <a href="./">Approved Today</a></div><div class="demo-section"><h3>Welcome experience</h3><a href="?welcome=1" class="activity-item rp-replay-welcome">${icon('arrow')}<span><strong>Replay animated welcome</strong><small>Splash → Welcome → Log In or Campus → your existing Rally Point demo</small></span>${icon('arrow')}</a><p class="fine-note">Replaying onboarding won’t erase saved fictional messages, reading progress or schedule responses. Real sign-in is not connected.</p></div><div class="demo-section"><p class="fine-note">The working name and branding remain provisional. Local browser storage is not secure member storage. Please use fictional content.</p><a href="premium-hybrid-archive.html">Open the preserved Citizen Connect demo</a></div>`;
 }
+if(dialog==='demo-controls'&&rallyOne&&window.RallySprint7Demo){
+ const scenarios=window.RallySprint7Demo.scenarios;
+ body+=`<section class="s7-scene-picker" aria-label="Leadership demo scenarios">
+ <h3>Leadership demo · One-tap journeys</h3>
+ <p class="fine-note">Use these five fictional starting points for a repeatable presentation. Selection resets only the sample RSVP, response, review and prayer progress; it preserves your local chat, drafts and Scripture work.</p>
+ <div class="s7-scenes">${scenarios.map(scene=>`<button type="button" class="s7-scene" data-action="s7-scenario" data-value="${e(scene.id)}" aria-label="Load fictional scenario: ${e(scene.label)}">
+ <strong>${e(scene.label)}</strong><small>${e(scene.detail)}</small></button>`).join('')}</div>
+ <button type="button" class="s7-restore" data-action="s7-restore">Restore starting demo state</button>
+ <p class="fine-note">Restores this page session's original group/team settings. It does not rewind separate Connect message history. Not verified member access or real leader authorization.</p>
+ </section>`;
+}
 if(dialog==='quick-actions'){
  title='Make your next move';body=`<p>Quick actions from your current Rally Point demo. Select one to open its existing feature.</p><div class="rp-stack">${todayUI.memberships.group?`<button type="button" class="activity-item" data-go="group" data-pane="chat">${icon('group')}<span><strong>Your group</strong><small>Open the Wednesday Group conversation</small></span>${icon('arrow')}</button>`:`<button type="button" class="activity-item" data-go="group">${icon('group')}<span><strong>Find a group</strong><small>Explore community</small></span>${icon('arrow')}</button>`}${todayUI.memberships.team?`<button type="button" class="activity-item" data-go="team" data-pane="schedule">${icon('team')}<span><strong>Your serving schedule</strong><small>See the upcoming sample shift</small></span>${icon('arrow')}</button>`:''}<button type="button" class="activity-item" data-go="read" data-reading="scripture">${icon('read')}<span><strong>Today’s Scripture</strong><small>Read John 15:9–12</small></span>${icon('arrow')}</button></div>`;
  }
@@ -871,6 +885,22 @@ if(rallyOne && ['hybrid-person','message-person'].includes(a) && todayUI.members
 if(a==='memorize-preview'){navigate('read',null,'memorize');return}
 if(['notifications','demo-controls','team-preview','quick-actions'].includes(a)){showDialog(a,b);return}
 if(a==='close-dialog'){closeDialog();return}
+if((a==='s7-scenario'||a==='s7-restore')&&rallyOne&&window.RallySprint7Demo){
+ if(!sprint7Session)sprint7Session=window.RallySprint7Demo.create(s,todayUI);
+ const requested=a==='s7-restore'?sprint7Session.restore():sprint7Session.prepare(v);
+ if(!requested.ok)return;
+ const oldState=s,oldUI=todayUI;
+ s=requested.state;todayUI=requested.ui;
+ if(!save()){
+   s=oldState;todayUI=oldUI;
+   notify('This browser could not safely save the demo change. Original state retained.');return;
+ }
+ sprint7Session.setActive(a==='s7-restore'?null:v);
+ f09Feedback='';f10ClearSession();companionFocus=null;
+ closeDialog(false);render();$('view').scrollTop=0;
+ notify(a==='s7-restore'?'Original local demo settings restored.':'Fictional leadership scenario loaded locally.');
+ return;
+}
 if(a==='scenario'){
 f09Feedback='';
 todayUI.memberships={group:v!=='no-memberships',team:v!=='no-memberships'};
