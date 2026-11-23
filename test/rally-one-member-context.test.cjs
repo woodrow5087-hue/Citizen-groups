@@ -54,7 +54,7 @@ test('one explicit RSVP feeds context, Today priority and Groups without creatin
  const before=next(s,u,c);
  assert.equal(before.m.rsvp,'');
  assert.equal(before.member.group.rsvp,'');
- assert.deepEqual(before.focus.selectedIds,['group-rsvp','serve-response']);
+ assert.deepEqual(before.focus.selectedIds,['group-rsvp','group-unread']);
  const acted=Context.transition({state:s,ui:u,conversation:c,command:{type:'group-rsvp',value:'going'},now});
  assert.equal(acted.ok,true);assert.equal(s.rsvp,'','pure transition cannot mutate original');
  assert.equal(acted.state.rsvp,'going');
@@ -62,7 +62,8 @@ test('one explicit RSVP feeds context, Today priority and Groups without creatin
  assert.equal(after.member.group.rsvp,'going');
  assert.equal(after.m.rsvp,'going');
  assert.ok(!after.focus.selectedIds.includes('group-rsvp'));
- assert.equal(after.focus.selectedIds[0],'serve-response');
+ assert.equal(after.focus.selectedIds[0],'group-unread');
+ assert.equal(after.focus.selectedIds[1],'serve-response');
  assert.ok(!Object.hasOwn(acted.state,'activityLog'));
  assert.equal(Context.transition({state:acted.state,ui:u,conversation:c,command:{type:'group-rsvp',value:'going'},now}).ok,false,
   'no duplicate RSVP completion');
