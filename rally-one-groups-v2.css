@@ -1,0 +1,318 @@
+/* Rally One · Groups 2.0 — scoped to connected Groups, no global redesign.
+   Reference: approved charcoal #104–#108 and owner-approved people-first mockup. */
+.rally-one .premium-alive.is-groups-v07 .gv2-home,
+.rally-one .premium-alive.is-groups-v07 .gv2-profile{
+ background:#222120;color:#fff5e8;min-height:100%;
+ padding:22px 15px 28px;overflow-x:clip;
+}
+.rally-one .premium-alive.is-groups-v07 .gv2-heading{
+ display:grid;gap:8px;margin:0 0 9px;padding:1px 3px 0;
+}
+.rally-one .premium-alive.is-groups-v07 .gv2-overline{
+ color:#d8bcb5;font-size:10px;letter-spacing:.15em;font-weight:900;
+}
+.rally-one .premium-alive.is-groups-v07 .gv2-heading-row{
+ display:flex;align-items:end;justify-content:space-between;gap:5px;
+}
+.rally-one .premium-alive.is-groups-v07 .gv2-heading-row h1{
+ color:#fff4e8;letter-spacing:-.072em;font-size:clamp(30px,8.4vw,38px);
+ font-weight:950;line-height:1.02;margin:0;white-space:nowrap;
+}
+.rally-one .premium-alive.is-groups-v07 .gv2-heading-row h1 span{
+ color:#ff466b;font-size:25px;vertical-align:5px;margin-left:5px;
+}
+.rally-one .premium-alive.is-groups-v07 .gv2-heading-row small{
+ text-align:right;font-weight:850;white-space:nowrap;font-size:8px;
+ color:#d9c8bc;letter-spacing:.1em;padding-bottom:3px;
+}
+.rally-one .premium-alive.is-groups-v07 .gv2-rail-wrap{
+ margin:0 -15px 15px;min-width:0;
+}
+.rally-one .premium-alive.is-groups-v07 .gv2-rail{
+ display:flex;gap:15px;align-items:start;list-style:none;
+ margin:0;padding:11px 16px 11px;overflow-x:auto;overflow-y:hidden;
+ scrollbar-width:none;scroll-snap-type:x proximity;
+ -webkit-overflow-scrolling:touch;overscroll-behavior-x:contain;
+}
+.rally-one .premium-alive.is-groups-v07 .gv2-rail::-webkit-scrollbar{display:none}
+.rally-one .premium-alive.is-groups-v07 .gv2-rail-item{flex:0 0 69px;scroll-snap-align:start}
+.rally-one .premium-alive.is-groups-v07 .gv2-rail-button{
+ display:flex;flex-direction:column;align-items:center;gap:8px;
+ width:69px;min-height:105px;padding:0;border:0;background:transparent;
+ color:#fff5e8;font:inherit;font-size:11px;font-weight:800;
+ text-align:center;touch-action:manipulation;
+}
+.rally-one .premium-alive.is-groups-v07 .gv2-ring{
+ width:69px;height:69px;display:grid;place-items:center;flex:none;
+ border-radius:50%;border:3px solid #a6dfcc;padding:3px;
+ background:#383a39;box-shadow:0 0 0 1px #ffffff1c,0 3px 9px #08070765;
+}
+.rally-one .premium-alive.is-groups-v07 .gv2-ring-red{border-color:#ff406b}
+.rally-one .premium-alive.is-groups-v07 .gv2-ring img,
+.rally-one .premium-alive.is-groups-v07 .gv2-portrait{
+ display:block;width:100%;height:100%;border-radius:50%;
+ object-fit:cover;background:#403b38;
+}
+.rally-one .premium-alive.is-groups-v07 .gv2-portrait{
+ background-image:url('assets/rally-one/groups-v2-people.webp');
+ background-repeat:no-repeat;background-size:600% 100%;
+ background-color:#37332f;
+}
+.rally-one .premium-alive.is-groups-v07 .gv2-photo-dustin{background-position:0% 50%}
+.rally-one .premium-alive.is-groups-v07 .gv2-photo-mandy{background-position:20% 50%}
+.rally-one .premium-alive.is-groups-v07 .gv2-photo-garrett{background-position:40% 50%}
+.rally-one .premium-alive.is-groups-v07 .gv2-photo-nick{background-position:60% 50%}
+.rally-one .premium-alive.is-groups-v07 .gv2-photo-aiden{background-position:80% 50%}
+.rally-one .premium-alive.is-groups-v07 .gv2-photo-dom{background-position:100% 50%}
+.rally-one .premium-alive.is-groups-v07 .gv2-rail-label{
+ max-width:76px;color:#fff3e9;font-size:11px;overflow:hidden;
+ text-overflow:ellipsis;white-space:nowrap;
+}
+.rally-one .premium-alive.is-groups-v07 .gv2-rail-button:focus-visible .gv2-ring{
+ outline:3px solid #ffb3bf;outline-offset:3px;
+}
+.rally-one .premium-alive.is-groups-v07 .gv2-group-hero{
+ position:relative;isolation:isolate;display:flex;flex-direction:column;
+ align-items:flex-start;text-align:left;gap:8px;overflow:hidden;
+ width:100%;min-height:193px;padding:18px 19px 17px;margin:0 0 12px;
+ border:1px solid #e53158;border-radius:20px;color:white;
+ background:linear-gradient(105deg,#c90031 0%,#b60031f2 75%,#7e002ed9 100%),
+   url('assets/rally-one/community.webp') center 55% / cover;
+ box-shadow:inset 0 1px 0 #ffffff30,0 6px 14px #0c08083d;
+ font-family:inherit;touch-action:manipulation;
+}
+.rally-one .premium-alive.is-groups-v07 .gv2-hero-brand{
+ display:flex;align-items:center;gap:8px;color:#ffebeb;
+ font-size:9px;font-weight:900;letter-spacing:.14em;
+}
+.rally-one .premium-alive.is-groups-v07 .gv2-hero-brand img{
+ width:18px;height:18px;object-fit:contain;
+}
+.rally-one .premium-alive.is-groups-v07 .gv2-group-hero>strong{
+ font-size:clamp(25px,7.5vw,31px);font-weight:950;letter-spacing:-.065em;line-height:1.04;
+}
+.rally-one .premium-alive.is-groups-v07 .gv2-hero-meta{
+ font-size:11px;color:#ffeced;font-weight:700;
+}
+.rally-one .premium-alive.is-groups-v07 .gv2-hero-meta b{opacity:.6;margin:0 2px}
+.rally-one .premium-alive.is-groups-v07 .gv2-hero-copy{
+ color:#ffe8e9;line-height:1.38;font-size:12px;max-width:270px;
+}
+.rally-one .premium-alive.is-groups-v07 .gv2-hero-action{
+ margin-top:4px;width:100%;min-height:43px;
+ display:flex;align-items:center;justify-content:space-between;
+ padding:9px 13px;border-radius:12px;
+ background:#f8dedb;color:#702137;font-size:12px;font-weight:900;
+}
+.rally-one .premium-alive.is-groups-v07 .gv2-hero-action b{font-size:20px}
+.rally-one .premium-alive.is-groups-v07 .gv2-widgets{
+ display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:0 0 12px;
+}
+.rally-one .premium-alive.is-groups-v07 .gv2-widget{
+ display:flex;flex-direction:column;align-items:flex-start;text-align:left;
+ gap:7px;min-width:0;min-height:166px;padding:15px 13px 12px;
+ border:1px solid #514a46;border-radius:18px;
+ box-shadow:inset 0 1px 0 #ffffff15,0 3px 9px #0e0b0b44;
+ color:#fff1e6;background:#343230;font-family:inherit;
+}
+.rally-one .premium-alive.is-groups-v07 .gv2-widget-icon{
+ font-size:23px;color:#a6dfcc;line-height:1;
+}
+.rally-one .premium-alive.is-groups-v07 .gv2-widget>strong{
+ font-size:17px;line-height:1.13;letter-spacing:-.05em;font-weight:900;
+}
+.rally-one .premium-alive.is-groups-v07 .gv2-widget>span:not(.gv2-widget-icon){
+ color:#ded0c7;font-size:11px;line-height:1.4;
+}
+.rally-one .premium-alive.is-groups-v07 .gv2-widget-cta{
+ display:flex;align-items:center;justify-content:space-between;
+ gap:5px;width:100%;min-height:41px;margin-top:auto;
+ padding:9px 10px;background:#222120;
+ border:1px solid #98d5b6;border-radius:12px;color:#fff7ee;
+ font-style:normal;font-size:11px;font-weight:850;
+}
+.rally-one .premium-alive.is-groups-v07 .gv2-widget-cta i{font-style:normal;font-size:16px}
+.rally-one .premium-alive.is-groups-v07 .gv2-widget-gather{
+ background:#f4dfbd;color:#2c2622;border-color:#eed4ac;
+}
+.rally-one .premium-alive.is-groups-v07 .gv2-widget-gather .gv2-widget-icon{color:#9e2034}
+.rally-one .premium-alive.is-groups-v07 .gv2-widget-gather>strong{color:#292421}
+.rally-one .premium-alive.is-groups-v07 .gv2-widget-gather>span:not(.gv2-widget-icon){color:#57443c}
+.rally-one .premium-alive.is-groups-v07 .gv2-widget-gather .gv2-widget-cta{
+ background:#f9f0e2;color:#6f1e30;border-color:#ae6472;
+}
+.rally-one .premium-alive.is-groups-v07 .gv2-care{
+ display:flex;align-items:center;gap:12px;text-align:left;
+ width:100%;min-height:83px;margin:0 0 14px;padding:14px;
+ border:1px solid #554c49;border-radius:18px;
+ background:#302e2c;color:#fff1e7;
+ box-shadow:inset 0 1px 0 #ffffff18;
+}
+.rally-one .premium-alive.is-groups-v07 .gv2-care-icon{
+ font-size:34px;color:#ff7690;line-height:1;
+}
+.rally-one .premium-alive.is-groups-v07 .gv2-care>span:nth-child(2){
+ display:flex;flex-direction:column;gap:4px;flex:1;min-width:0;
+}
+.rally-one .premium-alive.is-groups-v07 .gv2-care strong{
+ color:#fff4e8;font-size:17px;font-weight:900;letter-spacing:-.04em;
+}
+.rally-one .premium-alive.is-groups-v07 .gv2-care small{
+ font-size:11px;color:#ddcfc5;line-height:1.4;
+}
+.rally-one .premium-alive.is-groups-v07 .gv2-care>b{font-size:22px;color:#ff8ba1}
+.rally-one .premium-alive.is-groups-v07 .gv2-more{
+ display:flex;gap:5px 9px;flex-wrap:wrap;
+ padding:1px 0 4px;
+}
+.rally-one .premium-alive.is-groups-v07 .gv2-more button{
+ background:transparent;border:1px solid #6b5d5b;
+ border-radius:999px;color:#f7e7da;padding:8px 12px;min-height:44px;
+ font-size:10px;font-weight:850;white-space:nowrap;
+}
+.rally-one .premium-alive.is-groups-v07 .gv2-safety-note{
+ color:#d2c3b8;font-size:10px;line-height:1.4;margin:12px 3px 0;
+}
+.rally-one .premium-alive.is-groups-v07 .gv2-profile{
+ padding-top:22px;
+}
+.rally-one .premium-alive.is-groups-v07 .gv2-back{
+ min-height:44px;border:1px solid #675a54;
+ border-radius:999px;background:#34302e;color:#fff0e4;
+ padding:8px 13px;font-size:12px;font-weight:850;
+}
+.rally-one .premium-alive.is-groups-v07 .gv2-profile-card{
+ display:flex;align-items:center;flex-direction:column;text-align:center;
+ gap:12px;margin:22px 0;padding:24px 18px;
+ background:#302e2c;border:1px solid #544a45;border-radius:22px;
+}
+.rally-one .premium-alive.is-groups-v07 .gv2-profile-ring{
+ width:120px;height:120px;flex:none;padding:6px;
+ border-radius:50%;border:4px solid #a6dfcc;
+}
+.rally-one .premium-alive.is-groups-v07 .gv2-profile h1{
+ font-size:33px;color:#fff3e5;font-weight:950;letter-spacing:-.06em;
+}
+.rally-one .premium-alive.is-groups-v07 .gv2-profile p{
+ color:#e1d2c7;font-size:13px;line-height:1.55;
+}
+.rally-one .premium-alive.is-groups-v07 .gv2-profile-primary,
+.rally-one .premium-alive.is-groups-v07 .gv2-profile-secondary{
+ min-height:44px;width:100%;border-radius:14px;
+ font-size:13px;font-weight:900;padding:11px 13px;
+ background:#c90031;color:white;border:1px solid #e53a55;
+}
+.rally-one .premium-alive.is-groups-v07 .gv2-profile-secondary{
+ background:#3b3633;border:1px solid #72645e;color:#fff3e9;
+}
+.rally-one .premium-alive.is-groups-v07 .gv2-detail-heading{
+ display:grid;gap:12px;padding:17px 3px 10px;
+}
+.rally-one .premium-alive.is-groups-v07 .gv2-detail-heading .gv2-back{
+ justify-self:start;
+}
+.rally-one .premium-alive.is-groups-v07 .gv2-detail-heading h1{
+ color:#fff4e8;font-size:30px;font-weight:950;letter-spacing:-.055em;line-height:1.06;
+}
+.rally-one .premium-alive.is-groups-v07 .gv2-detail-tabs{
+ display:flex;gap:7px;overflow-x:auto;margin:3px 0 15px;
+ scrollbar-width:none;-webkit-overflow-scrolling:touch;
+}
+.rally-one .premium-alive.is-groups-v07 .gv2-detail-tabs button{
+ flex:none;min-height:44px;padding:10px 13px;border-radius:999px;
+ border:1px solid #695c54;background:#34302e;color:#fff0e4;
+ font-size:11px;font-weight:800;
+}
+.rally-one .premium-alive.is-groups-v07 .gv2-detail-tabs button[aria-current=page]{
+ background:#c90031;color:white;border-color:#d93657;
+}
+.rally-one .premium-alive.is-groups-v07 .gv2-home button:focus-visible,
+.rally-one .premium-alive.is-groups-v07 .gv2-profile button:focus-visible,
+.rally-one .premium-alive.is-groups-v07 .gv2-detail-tabs button:focus-visible,
+.rally-one .premium-alive.is-groups-v07 .gv2-detail-heading button:focus-visible{
+ outline:3px solid #ffb4c0;outline-offset:3px;
+}
+@media(max-width:359px){
+ .rally-one .premium-alive.is-groups-v07 .gv2-heading-row h1{font-size:29px}
+ .rally-one .premium-alive.is-groups-v07 .gv2-heading-row small{font-size:7px}
+ .rally-one .premium-alive.is-groups-v07 .gv2-widget{min-height:174px;padding:13px 10px}
+ .rally-one .premium-alive.is-groups-v07 .gv2-widget>strong{font-size:15px}
+ .rally-one .premium-alive.is-groups-v07 .gv2-widget-cta{padding:8px 7px;font-size:10px}
+ .rally-one .premium-alive.is-groups-v07 .gv2-group-hero{padding:15px}
+}
+@media(prefers-reduced-motion:no-preference){
+ .rally-one .premium-alive.is-groups-v07 .gv2-group-hero,
+ .rally-one .premium-alive.is-groups-v07 .gv2-widget,
+ .rally-one .premium-alive.is-groups-v07 .gv2-care{transition:transform .17s ease,border-color .17s ease}
+ .rally-one .premium-alive.is-groups-v07 .gv2-group-hero:active,
+ .rally-one .premium-alive.is-groups-v07 .gv2-widget:active,
+ .rally-one .premium-alive.is-groups-v07 .gv2-care:active{transform:scale(.991)}
+}
+
+/* Profile gallery in the existing People pane; old local fixtures stay in a
+   disclosure for compatibility instead of misleadingly identifying real people. */
+.rally-one .premium-alive.is-groups-v07 .gv2-directory{margin:1px 0 13px}
+.rally-one .premium-alive.is-groups-v07 .gv2-directory-intro{
+ color:#e2d2c6;font-size:12px;line-height:1.5;margin:2px 3px 14px;
+}
+.rally-one .premium-alive.is-groups-v07 .gv2-directory-list{
+ display:grid;gap:8px;
+}
+.rally-one .premium-alive.is-groups-v07 .gv2-directory-person{
+ display:flex;gap:13px;align-items:center;text-align:left;
+ width:100%;min-height:69px;padding:9px 13px;
+ background:#34312f;color:#fff0e5;border:1px solid #685b53;
+ border-radius:16px;font-size:14px;font-weight:850;
+}
+.rally-one .premium-alive.is-groups-v07 .gv2-directory-face{
+ display:block;width:50px;height:50px;flex:none;border-radius:50%;
+ border:2px solid #a6dfcc;padding:3px;
+}
+.rally-one .premium-alive.is-groups-v07 .gv2-directory-name{flex:1}
+.rally-one .premium-alive.is-groups-v07 .gv2-directory-person>span:last-child{
+ color:#ffb3bd;font-size:22px;
+}
+.rally-one .premium-alive.is-groups-v07 .gv2-legacy-contacts{
+ border:1px solid #62564e;background:#292625;border-radius:15px;
+ color:#efe0d4;margin:15px 0;padding:11px 13px;
+}
+.rally-one .premium-alive.is-groups-v07 .gv2-legacy-contacts summary{
+ color:#ecd4c8;font-size:12px;font-weight:850;min-height:33px;
+ padding:8px 0;cursor:pointer;
+}
+.rally-one .premium-alive.is-groups-v07 .gv2-legacy-contacts[open] .card{
+ margin:13px 0 0;
+}
+
+
+/* Public-safe people preview for guest and serving-only onboarding.
+   No "My group" membership claim, private thread or leader actions. */
+.rally-one .premium-alive.is-groups-v07 .gv2-public-rail {
+ display:grid;gap:9px;margin:13px 13px 17px;padding:18px 14px 12px;
+ border-radius:20px;border:1px solid #5d5651;
+ background:#222120;color:#fff4e8;
+ box-shadow:0 5px 17px #0b08072e,inset 0 1px 0 #ffffff15;
+}
+.rally-one .premium-alive.is-groups-v07 .gv2-public-rail .gv2-heading-row {
+ display:flex;align-items:end;justify-content:space-between;gap:7px;
+}
+.rally-one .premium-alive.is-groups-v07 .gv2-public-rail .gv2-heading-row h2 {
+ font-size:clamp(27px,7.7vw,33px);letter-spacing:-.065em;
+ line-height:1.06;font-weight:950;color:#fff4e8;margin:0;
+}
+.rally-one .premium-alive.is-groups-v07 .gv2-public-rail .gv2-heading-row h2 span {
+ color:#ff466b;font-size:20px;vertical-align:4px;margin-left:4px;
+}
+.rally-one .premium-alive.is-groups-v07 .gv2-public-rail .gv2-heading-row small {
+ color:#dcc5bc;font-size:9px;font-weight:800;letter-spacing:.08em;
+}
+.rally-one .premium-alive.is-groups-v07 .gv2-public-rail .gv2-rail-wrap {
+ margin:0 -14px;
+}
+.rally-one .premium-alive.is-groups-v07 .gv2-public-rail .gv2-public-note {
+ margin:0;color:#e1d1c5;font-size:11px;line-height:1.45;
+}
+@media(max-width:359px) {
+ .rally-one .premium-alive.is-groups-v07 .gv2-public-rail {margin-inline:10px;padding-inline:11px}
+ .rally-one .premium-alive.is-groups-v07 .gv2-public-rail .gv2-heading-row h2{font-size:26px}
+}

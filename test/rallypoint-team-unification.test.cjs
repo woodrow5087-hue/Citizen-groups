@@ -13,7 +13,12 @@ const build=source('scripts/build.cjs');
 /* Approved develop after F-11 Groups (PR #94). Do not let a visual-only Team
  * pass rewrite logic, Today/Groups/Read styles, or the serving state model. */
 const frozen=Object.freeze({
-  'rallypoint.js':'8be0b6e5517ebcf7e0ee72602a9d06fbfcbb6133',
+  /* Connect usability v2: approved openConnect keyboard viewport change; pin remains exact. */
+ /* Groups v2 isolated overview routing + preserved Connect and other tab behavior. */
+ /* Companion Care flow: scoped UI insertion and explicit action only; no other tab redesign. */
+ /* M5B: scoped, read-only Unified Focus ranking within existing Today Priority Board. */
+ /* M6: controlled member context read and explicit action transitions; old tabs retain same surfaces. */
+ 'rallypoint.js':'7ec9cb9c4d92137d440743e74b106de99beb1bfb',
   'rallypoint-phase1.css':'db0bbe26f995fbde1e35a1e4c3a5ef3a6d799833',
   'rallypoint-groups-v07.css':'513c03013506bdaa0d9a99ced6c4d455fd15c386',
   'rallypoint-team-v08.css':'dff9ce0ef59d02a4752bf740407b08324f0459ac',
