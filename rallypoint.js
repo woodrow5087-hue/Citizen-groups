@@ -708,23 +708,7 @@ function openConnect(screen='inbox', person=''){
  overlay.addEventListener('cancel',ev=>{ev.preventDefault();history.back();});
 }
 function navigate(view,pane,reading){
- if(rallyOne && view==='group' && pane==='chat' && memberContext()?.permissions.group===true){
-   openConnect('thread');return;
- }
-closeDialog(false);
-s.view=view;
-if(view!=='today')f09Feedback='';
-if(view==='today'&&f09Preview)f09Index=0;
-if(view==='group'){
-s.discover=false;
-if(rallyOne)s.groupPane=pane||'overview';
-else if(pane)s.groupPane=pane;
-if(pane==='leader'&&!canLead('group'))s.groupPane=rallyOne?'overview':'chat';
-}
-if(view==='team'&&pane)s.teamPane=pane;
-render();$('view').scrollTop=0;
-const focus=reading?$('reading-'+reading):$('view').querySelector('h1');
-if(focus){focus.tabIndex=-1;focus.focus({preventScroll:true});if(reading)focus.scrollIntoView?.({block:'start',behavior:'auto'});}
+ return window.RallyNavigation.navigate(view,pane,reading,{rallyOne,memberContext,openConnect,closeDialog,s,clearFeedback:()=>{f09Feedback='';},resetIndex:()=>{f09Index=0;},f09Preview,canLead,render,$});
 }
 function closeDialog(restore=true){
 if(!dialog)return;if(dialog==='f10-companion')f10ClearSession();dialog=null;$('dialog-root').innerHTML='';document.querySelector('.phone-inner').inert=false;
