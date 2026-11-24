@@ -19,10 +19,10 @@ let f09Index=0;
 let receiptType=null;
 let f09Feedback='';
 let f10Prompt='week',f10Asked='',f10Notice='';
-let f10Turns=[],f10Prior={},f10Active=null;
+let f10Turns=[],f10Prior={},f10Active=null,f10Scope=null;
 // No transcripts, contextual focus, or typed questions are written to storage.
 function f10ClearSession(){
- f10Prompt='week';f10Asked='';f10Notice='';f10Turns=[];f10Prior={};f10Active=null;
+ f10Prompt='week';f10Asked='';f10Notice='';f10Turns=[];f10Prior={};f10Active=null;f10Scope=null;
 }
 let s=window.RallyAppState.initialize(()=>localStorage.getItem(key),rallyOne);
 const T=window.RallyToday,U=window.RallyUI,M=window.RallyMemory,VP=window.RallyVersePlay,H=window.RallyHybrid,G=window.RallyGroupView,GX=window.RallyGroupExperience,icon=U.icon;
@@ -722,6 +722,11 @@ if(dialog==='f10-companion'&&f10Preview){
  title='Ask Rally.';
  const now=new Date();
  const {model,board}=recommendationSnapshot(now,chat);
+ if(rallyOne){
+   const scope=window.RallyPersonalCompanion.conversationScope(model);
+   if(f10Scope!==null&&scope!==f10Scope){f10Turns=[];f10Prior={};f10Active=null;f10Notice='';f10Prompt='week';f10Asked='';}
+   f10Scope=scope;
+ }
  f10Active=window.RallyPersonalCompanion.respond(f10Prompt,{model,board,now,goalMode:f103Preview},f10Prior);
  body=window.RallyPersonalCompanion.render(
    f10Active.response,f10Asked,f10Notice,f10Turns,f10Active.suggestions

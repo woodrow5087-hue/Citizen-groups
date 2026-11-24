@@ -64,7 +64,8 @@ function resolveIntent(value,prior={}){
  if(/\b(?:get (?:more )?connected|feel (?:more )?connected|meet (?:some )?people|where do i start|new here|find (?:a group|my people|my next connection)|get (?:back )?involved|reconnect with my group|spend time with my people|start connecting|belong here|connect with my community)\b/.test(q))return 'connect';
  // A new explicit domain outranks an inherited conversational referent.
  if(/\b(?:group|wednesday|rsvp|gathering|sunday|serv(?:e|ing|ice)|shift|volunteer|welcome team|scripture|bible|reading|verse)\b/.test(q))return 'legacy';
- if(prior?.focus==='care'&&/^(?:what can i do next|what about that|how can i follow up|why this suggestion|why did you suggest that person|can i read the request|what about them|how about it|is that done)$/.test(q))return 'care';
+ if(prior?.focus==='care'&&/^(?:haven't i already done that|have i already done that|did i already do that|did i do that|is that done|have i prayed already|did i already pray|have i already prayed|did i send it)$/.test(q))return 'care-status';
+ if(prior?.focus==='care'&&/^(?:what can i do next|what about that|how can i follow up|why this suggestion|why did you suggest that person|can i read the request|what about them|how about it|what did (?:he|she|they) ask for prayer about|what is the request|what did they share)$/.test(q))return 'care';
  if(/^(?:what about (?:them|that)|can you do that|how about it|is that done)$/.test(q))return 'clarify';
  if(/\b(?:focus on|next steps?|needs my attention|busy week|what's important|needs a response|prioriti[sz]e|take care of (?:today|first)|outstanding|overwhelmed by my commitments|narrow down what matters|anything to review|what matters right now|caught up)\b/.test(q))return 'focus';
  return 'legacy';
@@ -285,6 +286,44 @@ function goalSuggestions(topic,d){
  return ['goal-check',...suggestions(topic,d)].slice(0,3);
 }
 
+// Current-source care conversation. A referent only selects a topic; the
+// existing projection owns permission, stage and completion. Never copy prayer text.
+function careConversation(intent,d,query){
+ const ctx=d.memberContext,care=ctx?.care;
+ const result=(outcome,heading,intro,items=[])=>Object.freeze({intent,topic:'care',outcome,heading,intro,items:Object.freeze(items),note:sourceNote});
+ if(ctx?.permissions?.group!==true)
+  return result('no-group-access','Care starts with connection.','No group prayer request is available to this profile. You can explore Groups at your own pace.');
+ if(care?.visible!==true||!['ready','prayed','paused','followed-up'].includes(care.status))
+  return result('no-authorized-request','No current care request is available.','I don’t have an authorized sample prayer request to suggest right now. You don’t need to find another task.');
+ if(intent==='care-status'){
+  if(care.followedUp===true&&care.status==='followed-up')
+   return result('recorded-local-completion','You’ve followed through.','Your check-in was saved on this device. No real message was delivered, and no additional response is required.');
+  if(care.prayed===true)
+   return result('recorded-prayer','You’ve marked that you prayed.',care.status==='paused'?'Your reminder is paused. You can leave it there.':'A check-in has not been recorded. You can leave it at prayer or ask about an optional next step.');
+  return result('no-recorded-completion','No completion is recorded.',care.status==='paused'?'Your reminder is paused. Nothing else is required.':'There is no saved prayer or check-in completion for this request. Asking or opening a draft does not complete it.');
+ }
+ if(care.status==='paused')
+  return result('respect-pause','Care, at your pace.','You chose to pause this reminder. It can stay paused; no response or message is required.');
+ if(care.status==='followed-up')
+  return result('no-open-care','No further care step is required.','There is no open care suggestion right now. You’re welcome to connect with your group at your own pace.');
+ const prayed=care.status==='prayed',id=prayed?'care-check-in':'care-prayer';
+ const action=careRoute(d,id,{kind:'action',id:prayed?'companion-encourage':'care-open-prayer'});
+ const detailQuery=/\b(?:what did|what is the request|read the request)\b/i.test(query);
+ const intro=detailQuery?'The original fictional request is available in your group’s prayer area. I won’t repeat the private text here.':prayed?
+  'You marked that you prayed for a shared sample request. A personal check-in is optional.':
+  'Someone in your Wednesday Group shared a sample prayer request. You could take a moment to pray, if you’d like.';
+ const detail=prayed?'Write a personal note only if you choose.':'Open the original request in your group; reading it does not mark it complete.';
+ // For a prayed request, the existing stage-specific check-in route is the only
+ // action offered here; the prayer area remains accessible from Groups.
+ return result(prayed?'optional-check-in':'optional-prayer',prayed?'Continue a thoughtful check-in.':'A moment to care.',intro,
+  [item(prayed?'Write a check-in':'Read the prayer request',detail,'Based on an explicitly shared, authorized fictional group request; no inferred need.',action)]);
+}
+// Scope key is session-only, never an identity credential or authorization grant.
+function conversationScope(model){
+ const c=model?.memberContext;
+ if(c?.version!==1)return null;
+ return JSON.stringify([c.identity?.name,c.identity?.campus,c.permissions?.group===true,c.permissions?.team===true,c.permissions?.groupLeader===true,c.permissions?.teamLeader===true,c.care?.visible===true]);
+}
 function respond(raw,sources={},prior={}){
  const query=String(raw||'').trim().slice(0,160);
  const d=sources.model||{},b=sources.board||{},now=sources.now instanceof Date?sources.now:new Date();
@@ -306,9 +345,13 @@ function respond(raw,sources={},prior={}){
   const focus=topicOf(response,b);
   return Object.freeze({query,response,context:Object.freeze({intent:response.intent,focus}),suggestions:Object.freeze(recommend(focus||response.intent))});
  }
- // Care, connection, completion and leader response planning will be integrated
- // in 10C.4C/D. Do not substitute a misleading schedule or Scripture answer.
- if(['care','care-status','connect','leader'].includes(recognized)){
+ if(recognized==='care'||recognized==='care-status'){
+  const response=careConversation(recognized,d,query);
+  const focus=d.memberContext?.permissions?.group===true&&d.memberContext?.care?.visible===true?'care':'';
+  return Object.freeze({query,response,context:Object.freeze({intent:recognized,focus}),suggestions:Object.freeze(['next','group','scripture'])});
+ }
+ // Community and leader action plans remain scoped to 10C.4D.
+ if(['connect','leader'].includes(recognized)){
   const response=Object.freeze({intent:recognized,heading:'I understand what you are looking for.',
     intro:'This preview is learning to handle that kind of question. You can still ask what needs your attention or open the relevant existing church experience. Nothing has been changed.',
     items:Object.freeze([]),note:sourceNote});
@@ -518,5 +561,5 @@ function render(response,asked='',notice='',history=[],suggested=[]){
   '<p class="f10-disclosure">'+esc(r.note)+'</p>'+
   '</div>';
 }
-return Object.freeze({prompts,classify,resolveIntent,answer,respond,followKeys,render});
+return Object.freeze({prompts,classify,resolveIntent,conversationScope,answer,respond,followKeys,render});
 });
