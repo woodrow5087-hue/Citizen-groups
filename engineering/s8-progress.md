@@ -44,3 +44,19 @@ welcome, login, Today, portrait, Groups, Team, Read, Ask Rally and all four role
 with zero raw pixel differences and no page errors. The test runner first exposed
 a paused-clock welcome-exit timer; advancing the virtual clock through the real
 exit resolved the instrumentation issue without changing application code.
+
+## 8C — unified data architecture gate
+
+Added the provider-neutral member handoff alongside the existing conversation,
+action and server-only pilot contracts, not a replacement store. Nine allowlisted
+domains have explicit quality, source and observation metadata; invalid/stale data
+has no payload, confirmed unread zero is distinct from unknown, and permissions
+restrict private projections. The pure fixture format adapter reuses the existing
+member context. No identity, storage version, live integration or UI was changed.
+See `s8-data-contracts.md` for ownership, adapter, migration and freshness rules.
+
+Gate: full app suite passed (302 tests at that run); the subsequent additional
+cross-role contract case also passed (6/6 contract tests). Migration/source,
+privacy, malformed, stale, missing and confirmed-zero scenarios passed. Static
+build passed; 36 PR #119 visual pairs remained byte-identical, with zero page
+errors. Server/tool-only contract is excluded from the build allowlist.
