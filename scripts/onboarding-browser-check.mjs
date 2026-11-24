@@ -116,6 +116,29 @@ try{
   await blocked.addInitScript(()=>Object.defineProperty(window,'localStorage',{get(){throw Error('Blocked');}}));const bp=await blocked.newPage();
   await bp.goto(welcomeUrl.toString());await enterCreate(bp);await chooseCampus(bp,'online');assert.match(await bp.locator('[role="alert"]').textContent(),/could not save/);
   await button(bp,'unsaved').click();await bp.waitForFunction(()=>document.querySelector('#rp-gateway').hidden);await blocked.close();
+  // Real UI regression: fail the second record write once, then verify rollback.
+  const faultContext=await browser.newContext({viewport:{width:390,height:844},reducedMotion:'reduce'});
+  await faultContext.addInitScript(()=>{
+    const set=Storage.prototype.setItem;
+    Storage.prototype.setItem=function(key,value){
+      if(window.__failOnboardingToday&&key==='rallypoint-today-ui-v1'){
+        window.__failOnboardingToday=false;throw Error('simulated second record failure');
+      }
+      return set.call(this,key,value);
+    };
+  });
+  const fp=await faultContext.newPage();
+  await fp.goto(welcomeUrl.toString());await enterCreate(fp);await chooseCampus(fp,'central');
+  await button(fp,'next').click();await fp.locator('[data-welcome-role="leader"]').click();
+  await button(fp,'next').click();await fp.locator('#rp-onboard-name').fill('Rollback fixture');
+  const savedBefore=await fp.evaluate(([a,u])=>[localStorage.getItem(a),localStorage.getItem(u)],[APP,UI]);
+  await fp.evaluate(()=>{window.__failOnboardingToday=true;});
+  await button(fp,'finish').click();
+  assert.match(await fp.locator('[role="alert"]').textContent(),/could not save/);
+  assert.equal(await fp.locator('#rp-gateway').isVisible(),true);
+  assert.deepEqual(await fp.evaluate(([a,u])=>[localStorage.getItem(a),localStorage.getItem(u)],[APP,UI]),savedBefore);
+  assert.equal(await fp.evaluate(()=>localStorage.getItem('rallypoint-write-journal-v1')),null);
+  await faultContext.close();
   fs.writeFileSync(path.join(out,'results.json'),JSON.stringify({cases:results,checks:['Real-time splash/reveal/brand lift screenshots','Reduced motion bypasses timed reveal','WCAG A/AA axe scans on welcome, login, campus, connection, preferences','44px touch targets and no horizontal overflow','Campus selection preserves card geometry','Leader selection remains member','Both memberships, name, campus survive reload','Campus editing preserves messages and memberships','Login sample values locked; no POST or credential storage','Existing four-tab navigation','Replay button opens animated entry and returns to current v0.9 dashboard','Selected campus appears in Today without losing group messages','Blocked-storage fallback'],screenshots:'390×844 actual browser captures. iPhone dimensions and safe areas emulated in Chromium; physical iOS device not tested.'},null,2));
   console.log('All onboarding browser checks passed.');
 }finally{await browser.close();if(server)await new Promise(r=>server.close(r));}

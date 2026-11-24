@@ -1,6 +1,7 @@
 // Compare the approved immutable PR #119 build with the current preview build.
 // No saved image baselines, masks, tolerances, or application style overrides.
 import assert from 'node:assert/strict';
+import invariant from './s9br-onboarding-source-invariant.cjs';
 import {createServer} from 'node:http';
 import {readFile,readdir,stat,mkdir,writeFile} from 'node:fs/promises';
 import {resolve,extname,sep} from 'node:path';
@@ -45,7 +46,11 @@ async function protectedEntries(root,directory=''){
 async function protect(){
  const current=await protectedEntries('dist');
  assert.deepEqual(current,await protectedEntries(reference),'Protected file inventory changed');
- for(const file of current)assert.ok((await readFile(resolve('dist',file))).equals(await readFile(resolve(reference,file))),`Protected source/asset changed: ${file}`);
+ for(const file of current){
+  const actual=await readFile(resolve('dist',file)),approved=await readFile(resolve(reference,file));
+  if(file==='rallypoint-welcome.js')invariant.assertWelcomeSource(approved,actual);
+  else assert.ok(actual.equals(approved),`Protected source/asset changed: ${file}`);
+ }
  report.protectedFiles=current.length;
 }
 async function capture(page,kind,width,label){

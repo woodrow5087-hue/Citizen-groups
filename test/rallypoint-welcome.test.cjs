@@ -6,6 +6,7 @@ const {JSDOM,VirtualConsole}=require('jsdom');
 const root=path.resolve(__dirname,'..');
 const html=fs.readFileSync(path.join(root,'index.html'),'utf8');
 const script=fs.readFileSync(path.join(root,'rallypoint-welcome.js'),'utf8');
+const guardScript=fs.readFileSync(path.join(root,'rallypoint-storage-guard.js'),'utf8');
 const UI='rallypoint-today-ui-v1',APP='rallypoint-phase1-2026',SESSION='rallypoint-welcome-preview-session';
 function mount({search='?welcome=1',reduced=true,ui,app,entered=false,clock=false}={}){
   const dom=new JSDOM(html,{url:'https://rallypoint.example/'+search,runScripts:'outside-only',pretendToBeVisual:true,virtualConsole:new VirtualConsole()});
@@ -15,7 +16,7 @@ function mount({search='?welcome=1',reduced=true,ui,app,entered=false,clock=fals
   if(app)w.localStorage.setItem(APP,JSON.stringify(app));
   if(entered)w.sessionStorage.setItem(SESSION,'entered');
   const timers=[];if(clock)w.setTimeout=(fn,ms)=>{timers.push({fn,ms});};
-  w.eval(script);return {dom,w,d:w.document,timers,close:()=>w.close()};
+  w.eval(guardScript);w.eval(script);return {dom,w,d:w.document,timers,close:()=>w.close()};
 }
 const click=(x,selector)=>{const el=x.d.querySelector(selector);assert.ok(el,'Missing '+selector);el.click();};
 const data=(x,key)=>JSON.parse(x.w.localStorage.getItem(key));
@@ -42,7 +43,7 @@ test('reduced motion shows the two welcome actions immediately and isolates unde
   assert.equal(x.d.querySelector('#view').inert,true);assert.equal(x.d.querySelector('#nav').getAttribute('aria-hidden'),'true');x.close();
 });
 test('campus cards use all supplied photographs and persist only the selected campus',()=>{
-  const ui={name:'Jess',memberships:{group:true,team:true},encouraged:['marcus']},app={read:true,prayers:[{text:'Keep this'}],role:'member'};
+  const ui={name:'Jess',memberships:{group:true,team:true},encouraged:['marcus']},app={read:true,prayers:[{name:'Marcus C.',text:'Keep this'}],role:'member'};
   const x=mount({ui,app});click(x,'[data-welcome="create"]');
   for(const id of ['central','north','maui','online']){
     assert.equal(x.d.querySelector('[data-welcome-campus="'+id+'"] img').getAttribute('src'),'assets/campuses/'+id+'.jpg');
@@ -52,7 +53,7 @@ test('campus cards use all supplied photographs and persist only the selected ca
   }x.close();
 });
 test('leader connection never grants leadership, preserves saved app data and allows both memberships',()=>{
-  const app={role:'leader',read:true,prayed:true,rsvp:'going',groupMessages:[{text:'Keep my message'}],attendance:{marcus:'here'}},ui={name:'Jess',privateNote:'Keep private'};
+  const app={role:'leader',read:true,prayed:true,rsvp:'going',groupMessages:[{name:'Jess W.',text:'Keep my message'}],attendance:{marcus:'here'}},ui={name:'Jess',privateNote:'Keep private'};
   const x=mount({app,ui});campus(x,'north');click(x,'[data-welcome-role="leader"]');click(x,'[data-welcome="next"]');
   assert.match(x.d.querySelector('#rp-onboard').textContent,/Leadership needs verification/);
   assert.match(x.d.querySelector('#rp-onboard').textContent,/does not unlock private attendance/);

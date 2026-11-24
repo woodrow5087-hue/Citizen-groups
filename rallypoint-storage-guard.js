@@ -89,8 +89,8 @@ function create(storage){
       // Write-ahead journal first. If this fails, neither original key is touched.
       storage.setItem(JOURNAL_KEY,record);
       try {
-        storage.setItem(PRIMARY_KEY,primaryRaw);
-        storage.setItem(TODAY_KEY,todayRaw);
+        restoreOne(PRIMARY_KEY,primaryRaw);
+        restoreOne(TODAY_KEY,todayRaw);
         storage.removeItem(JOURNAL_KEY);
         baseline=cloneRaw(candidate);
         return {ok:true,reason:null};
@@ -127,7 +127,7 @@ function create(storage){
       const before=journal.before,after=journal.after;
       if(!['primaryRaw','todayRaw'].every(k=>before[k]===null||typeof before[k]==='string'))
         return {ok:false,reason:'Malformed recovery record'};
-      if(!['primaryRaw','todayRaw'].every(k=>typeof after[k]==='string'))
+      if(!['primaryRaw','todayRaw'].every(k=>after[k]===null||typeof after[k]==='string'))
         return {ok:false,reason:'Malformed proposed values'};
       const now=read();
       if(!['primaryRaw','todayRaw'].every(k=>now[k]===before[k]||now[k]===after[k]))

@@ -97,22 +97,32 @@
     const heading=onboard.querySelector('h2');heading?.focus({preventScroll:true});gateway.scrollTop=0;gateway.scrollLeft=0;
   }
   function returnToApp(){let stored=false;try{sessionStorage.setItem(SESSION_KEY,'entered');stored=true;}catch{}const next=new URL(location.href);next.searchParams.delete('welcome');if(!stored)next.searchParams.set('skipWelcome','1');window.location.replace(next.pathname+next.search+next.hash);}
+  // Use the existing two-record journal guard for all onboarding mutations.
+  function persistPreferences(campusOnly=false){
+    const guard=window.RallyStorageGuard.create(localStorage);
+    if(!guard.status().ok)return false;
+    const {primaryRaw,todayRaw}=guard.readOriginals();
+    const ui=JSON.parse(todayRaw??'null')||{};
+    ui.campus=campus;
+    let nextPrimary=primaryRaw;
+    if(!campusOnly){
+      ui.name=name.trim()||ui.name||'Friend';ui.memberships={...ui.memberships,group:kind==='guest'?false:membership.group,team:kind==='guest'?false:membership.team};ui.seenGroupSignature='';ui.onboarding={version:2,connection:kind,completed:true};
+      const app=JSON.parse(primaryRaw??'null')||{};
+      app.role='member';app.view='today';app.groupPane=rallyOne?'overview':'chat';app.teamPane='schedule';
+      nextPrimary=JSON.stringify(app);
+    }
+    return guard.save({primaryRaw:nextPrimary,todayRaw:JSON.stringify(ui)}).ok;
+  }
   function savePreview(campusOnly=false){
     try{
-      // Parse without fallback here: never replace an unreadable existing record silently.
-      const ui=JSON.parse(localStorage.getItem(UI_KEY)||'null')||{};
-      ui.campus=campus;
-      if(!campusOnly){ui.name=name.trim()||ui.name||'Friend';ui.memberships={...ui.memberships,group:kind==='guest'?false:membership.group,team:kind==='guest'?false:membership.team};ui.seenGroupSignature='';ui.onboarding={version:2,connection:kind,completed:true};}
-      const app=JSON.parse(localStorage.getItem(APP_KEY)||'null')||{};
-      if(!campusOnly){app.role='member';app.view='today';app.groupPane=rallyOne?'overview':'chat';app.teamPane='schedule';}
-      localStorage.setItem(UI_KEY,JSON.stringify(ui));if(!campusOnly)localStorage.setItem(APP_KEY,JSON.stringify(app));
+      if(!persistPreferences(campusOnly))throw Error('Guarded preference save refused');
     }catch{error='This browser could not save your preferences. Existing demo data has not been reset. Try again, or enter without saving.';render();return;}
     returnToApp();
   }
   gateway.addEventListener('input',ev=>{if(ev.target.id==='rp-onboard-name')name=ev.target.value.slice(0,24);});
   gateway.addEventListener('click',ev=>{
     const btn=ev.target.closest('[data-welcome],[data-welcome-campus],[data-welcome-role],[data-welcome-membership]');if(!btn||!gateway.contains(btn))return;
-    if(btn.dataset.welcomeCampus){const chosen=btn.dataset.welcomeCampus;if(!campuses.some(c=>c[0]===chosen))return;campus=chosen;error='';if(!rallyOne)try{const ui=JSON.parse(localStorage.getItem(UI_KEY)||'null')||{};ui.campus=campus;localStorage.setItem(UI_KEY,JSON.stringify(ui));}catch{error='Campus selection is available for this visit; your browser could not save it.';}const pos=gateway.scrollTop;render();gateway.scrollTop=pos;onboard.querySelector('[data-welcome-campus="'+campus+'"]').focus({preventScroll:true});return;}
+    if(btn.dataset.welcomeCampus){const chosen=btn.dataset.welcomeCampus;if(!campuses.some(c=>c[0]===chosen))return;campus=chosen;error='';if(!rallyOne)try{if(!persistPreferences(true))throw Error('Guarded campus save refused');}catch{error='Campus selection is available for this visit; your browser could not save it.';}const pos=gateway.scrollTop;render();gateway.scrollTop=pos;onboard.querySelector('[data-welcome-campus="'+campus+'"]').focus({preventScroll:true});return;}
     if(btn.dataset.welcomeRole){kind=btn.dataset.welcomeRole;membership={group:kind!=='guest',team:false};render();onboard.querySelector('[data-welcome-role="'+kind+'"]').focus({preventScroll:true});return;}
     if(btn.dataset.welcomeMembership){const which=btn.dataset.welcomeMembership;if(which==='group'||which==='team')membership[which]=!membership[which];render();onboard.querySelector('[data-welcome-membership="'+which+'"]').focus({preventScroll:true});return;}
     switch(btn.dataset.welcome){
