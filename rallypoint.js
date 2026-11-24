@@ -467,6 +467,35 @@ function team(){
 }
 function read(){
  const plan=currentReading();
+ const readingBody=`<div class="read-focus-card">
+     <div class="read-focus-head"><span>YOUR READING PATH · SAMPLE</span>${icon('read')}</div>
+     <h2>${e(plan.name)}</h2><p>${e(plan.title)}</p><div class="read-focus-detail"><strong>${e(plan.passage)}</strong><small>${e(plan.description)}</small></div>
+   </div>
+   <section class="card read-scripture-card" id="reading-scripture" tabindex="-1">
+     <div class="read-section-label">${icon('read')} <span>SCRIPTURE · BSB</span><i></i></div>
+     <h2>${e(plan.passage)}</h2><blockquote>“${e(plan.excerpt)}”</blockquote>
+     <button type="button" class="btn ${s.read?'chosen':'red'}" data-action="read">${s.read?'✓ Read today':'Mark as read'}</button>
+     <p class="fine-note">Public-domain Berean Standard Bible excerpt · Illustrative passage, not an assigned reading calendar.</p>
+   </section>
+   <section class="card read-question-card" id="reading-questions" tabindex="-1">
+     <div class="read-section-label">${icon('message')} <span>REFLECT TOGETHER</span><i></i></div>
+     <h2>A question worth sharing.</h2><p>${e(s.question)}</p>
+     <button type="button" class="read-discuss-action" data-go="group" data-pane="chat">${icon('group')} Open group conversation ${icon('arrow')}</button>
+     ${H.rhythmEditor(s,plan)}
+   </section>
+   ${canLead('group')?`<section class="card read-leader-card">
+     <div class="read-section-label">${icon('leader')} <span>GROUP LEADER · LOCAL DEMO</span></div>
+     <h2>Shape the conversation.</h2><p>Choose a sample pathway. Changes stay on your device; nothing is published to a real group or church.</p>
+     <div class="read-plan-choices" role="group" aria-label="Reading pathway">
+       ${[['sermon','Sermon Series'],['study','Book Study'],['year','Bible in One Year']].map(([id,label])=>`<button type="button" class="read-plan-button ${s.plan===id?'selected':''}" data-action="plan" data-value="${id}" aria-pressed="${s.plan===id}">${label}</button>`).join('')}
+     </div>
+     <label for="question">Sample group discussion question</label><textarea id="question" rows="3" maxlength="400">${e(s.question)}</textarea>
+     <button type="button" class="btn dark-btn" data-action="question">Save local question</button>
+     <p class="fine-note">Real publishing permissions, content review, group overrides, and licensing remain undecided.</p>
+   </section>`:''}
+   <div class="card read-prayer-card"><div>${icon('heart')}<h3>A moment to pray.</h3><p>Take a minute to pray for someone in your group.</p></div>
+     <button type="button" class="round ${s.prayed?'done':''}" aria-label="Mark prayer time" data-action="pray">${s.prayed?'✓':'↗'}</button>
+   </div>`;
  if(rallyOne){
  return `<section class="read-screen-v09 ux-read">
    <header class="ux-read-heading"><h1>READ<span>.</span></h1><p>Engage the Word. Build your faith.</p></header>
@@ -487,35 +516,7 @@ function read(){
      </div>
    </section>
    <details class="ux-disclosure" data-ux-read-panel="scripture"><summary>Read, reflect &amp; pray</summary>
-     <div class="read-focus-card">
-     <div class="read-focus-head"><span>YOUR READING PATH · SAMPLE</span>${icon('read')}</div>
-     <h2>${e(plan.name)}</h2><p>${e(plan.title)}</p><div class="read-focus-detail"><strong>${e(plan.passage)}</strong><small>${e(plan.description)}</small></div>
-   </div>
-   <section class="card read-scripture-card" id="reading-scripture" tabindex="-1">
-     <div class="read-section-label">${icon('read')} <span>SCRIPTURE · BSB</span><i></i></div>
-     <h2>${e(plan.passage)}</h2><blockquote>“${e(plan.excerpt)}”</blockquote>
-     <button type="button" class="btn ${s.read?'chosen':'red'}" data-action="read">${s.read?'✓ Read today':'Mark as read'}</button>
-     <p class="fine-note">Public-domain Berean Standard Bible excerpt · Illustrative passage, not an assigned reading calendar.</p>
-   </section>
-   <section class="card read-question-card" id="reading-questions" tabindex="-1">
-     <div class="read-section-label">${icon('message')} <span>REFLECT TOGETHER</span><i></i></div>
-     <h2>A question worth sharing.</h2><p>${e(s.question)}</p>
-     <button type="button" class="read-discuss-action" data-go="group" data-pane="chat">${icon('group')} Open group conversation ${icon('arrow')}</button>
-     ${H.rhythmEditor(s,plan)}
-   </section>
-   ${canLead('group')?`<section class="card read-leader-card">
-     <div class="read-section-label">${icon('leader')} <span>GROUP LEADER · LOCAL DEMO</span></div>
-     <h2>Shape the conversation.</h2><p>Choose a sample pathway. Changes stay on your device; nothing is published to a real group or church.</p>
-     <div class="read-plan-choices" role="group" aria-label="Reading pathway">
-       ${[['sermon','Sermon Series'],['study','Book Study'],['year','Bible in One Year']].map(([id,label])=>`<button type="button" class="read-plan-button ${s.plan===id?'selected':''}" data-action="plan" data-value="${id}" aria-pressed="${s.plan===id}">${label}</button>`).join('')}
-     </div>
-     <label for="question">Sample group discussion question</label><textarea id="question" rows="3" maxlength="400">${e(s.question)}</textarea>
-     <button type="button" class="btn dark-btn" data-action="question">Save local question</button>
-     <p class="fine-note">Real publishing permissions, content review, group overrides, and licensing remain undecided.</p>
-   </section>`:''}
-   <div class="card read-prayer-card"><div>${icon('heart')}<h3>A moment to pray.</h3><p>Take a minute to pray for someone in your group.</p></div>
-     <button type="button" class="round ${s.prayed?'done':''}" aria-label="Mark prayer time" data-action="pray">${s.prayed?'✓':'↗'}</button>
-   </div>
+     ${readingBody}
    </details>
    <details class="ux-disclosure" data-ux-read-panel="classic"><summary>Classic VersePlay</summary>${VP.render(s,e,icon)}</details>
    ${footer()}
@@ -533,35 +534,7 @@ function read(){
    </section>
    <div class="rp-game-classic-label"><strong>MORE WAYS TO PRACTICE</strong><span>Classic &amp; two-player pass-and-play</span></div>
    ${VP.render(s,e,icon)}
-   <div class="read-focus-card">
-     <div class="read-focus-head"><span>YOUR READING PATH · SAMPLE</span>${icon('read')}</div>
-     <h2>${e(plan.name)}</h2><p>${e(plan.title)}</p><div class="read-focus-detail"><strong>${e(plan.passage)}</strong><small>${e(plan.description)}</small></div>
-   </div>
-   <section class="card read-scripture-card" id="reading-scripture" tabindex="-1">
-     <div class="read-section-label">${icon('read')} <span>SCRIPTURE · BSB</span><i></i></div>
-     <h2>${e(plan.passage)}</h2><blockquote>“${e(plan.excerpt)}”</blockquote>
-     <button type="button" class="btn ${s.read?'chosen':'red'}" data-action="read">${s.read?'✓ Read today':'Mark as read'}</button>
-     <p class="fine-note">Public-domain Berean Standard Bible excerpt · Illustrative passage, not an assigned reading calendar.</p>
-   </section>
-   <section class="card read-question-card" id="reading-questions" tabindex="-1">
-     <div class="read-section-label">${icon('message')} <span>REFLECT TOGETHER</span><i></i></div>
-     <h2>A question worth sharing.</h2><p>${e(s.question)}</p>
-     <button type="button" class="read-discuss-action" data-go="group" data-pane="chat">${icon('group')} Open group conversation ${icon('arrow')}</button>
-     ${H.rhythmEditor(s,plan)}
-   </section>
-   ${canLead('group')?`<section class="card read-leader-card">
-     <div class="read-section-label">${icon('leader')} <span>GROUP LEADER · LOCAL DEMO</span></div>
-     <h2>Shape the conversation.</h2><p>Choose a sample pathway. Changes stay on your device; nothing is published to a real group or church.</p>
-     <div class="read-plan-choices" role="group" aria-label="Reading pathway">
-       ${[['sermon','Sermon Series'],['study','Book Study'],['year','Bible in One Year']].map(([id,label])=>`<button type="button" class="read-plan-button ${s.plan===id?'selected':''}" data-action="plan" data-value="${id}" aria-pressed="${s.plan===id}">${label}</button>`).join('')}
-     </div>
-     <label for="question">Sample group discussion question</label><textarea id="question" rows="3" maxlength="400">${e(s.question)}</textarea>
-     <button type="button" class="btn dark-btn" data-action="question">Save local question</button>
-     <p class="fine-note">Real publishing permissions, content review, group overrides, and licensing remain undecided.</p>
-   </section>`:''}
-   <div class="card read-prayer-card"><div>${icon('heart')}<h3>A moment to pray.</h3><p>Take a minute to pray for someone in your group.</p></div>
-     <button type="button" class="round ${s.prayed?'done':''}" aria-label="Mark prayer time" data-action="pray">${s.prayed?'✓':'↗'}</button>
-   </div>${footer()}
+   ${readingBody}${footer()}
  </section>`;
 }
 function play(){
