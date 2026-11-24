@@ -711,10 +711,11 @@ function navigate(view,pane,reading){
  return window.RallyNavigation.navigate(view,pane,reading,{rallyOne,memberContext,openConnect,closeDialog,s,clearFeedback:()=>{f09Feedback='';},resetIndex:()=>{f09Index=0;},f09Preview,canLead,render,$});
 }
 function closeDialog(restore=true){
-if(!dialog)return;if(dialog==='f10-companion')f10ClearSession();dialog=null;$('dialog-root').innerHTML='';document.querySelector('.phone-inner').inert=false;
-if(restore){if(dialogTrigger?.isConnected)dialogTrigger.focus({preventScroll:true});else $('view').focus({preventScroll:true});}
+ return window.RallyDialogLifecycle.closeDialog(restore,{dialog,dialogTrigger,f10ClearSession,clearDialog:()=>{dialog=null;},$,document});
 }
-function showDialog(type,trigger=document.activeElement){dialogTrigger=trigger;dialog=type;renderDialog();}
+function showDialog(type,trigger=document.activeElement){
+ return window.RallyDialogLifecycle.showDialog(type,trigger,{setTrigger:value=>{dialogTrigger=value;},setDialog:value=>{dialog=value;},renderDialog});
+}
 function renderDialog(){
 let title='',body='';const chat=conversation(),snapshot=T.snapshot(s,todayUI,new Date(),chat);
 if(dialog==='f10-companion'&&f10Preview){
@@ -754,11 +755,7 @@ title='A place on a team';body=`<p>This fixture has no team membership or servin
 }
 const wasConversation=dialog==='f10-companion'&&!!$('dialog-root').querySelector('.f10-panel');
 $('dialog-root').innerHTML=`<div class="rp-backdrop" data-dismiss="dialog"><section class="rp-sheet" role="dialog" aria-modal="true" aria-labelledby="dialog-title" tabindex="-1"><div class="rp-sheet-top"><h2 id="dialog-title">${title}</h2><button type="button" class="rp-close" data-action="close-dialog" aria-label="Close dialog">${icon('close')}</button></div>${body}</section></div>`;
-document.querySelector('.phone-inner').inert=true;
-if(wasConversation){
- const heading=$('dialog-root').querySelector('.f10-response h3');
- if(heading){heading.tabIndex=-1;heading.focus({preventScroll:true});heading.scrollIntoView?.({block:'nearest',behavior:'auto'});}
-}else $('dialog-root').querySelector('[data-action="close-dialog"]').focus({preventScroll:true});
+window.RallyDialogLifecycle.focusAfterRender(wasConversation,{$,document});
 }
 function f10Ask(question){
  if(!f10Preview||dialog!=='f10-companion'||s.view!=='today')return;
@@ -1123,8 +1120,7 @@ if(ev.target.dataset.form!=='demo-name')return;ev.preventDefault();const value=S
 if(!value){notify('Add a first name for this local demo.');return;}todayUI.name=value.slice(0,20);render();closeDialog();notify('Your demo name is saved locally.');
 });
 document.addEventListener('keydown',ev=>{
-if(!dialog)return;if(ev.key==='Escape'){ev.preventDefault();closeDialog();return;}
-if(ev.key==='Tab'){const nodes=[...$('dialog-root').querySelectorAll('button:not(:disabled),a[href],input,select,textarea')],first=nodes[0],last=nodes[nodes.length-1];if(ev.shiftKey&&document.activeElement===first){ev.preventDefault();last?.focus();}else if(!ev.shiftKey&&document.activeElement===last){ev.preventDefault();first?.focus();}}
+window.RallyDialogLifecycle.handleKey(ev,{dialog,closeDialog,$,document});
 });
 document.addEventListener('visibilitychange',()=>{if(!document.hidden)render();});
 // Browser-local updates from another tab refresh Today without disturbing an active chat composer.
