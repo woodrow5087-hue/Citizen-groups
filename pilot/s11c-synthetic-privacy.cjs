@@ -89,7 +89,7 @@ function createSyntheticPrivacyPilot({issuer,audience,organizationId,redirectUri
   if(!consents.has(k)&&consents.size>=maxConsents){record('consent-denied','unavailable');return freeze({state:'unavailable'});}
   const expiresAt=n+consentMs;
   auth.invalidateIdentity(input.identity);
-  consents.set(k,freeze({acceptedAt:n,expiresAt,mappingFingerprint:m.fingerprint,generation:randomBytes(32).toString('base64url')}));
+  consents.set(k,freeze({acceptedAt:n,expiresAt,mappingFingerprint:m.fingerprint,generation:'g-'+randomBytes(32).toString('base64url')}));
   record('consent-granted','accepted');return freeze({state:'accepted',expiresAt,noticeVersion:NOTICE,purpose:PURPOSE});
  }
  function remove(identity,event){
