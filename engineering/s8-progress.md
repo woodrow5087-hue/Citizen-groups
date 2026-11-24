@@ -78,3 +78,21 @@ leader distinctions, shared explanations, deterministic output, completion,
 existing temporary dismissal/resumption, revocation and malformed memberships.
 An initial module syntax error and a new test's incorrect Sunday-urgency setup
 were corrected before passing the gate; no acceptance assertion was relaxed.
+
+## 8E — local acceptance and handoff gate
+
+The full local acceptance suite passed: 310 application tests, 172 VersePlay
+tests, static/deploy-preview builds, all browser/mobile/a11y/onboarding/Blank
+Battle/storage/chat/integrated/leadership/Today/Connect journeys. The final game
+run passed 430 assertions and 49 exact image pairs. Expanded app comparison
+passed 48 exact screen pairs twice, plus 74 protected files, against PR #119.
+Final deploy-preview builds reproduce exactly across 180 files; internal sources
+remain excluded. No approved source/style/assets or image baselines were replaced.
+
+The new app comparison is now a mandatory preview CI step. Title capture uses
+matching real CSS endpoints as well as the virtual JS clock; CPU/text rendering
+flags match the proven VersePlay harness to remove photo-edge compositor noise.
+Acceptance/audit details, diagnostics, commands and manual gates are in
+`s8-acceptance.md` and `s8-handoff.md`. Remote workflows for the exact final head
+must pass before the new annotated development checkpoint is created. Physical
+iPhone Safari/VoiceOver and live data/production authorization remain outstanding.

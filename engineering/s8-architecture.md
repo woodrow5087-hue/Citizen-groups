@@ -16,7 +16,7 @@ care. This engineering sprint preserves PR #119's interface and behavior.
 | Messaging application access | `rallypoint-conversation-read-model.js` | `createAccess` receives lazy storage and current membership. Catches property-getter failures, refuses unauthorized IO, delegates normalization and cursor persistence to the existing adapter. |
 | Messaging presentation | `wednesday-chat-lab.js`, `connect-member.js`, Connect iframe | Explicit send/reply/draft/read events; loading Today is not a read event. Scope/organization checks remain in policy. |
 | Shared member context | `rally-one-member-context.js` | Read-only canonical projection plus explicit transition API. No IO, browser globals or identity duplication. |
-| Personalization | SmartDashboard model → PriorityBoard → UnifiedFocus | Existing deterministic pipeline; shared orchestration is consolidated in 8D. Legacy companion/Smart Stack routes remain supported, not alternative authorities for Rally One. |
+| Personalization | SmartDashboard model → PriorityBoard → UnifiedFocus | Existing deterministic pipeline; `rally-one-intelligence.js` now owns shared Today/Ask assembly. Legacy companion/Smart Stack routes remain supported, not alternative authorities for Rally One. |
 | Ask Rally | `rallypoint-personal-companion.js` (~464 lines) | Intent parsing and approved response rendering consume the shared model/board. No external AI or independent member database. |
 | Navigation and focus | `navigate`, `portraitOrigin`, Connect overlay in composition root | DOM focus/scroll effects depend on live elements; retain here. Portrait origin is session-only and restores original view, pane, discovery and scroll. Do not persist another navigation stack. |
 | Presentation | Existing renderers and ordered CSS | Protected charcoal/cream/red design, four tabs, title/tagline, portraits and typography. No CSS extraction or reordering in this sprint. |
@@ -32,8 +32,8 @@ on every call, and retains `peek`/`markRead` for current messaging consumers.
 
 Today and Ask Rally separately assembled the same dashboard/context/focus inputs.
 This is an application-service seam, not a reason to move DOM rendering into the
-domain. A shared injectable pipeline will own those inputs and expose one decision
-snapshot to both surfaces. Today ranking and optional/legacy suggestions have
+domain. The shared pure Intelligence service now owns those inputs and exposes one
+decision snapshot to both surfaces. Today ranking and optional/legacy suggestions have
 historical differences; preserve them deliberately while consolidating common
 eligibility and selection rules under tests.
 

@@ -70,3 +70,13 @@ test('S8 cross-role envelopes fail closed and restrict recommendation IDs',()=>{
  assert.equal(extra.domains.actions.state,'malformed');
  assert.throws(()=>C.fromFixture({state:'{broken',ui}),/parsed fixture/);
 });
+test('S8 missing response evidence differs from explicitly invalid source values',()=>{
+ const missing={...state};delete missing.rsvp;delete missing.teamStatus;
+ const unknown=project({state:missing});
+ assert.equal(unknown.domains.relationships.state,'unknown');
+ assert.equal(unknown.domains.serving.state,'unknown');
+ const malformed=project({state:{...state,rsvp:'invalid',teamStatus:'invalid'},ui:{...ui,name:'   '}});
+ for(const domain of ['relationships','serving','profile'])assert.equal(malformed.domains[domain].state,'malformed');
+ const noCampus={...ui};delete noCampus.campus;
+ assert.equal(project({ui:noCampus}).domains.involvement.state,'unknown');
+});

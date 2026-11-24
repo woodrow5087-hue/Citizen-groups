@@ -101,6 +101,7 @@ and all other pinned assets were untouched.
 Physical iPhone Safari and VoiceOver acceptance cannot be claimed from Linux
 Chromium automation. External font delivery remains a product dependency; the
 harness controls comparison inputs without changing that production behavior.
-The detailed approved 8B.1–8E sequence is not present in the checkout (8B.1 is
-not defined); the user has been asked for its authoritative location. No later
-stage is complete or authorized for release merely because preview QA passes.
+At this recovery checkpoint the detailed approved 8B.1–8E sequence was missing.
+The owner subsequently supplied it and authorized coordinated continuation; see
+`s8-progress.md` for the subsequent stage gates. Automated acceptance does not
+authorize a production release.

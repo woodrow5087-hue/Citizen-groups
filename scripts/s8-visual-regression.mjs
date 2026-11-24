@@ -2,7 +2,7 @@
 // No saved image baselines, masks, tolerances, or application style overrides.
 import assert from 'node:assert/strict';
 import {createServer} from 'node:http';
-import {readFile,stat,mkdir,writeFile} from 'node:fs/promises';
+import {readFile,readdir,stat,mkdir,writeFile} from 'node:fs/promises';
 import {resolve,extname,sep} from 'node:path';
 import {chromium} from 'playwright';
 import {compareScreenshots} from '../verseplay/tests/visual-comparison.mjs';
@@ -27,14 +27,33 @@ async function serve(directory){
  return {server,url:`http://127.0.0.1:${server.address().port}/`};
 }
 const before=await serve(reference),after=await serve('dist');
-const browser=await chromium.launch({executablePath:process.env.BROWSER_PATH});
-const report={reference:'5aa88c93c3d4cd22902ef98af98c09b74ca436ce',comparisons:[],errors:[]};
+// Match the proven VersePlay capture configuration: avoid GPU image-edge
+// blending differences and platform-dependent LCD/subpixel text paths.
+const browser=await chromium.launch({executablePath:process.env.BROWSER_PATH,
+ args:['--disable-gpu','--disable-lcd-text','--disable-font-subpixel-positioning','--font-render-hinting=none']});
+const report={reference:'5aa88c93c3d4cd22902ef98af98c09b74ca436ce',protectedFiles:0,comparisons:[],errors:[]};
+async function protectedEntries(root,directory=''){
+ const files=[];
+ for(const name of (await readdir(resolve(root,directory))).sort()){
+  const relative=directory?`${directory}/${name}`:name;
+  if((await stat(resolve(root,relative))).isDirectory())files.push(...await protectedEntries(root,relative));
+  else if(relative.startsWith('assets/')||relative.startsWith('verseplay/')||relative.endsWith('.css')||
+   ['rallypoint-welcome.js','blank-battle.js','rallypoint-verseplay-ui.js','rallypoint-memorize.js'].includes(relative))files.push(relative);
+ }
+ return files;
+}
+async function protect(){
+ const current=await protectedEntries('dist');
+ assert.deepEqual(current,await protectedEntries(reference),'Protected file inventory changed');
+ for(const file of current)assert.ok((await readFile(resolve('dist',file))).equals(await readFile(resolve(reference,file))),`Protected source/asset changed: ${file}`);
+ report.protectedFiles=current.length;
+}
 async function capture(page,kind,width,label){
  await page.evaluate(async()=>{await document.fonts.ready;});
  // Wait for byte-stable frames. Timers are paused and motion is reduced.
  let previous,buffer;
  for(let attempt=0;attempt<8;attempt++){
-  buffer=await page.screenshot({fullPage:true,animations:'disabled'});
+  buffer=await page.screenshot({fullPage:true,animations:label==='title'?'allow':'disabled'});
   if(previous?.equals(buffer))break;
   previous=buffer;
   if(attempt===7)throw Error(`Unstable screenshot: ${kind} ${width} ${label}`);
@@ -48,7 +67,26 @@ async function capture(page,kind,width,label){
  }
 }
 try{
+ await protect();
  for(const [kind,base] of [['before',before.url],['after',after.url]])for(const width of [320,390,430]){
+  const titleContext=await browser.newContext({viewport:{width,height:844},isMobile:true,hasTouch:true,reducedMotion:'no-preference',timezoneId:'UTC',locale:'en-US'});
+  const title=await titleContext.newPage();
+  title.on('pageerror',e=>report.errors.push({kind,width,message:e.message}));
+  await title.clock.install({time:new Date('2026-11-23T12:00:00Z')});
+  await title.clock.pauseAt(new Date('2026-11-23T12:00:00Z'));
+  await title.goto(base);await title.clock.runFor(350);
+  // The JS clock controls reveal/ready timers, not Chromium's compositor clock.
+  // Seek the real CSS fade to the same endpoint before sampling its resting frame.
+  await title.evaluate(()=>{
+   for(const animation of document.getAnimations()){
+    animation.pause();
+    const end=animation.effect.getComputedTiming().endTime;
+    animation.currentTime=Number.isFinite(end)?end:900;
+   }
+  });
+  assert.equal(await title.locator('.rp-entry-brand').evaluate(el=>getComputedStyle(el).opacity),'1');
+  assert.equal(await title.locator('.ro-title-tagline text').textContent(),'We rally together so no one stands alone.');
+  await capture(title,kind,width,'title');await titleContext.close();
   const context=await browser.newContext({viewport:{width,height:844},isMobile:true,hasTouch:true,reducedMotion:'reduce',timezoneId:'UTC',locale:'en-US'});
   const page=await context.newPage();
   page.on('pageerror',e=>report.errors.push({kind,width,message:e.message}));
@@ -58,6 +96,15 @@ try{
   await page.goto(base);
   await page.locator('[data-welcome="login"]:visible').waitFor();
   await capture(page,kind,width,'welcome');
+  await page.locator('[data-welcome="create"]:visible').click();
+  await capture(page,kind,width,'campus');
+  await page.locator('[data-welcome-campus="central"]').click();
+  await page.locator('[data-welcome="next"]:visible').click();
+  await capture(page,kind,width,'onboarding-connection');
+  await page.locator('[data-welcome-role="connected"]').click();
+  await page.locator('[data-welcome="next"]:visible').click();
+  await capture(page,kind,width,'onboarding-involvement');
+  for(let step=0;step<3;step++)await page.locator('[data-welcome="back"]:visible').click();
   await page.locator('[data-welcome="login"]:visible').click();
   await capture(page,kind,width,'login');
   await page.locator('[data-welcome="demo"]:visible').click();
@@ -89,7 +136,7 @@ try{
  }
  assert.deepEqual(report.errors,[]);
  report.status='passed';
- console.log(JSON.stringify({pairs:report.comparisons.length,rawDifferentPixels:report.comparisons.reduce((n,c)=>n+c.rawDifferentPixels,0),errors:report.errors}));
+ console.log(JSON.stringify({protectedFiles:report.protectedFiles,pairs:report.comparisons.length,rawDifferentPixels:report.comparisons.reduce((n,c)=>n+c.rawDifferentPixels,0),errors:report.errors}));
 }catch(error){report.status='failed';report.error=error.message;throw error;}
 finally{
  await writeFile(resolve(out,'results.json'),JSON.stringify(report,null,2)+'\n');

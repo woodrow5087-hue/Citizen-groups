@@ -29,3 +29,6 @@ Exact demo SHA CI evidence:
 - Code inspection: portrait-return restores origin pane (people directory). Prior test incorrectly expected home directly. Sprint test now asserts directory restoration and explicitly navigates back before RSVP. No UI change. Must rerun to confirm.
 - New tests committed for malformed unread count, valid zero, guest. Not executed locally by connector. Verify fresh head with npm test, npm run build, npm run test:verseplay, complete preview browser suites, 320/390/430px screenshots, iPhone Safari and VoiceOver. Verify exact commit in deploy status, do not retarget legacy branch to manufacture preview. No merge until green and reviewed.
 - Pending: review provider data contract, legacy ranking, production security/permissions, asset rights, Scripture editorial approval, operational pilot consent. This is a fictional demo, not a production authorization.
+
+## Coordinated continuation
+The recovered owner-authorized 8B.1–8E roadmap and the subsequent stage gates are recorded in `s8-progress.md`. The initial CI observations above are historical; `s8-ci-recovery.md` documents their corrections. Architecture, canonical contracts, intelligence ownership and developer handoff are in the adjacent Sprint 8 documents. Physical device/VoiceOver and production authorization are not implied by automated acceptance.

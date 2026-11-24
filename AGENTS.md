@@ -16,3 +16,5 @@ Preserve approved Rally One charcoal/red/cream palette, typography, title artwor
 - Run npm ci, npm test, npm run build, npm run test:verseplay and browser suites; check CI and mobile device acceptance before requesting merge. Report failures and pending checks explicitly. Do not call a successful Netlify deployment full QA.
 
 See engineering/s8-foundation.md for this sprint's audit and release gates.
+
+Sprint 8 architecture, source contracts, shared intelligence, validation history and developer commands are in `engineering/s8-architecture.md`, `s8-data-contracts.md`, `s8-intelligence.md`, `s8-progress.md` and `s8-handoff.md`. Keep these internal notes outside the public `docs` build.
