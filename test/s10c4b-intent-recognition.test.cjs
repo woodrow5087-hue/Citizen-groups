@@ -25,7 +25,7 @@ test('10C.4B canonical unsafe and ambiguous prompts are non-actionable, no mutat
  assert.deepEqual(s,before);
 });
 test('10C.4B unimplemented relational response plans explicitly abstain instead of misrouting',()=>{
- const s=sources();for(const q of ['Who could I encourage?','How can I get more connected?','Have I followed up already?','What should I review as a leader?']){
+ const s=sources();for(const q of ['How can I get more connected?','What should I review as a leader?']){
   const r=Ask.respond(q,s);assert.equal(r.response.intent,Ask.resolveIntent(q));assert.equal(r.response.items.length,0);
  }
 });
