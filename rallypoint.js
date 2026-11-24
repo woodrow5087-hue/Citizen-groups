@@ -644,9 +644,9 @@ if(s.view==='group'&&s.groupPane==='chat'&&todayUI.memberships.group&&$('rpx-cha
     // A view visit is a read event even before a second chat rerender.
     // The shared adapter preserves draft/reply fields and refuses malformed storage.
     if(authorize('read')){
-      window.RallyConversationRead?.markRead({
+      try{window.RallyConversationRead?.markRead({
         storage:localStorage,domain:Domain,member:todayUI.memberships.group===true
-      });
+      });}catch(_){}
     }
   }else{
     const note=root.querySelector('#lab-error');

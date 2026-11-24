@@ -415,7 +415,7 @@ test('demo name is escaped, saved independently and modal keyboard dismissal res
  app.click('.profile-avatar');app.d.dispatchEvent(new app.w.KeyboardEvent('keydown',{key:'Escape',bubbles:true}));assert.equal(app.d.querySelector('#dialog-root [role="dialog"]'),null);assert.equal(app.d.activeElement.className,'profile-avatar');
 });
 test('storage failure is disclosed while the demo stays usable',t=>{
- const app=open(t,{blocked:true});assert.match(app.text(),/could not save/);app.go('group');app.type('group-input','An in-memory sample');app.click('[data-action="send"][data-value="group"]');assert.match(app.text(),/An in-memory sample/);
+ const app=open(t,{blocked:true});const errors=[];app.w.addEventListener('error',event=>errors.push(event.error));assert.match(app.text(),/could not save/);app.go('group');app.type('group-input','An in-memory sample');app.click('[data-action="send"][data-value="group"]');assert.match(app.text(),/An in-memory sample/);assert.deepEqual(errors,[],'blocked storage must not escape the read-cursor boundary');
 });
 
 test('Premium ALIVE people circles open existing fictional direct conversations and preserve local replies',t=>{

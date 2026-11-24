@@ -59,6 +59,10 @@ try{
   assert.equal(await page.locator('#nav [aria-current="page"]').getAttribute('data-go'),'group');
   assert.ok(await page.locator('.gv2-profile .gv2-photo-aiden').isVisible());
   await page.locator('.gv2-profile .gv2-back').click();
+  // Portrait return restores its Today origin, including the selected tab.
+  await page.locator('.gv2-today-people').waitFor();
+  assert.equal(await page.locator('#nav [aria-current="page"]').getAttribute('data-go'),'today');
+  await page.locator('#nav [data-go="group"]').click();
   await page.locator('.gv2-home').waitFor();
   assert.deepEqual(await page.locator('.gv2-home .gv2-rail-button[data-person]').evaluateAll(els=>els.map(el=>el.dataset.person)),
     people,'Groups and Today must use the exact same roster');

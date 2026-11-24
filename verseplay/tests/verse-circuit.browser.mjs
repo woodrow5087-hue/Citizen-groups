@@ -38,8 +38,47 @@ const results = {
   axe: [],
   consoleErrors: [],
   fontFailures: [],
+  fontResources: [],
   cameraOffsets: [],
 };
+// Capture live external font responses once per URL for this comparison run.
+// Google Fonts can serve different font formats for the same stylesheet URL.
+// Both versions must receive identical inputs; product URLs/assets stay untouched.
+const fontInputs = new Map();
+async function createContext(options) {
+  const context = await browser.newContext(options);
+  context.on("response", async (response) => {
+    const input = fontInputs.get(response.url());
+    if (!input || input.resolved) return;
+    input.resolved = true;
+    try {
+      assert.equal(response.status(), 200, `Font input failed: ${response.url()}`);
+      const body = await response.body();
+      const headers = await response.allHeaders();
+      delete headers["content-encoding"];
+      delete headers["content-length"];
+      input.resolve({status:response.status(), headers, body});
+    } catch (error) { input.reject(error); }
+  });
+  context.on("requestfailed", (request) => {
+    const input = fontInputs.get(request.url());
+    if (input && !input.resolved) {
+      input.resolved = true;
+      input.reject(new Error(`Font input failed: ${request.url()}`));
+    }
+  });
+  await context.route(/^https:\/\/fonts\.(googleapis|gstatic)\.com\//, async (route) => {
+    const url = route.request().url();
+    if (!fontInputs.has(url)) {
+      const input = {};
+      input.promise = new Promise((resolve, reject) => Object.assign(input, {resolve, reject}));
+      input.promise.catch(() => {}); // Report through fontFailures and the route consumer.
+      fontInputs.set(url, input);
+      await route.continue();
+    } else await route.fulfill(await fontInputs.get(url).promise);
+  });
+  return context;
+}
 const check = (value, message) => {
   assert.ok(value, message);
   results.checks++;
@@ -155,13 +194,26 @@ async function geometry(page, kind, label, width) {
   }
 }
 async function visit(kind, width, height = 844) {
-  const context = await browser.newContext({
+  const context = await createContext({
     viewport: { width, height },
     isMobile: width < 500,
     hasTouch: width < 500,
     reducedMotion: "reduce",
   });
   const page = await context.newPage();
+  page.on("response", async (response) => {
+    if (/fonts\.(googleapis|gstatic)/.test(response.url())) {
+      try {
+        const body = await response.body();
+        if (response.url().includes("fonts.googleapis.com"))
+          await writeFile(`${out}/font-${createHash("sha256").update(body).digest("hex")}.css`, body);
+        results.fontResources.push({kind, width, url:response.url(),
+          sha256:createHash("sha256").update(body).digest("hex")});
+      } catch (error) {
+        results.fontFailures.push({kind, width, url:response.url(), error:error.message});
+      }
+    }
+  });
   await page.route("**/favicon.ico", (route) => route.fulfill({ status: 204 })); // browser-generated request, absent in approved prototype
   page.on("pageerror", (e) =>
     results.consoleErrors.push({ kind, width, message: e.message }),
@@ -197,6 +249,11 @@ async function visit(kind, width, height = 844) {
     })),
   });
   const save = async (label) => {
+    if (label.endsWith("-incorrect")) {
+      // The 300ms error flash is transient; capture its persistent error message
+      // only after the flash clears, rather than racing wall-clock screenshots.
+      await page.waitForFunction(() => !document.querySelector(".incorrect, .wrong"));
+    }
     await geometry(page, kind, label, width);
     await snapshot(page, label, kind, width);
     if (
@@ -228,6 +285,25 @@ async function visit(kind, width, height = 844) {
       });
     }
   };
+  const wrongChoice = async (action, text, className, feedback, message) => {
+    // Observe the real transient feedback before clicking, so a slow screenshot
+    // cannot miss it. Then compare the settled error state on both versions.
+    await page.evaluate((className) => {
+      window.errorFlash = new Promise((resolve) => {
+        let shown = false;
+        const observer = new MutationObserver(() => {
+          const visible = !!document.querySelector(`.${className}`);
+          if (visible) shown = true;
+          else if (shown) { observer.disconnect(); resolve(true); }
+        });
+        observer.observe(document.querySelector("#game"), {subtree:true, attributes:true, attributeFilter:["class"]});
+      });
+    }, className);
+    await matchButton(page, action, text).click();
+    await page.waitForFunction(() => window.errorFlash);
+    check(await page.evaluate(() => window.errorFlash), `${kind} ${width} ${action} error flash appears and clears`);
+    check((await page.locator(feedback).textContent()) === message, `${kind} ${width} ${action} preserves error feedback`);
+  };
   await save("arcade");
   await click(page, "launch");
   await save("introduction");
@@ -238,7 +314,7 @@ async function visit(kind, width, height = 844) {
   await save("trace-complete");
   await click(page, "next");
   await save("link");
-  await matchButton(page, "link", "as I have loved you").click();
+  await wrongChoice("link", "as I have loved you", "incorrect", "#link-feedback", "Not quite—try the phrase that comes next.");
   await save("link-incorrect");
   for (const text of [
     "This is My commandment",
@@ -249,7 +325,7 @@ async function visit(kind, width, height = 844) {
   await save("link-complete");
   await click(page, "next");
   await save("echo");
-  await matchButton(page, "echo", "know").click();
+  await wrongChoice("echo", "know", "wrong", "#echo-feedback", "Almost. Try the word that fits this blank.");
   await save("echo-incorrect");
   for (const text of ["commandment", "one another", "loved"])
     await matchButton(page, "echo", new RegExp(`^${text}$`)).click();
@@ -261,7 +337,7 @@ async function visit(kind, width, height = 844) {
   await context.close();
 }
 async function integration() {
-  const context = await browser.newContext({
+  const context = await createContext({
     viewport: { width: 390, height: 844 },
     reducedMotion: "reduce",
   });
@@ -454,7 +530,7 @@ async function failureRecovery() {
       value: JSON.stringify({ schemaVersion: 999 }),
     },
   ]) {
-    const context = await browser.newContext({
+    const context = await createContext({
       viewport: { width: 375, height: 844 },
     });
     await context.addInitScript((value) => {
@@ -491,7 +567,7 @@ async function failureRecovery() {
     );
     await context.close();
   }
-  const unavailable = await browser.newContext({
+  const unavailable = await createContext({
     viewport: { width: 320, height: 844 },
   });
   await unavailable.addInitScript(() =>
@@ -518,7 +594,7 @@ async function failureRecovery() {
     "Unavailable storage remains playable",
   );
   await unavailable.close();
-  const quota = await browser.newContext({
+  const quota = await createContext({
     viewport: { width: 390, height: 844 },
     reducedMotion: "reduce",
   });
@@ -553,7 +629,7 @@ async function failureRecovery() {
     "Quota notice remains readable after gameplay announcements",
   );
   await quota.close();
-  const missing = await browser.newContext();
+  const missing = await createContext();
   const missingPage = await missing.newPage();
   await missingPage.route("**/content/john-15-12.json", (route) =>
     route.fulfill({ status: 503, body: "Unavailable" }),
@@ -591,7 +667,7 @@ async function normalMotionParity() {
     ["before", "verseplay/reference/verse-circuit-original.html"],
     ["after", "verse-circuit-playground.html"],
   ]) {
-    const context = await browser.newContext({
+    const context = await createContext({
       viewport: { width: 390, height: 844 },
       reducedMotion: "no-preference",
     });
@@ -687,7 +763,7 @@ async function normalMotionParity() {
   });
 }
 async function keyboardPlay() {
-  const context = await browser.newContext({
+  const context = await createContext({
     viewport: { width: 390, height: 844 },
     reducedMotion: "reduce",
   });
@@ -760,6 +836,9 @@ try {
   }
   check(results.consoleErrors.length === 0, "No console/page errors");
   check(results.fontFailures.length === 0, "No failed font requests");
+  for (const url of new Set(results.fontResources.map((resource) => resource.url)))
+    check(new Set(results.fontResources.filter((resource) => resource.url === url)
+      .map((resource) => resource.sha256)).size === 1, `Identical font input bytes: ${url}`);
   check(
     results.viewports.every(
       (viewport) =>
