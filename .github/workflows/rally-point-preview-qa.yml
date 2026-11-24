@@ -56,6 +56,7 @@ jobs:
           curl --silent --fail --retry 5 --retry-connrefused http://127.0.0.1:8514/ -o /dev/null
           node scripts/leadership-demo-browser-check.mjs http://127.0.0.1:8514/
           node scripts/preview-today-browser-check.mjs http://127.0.0.1:8514/
+          node scripts/s10c5-member-journeys-browser-check.mjs http://127.0.0.1:8514/
       - name: Compare Rally One against immutable approved PR 119
         run: |
           reference_dir="$RUNNER_TEMP/rally-one-approved-119"
