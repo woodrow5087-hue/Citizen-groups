@@ -9,6 +9,6 @@ function restoreNavigationSource(){
  const module=read('rally-one-navigation.js');
  assert.ok(module.startsWith(prefix)&&module.endsWith(suffix),'Unexpected navigation wrapper');
  const block=transforms.reduce((s,[a,b])=>once(s,b,a),module.slice(prefix.length,-suffix.length));
- return once(read('rallypoint.js'),wrapper,block);
+ return once(require('./s9br-dialog-source.cjs').restoreDialogSource(),wrapper,block);
 }
 module.exports={restoreNavigationSource};
