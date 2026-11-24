@@ -108,7 +108,7 @@ test('member permission and discovery guards remain before Groups home',()=>{
  assert.equal(require('../rally-one-app-state.js').initialize(()=>null,false).groupPane,'chat');
  assert.match(read('rally-one-navigation.js'),/if\(rallyOne\)s\.groupPane=pane\|\|'overview'/);
  assert.match(source,/if\(a==='gv2-profile'&&rallyOne&&/);
- assert.match(source,/openConnect\('thread'\);return;/);
+ assert.match(read('rally-one-navigation.js'),/openConnect\('thread'\);return;/);
  assert.doesNotMatch(read('rally-one-groups-v2.js'),/localStorage|sessionStorage|fetch\s*\(|WebSocket/);
 });
 test('HTML escapes interpolated fixture text; CSS honors touch/accessibility',()=>{
