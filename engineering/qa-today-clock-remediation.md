@@ -59,3 +59,13 @@ with evidence. Use fictional data only and a fresh preview-host session.
 - Check visitor/member/volunteer/leader demo restrictions and restore local state.
 
 Synthetic review is loopback-only and is never added to the public Netlify build.
+
+## Additional deployed initialization race
+
+Exact-commit CDN verification checked 185 files for the first correction deploy.
+The deployed Connect flow exposed another test race: static inbox/thread DOM can
+be visible before deferred Connect member setup, causing a stale unread badge or
+a draft-field assertion to run before saved state is projected. Waiting for the
+existing `body.connect-member` marker whenever a fresh embedded inbox is opened
+(and after the initial Today link) synchronizes on actual application setup. No
+assertion, timeout, selector contract or runtime initialization is changed.
