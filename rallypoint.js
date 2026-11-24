@@ -2,10 +2,8 @@
 'use strict';
 const key='rallypoint-phase1-2026';
 // Preview builds choose the default layout. Experiments remain explicit URL choices.
-const previewParams=new URLSearchParams(window.location.search);
-const rallyOne=previewParams.has('rallyOne')?previewParams.get('rallyOne')==='1':
- document.documentElement.dataset.defaultExperience==='rally-one'&&
- !['f09','f10','f103'].some(flag=>previewParams.has(flag));
+const {rallyOne,f103Preview,f10Preview,f09Board,f09Preview}=window.RallyLaunchMode.resolve(
+ new URLSearchParams(window.location.search),document.documentElement.dataset);
 if(rallyOne){
  document.body.classList.add('rally-one');
  const brand=document.querySelector('.brand-home');
@@ -17,12 +15,6 @@ if(rallyOne){
  if(caption)caption.textContent='Rally One · Fictional activity · Private to this browser';
  document.querySelector('meta[name="apple-mobile-web-app-title"]')?.setAttribute('content','Rally One');
 }
-const f103Preview=previewParams.get('f103')==='1';
-const f10Preview=rallyOne||f103Preview||previewParams.get('f10')==='1';
-const defaultToday=document.documentElement.dataset.defaultToday;
-const f09Mode=f10Preview?'board':(previewParams.get('f09')??defaultToday);
-const f09Board=f09Mode==='board';
-const f09Preview=f09Mode==='1'||f09Board;
 let f09Index=0;
 let receiptType=null;
 let f09Feedback='';
