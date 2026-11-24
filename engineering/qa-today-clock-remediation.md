@@ -65,7 +65,8 @@ Synthetic review is loopback-only and is never added to the public Netlify build
 Exact-commit CDN verification checked 185 files for the first correction deploy.
 The deployed Connect flow exposed another test race: static inbox/thread DOM can
 be visible before deferred Connect member setup, causing a stale unread badge or
-a draft-field assertion to run before saved state is projected. Waiting for the
+a draft-field assertion to run before saved state is projected. The same race was
+also reproduced in the companion Connect usability test while reopening a draft. Waiting for the
 existing `body.connect-member` marker whenever a fresh embedded inbox is opened
 (and after the initial Today link) synchronizes on actual application setup. No
 assertion, timeout, selector contract or runtime initialization is changed.
