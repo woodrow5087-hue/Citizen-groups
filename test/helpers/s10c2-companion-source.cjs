@@ -7,6 +7,6 @@ function restoreCompanionSource(){
  return transforms.reduce((s,[before,after])=>{
   assert.equal(s.split(after).length,2,'Unexpected companion source boundary');
   return s.replace(after,before);
- },fs.readFileSync(require.resolve('../../rallypoint-personal-companion.js'),'utf8'));
+ },require('./s10c3-care-source.cjs').restoreAsk());
 }
 module.exports={restoreCompanionSource};

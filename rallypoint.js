@@ -945,6 +945,10 @@ if(a==='companion-later'){
 }
 if(a==='companion-snooze'){
   if(!todayUI.memberships.group)return;
+  if(rallyOne){
+    const care=window.RallyCareFlow.derive({state:s,member:todayUI.memberships.group===true,now:new Date()});
+    if(!care||care.paused||care.completed)return;
+  }
   s.companionCare.marcus={...(s.companionCare.marcus||{}),snoozedUntil:new Date(Date.now()+24*60*60*1000).toISOString()};
   render();notify('This fictional suggestion will return in about a day.');return;
 }
@@ -979,12 +983,30 @@ if(a==='care-open-prayer'||a==='care-mark-prayed'||
   }
   return;
 }
+if(a==='f10-care-route'){
+  // Revalidate at the point of action; an earlier answer cannot grant access.
+  if(!rallyOne||!f10Preview||dialog!=='f10-companion'||s.view!=='today')return;
+  const care=window.RallyCareFlow.derive({state:s,member:todayUI.memberships.group===true,now:new Date()});
+  if(v==='care-prayer'&&care?.stage==='ready'){navigate('group','prayer');return;}
+  if(v==='care-check-in'&&care?.stage==='prayed'){
+    companionFocus='marcus';s.directPerson='marcus';navigate('group','direct');return;
+  }
+  return;
+}
 if(a==='companion-encourage'){
   if(!todayUI.memberships.group||!s.prayers.some(p=>p?.name==='Marcus C.'))return;
+  if(rallyOne){
+    const care=window.RallyCareFlow.derive({state:s,member:todayUI.memberships.group===true,now:new Date()});
+    if(!care||care.paused||care.completed)return;
+  }
   companionFocus='marcus';s.directPerson='marcus';navigate('group','direct');return;
 }
 if(a==='companion-starter'){
   if(companionFocus!=='marcus'||s.groupPane!=='direct'||s.directPerson!=='marcus')return;
+  if(rallyOne){
+    const care=window.RallyCareFlow.derive({state:s,member:todayUI.memberships.group===true,now:new Date()});
+    if(s.view!=='group'||!care||care.paused||care.completed)return;
+  }
   const field=$('direct-input');
   if(field){
     if(field.value.trim()){
@@ -1013,10 +1035,23 @@ if(a==='send'){
  else if(v==='team')s.teamMessages.push(item);
  else if(v==='direct'){
   if(!todayUI.memberships.group||!sampleGroupPeople.some(p=>p.id===s.directPerson))return;
+  // Care-linked local messages and their completion must commit together.
+  if(rallyOne&&s.directPerson==='marcus'&&companionFocus==='marcus'){
+    const care=window.RallyCareFlow.derive({state:s,member:todayUI.memberships.group===true,now:new Date()});
+    if(s.view!=='group'||s.groupPane!=='direct'||!care||care.paused||care.completed)return;
+    const previous=s;
+    const flags={...(s.companionCare.marcus||{}),completedAt:new Date().toISOString()};
+    delete flags.snoozedUntil;
+    s={...s,directMessages:{...s.directMessages,marcus:[...(s.directMessages.marcus||[]),item]},
+      companionCare:{...s.companionCare,marcus:flags}};
+    if(!save()){s=previous;notify('Check-in not saved. Copy your draft before reloading to retry.');return;}
+    companionFocus=null;x.value='';delete drafts[x.dataset.draftKey||x.id];
+    render();notify('Saved to this device only');return;
+  }
   s.directMessages[s.directPerson]??=[];
   s.directMessages[s.directPerson].push(item);
   // The care loop remembers only that the optional action occurred; content remains in the existing local DM.
-  if(s.directPerson==='marcus'&&s.prayers.some(p=>p?.name==='Marcus C.')){
+  if(!rallyOne&&s.directPerson==='marcus'&&s.prayers.some(p=>p?.name==='Marcus C.')){
    s.companionCare.marcus={...(s.companionCare.marcus||{}),completedAt:new Date().toISOString()};
    delete s.companionCare.marcus.snoozedUntil;
   }

@@ -29,6 +29,8 @@ try{
   const readCursor=()=>page.evaluate(()=>localStorage.getItem('rallypoint-wednesday-chat-lab-v1'));
   const cursorBefore=await readCursor();
 
+  // The canonical Ask route is tested after the existing explicit care journey
+  // in an isolated synthetic session below (no change to reference screenshots).
   // Opening and postponing a suggestion must never acknowledge messages.
   await page.locator('.ro-care--group [data-action="companion-snooze"]').click();
   await page.locator('.ro-care--group[data-care-stage="paused"]').waitFor();
@@ -93,6 +95,69 @@ try{
   assert.deepEqual(a11y.violations.map(v=>({id:v.id,targets:v.nodes.map(n=>n.target)})),[],
     'Companion Care guest accessibility '+width);
   assert.deepEqual(errors,[],'No JS runtime errors '+width);
+  // New independent synthetic profile, no raw prayer content in the Ask answer.
+  const routeContext=await browser.newContext({viewport:{width,height},isMobile:true,hasTouch:true,reducedMotion:'reduce'});
+  const routePage=await routeContext.newPage();
+  await routePage.goto(base);
+  await routePage.locator('[data-welcome="login"]:visible').click();
+  await routePage.locator('[data-welcome="demo"]:visible').click();
+  await routePage.locator('#rp-gateway').waitFor({state:'hidden'});
+  await routePage.evaluate(()=>{
+    const key='rallypoint-phase1-2026',state=JSON.parse(localStorage.getItem(key));
+    state.rsvp='going';state.teamStatus='confirmed';state.read=true;state.prayed=true;
+    state.companionChoices={snoozedUntil:{'group-unread':'2099-01-01T00:00:00Z','group-unavailable':'2099-01-01T00:00:00Z'}};
+    state.companionCare={};localStorage.setItem(key,JSON.stringify(state));
+  });
+  await routePage.reload();await routePage.locator('.f09-board').waitFor();
+  const raw=()=>routePage.evaluate(()=>JSON.parse(localStorage.getItem('rallypoint-phase1-2026')));
+  const cursor=()=>routePage.evaluate(()=>localStorage.getItem('rallypoint-wednesday-chat-lab-v1'));
+  const priorCursor=await cursor();
+  await routePage.locator('[data-action="f10-open"]').click();
+  await routePage.locator('.f10-chip[data-value="next"]').click();
+  await routePage.locator('[data-action="f10-care-route"][data-value="care-prayer"]').click();
+  await routePage.locator('.ro-care--prayer[data-care-stage="ready"]').waitFor();
+  assert.equal((await raw()).companionCare.marcus,undefined);
+  await routePage.locator('.ro-care--prayer [data-action="care-mark-prayed"]').click();
+  await routePage.locator('#nav [data-go="today"]').click();
+  await routePage.locator('[data-action="f10-open"]').click();
+  await routePage.locator('.f10-chip[data-value="next"]').click();
+  await routePage.locator('[data-action="f10-care-route"][data-value="care-check-in"]').click();
+  await routePage.locator('.ro-care-draft-hint').waitFor();
+  await routePage.locator('#direct-input').fill('An intentional local check-in');
+  assert.equal((await raw()).companionCare.marcus.completedAt,undefined);
+  assert.equal(await cursor(),priorCursor);
+  // A failed write must preserve the draft and not claim a completed check-in.
+  await routePage.evaluate(()=>{const original=Storage.prototype.setItem;window.__restoreCareStorage=()=>{Storage.prototype.setItem=original;};Storage.prototype.setItem=function(){throw Error('synthetic blocked write');};});
+  await routePage.locator('[data-action="send"][data-value="direct"]').click();
+  assert.equal(await routePage.locator('#direct-input').inputValue(),'An intentional local check-in');
+  assert.equal((await raw()).companionCare.marcus.completedAt,undefined);
+  assert.equal((await raw()).directMessages.marcus,undefined);
+  await routePage.evaluate(()=>window.__restoreCareStorage());
+  // The existing guard intentionally latches failures until a reload.
+  // A second click in the same session must NOT bypass that protection.
+  await routePage.locator('[data-action="send"][data-value="direct"]').click();
+  assert.equal((await raw()).companionCare.marcus.completedAt,undefined);
+  assert.equal((await raw()).directMessages.marcus,undefined);
+  assert.equal(await routePage.locator('#direct-input').inputValue(),'An intentional local check-in');
+  assert.match(await routePage.locator('#toast').textContent(),/Copy your draft before reloading/);
+  assert.equal(await routePage.evaluate(()=>localStorage.getItem('rallypoint-write-journal-v1')),null);
+  const retainedDraft=await routePage.locator('#direct-input').inputValue();
+  await routePage.reload();
+  await routePage.locator('.f09-board').waitFor();
+  await routePage.locator('[data-action="f10-open"]').click();
+  await routePage.locator('.f10-chip[data-value="next"]').click();
+  await routePage.locator('[data-action="f10-care-route"][data-value="care-check-in"]').click();
+  await routePage.locator('.ro-care-draft-hint').waitFor();
+  await routePage.locator('#direct-input').fill(retainedDraft);
+  await routePage.locator('[data-action="send"][data-value="direct"]').click();
+  assert.ok((await raw()).companionCare.marcus.completedAt);
+  assert.equal((await raw()).directMessages.marcus.length,1);
+  assert.equal(await cursor(),priorCursor);
+  await routePage.locator('#nav [data-go="today"]').click();
+  await routePage.locator('[data-action="f10-open"]').click();
+  await routePage.locator('.f10-chip[data-value="next"]').click();
+  assert.equal(await routePage.locator('[data-action="f10-care-route"]').count(),0);
+  await routeContext.close();
   await context.close();
   console.log('Care path: Today → prayer → explicitly prayed → local DM → Today/Groups follow-through, gate and accessibility passed at '+width+'px');
  }

@@ -30,7 +30,7 @@ test('10C.2 care-only priority no longer gets an incorrect caught-up answer',()=
  const {r,next}=check(input({prayers:[request]}),['care-prayer']);
  assert.equal(r.baselineBoard.taskCount,0);
  assert.match(next.intro,/optional/);
- assert.equal(next.items[0].action,null,'safe care routing is a separate milestone');
+ assert.deepEqual(next.items[0].action,{kind:'care-route',id:'care-prayer',label:'Read prayer'},'approved 10C.3 navigation only');
  assert.ok(!JSON.stringify(next).includes(request.text));
 });
 test('10C.2 prayed care remains visible and optional until explicit completion',()=>{

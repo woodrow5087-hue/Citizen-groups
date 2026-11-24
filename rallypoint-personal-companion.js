@@ -24,6 +24,16 @@ const formatDate=(d)=>d.toLocaleDateString('en-US',{weekday:'short',month:'short
  ' · '+d.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'});
 const go=(id,pane,label)=>Object.freeze({kind:'go',id,pane:pane||'',label});
 const direct=(id,label)=>Object.freeze({kind:'confirm',id,label});
+// Only the current canonical care projection may supply a care navigation control.
+function careRoute(d,id,action){
+ const ctx=d.memberContext;
+ if(ctx?.permissions?.group!==true||action?.kind!=='action')return null;
+ if(id==='care-prayer'&&ctx.care?.status==='ready'&&action.id==='care-open-prayer')
+  return Object.freeze({kind:'care-route',id,label:'Read prayer'});
+ if(id==='care-check-in'&&ctx.care?.status==='prayed'&&action.id==='companion-encourage')
+  return Object.freeze({kind:'care-route',id,label:'Write a check-in'});
+ return null;
+}
 const item=(title,detail,reason,action=null)=>Object.freeze({title,detail,reason,action});
 const sourceNote='Fictional sample activity on this device only. No church accounts, messages or calendar are connected.';
 function classify(value){
@@ -89,7 +99,7 @@ function answer(query,{model,board,now=new Date()}={}){
    if(r.id==='group-rsvp')action=direct('rsvp','RSVP · I’m in');
    else if(r.id==='serve-response')action=direct('serve','Confirm serving');
    else if(action&&action.kind==='go')action=go(action.id,action.pane,label);
-   else if(action&&action.kind==='action')action=null;
+   else if(action&&action.kind==='action')action=careRoute(d,r.id,action);
    push(r.title,r.detail||r.subtitle||'Review this sample action',
     r.why||'This request is still open in your saved demo activity.',action);
   }
@@ -151,7 +161,7 @@ function answer(query,{model,board,now=new Date()}={}){
   push(b.hero?.title||'Your next step',
     b.hero?.subtitle||'Current local recommendation',
     'The board prioritizes unanswered time-sensitive commitments over optional invitations. It never infers spiritual health.',
-    b.hero?.primary?.kind==='go'?go(b.hero.primary.id,b.hero.primary.pane,'Open next step'):null);
+    b.hero?.primary?.kind==='go'?go(b.hero.primary.id,b.hero.primary.pane,'Open next step'):careRoute(d,b.hero?.id,b.hero?.primary));
  }else{
   heading='Here’s what I can help with.';
   intro='This prototype understands a few specific questions about sample church activities. It does not generate open-ended AI responses.';
@@ -437,11 +447,12 @@ function render(response,asked='',notice='',history=[],suggested=[]){
  const question=asked?'<p class="f10-question"><span>You asked</span>'+esc(asked.slice(0,160))+'</p>':'';
  const cards=r.items.map(x=>{
   const action=x.action;
-  const allowed=action&&(['go','confirm'].includes(action.kind));
+  const allowed=action&&(['go','confirm'].includes(action.kind)||
+    (action.kind==='care-route'&&['care-prayer','care-check-in'].includes(action.id)));
   const control=allowed?
    '<button type="button" class="f10-route" '+(action.kind==='go'?
       'data-go="'+esc(action.id)+'"'+(action.pane?' data-pane="'+esc(action.pane)+'"':''):
-      'data-action="f10-confirm" data-value="'+esc(action.id)+'"')+'>'+
+      'data-action="'+(action.kind==='care-route'?'f10-care-route':'f10-confirm')+'" data-value="'+esc(action.id)+'"')+'>'+
       esc(action.label||'Open')+' <span aria-hidden="true">›</span></button>':'';
   return '<div class="f10-result-card"><div><strong>'+esc(x.title)+'</strong>'+
    '<p>'+esc(x.detail)+'</p><details><summary>Why this?</summary><p>'+esc(x.reason)+'</p></details></div>'+control+'</div>';
