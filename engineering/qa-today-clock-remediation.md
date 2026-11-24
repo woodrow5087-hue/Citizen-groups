@@ -97,3 +97,15 @@ Connect at four widths, loopback synthetic review, the immutable PR #119 compari
 and the full VersePlay browser suite. The latter also passed its 49 visual pairs.
 Final commit CI status, exact-commit Netlify provenance and permalink are recorded
 in the PR handoff; physical-device acceptance remains outstanding.
+
+## Verse Circuit CDN reload readiness
+
+Running the complete VersePlay browser suite against the immutable CDN deploy
+exposed a similar harness race at the reload assertion. `#game h1` matches the
+static JavaScript fallback before `mount()` finishes fetching and validating the
+passage. A traced reproduction recorded that fallback immediately after reload,
+then the correct saved introduction with no page errors. Wait for the existing
+expected screen's aria-label before the unchanged exact-count assertion. This
+retains the default timeout and all persistence, gameplay and visual checks;
+no VersePlay runtime, content or rendering source changes. Local-only runs were
+already green; the CDN exercise reveals the asynchronous readiness dependency.

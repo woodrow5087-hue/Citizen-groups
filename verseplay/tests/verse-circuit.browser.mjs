@@ -348,7 +348,9 @@ async function integration() {
   );
   const reload = async (label) => {
     await page.reload();
-    await page.locator("#game h1").waitFor();
+    // The static fallback also has an h1 while the passage fetch is pending.
+    // Wait for the restored game screen, then retain the exact count assertion.
+    await page.locator(`[aria-label="${label}"]`).waitFor();
     check(
       (await page.locator(`[aria-label="${label}"]`).count()) === 1,
       `Reload restored ${label}`,
