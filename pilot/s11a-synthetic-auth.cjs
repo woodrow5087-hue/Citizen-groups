@@ -20,21 +20,39 @@ const eq=(a,b)=>opaque(a)&&opaque(b)&&timingSafeEqual(Buffer.from(a),Buffer.from
 const https=x=>{try{const u=new URL(x);return u.protocol==='https:'&&!u.username&&!u.password&&!u.hash&&!u.search&&u.href===x;}catch{return false;}};
 function createSyntheticAuth({issuer,audience,organizationId,redirectUri,
  verifySyntheticCode,lookupPilotGrant,readSyntheticMember,now=Date.now,
- transactionMs=300_000,idleMs=1_800_000,absoluteMs=28_800_000,maxBindings=1000}={}){
+ transactionMs=300_000,idleMs=1_800_000,absoluteMs=28_800_000,maxBindings=1000,readDeadlineMs=12000,verifyDeadlineMs=5000,maxReadsPerSession=2}={}){
  if(!https(issuer)||!https(redirectUri)||!identifier(audience)||!identifier(organizationId)||
     [verifySyntheticCode,lookupPilotGrant,readSyntheticMember,now].some(fn=>typeof fn!=='function')||
-    ![transactionMs,idleMs,absoluteMs,maxBindings].every(n=>Number.isSafeInteger(n)&&n>0)||
-    transactionMs>600_000||idleMs>absoluteMs||absoluteMs>28_800_000||maxBindings>10000)
+    ![transactionMs,idleMs,absoluteMs,maxBindings,readDeadlineMs,verifyDeadlineMs,maxReadsPerSession].every(n=>Number.isSafeInteger(n)&&n>0)||
+    transactionMs>600_000||idleMs>absoluteMs||absoluteMs>28_800_000||maxBindings>10000||readDeadlineMs>30000||verifyDeadlineMs>10000||maxReadsPerSession>8)
   throw TypeError('Invalid synthetic authentication configuration');
  // One flow/session per opaque server-generated browser binding; store only
  // digests of browser binding and session token. A new login replaces the old.
  const records=new Map();
+ function remove(k){
+  const r=records.get(k);records.delete(k);
+  if(r){r.exchange?.abort();for(const controller of r.session?.reads||[])controller.abort();}
+ }
+ function clear(){for(const k of records.keys())remove(k);}
+ // Deadline races always settle the caller; cooperative dependencies receive
+ // abort. A noncooperative dependency may continue; physical transport
+ // concurrency is separately bounded in 11D.
+ async function bounded(work,controller,ms){
+  let timer,abort;
+  try{
+   return await Promise.race([
+    (async()=>{if(controller.signal.aborted)throw Error('cancelled');return work();})(),
+    new Promise((_,reject)=>{abort=()=>reject(Error('cancelled'));controller.signal.addEventListener('abort',abort,{once:true});
+     if(controller.signal.aborted)abort();else timer=setTimeout(()=>controller.abort(),ms);})
+   ]);
+  }finally{clearTimeout(timer);controller.signal.removeEventListener('abort',abort);}
+ }
  function time(){const n=now();return Number.isSafeInteger(n)&&n>=0?n:null;}
  function key(binding){return opaque(binding)?digest(binding):null;}
  function validTime(n,r){return n!==null&&n>=r.startedAt&&n<r.expiresAt;}
  function prune(n){
   for(const [k,r] of records){
-   if(!validTime(n,r)||(r.session&&n-r.session.lastSeen>=idleMs))records.delete(k);
+   if(!validTime(n,r)||(r.session&&n-r.session.lastSeen>=idleMs))remove(k);
   }
  }
  function beginLogin(browserBinding){
@@ -43,6 +61,7 @@ function createSyntheticAuth({issuer,audience,organizationId,redirectUri,
   prune(n);
   if(!records.has(k)&&records.size>=maxBindings)return unavailable();
   const state=token(),nonce=token(),verifier=token();
+  remove(k);
   records.set(k,{startedAt:n,expiresAt:n+transactionMs,stateDigest:digest(state),nonce,verifier,used:false,session:null});
   return freeze({state:'challenge',loginState:state,nonce,codeChallenge:digest(verifier),codeChallengeMethod:'S256',redirectUri});
  }
@@ -72,35 +91,38 @@ function createSyntheticAuth({issuer,audience,organizationId,redirectUri,
   const k=key(input.browserBinding),r=records.get(k),n=time();
   if(!r||r.used||!validTime(n,r)||!eq(digest(input.loginState),r.stateDigest))return restricted();
   r.used=true; // consume before asynchronous exchange; no replay/retry
-  let claims;
-  try{claims=await verifySyntheticCode(freeze({code:input.code,nonce:r.nonce,codeVerifier:r.verifier,redirectUri}));}
-  catch{if(records.get(k)===r)records.delete(k);return unavailable();}
+  let claims;const exchange=new AbortController();r.exchange=exchange;
+  try{claims=await bounded(()=>verifySyntheticCode(freeze({code:input.code,nonce:r.nonce,codeVerifier:r.verifier,redirectUri}),exchange.signal),exchange,verifyDeadlineMs);}
+  catch{if(records.get(k)!==r)return restricted();remove(k);return unavailable();}
   const completedAt=time();
   if(records.get(k)!==r||!validTime(completedAt,r))return restricted();
   const identity=verifiedIdentity(claims,r,completedAt),grant=identity&&grantFor(identity);
-  if(!identity||!grant){records.delete(k);return restricted();}
+  if(!identity||!grant){remove(k);return restricted();}
   const sessionToken=token(),expiresAt=Math.min(completedAt+absoluteMs,identity.credentialExpiresAt);
   // Drop one-use login secrets entirely after successful exchange.
-  records.set(k,{startedAt:completedAt,expiresAt,used:true,session:{tokenDigest:digest(sessionToken),identity,grant,lastSeen:completedAt}});
+  records.set(k,{startedAt:completedAt,expiresAt,used:true,session:{tokenDigest:digest(sessionToken),identity,grant,lastSeen:completedAt,reads:new Set()}});
   return freeze({state:'authenticated',sessionToken,expiresAt});
  }
  function current(binding,sessionToken){
   const k=key(binding),r=records.get(k),n=time(),s=r?.session;
   if(!s||!opaque(sessionToken)||!eq(digest(sessionToken),s.tokenDigest))return null;
-  if(!validTime(n,r)||n<s.lastSeen||n-s.lastSeen>=idleMs){records.delete(k);return null;}
-  if(!sameGrant(s.grant,grantFor(s.identity))){records.delete(k);return null;}
+  if(!validTime(n,r)||n<s.lastSeen||n-s.lastSeen>=idleMs){remove(k);return null;}
+  if(!sameGrant(s.grant,grantFor(s.identity))){remove(k);return null;}
   return {k,r,s,n};
  }
  // BFF must enforce same-origin, session binding and CSRF before calling this.
  // No client-provided user ID is involved. Logout also cancels pending login.
- function logout(browserBinding){const k=key(browserBinding);if(k)records.delete(k);return freeze({state:'signed-out'});}
+ function logout(browserBinding){const k=key(browserBinding);if(k)remove(k);return freeze({state:'signed-out'});}
  async function readMember(input){
   if(!exact(input,['browserBinding','sessionToken']))return restrictedView();
   const {browserBinding,sessionToken}=input,first=current(browserBinding,sessionToken);
   if(!first)return restrictedView();
   const {s}=first;
+  if(s.reads.size>=maxReadsPerSession)return unavailableView();
+  const controller=new AbortController();s.reads.add(controller);
+  try{
   let data;
-  try{data=await readSyntheticMember(freeze({subject:s.grant.personId,organizationId,groupId:s.grant.groupId}));}
+  try{data=await bounded(()=>readSyntheticMember(freeze({subject:s.grant.personId,organizationId,groupId:s.grant.groupId}),controller.signal),controller,readDeadlineMs);}
   catch(error){
    const after=current(browserBinding,sessionToken);
    if(!after||after.r!==first.r)return restrictedView();
@@ -123,6 +145,7 @@ function createSyntheticAuth({issuer,audience,organizationId,redirectUri,
   if(!final||final.r!==first.r)return restrictedView();
   if(view.state==='ready')final.s.lastSeen=final.n;
   return view;
+  }finally{s.reads.delete(controller);}
  }
  // Trusted internal administrative capabilities; never bind to browser input.
  function invalidateIdentity(identity){
@@ -132,15 +155,16 @@ function createSyntheticAuth({issuer,audience,organizationId,redirectUri,
   for(const [k,r] of records){
    // A pending exchange has no verified identity yet. Cancel pending exchanges
    // on a consent change rather than allow a pre-change callback to issue a session.
-   if(!r.session||r.session.identity.subject===identity.subject){records.delete(k);removed++;}
+   if(!r.session||r.session.identity.subject===identity.subject){remove(k);removed++;}
   }
   return removed;
  }
+ function invalidateAll(){clear();}
  function sweep(){
-  const n=time();if(n===null){records.clear();return;}
+  const n=time();if(n===null){clear();return;}
   prune(n);
-  for(const [k,r] of records)if(r.session&&!sameGrant(r.session.grant,grantFor(r.session.identity)))records.delete(k);
+  for(const [k,r] of records)if(r.session&&!sameGrant(r.session.grant,grantFor(r.session.identity)))remove(k);
  }
- return freeze({beginLogin,completeLogin,readMember,logout,invalidateIdentity,sweep});
+ return freeze({beginLogin,completeLogin,readMember,logout,invalidateIdentity,invalidateAll,sweep});
 }
 module.exports={createSyntheticAuth};

@@ -20,7 +20,7 @@ function createSyntheticPlanningCenter({organizationId,transport,now=Date.now,ma
   throw TypeError('Invalid synthetic provider settings');
  function time(){const t=now();if(!Number.isSafeInteger(t)||t<0||t>8640000000000000)throw fault('unavailable');return t;}
  function fresh(value,t){return instant(value)&&Date.parse(value)<=t&&t-Date.parse(value)<=maximumAgeMs;}
- async function readSyntheticMember(input){
+ async function readSyntheticMember(input,signal){
   // Only existing 11A session-derived IDs may reach this reader. Reject extra
   // client-like fields and path injection before transport invocation.
   if(!exact(input,['subject','organizationId','groupId'])||input.organizationId!==organizationId||!id(input.subject)||!id(input.groupId))return restricted();
@@ -29,14 +29,16 @@ function createSyntheticPlanningCenter({organizationId,transport,now=Date.now,ma
    // Construct paths internally; never follow provider-supplied URLs directly.
    const valid=path===root||path===root+'/my_membership'||Array.from({length:maxPages},(_,i)=>eventsPath(groupId,i*PAGE)).includes(path);
    if(!valid)throw fault('restricted');
-   let timer;const controller=new AbortController();
+   if(signal?.aborted)throw fault('unavailable');
+   let timer,abort;const controller=new AbortController();
    let result;
    try{
     result=await Promise.race([
      Promise.resolve().then(()=>transport(freeze({method:'GET',origin:ORIGIN,path,apiVersion:API_VERSION,organizationId,subject,signal:controller.signal}))),
-     new Promise((_,reject)=>{timer=setTimeout(()=>{controller.abort();reject(fault('unavailable'));},timeoutMs);})
+     new Promise((_,reject)=>{abort=()=>{controller.abort();reject(fault('unavailable'));};signal?.addEventListener('abort',abort,{once:true});if(signal?.aborted)abort();else timer=setTimeout(abort,timeoutMs);})
     ]);
-   }catch{throw fault('unavailable');}finally{clearTimeout(timer);}
+   }catch{throw fault('unavailable');}finally{clearTimeout(timer);if(abort)signal?.removeEventListener('abort',abort);}
+   if(signal?.aborted)throw fault('unavailable');
    if(!object(result)||!Number.isInteger(result.status))throw fault('unavailable');
    if([401,403,404].includes(result.status))throw fault('restricted');
    if(result.status!==200)throw fault('unavailable'); // no retry/elevation in 11B
@@ -91,6 +93,7 @@ function createSyntheticPlanningCenter({organizationId,transport,now=Date.now,ma
    if(!complete)throw fault('unavailable');
    const last=membership(await get(root+'/my_membership'));
    if(first.id!==last.id||first.role!==last.role)throw fault('restricted');
+   if(signal?.aborted)throw fault('unavailable');
    const t=time();
    if(observed.some(x=>!fresh(x,t)))throw fault('unavailable');
    const next=eligible.filter(x=>Date.parse(x.startsAt)>t).sort((a,b)=>Date.parse(a.startsAt)-Date.parse(b.startsAt)||(a.id<b.id?-1:a.id>b.id?1:0))[0];

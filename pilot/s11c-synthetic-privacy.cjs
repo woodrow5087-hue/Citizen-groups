@@ -5,6 +5,7 @@
 const {randomBytes,createHash}=require('node:crypto');
 const {createSyntheticAuth}=require('./s11a-synthetic-auth.cjs');
 const {createSyntheticPlanningCenter}=require('./s11b-synthetic-planning-center.cjs');
+const {createResilientTransport}=require('./s11d-resilient-transport.cjs');
 const freeze=Object.freeze;
 const PURPOSE='member-group-view',NOTICE='pilot-notice-v1';
 const POLICY=freeze({
@@ -25,7 +26,7 @@ function permits({purpose,field,destination}={}){
 }
 function createSyntheticPrivacyPilot({issuer,audience,organizationId,redirectUri,verifySyntheticCode,
  lookupApprovedMapping,transport,now=Date.now,consentMs=POLICY.candidateConsentMs,
- auditMs=POLICY.candidateAuditMs,maxConsents=1000,maxAuditBuckets=168,authOptions={},providerOptions={}}={}){
+ auditMs=POLICY.candidateAuditMs,maxConsents=1000,maxAuditBuckets=168,authOptions={},providerOptions={},resilienceOptions={}}={}){
  if(typeof lookupApprovedMapping!=='function'||typeof now!=='function'||
   ![consentMs,auditMs,maxConsents,maxAuditBuckets].every(n=>Number.isSafeInteger(n)&&n>0)||
   consentMs>POLICY.candidateConsentMs||auditMs>POLICY.candidateAuditMs||maxConsents>10000||maxAuditBuckets>168||
@@ -72,7 +73,8 @@ function createSyntheticPrivacyPilot({issuer,audience,organizationId,redirectUri
   return freeze({...identity,active:true,adult:true,consent:true,personId:m.personId,groupId:m.groupId,
    version:r.generation,scopes:freeze(['groups:read'])});
  }
- const provider=createSyntheticPlanningCenter({...providerOptions,organizationId,transport,now});
+ const resilient=createResilientTransport({maxAttempts:2,...resilienceOptions,transport,now});
+ const provider=createSyntheticPlanningCenter({...providerOptions,organizationId,transport:resilient.request,now});
  const auth=createSyntheticAuth({...authOptions,issuer,audience,organizationId,redirectUri,verifySyntheticCode,lookupPilotGrant,readSyntheticMember:provider.readSyntheticMember,now});
  // No caller can submit a consent boolean as a login claim. In this simulation
  // consent is recorded only through a trusted administration capability with
@@ -107,7 +109,7 @@ function createSyntheticPrivacyPilot({issuer,audience,organizationId,redirectUri
     const [issuer,organizationId,subject]=JSON.parse(k);
     auth.invalidateIdentity({issuer,organizationId,subject});
    }
-   consents.clear();auth.sweep();
+   consents.clear();auth.invalidateAll();
   }
   record(value?'pilot-enabled':'pilot-disabled','accepted');return freeze({state:'accepted'});
  }
