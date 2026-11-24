@@ -11,6 +11,7 @@ async function lab(t,opts={}){
 test('11E.2 loopback lab uses no-store and restrictive headers; no live auth or protected content before consent',async t=>{
  const h=await lab(t),p=await h.get();assert.match(h.url,/^http:\/\/127\.0\.0\.1:/);
  assert.equal(p.r.status,200);assert.match(p.r.headers.get('cache-control'),/no-store/);
+ assert.equal(p.r.headers.get('referrer-policy'),'same-origin');
  assert.match(p.r.headers.get('set-cookie'),/HttpOnly; SameSite=Strict/);
  assert.match(p.r.headers.get('content-security-policy'),/default-src 'none'/);
  assert.match(p.html,/FICTIONAL REVIEW/);assert.doesNotMatch(p.html,/Wednesday Group|Sunday Group|sessionToken/);
@@ -37,6 +38,7 @@ test('11E.4 shutdown and reset require fresh opt-in, browser lab instances isola
 test('11E.4 rejects wrong origin/CSRF/cookie, unknown action and remote host',async t=>{
  const h=await lab(t),p=await h.get(),b=await h.get();
  assert.equal((await h.post(p,'consent-alpha',{origin:'https://evil.invalid'})).status,403);
+ assert.equal((await h.post(p,'consent-alpha',{origin:'null'})).status,403);
  assert.equal((await h.post({...p,csrf:b.csrf},'consent-alpha')).status,403);
  assert.equal((await h.post({...p,cookie:'rally_lab=bogus'},'consent-alpha')).status,403);
  assert.equal((await h.post(p,'arbitrary')).status,409);

@@ -69,3 +69,30 @@ a draft-field assertion to run before saved state is projected. Waiting for the
 existing `body.connect-member` marker whenever a fresh embedded inbox is opened
 (and after the initial Today link) synchronizes on actual application setup. No
 assertion, timeout, selector contract or runtime initialization is changed.
+
+## Previously skipped synthetic and immutable gates
+
+The initial Today failure prevented the loopback synthetic review and immutable
+comparison steps from running. Executing them exposed a separate lab-only defect:
+`Referrer-Policy: no-referrer` makes Chromium submit the HTML form with `Origin:
+null`. The lab's exact-origin CSRF guard correctly returns 403, so the expected
+Wednesday heading never appears. HTTP unit fixtures supplied an explicit Origin
+and did not reproduce browser policy. Set the loopback lab policy to
+`same-origin`: external referrers remain suppressed, and real same-origin form
+submissions carry their origin. Keep exact origin, CSRF, cookie, Host and loopback
+checks intact; add header and null-origin rejection assertions. No pilot files
+are included in the static Netlify build. All three synthetic mobile widths pass.
+
+A local comparison using Debian Chromium 156 showed title artwork raster
+variation despite byte-identical protected assets. Rerunning the unchanged gate
+with Playwright's locked Chromium 159 (the CI configuration) passed all 48 pairs
+with zero raw pixel differences and 74 protected files. No baseline, rendering
+source, screenshot assertion, tolerance or validation requirement was changed.
+
+Automated evidence includes 835 application tests, 172 VersePlay unit tests,
+standard browser/mobile/accessibility, animated onboarding, Blank Battle, storage
+protection, standalone and integrated messaging, leadership/Today/member journeys,
+Connect at four widths, loopback synthetic review, the immutable PR #119 comparison
+and the full VersePlay browser suite. The latter also passed its 49 visual pairs.
+Final commit CI status, exact-commit Netlify provenance and permalink are recorded
+in the PR handoff; physical-device acceptance remains outstanding.

@@ -69,7 +69,9 @@ async function readForm(req){
  if([...form.keys()].length!==2||form.getAll('csrf').length!==1||form.getAll('action').length!==1)return null;
  return {csrf:form.get('csrf'),action:form.get('action')};
 }
-const headers={'Cache-Control':'no-store, private, max-age=0','Pragma':'no-cache','X-Content-Type-Options':'nosniff','Referrer-Policy':'no-referrer','X-Frame-Options':'DENY','Content-Security-Policy':"default-src 'none'; style-src 'unsafe-inline'; form-action 'self'; frame-ancestors 'none'; base-uri 'none'; connect-src 'none'",'Permissions-Policy':'camera=(), microphone=(), geolocation=()'};
+// Keep cross-origin referrers private while preserving the same-origin form
+// Origin needed by the exact-origin CSRF check below. no-referrer makes it null.
+const headers={'Cache-Control':'no-store, private, max-age=0','Pragma':'no-cache','X-Content-Type-Options':'nosniff','Referrer-Policy':'same-origin','X-Frame-Options':'DENY','Content-Security-Policy':"default-src 'none'; style-src 'unsafe-inline'; form-action 'self'; frame-ancestors 'none'; base-uri 'none'; connect-src 'none'",'Permissions-Policy':'camera=(), microphone=(), geolocation=()'};
 function send(res,status,body='',extra={}){if(res.destroyed||res.writableEnded)return;res.writeHead(status,{...headers,'Content-Type':'text/html; charset=utf-8',...extra});res.end(body);}
 function createLocalPilot({now=Date.now,maxLabs=8}={}){
  if(typeof now!=='function'||!Number.isSafeInteger(maxLabs)||maxLabs<1||maxLabs>8)throw TypeError('Invalid local lab settings');
