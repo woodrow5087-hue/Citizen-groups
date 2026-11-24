@@ -60,3 +60,21 @@ cross-role contract case also passed (6/6 contract tests). Migration/source,
 privacy, malformed, stale, missing and confirmed-zero scenarios passed. Static
 build passed; 36 PR #119 visual pairs remained byte-identical, with zero page
 errors. Server/tool-only contract is excluded from the build allowlist.
+
+## 8D — Rally Intelligence gate
+
+Added a pure shared application service and replaced the duplicated Today/Ask
+assembly with calls to it. Shared eligibility facts now serve both candidate
+construction and final selection. Historical scores/rendering remain compatible.
+Normalized memberships now reach legacy source helpers as well as the final
+policy, closing the malformed-truthy-membership candidate leak. No new action
+store, external AI, provider, message, inferred need or implicit completion exists.
+See `s8-intelligence.md` for rules, roles and rationale.
+
+Gate: 309 unit tests passed; deploy-preview build passed; 36 PR #119 screen pairs
+had zero raw pixel differences; leadership journeys passed at 320/390/430px; M6
+cross-tab/cursor/care consistency passed. Tests cover visitor/member/volunteer/
+leader distinctions, shared explanations, deterministic output, completion,
+existing temporary dismissal/resumption, revocation and malformed memberships.
+An initial module syntax error and a new test's incorrect Sunday-urgency setup
+were corrected before passing the gate; no acceptance assertion was relaxed.

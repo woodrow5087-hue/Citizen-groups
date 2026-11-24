@@ -22,6 +22,20 @@ const score=Object.freeze({
  'scripture-step':56
 });
 const groupIds=new Set(['group-rsvp','group-unavailable','group-unread','leader-checkins']);
+// Shared eligibility facts for candidate construction and final selection.
+function facts(model,now=new Date()){
+ const d=model||{},member=d.member===true,team=d.team===true;
+ const count=n=>Number.isSafeInteger(n)&&n>0?Math.min(n,99):0;
+ const upcoming=(date,hours)=>date instanceof Date&&Number.isFinite(date.getTime())&&
+   date.getTime()-now.getTime()>=0&&date.getTime()-now.getTime()<=hours*3600000;
+ return Object.freeze({
+  pendingGroup:member&&!d.rsvp,pendingServe:team&&d.serveStatus==='pending',
+  groupSoon:member&&!d.rsvp&&upcoming(d.groupDate,24),serveSoon:upcoming(d.serveDate,48),
+  hasUnread:member&&d.conversationStatus==='ok'&&count(d.unread)>0,
+  isUnavailable:member&&d.conversationStatus==='unavailable',
+  leaderCount:member&&d.audience==='leader'?count(d.leaderRemaining):0,rhythmDue:d.rhythmDue===true
+ });
+}
 function activeScore(id,model,now){
  if(id==='leader-checkins'&&model.requestedCheckIn)return 106;
  if(model.twoCommitmentDemo&&id==='group-rsvp')return 104;
@@ -42,13 +56,14 @@ const sourceLabels=Object.freeze({
  'scripture-step':'A Scripture action you saved on this device is due.'
 });
 function permitted(id,model){
- if(groupIds.has(id)&&!model?.member)return false;
- if(id==='leader-checkins'&&model?.audience!=='leader')return false;
- if(id==='serve-response'&&!model?.team)return false;
- if(id==='group-unread'&&(!Number.isFinite(model?.unread)||model.unread<=0))return false;
- if(id==='serve-response'&&model?.serveStatus!=='pending')return false;
- if(id==='group-rsvp'&&model?.rsvp)return false;
- if(id==='scripture-step'&&!model?.rhythmDue)return false;
+ const f=facts(model);
+ if(groupIds.has(id)&&model?.member!==true)return false;
+ if(id==='leader-checkins'&&!f.leaderCount)return false;
+ if(id==='serve-response'&&!f.pendingServe)return false;
+ if(id==='group-unread'&&!f.hasUnread)return false;
+ if(id==='group-unavailable'&&!f.isUnavailable)return false;
+ if(id==='group-rsvp'&&!f.pendingGroup)return false;
+ if(id==='scripture-step'&&!f.rhythmDue)return false;
  return Object.hasOwn(score,id);
 }
 function fromHero(h,model,now){
@@ -72,7 +87,7 @@ function fromRow(r,model,now){
  });
 }
 function fromCare(care,model){
- if(!model?.member||!care||!['ready','prayed'].includes(care.stage))return null;
+ if(model?.member!==true||!care||!['ready','prayed'].includes(care.stage))return null;
  const prayed=care.stage==='prayed';
  return Object.freeze({
   id:prayed?'care-check-in':'care-prayer',
@@ -129,5 +144,5 @@ function focus({board,model,care,now=new Date()}={}){
   explanation:'One or two source-backed actions, chosen from existing commitments; nothing is inferred from attendance or browsing.'
  });
 }
-return Object.freeze({focus,permitted});
+return Object.freeze({focus,permitted,facts});
 });

@@ -4,10 +4,10 @@
  */
 (function(root,factory){
  'use strict';
- const api=factory();
+ const api=factory(()=>typeof module==='object'&&module.exports?require('./rally-one-unified-focus.js'):root.RallyUnifiedFocus);
  if(typeof module==='object'&&module.exports)module.exports=api;
  if(root)root.RallyPriorityBoard=api;
-})(typeof window!=='undefined'?window:null,function(){
+})(typeof window!=='undefined'?window:null,function(getPolicy){
 'use strict';
 const esc=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','\'':'&#39;'}[c]));
 const call=(kind,id,pane='')=>Object.freeze({kind,id,pane});
@@ -46,18 +46,8 @@ function derive(d,now=new Date()){
  // Do not alter the F-08 companion's own recommendation or snooze behavior.
  const features=Array.isArray(d?.allPriorities)?d.allPriorities:Array.isArray(d?.stack)?d.stack:[];
  const find=id=>features.find(f=>f.id===id);
- const upcoming=(date,hours)=>{
-   const remaining=millis(date)-now.getTime();
-   return remaining>=0&&remaining<=hours*3600000;
- };
- const pendingGroup=!!d?.member&&!d.rsvp;
- const groupSoon=pendingGroup&&upcoming(d.groupDate,24);
+ const {pendingGroup,pendingServe,groupSoon,serveSoon,hasUnread,isUnavailable,leaderCount,rhythmDue}=getPolicy().facts(d,now);
  const groupTonight=groupSoon&&d.groupDate.toDateString()===now.toDateString();
- const pendingServe=!!d?.team&&d.serveStatus==='pending';
- const hasUnread=!!d?.member&&asCount(d?.unread)>0;
- const isUnavailable=!!d?.member&&d.conversationStatus==='unavailable';
- const leaderCount=d?.member&&d?.audience==='leader'?asCount(d?.leaderRemaining):0;
- const rhythmDue=!!d?.rhythmDue;
  const words=n=>n===1?'1 new message':n+' new messages';
  const deferred=new Set(Array.isArray(d?.deferredIds)?d.deferredIds:[]);
  const task=(id,score,tone,icon,title,detail,action,label,why,family=id)=>{
@@ -71,7 +61,7 @@ function derive(d,now=new Date()){
    d?.groupDate instanceof Date?'Wednesday Group · '+d.groupDate.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'}):
    'Respond to the next sample gathering',act('f09-rsvp'),'RSVP · I’m in',
    'Your saved group RSVP is still open; the gathering is from the fictional schedule.','gather'));
- if(pendingServe)pending.push(task('serve-response',upcoming(d.serveDate,48)?95:65,
+ if(pendingServe)pending.push(task('serve-response',serveSoon?95:65,
    'gold','team','Serve this Sunday?','Welcome Team · availability needed',
    act('f09-serve'),'Confirm','Your sample Welcome Team availability has not been saved.','serve'));
  if(isUnavailable)pending.push(task('group-unavailable',88,'rose','message',

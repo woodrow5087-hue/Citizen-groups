@@ -21,8 +21,8 @@ const frozen=Object.freeze({
  /* M5B: scoped, read-only Unified Focus ranking within existing Today Priority Board. */
  /* M6: controlled member context read and explicit action transitions; old tabs retain same surfaces. */
  /* Leadership demo: receipt, scoped leader request, and portrait return navigation. */
- /* S8B.2: modern read-cursor IO moved to its existing adapter; rendering unchanged. */
- 'rallypoint.js':'fcf54d41876ca86d01cd1d265629abac14b6994f',
+ /* S8D: shared pure intelligence assembly; existing rendering and DOM effects retained. */
+ 'rallypoint.js':'6482cc523de36cbac6ae1097556d6bc1d0c0519b',
  'rallypoint-phase1.css':'db0bbe26f995fbde1e35a1e4c3a5ef3a6d799833',
  'rallypoint-groups-v07.css':'513c03013506bdaa0d9a99ced6c4d455fd15c386',
  'rallypoint-team-v08.css':'dff9ce0ef59d02a4752bf740407b08324f0459ac',

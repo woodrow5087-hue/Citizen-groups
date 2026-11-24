@@ -163,8 +163,10 @@ test('all four roles use the same context source and no separate persistent owne
  assert.match(app,/function applyLocalAction\(command\)/);
  assert.match(app,/window\.RallyMemberContext\?\.snapshot/);
  assert.match(app,/reducer\.transition/);
- assert.match(app,/const context=rallyOne\?memberContext/);
- assert.match(app,/context,now,today:T/);
+ const engine=read('rally-one-intelligence.js');
+ assert.match(app,/window\.RallyIntelligence\.derive/);
+ assert.match(engine,/Context\.snapshot/);
+ assert.match(engine,/conversation,context,now,today:Today/);
  assert.match(app,/context\?\.team\.response/);
  assert.match(app,/context\?\.group\.rsvp/);
  assert.match(app,/context\.permissions\.group/);

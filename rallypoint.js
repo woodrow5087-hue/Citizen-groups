@@ -84,6 +84,14 @@ const conversation=()=>conversationAccess.peek();
 const memberContext=(now=new Date(),chat)=>window.RallyMemberContext?.snapshot({
  state:s,ui:todayUI,conversation:chat??conversation(),now
 })||null;
+// Shared read-only application service for Today and Ask Rally.
+function recommendationSnapshot(now,chat){
+ return window.RallyIntelligence.derive({state:s,ui:todayUI,conversation:chat,now,
+  passage:currentReading().passage,enabled:rallyOne,
+  requestedCheckIn:hasLeaderRequest()&&!s.reached.includes('taylor'),
+  twoCommitmentDemo:sprint7Session?.active()==='group-serving'
+ });
+}
 // Explicit, permission-checked mutations of PRE-EXISTING fixture fields.
 // The storage guard remains the sole persistent write owner.
 function applyLocalAction(command){
@@ -185,11 +193,8 @@ function renderPeople(snapshot,chat){
 }
 const campusNames={central:'Central',north:'North',maui:'Maui',online:'Online'};
 function f09Today(){
- const now=new Date(),chat=conversation(),context=rallyOne?memberContext(now,chat):null;
- const model=window.RallySmartDashboard.model({
-   state:s,ui:todayUI,conversation:chat,context,now,today:T,
-   companion:window.RallyCompanionDecision,passage:currentReading().passage
- });
+ const now=new Date(),chat=conversation();
+ const {model,focus:unifiedFocus}=recommendationSnapshot(now,chat);
  f09Index=Math.max(0,Math.min(f09Index,model.stack.length-1));
  if(f09Board){
    const portraitFolder=rallyOne?'rally-one':'today-priority';
@@ -203,13 +208,6 @@ function f09Today(){
      window.RallyGroupsV2.renderTodayRail(memberContext()?.permissions.group===true):
      H.peopleRail(todayUI,'today',portraits,'assets/today-priority/group.webp');
    const campus=rallyOne?campusNames[todayUI.campus]:'';
-   const baselineBoard=window.RallyPriorityBoard.derive(model,now);
-   const care=window.RallyCareFlow?.derive({
-     state:s,member:todayUI.memberships.group===true,now
-   });
-   const unifiedFocus=rallyOne?window.RallyUnifiedFocus?.focus({
-     board:baselineBoard,model:{...model,requestedCheckIn:hasLeaderRequest()&&!s.reached.includes('taylor'),twoCommitmentDemo:sprint7Session?.active()==='group-serving'},care,now
-   }):null;
    return window.RallyPriorityBoard.render({
      ...model,receipt:rallyOne&&f09Feedback?receiptType:null,feedback:f09Feedback,f10Enabled:f10Preview,campus,
      ...(unifiedFocus?{unifiedFocus}:{})
@@ -771,19 +769,8 @@ function renderDialog(){
 let title='',body='';const chat=conversation(),snapshot=T.snapshot(s,todayUI,new Date(),chat);
 if(dialog==='f10-companion'&&f10Preview){
  title='Ask Rally.';
- const now=new Date(),context=rallyOne?memberContext(now,chat):null;
- const model=window.RallySmartDashboard.model({
-   state:s,ui:todayUI,conversation:chat,context,now,today:T,
-   companion:window.RallyCompanionDecision,passage:currentReading().passage
- });
- const baselineBoard=window.RallyPriorityBoard.derive(model,now);
- // Ask Rally explains the SAME visible priority as Today; it does not
- // invent a second ranking or treat optional prayer as an obligation.
- const care=window.RallyCareFlow?.derive({state:s,member:todayUI.memberships.group===true,now});
- const focus=rallyOne?window.RallyUnifiedFocus?.focus({board:baselineBoard,model:{...model,requestedCheckIn:hasLeaderRequest()&&!s.reached.includes('taylor'),twoCommitmentDemo:sprint7Session?.active()==='group-serving'},care,now}):null;
- const board=focus?.hero?{
-   ...baselineBoard,hero:focus.hero,rows:focus.rows
- }:baselineBoard;
+ const now=new Date();
+ const {model,board}=recommendationSnapshot(now,chat);
  f10Active=window.RallyPersonalCompanion.respond(f10Prompt,{model,board,now,goalMode:f103Preview},f10Prior);
  body=window.RallyPersonalCompanion.render(
    f10Active.response,f10Asked,f10Notice,f10Turns,f10Active.suggestions

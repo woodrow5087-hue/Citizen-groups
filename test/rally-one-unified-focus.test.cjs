@@ -103,7 +103,8 @@ test('source-backed care is human-led and does not create storage or send an act
 });
 test('Rally One uses unified priority board with no extra Today card',()=>{
  const js=read('rallypoint.js');
- assert.match(js,/window\.RallyUnifiedFocus\?\.focus/);
+ assert.match(js,/window\.RallyIntelligence\.derive/);
+ assert.match(read('rally-one-intelligence.js'),/Focus\.focus/);
  assert.match(js,/if\(s\.view==='group'&&s\.groupPane==='overview'\)/);
  assert.doesNotMatch(js,/window\.RallyCareFlow\.render\(care,\{placement:'today'\}\)/);
  const board=read('rallypoint-priority-board.js');
