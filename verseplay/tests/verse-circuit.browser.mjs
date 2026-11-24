@@ -773,6 +773,8 @@ async function keyboardPlay() {
   await page.goto(`${base}/verse-circuit-playground.html`);
   await page.locator('[data-action="launch"]').waitFor();
   await page.keyboard.press("Tab");
+  check(await page.getByRole('link', {name: 'Return to Rally One'}).evaluate(el => el === document.activeElement), 'Tab reaches Rally One return link');
+  await page.keyboard.press("Tab");
   check(
     await page.locator("#audio").evaluate((x) => x === document.activeElement),
     "Tab reaches sound control",
