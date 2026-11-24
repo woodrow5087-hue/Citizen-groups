@@ -29,3 +29,18 @@ and Ask Rally orchestration and the shared selection policy, with role and
 completion/defer matrices. 8E runs the full acceptance suite, exact visual
 comparisons, source/build privacy checks, and records a new development checkpoint.
 Existing presentation, navigation, and VersePlay boundaries stay protected.
+
+## 8B.2 — modular architecture gate
+
+Dependency/ownership audit: `s8-architecture.md`. Moved four modern cursor access
+sites and the read projection to `RallyConversationRead.createAccess`; no new
+storage key, model, navigation behavior or framework. The composition root retains
+DOM/focus/animation effects and existing pure modules retain their owners.
+
+Gate: 297 unit tests passed; deploy-preview build passed; Groups v2 member,
+portrait-return, guest and accessibility journeys passed at 320/390/430px. The new
+visual runner compared 36 screen pairs directly against immutable PR #119:
+welcome, login, Today, portrait, Groups, Team, Read, Ask Rally and all four roles,
+with zero raw pixel differences and no page errors. The test runner first exposed
+a paused-clock welcome-exit timer; advancing the virtual clock through the real
+exit resolved the instrumentation issue without changing application code.

@@ -114,3 +114,33 @@ test('legacy signature changes cannot invent a modern unread receipt',()=>{
  result=T.snapshot(state,ui,new Date('2026-11-21'),read);
  assert.equal(result.unread,false,'legacy posts cannot generate modern unread counts');
 });
+
+test('S8 access boundary handles throwing storage getters and respects current authorization',()=>{
+ let member=true,reads=0;
+ const access=R.createAccess({domain,isMember:()=>member,getStorage(){reads++;throw Error('Blocked storage');}});
+ assert.equal(access.peek().status,'unavailable');
+ assert.equal(access.markRead(),false);
+ assert.equal(reads,2);
+ member=false;
+ assert.equal(access.peek().status,'no-access');
+ assert.equal(access.markRead(),false);
+ assert.equal(reads,2,'revoked membership must not touch private storage');
+});
+test('S8 access boundary preserves exact cursor, draft and unrelated storage behavior',()=>{
+ const saved=persisted(R.fixture(domain),'Keep my draft','seed_jess');
+ const storage=store({[R.STORAGE_KEY]:JSON.stringify(saved),unrelated:'keep'});
+ const access=R.createAccess({domain,isMember:()=>true,getStorage:()=>storage});
+ const original=storage.entries();
+ assert.equal(access.peek().unreadCount,3);
+ assert.deepEqual(storage.entries(),original,'projection is read-only');
+ assert.equal(access.markRead(),true);
+ assert.equal(access.peek().unreadCount,0);
+ const after=JSON.parse(storage.getItem(R.STORAGE_KEY));
+ assert.equal(after.draft,saved.draft);
+ assert.equal(after.replyTo,saved.replyTo);
+ assert.equal(storage.getItem('unrelated'),'keep');
+ const malformed=store({[R.STORAGE_KEY]:'{broken'});
+ const blocked=R.createAccess({domain,isMember:()=>true,getStorage:()=>malformed});
+ assert.equal(blocked.markRead(),false);
+ assert.equal(malformed.getItem(R.STORAGE_KEY),'{broken');
+});

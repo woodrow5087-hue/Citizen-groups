@@ -74,12 +74,11 @@ const canLead=area=>s.role==='leader'&&(
    !!todayUI.memberships[area]);
 // Shared read-only projection of the same F-02 snapshot mounted in Groups.
 // Legacy groupMessages remain an independent historical archive.
-const conversation=()=>{
-  try{return window.RallyConversationRead?.peek({
-    storage:localStorage,domain:window.RallyChatDomain,member:todayUI.memberships.group===true
-  })||{status:'unavailable',lastMessage:null,unreadCount:0};}
-  catch(_){return {status:'unavailable',lastMessage:null,unreadCount:0};}
-};
+const conversationAccess=window.RallyConversationRead.createAccess({
+ getStorage:()=>window.localStorage,domain:window.RallyChatDomain,
+ isMember:()=>todayUI.memberships.group===true
+});
+const conversation=()=>conversationAccess.peek();
 // Shared read-only projection for Today, Groups, Team and Connect. All source
 // fields stay in their existing owners; no parallel member/action storage.
 const memberContext=(now=new Date(),chat)=>window.RallyMemberContext?.snapshot({
@@ -602,7 +601,7 @@ document.querySelector('.phone-inner').classList.toggle('is-fluid-today',s.view=
  // Opening the actual thread advances its cursor before the shared overview is drawn.
 // Today and other Group panes remain strictly read-only; malformed snapshots are refused.
 if(s.view==='group'&&s.groupPane==='chat'&&todayUI.memberships.group){
-  try{window.RallyConversationRead?.markRead({storage:localStorage,domain:window.RallyChatDomain,member:true});}catch(_){}
+  conversationAccess.markRead();
 }
 view.innerHTML=(storageWarning?`<p class="storage-notice" role="status">${e(storageWarning)}</p>`:'')+(s.view==='today'?(f09Preview?f09Today():today()):s.view==='group'?group():s.view==='team'?team():s.view==='play'?play():read());
 if(rallyOne&&window.RallyCareFlow){
@@ -644,9 +643,7 @@ if(s.view==='group'&&s.groupPane==='chat'&&todayUI.memberships.group&&$('rpx-cha
     // A view visit is a read event even before a second chat rerender.
     // The shared adapter preserves draft/reply fields and refuses malformed storage.
     if(authorize('read')){
-      try{window.RallyConversationRead?.markRead({
-        storage:localStorage,domain:Domain,member:todayUI.memberships.group===true
-      });}catch(_){}
+      conversationAccess.markRead();
     }
   }else{
     const note=root.querySelector('#lab-error');
@@ -968,7 +965,7 @@ todayUI.memberships={group:v!=='no-memberships',team:v!=='no-memberships'};
 if(v==='connected'){s.teamStatus='pending';}
 if(v==='caught-up'){s.teamStatus='confirmed';s.coverage=false;s.teamMessages=s.teamMessages.filter(m=>!m.coverage);
   // The demo control acknowledges the real modern cursor; it does not touch legacy messages.
-  try{window.RallyConversationRead?.markRead({storage:localStorage,domain:window.RallyChatDomain,member:todayUI.memberships.group===true});}catch(_){}
+  conversationAccess.markRead();
  }
 s.view='today';closeDialog(false);render();$('view').scrollTop=0;notify('Local Today fixture updated. No data was sent.');return;
 }

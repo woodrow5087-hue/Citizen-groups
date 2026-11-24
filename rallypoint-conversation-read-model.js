@@ -97,5 +97,17 @@ function markRead({storage,domain,member=true}={}){
     return true;
   }catch(_){return false;}
 }
-return Object.freeze({STORAGE_KEY,CONVERSATION,SELF,fixture,readSaved,peek,markRead});
+// Application access boundary: evaluate the storage property INSIDE the guard,
+// and resolve current membership on every call (scenario overlays can change it).
+// The versioned conversation adapter remains the only owner of this cursor.
+function createAccess({getStorage,domain,isMember}={}){
+  const access=operation=>{
+    try{
+      if(isMember()!==true)return operation==='peek'?unavailable('no-access'):false;
+      return (operation==='peek'?peek:markRead)({storage:getStorage(),domain,member:true});
+    }catch(_){return operation==='peek'?unavailable('unavailable'):false;}
+  };
+  return Object.freeze({peek:()=>access('peek'),markRead:()=>access('markRead')});
+}
+return Object.freeze({STORAGE_KEY,CONVERSATION,SELF,fixture,readSaved,peek,markRead,createAccess});
 });
