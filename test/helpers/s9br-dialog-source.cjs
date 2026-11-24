@@ -15,6 +15,6 @@ function restoreDialogSource(){
  assert.equal(body.slice(key-fnSuffix.length,key),fnSuffix);
  assert.ok(body.endsWith(fnSuffix));
  const blocks=[body.slice(0,show),body.slice(show,focus),body.slice(focus+focusPrefix.length,key-fnSuffix.length),body.slice(key+keyPrefix.length,-fnSuffix.length)];
- return blocks.reduce((s,block,i)=>once(s,wrappers[i],transforms[i].reduce((b,[a,c])=>once(b,c,a),block)),read('rallypoint.js'));
+ return blocks.reduce((s,block,i)=>once(s,wrappers[i],transforms[i].reduce((b,[a,c])=>once(b,c,a),block)),require('./s9br-memory-actions-source.cjs').restoreMemoryActionsSource());
 }
 module.exports={restoreDialogSource};
