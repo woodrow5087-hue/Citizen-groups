@@ -84,6 +84,9 @@ function create(storage){
         blocked='Saved data changed in another tab. Reload before saving; existing data is protected.';
         return status();
       }
+      // Exact no-op only after validating the candidate, journal and current baseline.
+      // Changed transactions retain the existing write-ahead and rollback sequence.
+      if(equal(candidate,baseline))return {ok:true,reason:null};
       const before=cloneRaw(baseline);
       const record=JSON.stringify({version:VERSION,before,after:cloneRaw(candidate)});
       // Write-ahead journal first. If this fails, neither original key is touched.
