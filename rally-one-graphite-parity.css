@@ -232,3 +232,6 @@
 .ux-read :is(button,a,summary):focus-visible{outline:3px solid #fff;outline-offset:3px}
 .ux-read .ux-reading-feature button:focus-visible{outline-color:#242322}
 @media(max-width:350px){.rally-one .premium-alive.is-read-v09 .ux-read{padding-inline:11px}.ux-read .ux-circuit strong{font-size:34px}.ux-read .ux-bolt{opacity:.4}}
+
+/* UX-01: readable footer against charcoal, not the old light surface. */
+.rally-one .premium-alive.is-read-v09 .read-screen-v09.ux-read .disclaimer{color:#c4c2bf}
