@@ -124,6 +124,23 @@ function createSyntheticAuth({issuer,audience,organizationId,redirectUri,
   if(view.state==='ready')final.s.lastSeen=final.n;
   return view;
  }
- return freeze({beginLogin,completeLogin,readMember,logout});
+ // Trusted internal administrative capabilities; never bind to browser input.
+ function invalidateIdentity(identity){
+  if(!exact(identity,['issuer','subject','organizationId'])||identity.issuer!==issuer||
+     identity.organizationId!==organizationId||!identifier(identity.subject))return 0;
+  let removed=0;
+  for(const [k,r] of records){
+   // A pending exchange has no verified identity yet. Cancel pending exchanges
+   // on a consent change rather than allow a pre-change callback to issue a session.
+   if(!r.session||r.session.identity.subject===identity.subject){records.delete(k);removed++;}
+  }
+  return removed;
+ }
+ function sweep(){
+  const n=time();if(n===null){records.clear();return;}
+  prune(n);
+  for(const [k,r] of records)if(r.session&&!sameGrant(r.session.grant,grantFor(r.session.identity)))records.delete(k);
+ }
+ return freeze({beginLogin,completeLogin,readMember,logout,invalidateIdentity,sweep});
 }
 module.exports={createSyntheticAuth};
