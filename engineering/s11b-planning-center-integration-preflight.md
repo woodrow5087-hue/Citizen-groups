@@ -1,0 +1,30 @@
+# Sprint 11B — Planning Center read-only integration architecture / preflight
+Status: proposed mapping only. No network calls to authenticated data, live credentials, provider write or runtime deployment. Canonical base 2255314627bd3ef058291eb64527c9fc13bb27b5. 11A accepted authenticated identity is prerequisite; 11C privacy/security approval and separate restricted pilot authorization precede actual records.
+
+## Minimal pilot
+One approved tenant, small adult opt-in cohort, one authorized group per member, group display name and next future non-canceled gathering title/start time only. Existing pilot/s7-readonly-member-contract.cjs is the response boundary. All other nine-domain data remains demonstrative or unavailable; never blend real member data with fictional Marcus/Taylor/Welcome Team content. Use separately reviewed minimal live view, not full demo UI with mixed sources. No roster, attendance, check-in, giving, household, children, private notes, prayers, messaging, phone/email, pastoral flags, inferred risk, serving status, RSVP writes, or new church events in first pilot.
+
+## Confirmed public API surfaces (not authenticated endpoint testing)
+| Purpose | Candidate provider source | Rule |
+| --- | --- | --- |
+| Authentication | OIDC openid and userinfo | identity only; verify organization and subject; not proof of authorization |
+| Membership | GET /groups/v2/groups/{group_id}/my_membership or GET /groups/v2/people/{person_id}/memberships | choose only after verifying token permissions and subject mapping; group ID from server-approved scope, never trust a browser-supplied ID |
+| Group name | GET /groups/v2/memberships/{membership_id}/group or verified group resource | require current authorized active membership in same organization; allowlist name only |
+| Next gathering | GET /groups/v2/groups/{group_id}/events (not_canceled filter documented) | verify response association, future start time, cancellation status, timezone; paginate safely, choose earliest valid future event; no location/description in pilot |
+| All other domains | no pilot mapping | no request; unavailable or outside scope, not fabricated zero |
+
+Provider OAuth product scope is groups; existing internal groups:read is our own narrower permission, NOT an actual PCO scope. Provider scope may allow writes depending on user permissions: enforce GET-only transport allowlist, deny POST/PATCH/DELETE at adapter, no generic proxy. Do not request people, services, check_ins, giving, or other scopes until a separate review. The provider acts on behalf of a user; effective access follows that user's permission. OIDC login and consent are not permission to read unrelated records.
+
+## Adapter contract
+Verified server session -> consent + tenant + scoped membership decision -> approved source reader -> current source observation -> existing narrow contract -> UI. Server verifies member/organization/group association, active status and permitted role before returning any projection. If provider token is per-member, prefer my_membership for confirmed group with least privilege; if it cannot work for ordinary members, stop and evaluate approved service integration separately. Never silently fall back to an administrator PAT; a single-church PAT is server-only but may be overbroad. No real credential requested. Pin supported Groups API version after sandbox verification; official docs show 2023-07-10 currently documented. Confirm actual event attributes, membership role/state, ID type mapping, pagination and rate-limit behavior in synthetic sandbox before implementation. Provider response source timestamp must be actual completed validated read, not browser render time or event date. Existing contract enforces 1–300s configurable freshness; start with 60s bound, do not display stale protected data. Revalidate current membership before release; guard race with session/consent change during asynchronous fetch.
+
+## Error semantics and operations
+- Invalid/expired session, missing tenant/membership/consent, cross-tenant mismatch, revoked membership -> restricted; do not expose whether hidden group exists. Provider 401/403 -> revalidate/restrict, no retry with elevated credentials.
+- Timeout, 429, malformed JSON, pagination failure, source outage -> unavailable; bounded retries only for appropriate transient read errors, respect Retry-After; no stale or guessed event. Confirmed absence after complete scan -> no next gathering, not unavailable.
+- Use fixed host/base path, strict path ID validation, bounded pagination (no arbitrary next URL), explicit timeouts, response size limits and field allowlist; no raw provider response or tokens in logging. HTTPS server only, no direct client requests, no CDN/shared cache. Secrets outside source; isolated staging, read-only pilot kill switch, log only redacted reason codes and correlation ID.
+- Synthetic checks: cross-tenant, user/subject mismatch, group mismatch, canceled/past/malformed event, empty page, multi-page order, duplicate records, revoked scope during fetch, token failure, stale/future source observation, 429/timeout, malicious links, no raw leakage, no writes. Tests should assert provider call count and allowlisted response. Start with fake transport and existing synthetic contract, not a real API key.
+
+## Release gates
+11A design accepted; 11B mapping accepted and fake transport tests; 11C consent, privacy, retention, incident/security review; 11D synthetic provider failure tests; 11E approved read-only pilot environment and leadership review; 11F explicit launch decision. No live pilot based on this document. Production main and checkpoints remain untouched.
+
+Official references verified 2026-11-24: https://api.planningcenteronline.com/docs/overview/authentication ; https://api.planningcenteronline.com/docs/overview/getting-started ; https://api.planningcenteronline.com/docs/apps/groups/versions/2023-07-10/vertices/membership ; https://api.planningcenteronline.com/docs/apps/groups/versions/2023-07-10/vertices/group . These establish public API surfaces only, not church-specific permissions or endpoint behavior with a real token.
