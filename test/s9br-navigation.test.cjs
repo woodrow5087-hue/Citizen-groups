@@ -21,7 +21,7 @@ function execute(variant,args,options){
  if(variant==='legacy'){
   Object.assign(ctx,flags);vm.runInNewContext(legacy+'\nnavigate(...args);',Object.assign(ctx,{args}));
   flags.f09Feedback=ctx.f09Feedback;flags.f09Index=ctx.f09Index;
- }else navigate(...args,{...ctx,clearFeedback:()=>{flags.f09Feedback='';},resetIndex:()=>{flags.f09Index=0;}});
+ }else navigate(args[0],args[1],args[2],{...ctx,clearFeedback:()=>{flags.f09Feedback='';},resetIndex:()=>{flags.f09Index=0;}});
  return JSON.stringify({s,flags,log,tabIndex:target.tabIndex});
 }
 const cases=[
