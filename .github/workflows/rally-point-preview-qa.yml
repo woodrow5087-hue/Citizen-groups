@@ -5,10 +5,12 @@ on:
     branches:
       - 'rally-point/v10-pilot-readiness'
       - 'rally-point/develop'
+      - 'rally-one/develop'
   pull_request:
     branches:
       - main
       - 'rally-point/develop'
+      - 'rally-one/develop'
 
 permissions:
   contents: read
@@ -52,7 +54,16 @@ jobs:
           server_pid=$!
           trap 'kill "$server_pid"' EXIT
           curl --silent --fail --retry 5 --retry-connrefused http://127.0.0.1:8514/ -o /dev/null
+          node scripts/leadership-demo-browser-check.mjs http://127.0.0.1:8514/
           node scripts/preview-today-browser-check.mjs http://127.0.0.1:8514/
+      - name: Compare Rally One against immutable approved PR 119
+        run: |
+          reference_dir="$RUNNER_TEMP/rally-one-approved-119"
+          mkdir -p "$reference_dir"
+          git fetch --depth=1 origin 5aa88c93c3d4cd22902ef98af98c09b74ca436ce
+          git archive 5aa88c93c3d4cd22902ef98af98c09b74ca436ce | tar -x -C "$reference_dir"
+          CONTEXT=deploy-preview node "$reference_dir/scripts/build.cjs"
+          BROWSER_PATH="$(node --input-type=module -e 'import {chromium} from "playwright"; process.stdout.write(chromium.executablePath())')" node scripts/s8-visual-regression.mjs "$reference_dir/dist"
       - name: Save visual QA screenshots and results
         if: always()
         uses: actions/upload-artifact@v4

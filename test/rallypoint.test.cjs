@@ -17,7 +17,7 @@ function open(t,{previewBuild=false,saved,ui,modern,blocked=false,f09=false,f10=
  if(blocked)Object.defineProperty(w,'localStorage',{get(){throw Error('Blocked storage');}});
  w.structuredClone=structuredClone;
   w.eval(makeChatDomainBundle());
-  for(const name of ['rallypoint-today.js','rallypoint-ui.js','rallypoint-memorize.js','rallypoint-verseplay-ui.js','rallypoint-companion-decision.js','rallypoint-premium-alive.js','rallypoint-smart-dashboard.js','rallypoint-priority-board.js','rallypoint-personal-companion.js','rallypoint-group-view.js','rallypoint-group-experience.js','rallypoint-storage-guard.js','rallypoint-conversation-read-model.js','wednesday-chat-lab.js','rallypoint.js'])w.eval(fs.readFileSync(path.join(root,name),'utf8'));
+  for(const name of ['rallypoint-today.js','rallypoint-ui.js','rallypoint-memorize.js','rallypoint-verseplay-ui.js','rallypoint-companion-decision.js','rallypoint-premium-alive.js','rallypoint-smart-dashboard.js','rallypoint-priority-board.js','rallypoint-personal-companion.js','rally-one-member-context.js','rally-one-care-flow.js','rally-one-unified-focus.js','rally-one-intelligence.js','rallypoint-group-view.js','rallypoint-group-experience.js','rallypoint-storage-guard.js','rallypoint-conversation-read-model.js','wednesday-chat-lab.js','rallypoint.js'])w.eval(fs.readFileSync(path.join(root,name),'utf8'));
  const click=selector=>{const el=d.querySelector(selector);assert.ok(el,selector);el.click();};
  const type=(id,value)=>{const el=d.getElementById(id);assert.ok(el,id);el.value=value;el.dispatchEvent(new w.Event('input',{bubbles:true}));};
  return {w,d,click,type,action:a=>click('[data-action="'+a+'"]'),go:v=>click('#nav [data-go="'+v+'"]'),saved:()=>JSON.parse(w.localStorage.getItem(key)),ui:()=>JSON.parse(w.localStorage.getItem(T.UI_KEY)),text:()=>d.getElementById('view').textContent,other};
@@ -415,7 +415,7 @@ test('demo name is escaped, saved independently and modal keyboard dismissal res
  app.click('.profile-avatar');app.d.dispatchEvent(new app.w.KeyboardEvent('keydown',{key:'Escape',bubbles:true}));assert.equal(app.d.querySelector('#dialog-root [role="dialog"]'),null);assert.equal(app.d.activeElement.className,'profile-avatar');
 });
 test('storage failure is disclosed while the demo stays usable',t=>{
- const app=open(t,{blocked:true});assert.match(app.text(),/could not save/);app.go('group');app.type('group-input','An in-memory sample');app.click('[data-action="send"][data-value="group"]');assert.match(app.text(),/An in-memory sample/);
+ const app=open(t,{blocked:true});const errors=[];app.w.addEventListener('error',event=>errors.push(event.error));assert.match(app.text(),/could not save/);app.go('group');app.type('group-input','An in-memory sample');app.click('[data-action="send"][data-value="group"]');assert.match(app.text(),/An in-memory sample/);assert.deepEqual(errors,[],'blocked storage must not escape the read-cursor boundary');
 });
 
 test('Premium ALIVE people circles open existing fictional direct conversations and preserve local replies',t=>{

@@ -41,6 +41,11 @@ try{
   await page.locator('.gv2-directory-person[data-person="dom"]').click();
   await page.locator('.gv2-profile h1').getByText('Dom').waitFor();
   await page.locator('.gv2-profile .gv2-back').click();
+  // Leadership demo restores the exact portrait origin (directory, not overview).
+  // Assert the restored route before explicitly returning to the Groups home.
+  await page.locator('.gv2-directory-list').waitFor();
+  await page.locator('.gv2-detail-heading .gv2-back').click();
+  await page.locator('.gv2-home').waitFor();
 
   await page.locator('.gv2-widget-gather').click();
   await page.locator('.group-gather-rsvp').waitFor();
@@ -109,7 +114,9 @@ try{
  await page.locator('.gv2-public-rail [data-person="dom"]').click();
  await page.locator('.gv2-profile h1').getByText('Dom').waitFor();
  assert.equal(await page.locator('.gv2-profile [data-go="group"]').count(),0);
- assert.equal(await page.locator('.gv2-profile [data-action="gv2-back-discovery"]').count(),2);
+ // Both guest-safe return controls remain: animated origin return and explicit discovery.
+ assert.equal(await page.locator('.gv2-profile .gv2-back[data-action="portrait-return"]').count(),1);
+ assert.equal(await page.locator('.gv2-profile [data-action="gv2-back-discovery"]').count(),1);
  await page.locator('.gv2-profile .gv2-back').click();
  await page.locator('.group-discovery-v07').waitFor();
  assert.equal(await page.locator('.ro-care').count(),0);

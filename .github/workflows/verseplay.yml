@@ -1,7 +1,7 @@
 name: VersePlay foundation
 on:
   pull_request:
-    branches: [rally-point/develop]
+    branches: [rally-point/develop, rally-one/develop]
     paths:
       - 'verseplay/**'
       - 'verse-circuit-playground.html'
