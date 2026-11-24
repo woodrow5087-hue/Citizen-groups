@@ -68,7 +68,9 @@ function answer(query,{model,board,now=new Date()}={}){
   if(!items.length)push('No sample commitments scheduled','You can explore community or serving without joining anything.',
     'Your local demo currently has no group or team schedule.',
     go('group','','Explore groups'));
-  if(b.taskCount>0)intro+=' You also have '+b.taskCount+' sample '+(b.taskCount===1?'item':'items')+' needing attention.';
+  // Week retains the broader commitment overview; next uses the focused Today count.
+  const weeklyTaskCount=b.weeklyTaskCount??b.taskCount;
+  if(weeklyTaskCount>0)intro+=' You also have '+weeklyTaskCount+' sample '+(weeklyTaskCount===1?'item':'items')+' needing attention.';
  }else if(intent==='next'){
   heading='What needs your attention.';
   const required=[];
@@ -76,7 +78,9 @@ function answer(query,{model,board,now=new Date()}={}){
    required.push(b.hero);
   }
   for(const r of b.rows||[])if(r.requiresResponse&&!required.some(x=>x.id===r.id))required.push(r);
-  intro=b.taskCount>0?
+  const includesCare=required.some(r=>['care-prayer','care-check-in'].includes(r.id));
+  intro=includesCare?
+    'These are the same current priorities shown on Today. Prayer and personal check-ins are optional; nothing is sent automatically.':b.taskCount>0?
     'These are response-needed items from your existing fictional profile—not a measure of participation or spiritual health.':
     'Nothing in your sample commitments needs a response right now. There’s no streak or pressure to create more tasks.';
   for(const r of required){

@@ -21,7 +21,10 @@
   const baselineBoard=Board.derive(model,now);
   const care=Care.derive({state,member:enabled?context.permissions.group:ui?.memberships?.group===true,now});
   const focus=enabled?Focus.focus({board:baselineBoard,model:{...model,requestedCheckIn,twoCommitmentDemo},care,now}):null;
-  const board=focus?.hero?Object.freeze({...baselineBoard,hero:focus.hero,rows:focus.rows}):baselineBoard;
+  // Focused actions and the broader weekly commitment overview are distinct.
+  const board=focus?.hero?Object.freeze({...baselineBoard,hero:focus.hero,rows:focus.rows,
+   taskCount:focus.actionCount,weeklyTaskCount:baselineBoard.taskCount,
+   caughtUp:focus.hero.id==='caught-up'}):baselineBoard;
   const decision=focus?Object.freeze({selectedIds:focus.selectedIds,actionCount:focus.actionCount,
    deferredIds:model.deferredIds,explanation:focus.explanation,
    reasons:Object.freeze([board.hero,...board.rows].filter(x=>focus.selectedIds.includes(x.id))
