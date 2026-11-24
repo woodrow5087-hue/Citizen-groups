@@ -201,3 +201,37 @@
 @media(prefers-reduced-motion:reduce){
   .rally-one .premium-alive:is(.is-groups-v07,.is-team-v08,.is-read-v09) :is(.group-pulse-feature,.team-message-preview,.read-memory-card){transition:none;animation:none}
 }
+
+
+/* UX-01: scoped editorial Read landing; existing game screens untouched. */
+.rally-one .premium-alive.is-read-v09 .ux-read{padding:12px 16px 24px;display:flex;flex-direction:column;gap:12px;background:#202123;color:#f8f3e9}
+.ux-read .ux-read-heading{padding:5px 0 2px}
+.ux-read .ux-read-heading h1{font-size:clamp(42px,12vw,60px);line-height:.95;font-weight:950;letter-spacing:-.065em;margin:0;color:#fff;border-left:5px solid #e3002b;padding-left:10px}
+.ux-read .ux-read-heading h1 span{color:#fff}
+.ux-read .ux-read-heading p{font-size:10px;text-transform:uppercase;letter-spacing:.11em;font-weight:800;color:#c4c2bf;margin:8px 0 0}
+.ux-read .ux-reading-feature,.ux-read .ux-circuit{border-radius:18px;padding:17px;position:relative;overflow:hidden;isolation:isolate}
+.ux-read .ux-reading-feature{background:#f3e9d8;color:#242322}
+.ux-read .ux-eyebrow{display:block;font-size:10px;font-weight:850;letter-spacing:.14em}
+.ux-read .ux-reading-feature h2{font-size:clamp(27px,8vw,36px);line-height:1;letter-spacing:-.055em;margin:8px 0;font-weight:950;color:#242322}
+.ux-read .ux-reading-feature p{font-size:13px;margin:0 0 12px;color:#554e45}
+.ux-read .ux-cta{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:8px 13px;border-radius:9px;font-size:13px;font-weight:850;background:#252525;color:#fff;border:0}
+.ux-read .ux-arcade{display:grid;gap:8px}
+.ux-read .ux-circuit{display:flex;flex-direction:column;align-items:flex-start;gap:7px;background:#c60029;color:#fff;text-decoration:none;min-height:175px}
+.ux-read .ux-circuit strong{font-size:clamp(34px,10vw,48px);font-style:italic;line-height:.88;letter-spacing:-.05em;font-weight:950;z-index:1}
+.ux-read .ux-circuit>span{z-index:1}
+.ux-read .ux-circuit>span:not(.ux-eyebrow):not(.ux-cta){font-size:12px}
+.ux-read .ux-circuit .ux-cta{background:#fff3e1;color:#9c0022}
+.ux-read .ux-bolt{position:absolute;right:9px;top:20px;width:30%;height:80%;color:#ffedcf;opacity:.88;z-index:0;pointer-events:none}
+.ux-read .ux-game-row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.ux-read .ux-game-row button,.ux-read .ux-disclosure>summary{background:#303133;color:#fff;border:1px solid #4b4c4e;border-radius:12px;min-height:48px;padding:10px;font-size:13px;font-weight:800;cursor:pointer}
+.ux-read .ux-game-row button{display:flex;align-items:center;justify-content:space-between;gap:4px;min-width:0;letter-spacing:normal;margin:0}
+.ux-read .ux-game-row .icon,.ux-read .ux-cta .icon{width:16px;height:16px;flex:none}
+.ux-read .ux-disclosure>summary{display:list-item}
+.ux-read .ux-disclosure[open]>summary{margin-bottom:12px}
+.ux-read .ux-disclosure .card,.ux-read .ux-disclosure .read-focus-card{margin-bottom:12px}
+.ux-read :is(button,a,summary):focus-visible{outline:3px solid #fff;outline-offset:3px}
+.ux-read .ux-reading-feature button:focus-visible{outline-color:#242322}
+@media(max-width:350px){.rally-one .premium-alive.is-read-v09 .ux-read{padding-inline:11px}.ux-read .ux-circuit strong{font-size:34px}.ux-read .ux-bolt{opacity:.4}}
+
+/* UX-01: readable footer against charcoal, not the old light surface. */
+.rally-one .premium-alive.is-read-v09 .read-screen-v09.ux-read .disclaimer{color:#c4c2bf}

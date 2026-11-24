@@ -1,14 +1,18 @@
-// Compare the approved immutable PR #119 build with the current preview build.
+// PR #119 remains immutable for every unaffected surface. Read alone uses the
+// owner-approved UX-01 commit 4e3baa9, built independently from immutable source.
 // No saved image baselines, masks, tolerances, or application style overrides.
 import assert from 'node:assert/strict';
 import invariant from './s9br-onboarding-source-invariant.cjs';
+import ux from '../test/helpers/ux01-source.cjs';
 import {createServer} from 'node:http';
 import {readFile,readdir,stat,mkdir,writeFile} from 'node:fs/promises';
 import {resolve,extname,sep} from 'node:path';
 import {chromium} from 'playwright';
 import {compareScreenshots} from '../verseplay/tests/visual-comparison.mjs';
 const reference=process.argv[2];
-assert.ok(reference,'Usage: node scripts/s8-visual-regression.mjs <approved-reference-dist>');
+assert.ok(reference,'Usage: node scripts/s8-visual-regression.mjs <approved-119-dist> <approved-ux01-read-dist>');
+const readReference=process.argv[3];
+assert.ok(readReference,'An immutable approved UX-01 Read reference build is required');
 const out=resolve('test-results/s8-visual');
 await mkdir(out,{recursive:true});
 const mime={'.html':'text/html','.js':'text/javascript','.css':'text/css','.json':'application/json','.webp':'image/webp','.png':'image/png','.jpg':'image/jpeg','.svg':'image/svg+xml','.ttf':'font/ttf'};
@@ -27,12 +31,15 @@ async function serve(directory){
  await new Promise(r=>server.listen(0,'127.0.0.1',r));
  return {server,url:`http://127.0.0.1:${server.address().port}/`};
 }
-const before=await serve(reference),after=await serve('dist');
+const before=await serve(reference),approvedRead=await serve(readReference),after=await serve('dist');
 // Match the proven VersePlay capture configuration: avoid GPU image-edge
 // blending differences and platform-dependent LCD/subpixel text paths.
-const browser=await chromium.launch({executablePath:process.env.BROWSER_PATH,
- args:['--disable-gpu','--disable-lcd-text','--disable-font-subpixel-positioning','--font-render-hinting=none']});
-const report={reference:'5aa88c93c3d4cd22902ef98af98c09b74ca436ce',protectedFiles:0,comparisons:[],errors:[]};
+const launchBrowser=()=>chromium.launch({executablePath:process.env.BROWSER_PATH,
+ // Use one RGB decode path on both sides; YUV image conversion produced
+ // 1–2 channel rounding differences even in PR119-versus-itself controls.
+ args:['--disable-yuv-image-decoding','--disable-gpu','--disable-lcd-text','--disable-font-subpixel-positioning','--font-render-hinting=none']});
+let browser=await launchBrowser();
+const report={reference:'5aa88c93c3d4cd22902ef98af98c09b74ca436ce',readReference:'4e3baa96cc10ab4b32cbaecb69d19098f05840c0',protectedFiles:0,approvedReadDeltas:[],comparisons:[],errors:[]};
 async function protectedEntries(root,directory=''){
  const files=[];
  for(const name of (await readdir(resolve(root,directory))).sort()){
@@ -49,12 +56,17 @@ async function protect(){
  for(const file of current){
   const actual=await readFile(resolve('dist',file)),approved=await readFile(resolve(reference,file));
   if(file==='rallypoint-welcome.js')invariant.assertWelcomeSource(approved,actual);
+  else if(file==='rally-one-graphite-parity.css')assert.equal(ux.restoreUXSource(file,actual.toString()),approved.toString(),'Only the exact approved Read CSS addition is permitted');
   else assert.ok(actual.equals(approved),`Protected source/asset changed: ${file}`);
  }
  report.protectedFiles=current.length;
 }
 async function capture(page,kind,width,label){
- await page.evaluate(async()=>{await document.fonts.ready;});
+ if(kind==='read-reference'&&label!=='read')return;
+ await page.evaluate(async()=>{
+  await document.fonts.ready;
+  await Promise.all([...document.images].map(img=>img.decode()));
+ });
  // Wait for byte-stable frames. Timers are paused and motion is reduced.
  let previous,buffer;
  for(let attempt=0;attempt<8;attempt++){
@@ -65,21 +77,27 @@ async function capture(page,kind,width,label){
  }
  const name=`${kind}-${width}-${label}.png`;
  await writeFile(resolve(out,name),buffer);
+ if(kind==='read-reference')report.approvedReadDeltas.push({width,...compareScreenshots(await readFile(resolve(out,`before-${width}-read.png`)),buffer)});
  if(kind==='after'){
-  const comparison=compareScreenshots(await readFile(resolve(out,`before-${width}-${label}.png`)),buffer);
-  report.comparisons.push({width,state:label,...comparison});
+  const comparison=compareScreenshots(await readFile(resolve(out,`${label==='read'?'read-reference':'before'}-${width}-${label}.png`)),buffer);
+  report.comparisons.push({width,state:label,reference:label==='read'?report.readReference:report.reference,...comparison});
   assert.ok(comparison.equal,`Visual regression ${width} ${label}: ${JSON.stringify(comparison)}`);
  }
 }
 try{
  await protect();
- for(const [kind,base] of [['before',before.url],['after',after.url]])for(const width of [320,390,430]){
+ for(const [kind,base] of [['before',before.url],['read-reference',approvedRead.url],['after',after.url]])for(const width of [320,390,430]){
+  // Separate rendering caches: the approved Read run must not warm only one side.
+  if(width===320&&kind!=='before'){await browser.close();browser=await launchBrowser();}
+  if(kind!=='read-reference'){
   const titleContext=await browser.newContext({viewport:{width,height:844},isMobile:true,hasTouch:true,reducedMotion:'no-preference',timezoneId:'UTC',locale:'en-US'});
   const title=await titleContext.newPage();
   title.on('pageerror',e=>report.errors.push({kind,width,message:e.message}));
   await title.clock.install({time:new Date('2026-11-23T12:00:00Z')});
   await title.clock.pauseAt(new Date('2026-11-23T12:00:00Z'));
   await title.goto(base);await title.clock.runFor(350);
+  // Finish the dynamically inserted JPEG decode before sampling its resting frame.
+  await title.locator('.ro-title-card').evaluate(img=>img.decode());
   // The JS clock controls reveal/ready timers, not Chromium's compositor clock.
   // Seek the real CSS fade to the same endpoint before sampling its resting frame.
   await title.evaluate(()=>{
@@ -92,6 +110,7 @@ try{
   assert.equal(await title.locator('.rp-entry-brand').evaluate(el=>getComputedStyle(el).opacity),'1');
   assert.equal(await title.locator('.ro-title-tagline text').textContent(),'We rally together so no one stands alone.');
   await capture(title,kind,width,'title');await titleContext.close();
+  }
   const context=await browser.newContext({viewport:{width,height:844},isMobile:true,hasTouch:true,reducedMotion:'reduce',timezoneId:'UTC',locale:'en-US'});
   const page=await context.newPage();
   page.on('pageerror',e=>report.errors.push({kind,width,message:e.message}));
@@ -126,6 +145,7 @@ try{
   await capture(page,kind,width,'groups');
   await nav('team');await capture(page,kind,width,'team');
   await nav('read');await capture(page,kind,width,'read');
+  if(kind==='read-reference'){await context.close();continue;}
   await nav('today');
   await page.locator('[data-action="f10-open"]').click();
   await page.locator('.f10-panel').waitFor();
@@ -141,9 +161,9 @@ try{
  }
  assert.deepEqual(report.errors,[]);
  report.status='passed';
- console.log(JSON.stringify({protectedFiles:report.protectedFiles,pairs:report.comparisons.length,rawDifferentPixels:report.comparisons.reduce((n,c)=>n+c.rawDifferentPixels,0),errors:report.errors}));
+ console.log(JSON.stringify({protectedFiles:report.protectedFiles,pairs:report.comparisons.length,pr119Pairs:report.comparisons.filter(c=>c.reference===report.reference).length,approvedReadPairs:report.comparisons.filter(c=>c.reference===report.readReference).length,rawDifferentPixels:report.comparisons.reduce((n,c)=>n+c.rawDifferentPixels,0),errors:report.errors}));
 }catch(error){report.status='failed';report.error=error.message;throw error;}
 finally{
  await writeFile(resolve(out,'results.json'),JSON.stringify(report,null,2)+'\n');
- await browser.close();await Promise.all([new Promise(r=>before.server.close(r)),new Promise(r=>after.server.close(r))]);
+ await browser.close();await Promise.all([new Promise(r=>before.server.close(r)),new Promise(r=>approvedRead.server.close(r)),new Promise(r=>after.server.close(r))]);
 }
