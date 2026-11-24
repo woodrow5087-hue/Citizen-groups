@@ -50,6 +50,25 @@ function classify(value){
  if(/\b(next|attention|today|do|priority|task|now)/.test(text))return 'next';
  return 'unknown';
 }
+// 10C.4B: recognize intent only; never authorize or execute a command.
+function resolveIntent(value,prior={}){
+ const q=String(value||'').trim().slice(0,160).toLowerCase().replace(/[‘’]/g,"'").replace(/[‐‑–—]/g,'-').replace(/\s+/g,' ').replace(/[?!.,]+$/,'').trim();
+ if(!q)return 'clarify';
+ // Reject unsafe requests before recognizing any otherwise valid topic.
+ if(/\b(spiritually struggling|spiritual health|spiritual score|risk score|depression|most likely to leave|rank (?:my|the) group|ignore permissions|bypass (?:permissions|access)|private (?:prayer records|messages)|another group's|without (?:asking|permission|consent)|automatically|send everyone|mark all|secretly|diagnose)\b/.test(q))return 'unsupported';
+ if(/\b(?:send|post|message|mark|confirm|rsvp|enroll|join)\b/.test(q)&&/^(?:please\s+)?(?:send|post|message|mark|confirm|rsvp|enroll|join)\b/.test(q))return 'unsupported';
+ if(/\b(?:i (?:want to die|might hurt myself|am going to hurt myself)|kill myself|suicid(?:e|al)|immediate danger)\b/.test(q))return 'unsupported';
+ if(/\b(?:leader|member-requested|authorized group check-ins)\b/.test(q)&&/\b(?:check-ins?|follow[- ]ups?|review)\b/.test(q))return 'leader';
+ if(/\b(?:have i|did i|is my|what care action)\b/.test(q)&&/\b(?:followed up|follow through|follow-up|checked in|check-in|completed|complete)\b/.test(q)&&/\b(?:already|sent|send|checked in|finished|completed|complete)\b/.test(q))return 'care-status';
+ if(/\b(?:encourag(?:e|ement)|prayer requests?|pray for|check[- ]in (?:on|with)|check-ins?|care for|support someone|be there for someone|meaningful (?:way to follow up|for someone)|follow up (?:after praying|with someone)|care opportunity)\b/.test(q))return 'care';
+ if(/\b(?:get (?:more )?connected|feel (?:more )?connected|meet (?:some )?people|where do i start|new here|find (?:a group|my people|my next connection)|get (?:back )?involved|reconnect with my group|spend time with my people|start connecting|belong here|connect with my community)\b/.test(q))return 'connect';
+ // A new explicit domain outranks an inherited conversational referent.
+ if(/\b(?:group|wednesday|rsvp|gathering|sunday|serv(?:e|ing|ice)|shift|volunteer|welcome team|scripture|bible|reading|verse)\b/.test(q))return 'legacy';
+ if(prior?.focus==='care'&&/^(?:what can i do next|what about that|how can i follow up|why this suggestion|why did you suggest that person|can i read the request|what about them|how about it|is that done)$/.test(q))return 'care';
+ if(/^(?:what about (?:them|that)|can you do that|how about it|is that done)$/.test(q))return 'clarify';
+ if(/\b(?:focus on|next steps?|needs my attention|busy week|what's important|needs a response|prioriti[sz]e|take care of (?:today|first)|outstanding|overwhelmed by my commitments|narrow down what matters|anything to review|what matters right now|caught up)\b/.test(q))return 'focus';
+ return 'legacy';
+}
 function answer(query,{model,board,now=new Date()}={}){
  const d=model&&typeof model==='object'?model:{};
  const b=board&&typeof board==='object'?board:{hero:{},rows:[],agenda:[],taskCount:0};
@@ -272,6 +291,29 @@ function respond(raw,sources={},prior={}){
  const previous=prior&&typeof prior==='object'?prior:{};
  const goalMode=sources.goalMode===true;
  const recommend=topic=>goalMode?goalSuggestions(topic,d):suggestions(topic,d);
+ // Canonical intent recognition is independent of permission and response planning.
+ // Legacy previews retain their exact existing grammar and output.
+ const recognized=d.memberContext?.version===1?resolveIntent(query,previous):'legacy';
+ if(recognized==='unsupported'||recognized==='clarify'){
+  const response=Object.freeze({intent:recognized,heading:recognized==='clarify'?'Which part do you mean?':'I can help within Rally One.',
+    intro:recognized==='clarify'?'Tell me whether you mean your group, serving, Scripture or a care opportunity. Nothing has changed.':
+      'I can explain current sample church activity, but I cannot infer private needs, bypass access or act on your behalf. If someone is in immediate danger, seek local emergency help or contact a trusted person directly.',
+    items:Object.freeze([]),note:sourceNote});
+  return Object.freeze({query,response,context:Object.freeze({intent:recognized,focus:''}),suggestions:Object.freeze(['next','group','scripture'])});
+ }
+ if(recognized==='focus'){
+  const response=answer('next',sources);
+  const focus=topicOf(response,b);
+  return Object.freeze({query,response,context:Object.freeze({intent:response.intent,focus}),suggestions:Object.freeze(recommend(focus||response.intent))});
+ }
+ // Care, connection, completion and leader response planning will be integrated
+ // in 10C.4C/D. Do not substitute a misleading schedule or Scripture answer.
+ if(['care','care-status','connect','leader'].includes(recognized)){
+  const response=Object.freeze({intent:recognized,heading:'I understand what you are looking for.',
+    intro:'This preview is learning to handle that kind of question. You can still ask what needs your attention or open the relevant existing church experience. Nothing has been changed.',
+    items:Object.freeze([]),note:sourceNote});
+  return Object.freeze({query,response,context:Object.freeze({intent:recognized,focus:''}),suggestions:Object.freeze(['next','group','scripture'])});
+ }
  // F-10.2: flexible wording over a fixed, source-backed intent allowlist.
  // Language can select a topic; it can never directly perform an action.
  const lower=query.toLowerCase().replace(/[‘’]/g,"'").replace(/\s+/g,' ').trim();
@@ -476,5 +518,5 @@ function render(response,asked='',notice='',history=[],suggested=[]){
   '<p class="f10-disclosure">'+esc(r.note)+'</p>'+
   '</div>';
 }
-return Object.freeze({prompts,classify,answer,respond,followKeys,render});
+return Object.freeze({prompts,classify,resolveIntent,answer,respond,followKeys,render});
 });
