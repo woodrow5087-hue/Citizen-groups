@@ -467,6 +467,61 @@ function team(){
 }
 function read(){
  const plan=currentReading();
+ if(rallyOne){
+ return `<section class="read-screen-v09 ux-read">
+   <header class="ux-read-heading"><h1>READ<span>.</span></h1><p>Engage the Word. Build your faith.</p></header>
+   <section class="ux-reading-feature" aria-label="Your reading">
+     <span class="ux-eyebrow">YOUR READING · SAMPLE</span>
+     <h2>Read &amp; reflect.</h2><p>${e(plan.passage)} · ${e(plan.name)}</p>
+     <button type="button" data-go="read" data-reading="scripture" class="ux-cta">${s.read?'Read again':'Open Scripture'} ${icon('arrow')}</button>
+   </section>
+   <section class="ux-arcade" aria-label="VersePlay games">
+     <a data-verse-circuit-entry class="ux-circuit" href="verse-circuit-playground.html" aria-label="Play Verse Circuit">
+       <span class="ux-eyebrow">VERSEPLAY ARCADE</span><strong>VERSE<br>CIRCUIT</strong>
+       <span>Play it. Learn it. Remember it.</span><span class="ux-cta">Play now →</span>
+       <svg class="ux-bolt" aria-hidden="true" viewBox="0 0 100 140"><path fill="currentColor" d="M65 0 5 82h39L29 140l67-88H57z"/></svg>
+     </a>
+     <div class="ux-game-row">
+       <button type="button" class="rp-game-entry-play" data-go="play" aria-label="Play Blank Battle">Blank Battle ${icon('arrow')}</button>
+       <button type="button" data-go="read" data-reading="memorize" aria-label="Play Classic VersePlay">Classic ${icon('arrow')}</button>
+     </div>
+   </section>
+   <details class="ux-disclosure" data-ux-read-panel="scripture"><summary>Read, reflect &amp; pray</summary>
+     <div class="read-focus-card">
+     <div class="read-focus-head"><span>YOUR READING PATH · SAMPLE</span>${icon('read')}</div>
+     <h2>${e(plan.name)}</h2><p>${e(plan.title)}</p><div class="read-focus-detail"><strong>${e(plan.passage)}</strong><small>${e(plan.description)}</small></div>
+   </div>
+   <section class="card read-scripture-card" id="reading-scripture" tabindex="-1">
+     <div class="read-section-label">${icon('read')} <span>SCRIPTURE · BSB</span><i></i></div>
+     <h2>${e(plan.passage)}</h2><blockquote>“${e(plan.excerpt)}”</blockquote>
+     <button type="button" class="btn ${s.read?'chosen':'red'}" data-action="read">${s.read?'✓ Read today':'Mark as read'}</button>
+     <p class="fine-note">Public-domain Berean Standard Bible excerpt · Illustrative passage, not an assigned reading calendar.</p>
+   </section>
+   <section class="card read-question-card" id="reading-questions" tabindex="-1">
+     <div class="read-section-label">${icon('message')} <span>REFLECT TOGETHER</span><i></i></div>
+     <h2>A question worth sharing.</h2><p>${e(s.question)}</p>
+     <button type="button" class="read-discuss-action" data-go="group" data-pane="chat">${icon('group')} Open group conversation ${icon('arrow')}</button>
+     ${H.rhythmEditor(s,plan)}
+   </section>
+   ${canLead('group')?`<section class="card read-leader-card">
+     <div class="read-section-label">${icon('leader')} <span>GROUP LEADER · LOCAL DEMO</span></div>
+     <h2>Shape the conversation.</h2><p>Choose a sample pathway. Changes stay on your device; nothing is published to a real group or church.</p>
+     <div class="read-plan-choices" role="group" aria-label="Reading pathway">
+       ${[['sermon','Sermon Series'],['study','Book Study'],['year','Bible in One Year']].map(([id,label])=>`<button type="button" class="read-plan-button ${s.plan===id?'selected':''}" data-action="plan" data-value="${id}" aria-pressed="${s.plan===id}">${label}</button>`).join('')}
+     </div>
+     <label for="question">Sample group discussion question</label><textarea id="question" rows="3" maxlength="400">${e(s.question)}</textarea>
+     <button type="button" class="btn dark-btn" data-action="question">Save local question</button>
+     <p class="fine-note">Real publishing permissions, content review, group overrides, and licensing remain undecided.</p>
+   </section>`:''}
+   <div class="card read-prayer-card"><div>${icon('heart')}<h3>A moment to pray.</h3><p>Take a minute to pray for someone in your group.</p></div>
+     <button type="button" class="round ${s.prayed?'done':''}" aria-label="Mark prayer time" data-action="pray">${s.prayed?'✓':'↗'}</button>
+   </div>
+   </details>
+   <details class="ux-disclosure" data-ux-read-panel="classic"><summary>Classic VersePlay</summary>${VP.render(s,e,icon)}</details>
+   ${footer()}
+ </section>`;
+ }
+
  return `<section class="read-screen-v09">
    <div class="read-v09-hero"><div class="read-v09-overline">READ · REFLECT · REMEMBER</div><h1>In the<br>Word<span>.</span></h1><p>Your daily rhythm in Scripture, connected to your community.</p></div>
    <section class="rp-game-entry" aria-label="VersePlay Blank Battle">
@@ -547,6 +602,7 @@ function mountBlankBattle(){
 function footer(){return `<p class="disclaimer">RallyPoint Phase 1 · Interactive sample data only. Nothing is sent to other people, church systems, or notifications.</p>`}
 function render(){
 const view=$('view'),position=view.scrollTop;
+const openReadPanels=[...view.querySelectorAll('details[data-ux-read-panel][open]')].map(node=>node.dataset.uxReadPanel);
 view.querySelectorAll('textarea').forEach(field=>{drafts[field.dataset.draftKey||field.id]=field.value});
 if(!['today','group','team','read','play'].includes(s.view))s.view='today';
 if(s.role!=='leader'){if(s.groupPane==='leader')s.groupPane=rallyOne?'overview':'chat';if(s.teamPane==='leader')s.teamPane='schedule';}
@@ -568,6 +624,7 @@ if(s.view==='group'&&s.groupPane==='chat'&&todayUI.memberships.group){
   conversationAccess.markRead();
 }
 view.innerHTML=(storageWarning?`<p class="storage-notice" role="status">${e(storageWarning)}</p>`:'')+(s.view==='today'?(f09Preview?f09Today():today()):s.view==='group'?group():s.view==='team'?team():s.view==='play'?play():read());
+if(s.view==='read')view.querySelectorAll('details[data-ux-read-panel]').forEach(node=>{node.open=openReadPanels.includes(node.dataset.uxReadPanel);});
 if(rallyOne&&window.RallyCareFlow){
   // ONE source projection across Today → Groups → the existing local DM.
   // Rendering this card is read-only; no message cursor or prayer is marked.
