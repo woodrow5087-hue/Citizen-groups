@@ -79,6 +79,7 @@ test('11D.3 logout, withdrawal, account switch and shutdown abort current transp
 test('11D.3 concurrent sessions never share payload or cache; per-session bound rejects overload',async()=>{
  const h=harness({authOptions:{maxReadsPerSession:1}});h.grant('a');h.grant('b');
  const a=await h.login('a'),b=await h.login('b'),gate=deferred(),entered=deferred();
+ assert.equal(a.s.state,'authenticated');assert.equal(b.s.state,'authenticated');
  h.behavior((q,r)=>{if(q.subject==='person-a'){entered.resolve();return gate.promise.then(()=>r);}return r;});
  const pending=h.read(a);await entered.promise;
  assert.equal((await h.read(a)).state,'unavailable');

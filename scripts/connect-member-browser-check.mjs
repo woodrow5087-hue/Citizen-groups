@@ -13,12 +13,17 @@ try {
     const page=await context.newPage();
     const errors=[];
     page.on('pageerror',error=>errors.push(error.message));
+    // This fixture expects unread messages to lead before the gathering is within 24 hours.
+    // Pin the scenario date; live wall time legitimately promotes the RSVP instead.
+    await page.clock.setFixedTime(new Date('2026-11-23T12:00:00'));
     await page.goto(base);
     await page.locator('[data-welcome="login"]:visible').click();
     await page.locator('[data-welcome="demo"]:visible').click();
     await page.locator('#rp-gateway').waitFor({state:'hidden'});
     const entry=page.getByRole('button',{name:'Connect messaging inbox'});
     const frame=page.frameLocator('.connect-overlay iframe');
+    // Static CDN HTML can precede the deferred member adapter and its saved-state projection.
+    const openInbox=async()=>{await entry.click();await frame.locator('body.connect-member').waitFor();};
     const exit=()=>page.locator('.connect-overlay > button').click();
     const capture=async name=>{
       await page.screenshot({path:out+'/'+width+'-'+name+'.png',animations:'disabled'});
@@ -28,19 +33,20 @@ try {
       assert.deepEqual(result.violations.map(v=>[v.id,v.nodes.map(n=>n.target)]),[],screen);
     };
     await page.locator('[data-priority="group-unread"] button[data-go="group"]').click();
+    await frame.locator('body.connect-member').waitFor();
     await frame.locator('#screen-thread:not([hidden])').waitFor();
     await exit();
     assert.equal(await page.locator('[data-priority="group-unread"]').count(),0);
     for(const tab of ['group','team','read','today']){
       await page.locator('#nav [data-go="'+tab+'"]').click();
       assert.equal(await page.locator('#nav button').count(),4);
-      await entry.click();
+      await openInbox();
       await frame.getByRole('heading',{name:'Connect.'}).waitFor();
       await exit();
       assert.equal(await page.locator('#nav [aria-current]').getAttribute('data-go'),tab);
     }
     await capture('caught-up-entry');
-    await entry.click();
+    await openInbox();
     const row=frame.locator('.conversation-row[data-open="thread"]');
     assert.equal(await row.locator('.unread').isVisible(),false);
     await capture('inbox');
@@ -52,7 +58,7 @@ try {
     await audit('Thread '+width);
     await exit();
     await page.reload();
-    await entry.click();
+    await openInbox();
     await row.click();
     assert.equal(await frame.locator('#thread-input').inputValue(),'Fictional saved draft');
     await frame.locator('#thread-form .send-btn').click();
@@ -92,14 +98,14 @@ try {
     if(width===390){
       await page.locator('#nav [data-go="today"]').click();
       await page.evaluate(()=>localStorage.setItem('rallypoint-wednesday-chat-lab-v1','unreadable fixture'));
-      await entry.click();
+      await openInbox();
       await row.click();
       assert.equal(await frame.locator('#thread-input').isDisabled(),true);
       assert.equal(await page.evaluate(()=>localStorage.getItem('rallypoint-wednesday-chat-lab-v1')),'unreadable fixture');
       await exit();
       await page.locator('[data-action="demo-controls"]').click();
       await page.locator('[data-action="scenario"][data-value="no-memberships"]').click();
-      await entry.click();
+      await openInbox();
       await frame.getByText(/Your inbox is ready/).waitFor();
       assert.equal(await frame.locator('.conversation-row:visible').count(),0);
       assert.equal(await frame.locator('#compose-toggle').isVisible(),false);

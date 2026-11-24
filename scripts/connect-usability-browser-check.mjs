@@ -16,12 +16,18 @@ try{
   const page=await context.newPage();
   const errors=[];
   page.on('pageerror',error=>errors.push(error.message));
+  // Monday noon: neither Wednesday RSVP nor Sunday serving is urgent.
+  // This test specifically exercises unread messages as the Today hero.
+  // Separate fixed-date journey tests cover urgent commitments and ordering.
+  await page.clock.setFixedTime(new Date('2026-11-23T12:00:00'));
   await page.goto(base);
   await page.locator('[data-welcome="login"]:visible').click();
   await page.locator('[data-welcome="demo"]:visible').click();
   await page.locator('#rp-gateway').waitFor({state:'hidden'});
   const frame=page.frameLocator('.connect-overlay iframe');
   const entry=page.getByRole('button',{name:'Connect messaging inbox'});
+  // CDN HTML can be visible before the deferred member adapter restores drafts.
+  const openInbox=async()=>{await entry.click();await frame.locator('body.connect-member').waitFor();};
   const exit=async()=>{
     await page.locator('.connect-overlay > button').click();
     await page.locator('.connect-overlay').waitFor({state:'detached'});
@@ -29,6 +35,7 @@ try{
 
   // Today -> actual shared Wednesday Group, not a disconnected facsimile.
   await page.locator('[data-priority="group-unread"] button[data-go="group"]').click();
+  await frame.locator('body.connect-member').waitFor();
   await frame.locator('#screen-thread:not([hidden])').waitFor();
   assert.equal(await page.locator('#nav [aria-current="page"]').getAttribute('data-go'),'today');
   const scroll=frame.locator('#thread-scroll');
@@ -59,7 +66,7 @@ try{
   assert.equal(await page.locator('#nav [aria-current="page"]').getAttribute('data-go'),'today');
 
   // Reopening through the persistent inbox restores the existing draft.
-  await entry.click();
+  await openInbox();
   await frame.locator('.conversation-row[data-open="thread"]').click();
   assert.ok((await frame.locator('#thread-input').inputValue()).includes('Unsent mobile draft'));
   await frame.locator('#screen-thread [data-open="inbox"]').click();
@@ -87,7 +94,7 @@ try{
   await page.locator('#nav [data-go="today"]').click();
 
   // Check that the embedded active chat retains meaningful focus/semantics.
-  await entry.click();
+  await openInbox();
   const audit=await new AxeBuilder({page}).withTags(['wcag2a','wcag2aa','wcag21aa']).analyze();
   assert.deepEqual(audit.violations.map(v=>v.id),[],'Connect inbox accessibility '+width);
   if(width===390){

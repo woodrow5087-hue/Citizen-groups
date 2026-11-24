@@ -348,7 +348,9 @@ async function integration() {
   );
   const reload = async (label) => {
     await page.reload();
-    await page.locator("#game h1").waitFor();
+    // The static fallback also has an h1 while the passage fetch is pending.
+    // Wait for the restored game screen, then retain the exact count assertion.
+    await page.locator(`[aria-label="${label}"]`).waitFor();
     check(
       (await page.locator(`[aria-label="${label}"]`).count()) === 1,
       `Reload restored ${label}`,
@@ -771,6 +773,8 @@ async function keyboardPlay() {
   await page.goto(`${base}/verse-circuit-playground.html`);
   await page.locator('[data-action="launch"]').waitFor();
   await page.keyboard.press("Tab");
+  check(await page.getByRole('link', {name: 'Return to Rally One'}).evaluate(el => el === document.activeElement), 'Tab reaches Rally One return link');
+  await page.keyboard.press("Tab");
   check(
     await page.locator("#audio").evaluate((x) => x === document.activeElement),
     "Tab reaches sound control",
@@ -830,6 +834,16 @@ try {
       await failureRecovery();
       await normalMotionParity();
       await keyboardPlay();
+      const returnPage = await browser.newPage();
+      await returnPage.goto(`${base}/verse-circuit-playground.html`);
+      const returnLink = returnPage.getByRole('link', {name: 'Return to Rally One'});
+      await returnLink.waitFor();
+      await returnLink.focus();
+      check(await returnLink.evaluate(el => el === document.activeElement), 'Rally One return link accepts keyboard focus');
+      await returnLink.press('Enter');
+      await returnPage.locator('#nav').waitFor();
+      check(new URL(returnPage.url()).pathname === '/', 'Return link reaches Rally One without browser history');
+      await returnPage.close();
     } else if (process.argv.includes("--normal-motion")) {
       await normalMotionParity();
     }

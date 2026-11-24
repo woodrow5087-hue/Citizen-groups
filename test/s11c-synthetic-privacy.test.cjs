@@ -7,10 +7,10 @@ const identity=subject=>({issuer,subject,organizationId});
 const binding=()=>randomBytes(32).toString('base64url');
 const groupId='group-test',personId='person-test',root='/groups/v2/groups/'+groupId;
 const relation=(type,id)=>({data:{type,id}});
-function harness(options={}){
+function harness(options={},factory=createSyntheticPrivacyPilot){
  let t=Date.parse('2026-11-25T12:00:00.000Z'),reads=0,patch={},wait=null,verifyWait=null;
  const b=binding(),i=identity('subject-test'),other=identity('subject-other');
- const pilot=createSyntheticPrivacyPilot({issuer,audience,organizationId,redirectUri,now:()=>t,
+ const pilot=factory({issuer,audience,organizationId,redirectUri,now:()=>t,
   lookupApprovedMapping:x=>({...x,active:true,adult:true,personId,groupId,version:'v1',scopes:['groups:read'],...patch}),
   verifySyntheticCode:async r=>{if(verifyWait)await verifyWait;return {issuer,audience,organizationId,subject:r.code,nonce:r.nonce,expiresAt:t+3600000};},
   transport:async r=>{reads++;if(wait)await wait;let body;
@@ -49,6 +49,26 @@ test('11C.2 explicit notice consent allows actual 11A to 11B minimized view',asy
  assert.deepEqual(Object.keys(v.nextGathering).sort(),['startsAt','title']);assert.doesNotMatch(JSON.stringify(v),/PRIVATE|subject-test|person-test|membership-test|org-test|group-test/);
  assert.equal(h.reads(),4);
 });
+test('11C.2 consent generation accepts base64url entropy beginning with underscore or hyphen',async t=>{
+ // Reload only the privacy module with controlled entropy; the already-loaded
+ // authentication module retains real crypto for session tokens. Restore
+ // the require cache and crypto immediately, before executing any login.
+ const crypto=require('node:crypto'),path=require.resolve('../pilot/s11c-synthetic-privacy.cjs');
+ const cached=require.cache[path];
+ for(const byte of [255,248]){
+  const fake=t.mock.method(crypto,'randomBytes',n=>Buffer.alloc(n,byte));
+  let factory;
+  try{delete require.cache[path];factory=require(path).createSyntheticPrivacyPilot;}
+  finally{fake.mock.restore();require.cache[path]=cached;}
+  assert.match(Buffer.alloc(32,byte).toString('base64url'),/^[-_]/);
+  const h=harness({},factory);
+  assert.equal(h.grant().state,'accepted');
+  const s=await h.login();assert.equal(s.state,'authenticated');
+  assert.equal((await h.read(s)).state,'ready');
+  assert.equal(h.admin.withdrawConsent(h.i).state,'accepted');
+  assert.equal((await h.read(s)).state,'restricted');
+ }
+});
 test('11C.2 withdrawal revokes all sessions and fresh consent cannot resurrect them',async()=>{
  const h=harness();h.grant();const a=await h.login(),bb=binding(),b=await h.login(h.i,bb);
  assert.equal(h.admin.withdrawConsent(h.i).state,'accepted');assert.equal(h.admin.retentionSummary().consentRecords,0);
@@ -66,7 +86,7 @@ test('11C.2 consent withdrawal during actual provider read discards result',asyn
  assert.equal((await p).state,'restricted');
 });
 test('11C.2 mapping changes invalidate consent, cannot restore silently',async()=>{
- const h=harness();h.grant();const s=await h.login();h.patch({version:'v2'});
+ const h=harness();h.grant();const s=await h.login();assert.equal(s.state,'authenticated');h.patch({version:'v2'});
  assert.equal((await h.read(s)).state,'restricted');assert.equal(h.reads(),0);
  h.patch({});assert.equal((await h.login()).state,'restricted');assert.equal(h.admin.retentionSummary().consentRecords,0);
 });
@@ -87,7 +107,7 @@ test('11C.3 bounded consent capacity and expiry reclaim',()=>{
  assert.equal(h.admin.retentionSummary().consentRecords,1);
 });
 test('11C.4 audit is coarse aggregate enum only, immutable and bounded, no subject or payload',async()=>{
- const h=harness({maxAuditBuckets:1,auditMs:7200000});h.grant();const s=await h.login();await h.read(s);
+ const h=harness({maxAuditBuckets:1,auditMs:7200000});h.grant();const s=await h.login();assert.equal(s.state,'authenticated');assert.equal((await h.read(s)).state,'ready');
  const report=h.admin.auditSummary();assert.equal(report.length,1);assert.equal(report[0].counts['read:ready'],1);
  assert.ok(Object.isFrozen(report[0].counts));assert.doesNotMatch(JSON.stringify(report),/PRIVATE|Synthetic Group|person-test|subject-test|group-test|sessionToken|org-test/);
  h.advance(3600000);h.admin.withdrawConsent(h.i);assert.equal(h.admin.auditSummary().length,1);
