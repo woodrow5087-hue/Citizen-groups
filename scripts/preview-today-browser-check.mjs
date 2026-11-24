@@ -185,7 +185,14 @@ try{
       'after handling urgent group and serving commitments, an optional named prayer is next');
 
     await openTab('read');
+    // UX-01: exercise the visible reading entry before marking the passage complete.
+    const readingPanel=page.locator('details[data-ux-read-panel="scripture"]');
+    assert.equal(await readingPanel.evaluate(node=>node.open),false,'Read landing starts uncluttered');
+    await page.locator('.ux-reading-feature button[data-reading="scripture"]').click();
+    assert.equal(await readingPanel.evaluate(node=>node.open),true,'Open Scripture reveals reading controls');
+    assert.equal(await page.locator('#reading-scripture').evaluate(node=>node===document.activeElement),true,'Scripture receives focus');
     await page.locator('[data-action="read"]').click();
+    assert.equal(await readingPanel.evaluate(node=>node.open),true,'Reading completion preserves open panel');
     await page.locator('.rp-game-entry-play').click();
     await page.locator('.rp-play-screen').waitFor({state:'visible'});
     await page.locator('.rp-play-back').click();
