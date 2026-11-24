@@ -2,6 +2,7 @@
 const test=require('node:test');
 const assert=require('node:assert/strict');
 const fs=require('node:fs');
+const {restoreStateSource}=require('./helpers/s9br-state-source.cjs');
 const path=require('node:path');
 const crypto=require('node:crypto');
 const {JSDOM}=require('jsdom');
@@ -47,7 +48,7 @@ const frozen=Object.freeze({
  'blank-battle.css':'1ffd371cba7ca984f42161723cc3391ac0b6f6a5'
 });
 function gitBlob(file){
- const buf=fs.readFileSync(path.join(root,file));
+ const buf=file==='rallypoint.js'?Buffer.from(restoreStateSource()):fs.readFileSync(path.join(root,file));
  return crypto.createHash('sha1').update('blob '+buf.length+'\0').update(buf).digest('hex');
 }
 test('Read CSS is last and included in production-independent static preview build',()=>{

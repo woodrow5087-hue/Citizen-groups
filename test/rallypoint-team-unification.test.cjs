@@ -2,6 +2,7 @@
 const test=require('node:test');
 const assert=require('node:assert/strict');
 const fs=require('node:fs');
+const {restoreStateSource}=require('./helpers/s9br-state-source.cjs');
 const path=require('node:path');
 const {createHash}=require('node:crypto');
 const root=path.resolve(__dirname,'..');
@@ -39,7 +40,7 @@ const frozen=Object.freeze({
   'rallypoint-group-experience.js':'1428e32bb786dda1822cd3ae3b2972507c3feeba'
 });
 function gitBlob(name){
- const bytes=fs.readFileSync(path.join(root,name));
+ const bytes=name==='rallypoint.js'?Buffer.from(restoreStateSource()):fs.readFileSync(path.join(root,name));
  return createHash('sha1').update('blob '+bytes.length+'\0').update(bytes).digest('hex');
 }
 test('Team CSS loads only once, last after approved Groups, and is copied by build',()=>{

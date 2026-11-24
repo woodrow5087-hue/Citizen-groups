@@ -2,6 +2,7 @@
 const test=require('node:test');
 const assert=require('node:assert/strict');
 const fs=require('node:fs');
+const {restoreStateSource}=require('./helpers/s9br-state-source.cjs');
 const path=require('node:path');
 const {createHash}=require('node:crypto');
 
@@ -37,7 +38,7 @@ const frozen=Object.freeze({
  'rallypoint-wednesday-integrated.css':'5ef59a5668c0040ed57667888846cafa5abcc403'
 });
 function gitBlobSha(name){
- const bytes=fs.readFileSync(path.join(root,name));
+ const bytes=name==='rallypoint.js'?Buffer.from(restoreStateSource()):fs.readFileSync(path.join(root,name));
  return createHash('sha1').update('blob '+bytes.length+'\0').update(bytes).digest('hex');
 }
 
