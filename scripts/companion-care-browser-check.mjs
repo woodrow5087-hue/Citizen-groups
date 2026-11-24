@@ -133,6 +133,22 @@ try{
   assert.equal((await raw()).companionCare.marcus.completedAt,undefined);
   assert.equal((await raw()).directMessages.marcus,undefined);
   await routePage.evaluate(()=>window.__restoreCareStorage());
+  // The existing guard intentionally latches failures until a reload.
+  // A second click in the same session must NOT bypass that protection.
+  await routePage.locator('[data-action="send"][data-value="direct"]').click();
+  assert.equal((await raw()).companionCare.marcus.completedAt,undefined);
+  assert.equal((await raw()).directMessages.marcus,undefined);
+  assert.equal(await routePage.locator('#direct-input').inputValue(),'An intentional local check-in');
+  assert.match(await routePage.locator('#toast').textContent(),/Copy your draft before reloading/);
+  assert.equal(await routePage.evaluate(()=>localStorage.getItem('rallypoint-write-journal-v1')),null);
+  const retainedDraft=await routePage.locator('#direct-input').inputValue();
+  await routePage.reload();
+  await routePage.locator('.f09-board').waitFor();
+  await routePage.locator('[data-action="f10-open"]').click();
+  await routePage.locator('.f10-chip[data-value="next"]').click();
+  await routePage.locator('[data-action="f10-care-route"][data-value="care-check-in"]').click();
+  await routePage.locator('.ro-care-draft-hint').waitFor();
+  await routePage.locator('#direct-input').fill(retainedDraft);
   await routePage.locator('[data-action="send"][data-value="direct"]').click();
   assert.ok((await raw()).companionCare.marcus.completedAt);
   assert.equal((await raw()).directMessages.marcus.length,1);

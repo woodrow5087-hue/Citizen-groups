@@ -1044,7 +1044,7 @@ if(a==='send'){
     delete flags.snoozedUntil;
     s={...s,directMessages:{...s.directMessages,marcus:[...(s.directMessages.marcus||[]),item]},
       companionCare:{...s.companionCare,marcus:flags}};
-    if(!save()){s=previous;notify('Could not safely save your check-in. Your draft is still here.');return;}
+    if(!save()){s=previous;notify('Check-in not saved. Copy your draft before reloading to retry.');return;}
     companionFocus=null;x.value='';delete drafts[x.dataset.draftKey||x.id];
     render();notify('Saved to this device only');return;
   }
