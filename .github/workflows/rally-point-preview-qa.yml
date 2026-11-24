@@ -66,7 +66,12 @@ jobs:
           git fetch --depth=1 origin 5aa88c93c3d4cd22902ef98af98c09b74ca436ce
           git archive 5aa88c93c3d4cd22902ef98af98c09b74ca436ce | tar -x -C "$reference_dir"
           CONTEXT=deploy-preview node "$reference_dir/scripts/build.cjs"
-          BROWSER_PATH="$(node --input-type=module -e 'import {chromium} from "playwright"; process.stdout.write(chromium.executablePath())')" node scripts/s8-visual-regression.mjs "$reference_dir/dist"
+          read_reference_dir="$RUNNER_TEMP/rally-one-approved-ux01"
+          mkdir -p "$read_reference_dir"
+          git fetch --depth=1 origin 4e3baa96cc10ab4b32cbaecb69d19098f05840c0
+          git archive 4e3baa96cc10ab4b32cbaecb69d19098f05840c0 | tar -x -C "$read_reference_dir"
+          CONTEXT=deploy-preview node "$read_reference_dir/scripts/build.cjs"
+          BROWSER_PATH="$(node --input-type=module -e 'import {chromium} from "playwright"; process.stdout.write(chromium.executablePath())')" node scripts/s8-visual-regression.mjs "$reference_dir/dist" "$read_reference_dir/dist"
       - name: Save visual QA screenshots and results
         if: always()
         uses: actions/upload-artifact@v4

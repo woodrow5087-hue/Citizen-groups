@@ -14,4 +14,11 @@ Implement chosen layout with progressive disclosure and preserved feature access
 ## Scope exclusions
 No engineering roadmap interruption, integration/auth/schema changes, new game mechanics, or production release. Do not remove existing functionality merely to simplify the landing page.
 
-Status: charter created; source/visual audit and concept acceptance pending.
+Status: owner explicitly approved the existing Read-only design at immutable commit
+`4e3baa96cc10ab4b32cbaecb69d19098f05840c0` for UX-01 regression reconciliation
+on 2026-11-24. This supersedes the pending concept-selection gate for that layout.
+It is design-direction and regression-scope approval only: final visual acceptance,
+physical-device acceptance and merge authorization remain outstanding. Strict
+PR #119 comparisons remain required for every unaffected surface; Read alone uses
+the approved UX-01 source build. Historical source protections, functionality and
+accessibility gates remain mandatory. No other redesign is authorized.
