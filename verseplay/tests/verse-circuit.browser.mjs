@@ -832,6 +832,16 @@ try {
       await failureRecovery();
       await normalMotionParity();
       await keyboardPlay();
+      const returnPage = await browser.newPage();
+      await returnPage.goto(`${base}/verse-circuit-playground.html`);
+      const returnLink = returnPage.getByRole('link', {name: 'Return to Rally One'});
+      await returnLink.waitFor();
+      await returnLink.focus();
+      check(await returnLink.evaluate(el => el === document.activeElement), 'Rally One return link accepts keyboard focus');
+      await returnLink.press('Enter');
+      await returnPage.locator('#nav').waitFor();
+      check(new URL(returnPage.url()).pathname === '/', 'Return link reaches Rally One without browser history');
+      await returnPage.close();
     } else if (process.argv.includes("--normal-motion")) {
       await normalMotionParity();
     }
