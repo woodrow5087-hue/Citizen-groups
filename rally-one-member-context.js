@@ -49,7 +49,7 @@ function snapshot({state,ui,conversation,now=new Date()}={}){
   team:frozen({member:team,response:servingResponse,coverage:team&&!!s.coverage}),
   care:frozen({visible:namedRequest,prayed,followedUp,snoozed,
     status:!namedRequest?'unavailable':followedUp?'followed-up':snoozed?'paused':prayed?'prayed':'ready'}),
-  leader:frozen({authorized:leader,pendingIds:frozen(leader?leaderPending:[]),
+  leader:frozen({authorized:leader,requestedCheckIn:leader&&s.leaderRequest==='taylor-wednesday'&&leaderPending.includes('taylor'),pendingIds:frozen(leader?leaderPending:[]),
     reviewedIds:frozen(leader?leaderIds.filter(id=>reached.includes(id)):[])}),
   reading:frozen({readToday:!!s.read,intentionDue}),
   completed:frozen({

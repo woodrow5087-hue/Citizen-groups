@@ -15,7 +15,7 @@ test('10C.4B explicit topic overrides an earlier care referent',()=>{
 const now=new Date('2026-11-25T12:00:00Z');
 function sources(enabled=true){const r=Engine.derive({enabled,state:{role:'member',rsvp:'going',teamStatus:'pending',prayers:[],reached:[],read:true,prayed:true,rhythm:{},companionCare:{},companionChoices:{snoozedUntil:{}}},ui:{name:'Alex',campus:'central',memberships:{group:false,team:true}},conversation:{status:'ok',unreadCount:0},now});return {model:r.model,board:r.board,now};}
 test('10C.4B canonical focus uses exact existing next answer',()=>{
- const s=sources();assert.deepEqual(Ask.respond('What should I focus on today?',s).response,Ask.answer('next',s));
+ const s=sources(),r=Ask.respond('What should I focus on today?',s).response;assert.deepEqual(r.items,Ask.answer('next',s).items);assert.equal(r.outcome,'shared-serving-priority');
 });
 test('10C.4B canonical unsafe and ambiguous prompts are non-actionable, no mutation',()=>{
  const s=sources(),before=structuredClone(s);
@@ -24,10 +24,10 @@ test('10C.4B canonical unsafe and ambiguous prompts are non-actionable, no mutat
  }
  assert.deepEqual(s,before);
 });
-test('10C.4B unimplemented relational response plans explicitly abstain instead of misrouting',()=>{
- const s=sources();for(const q of ['How can I get more connected?','What should I review as a leader?']){
-  const r=Ask.respond(q,s);assert.equal(r.response.intent,Ask.resolveIntent(q));assert.equal(r.response.items.length,0);
- }
+test('10C.4D implemented guidance replaces interim abstention with authorized responses',()=>{
+ const s=sources(),connect=Ask.respond('How can I get more connected?',s).response,leader=Ask.respond('What should I review as a leader?',s).response;
+ assert.equal(connect.intent,'connect');assert.equal(connect.outcome,'discover-groups');assert.equal(connect.items[0].action.id,'group');
+ assert.equal(leader.intent,'leader');assert.equal(leader.outcome,'no-leader-access');assert.equal(leader.items.length,0);
 });
 test('10C.4B legacy classification remains available and frozen previous source reconstructs',()=>{
  assert.equal(Ask.classify('Is there anyone I can pray for?'),'scripture');
