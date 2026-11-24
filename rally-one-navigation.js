@@ -23,7 +23,7 @@ if(pane==='leader'&&!canLead('group'))s.groupPane=rallyOne?'overview':'chat';
 if(view==='team'&&pane)s.teamPane=pane;
 render();$('view').scrollTop=0;
 const focus=reading?$('reading-'+reading):$('view').querySelector('h1');
-if(focus){focus.tabIndex=-1;focus.focus({preventScroll:true});if(reading)focus.scrollIntoView?.({block:'start',behavior:'auto'});}
+if(focus){if(reading){for(let parent=focus.parentElement;parent;parent=parent.parentElement){if(parent.tagName==='DETAILS')parent.open=true;}}focus.tabIndex=-1;focus.focus({preventScroll:true});if(reading)focus.scrollIntoView?.({block:'start',behavior:'auto'});}
 }
 return Object.freeze({navigate});
 });
