@@ -14,6 +14,6 @@ function restoreStateSource(){
  const extracted=read('rally-one-app-state.js');
  assert.ok(extracted.startsWith(prefix)&&extracted.endsWith(suffix),'Unexpected module wrapper');
  const block=once(extracted.slice(prefix.length,-suffix.length),'readRaw()','localStorage.getItem(key)');
- return once(read('rallypoint.js'),call,block);
+ return once(require('./s9br-navigation-source.cjs').restoreNavigationSource(),call,block);
 }
 module.exports={restoreStateSource};
