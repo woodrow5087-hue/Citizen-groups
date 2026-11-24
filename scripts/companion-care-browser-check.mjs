@@ -173,6 +173,38 @@ try{
   await routePage.locator('[data-action="close-dialog"]').click();
   await routePage.locator('[data-action="f10-open"]').click();
   assert.equal(await routePage.locator('.f10-earlier-turn').count(),0,'closing clears session history');
+  // Connected member guidance opens the existing group without writing or acknowledging chat.
+  await ask('How can I get more connected?');
+  assert.match(await routePage.locator('.f10-response').textContent(),/Start with your people/);
+  await routePage.locator('.f10-route[data-go="group"]').click();
+  await routePage.locator('.gv2-home').waitFor();
+  assert.equal(await cursor(),priorCursor);
+  // Explicit requested leader fixture: open review, do not mark reviewed merely by viewing.
+  await routePage.locator('#nav [data-go="today"]').click();
+  await routePage.locator('[data-action="demo-controls"]').click();
+  await routePage.locator('[data-action="s7-scenario"][data-value="leader"]').click();
+  await routePage.locator('[data-action="f10-open"]').click();
+  await ask('Any member-requested check-ins to review?');
+  await routePage.locator('.f10-route[data-requested-check-in="1"]').click();
+  await routePage.locator('.r1-request').waitFor();
+  assert.ok(!(await raw()).reached.includes('taylor'));
+  await routePage.locator('.r1-request [data-action="reached"]').click();
+  await routePage.locator('#nav [data-go="today"]').click();
+  await routePage.locator('[data-action="f10-open"]').click();
+  await ask('Any member-requested check-ins to review?');
+  assert.equal(await routePage.locator('.f10-route[data-requested-check-in="1"]').count(),0);
+  assert.match(await routePage.locator('.f10-response').textContent(),/No requested check-in is open/);
+  await routePage.locator('[data-action="close-dialog"]').click();
+  await routePage.locator('[data-action="demo-controls"]').click();
+  await routePage.locator('[data-action="s7-scenario"][data-value="visitor"]').click();
+  await routePage.locator('[data-action="f10-open"]').click();
+  await ask('Any member-requested check-ins to review?');
+  assert.doesNotMatch(await routePage.locator('.f10-response').textContent(),/Taylor/);
+  assert.equal(await routePage.locator('.f10-route').count(),0);
+  await ask('How can I get more connected?');
+  await routePage.locator('.f10-route[data-go="group"]').click();
+  await routePage.locator('.group-discovery-v07').waitFor();
+  assert.equal((await raw()).role,'member');
   await routeContext.close();
   await context.close();
   console.log('Care path: Today → prayer → explicitly prayed → local DM → Today/Groups follow-through, gate and accessibility passed at '+width+'px');

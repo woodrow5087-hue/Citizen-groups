@@ -324,6 +324,41 @@ function conversationScope(model){
  if(c?.version!==1)return null;
  return JSON.stringify([c.identity?.name,c.identity?.campus,c.permissions?.group===true,c.permissions?.team===true,c.permissions?.groupLeader===true,c.permissions?.teamLeader===true,c.care?.visible===true]);
 }
+// Explicit guidance consumes current context; it does not create another ranking policy.
+function guidanceConversation(intent,d){
+ const ctx=d.memberContext;
+ const make=(outcome,heading,intro,items=[],topic='')=>Object.freeze({intent,outcome,heading,intro,items:Object.freeze(items),topic,note:sourceNote});
+ if(intent==='connect'){
+  const member=ctx?.permissions?.group===true;
+  return make(member?'reconnect-existing-group':'discover-groups',member?'Start with your people.':'There’s room for you.',
+   member?'You already have a group you can reconnect with. Start there, at your own pace.':'You could start by exploring a group. You don’t need to join anything today.',
+   [item(member?'Your Wednesday Group':'Explore groups',member?'Open your existing group and choose how to connect.':'Browse the available sample groups without enrolling.','Your current group membership determines this suggestion.',go('group','',member?'Open my group':'Explore groups'))],member?'group':'community');
+ }
+ if(ctx?.permissions?.groupLeader!==true)
+  return make('no-leader-access','Leader follow-up is not available.','This profile does not have access to group leader requests.');
+ if(ctx.leader?.requestedCheckIn!==true)
+  return make('no-open-leader-request','No requested check-in is open.','There is no outstanding explicit sample request for you to review. This does not assess anyone’s well-being.');
+ return make('authorized-review','A member requested a check-in.','Taylor shared an explicit fictional request for a check-in. Review it in your leader tools and decide how to respond.',
+  [item('Requested group check-in','Open the existing leader review area.','An authorized, explicitly requested and not yet reviewed sample follow-up—not an inferred need.',Object.freeze({...go('group','leader','Review requested check-in'),requested:true}))],'leader');
+}
+function focusConversation(sources){
+ const d=sources.model||{},b=sources.board||{},ctx=d.memberContext;
+ const current=answer('next',sources);
+ // Use the ordered selected board candidates only; do not score them again.
+ const ids=[b.hero,...(b.rows||[])].filter((r,i)=>r&&b.taskCount>0&&(i===0?!r.calm&&r.id!=='paused'&&r.id!=='welcome-community':r.requiresResponse)).map(r=>r.id);
+ let outcome='shared-priorities',intro=current.intro,items=current.items;
+ if(!ids.length){
+  outcome=b.hero?.id==='paused'?'respect-deferred':'no-outstanding-response';
+  intro=b.hero?.id==='paused'?'You chose to revisit some items later. Nothing pressing is being recommended right now.':'No current sample commitment needs your response. You don’t need to find another task.';
+  items=[item(b.hero?.id==='paused'?'Nothing pressing right now.':'You’re all caught up.',intro,b.hero?.why||'Current shared priority board.',null)];
+ }else if(ids.length===1&&ids[0]==='serve-response')outcome='shared-serving-priority';
+ else if(ids.length===2&&ids[0]==='group-rsvp'&&ids[1]==='serve-response')outcome='shared-two-priorities';
+ else if(ids.length===1&&ids[0]==='group-unavailable'){
+  outcome='source-unavailable-review';
+  intro='Your group conversation source is unavailable. I can’t assume it has zero unread messages; you can review the existing conversation.';
+ }
+ return Object.freeze({...current,intent:'focus',outcome,intro,items:Object.freeze(items)});
+}
 function respond(raw,sources={},prior={}){
  const query=String(raw||'').trim().slice(0,160);
  const d=sources.model||{},b=sources.board||{},now=sources.now instanceof Date?sources.now:new Date();
@@ -332,7 +367,7 @@ function respond(raw,sources={},prior={}){
  const recommend=topic=>goalMode?goalSuggestions(topic,d):suggestions(topic,d);
  // Canonical intent recognition is independent of permission and response planning.
  // Legacy previews retain their exact existing grammar and output.
- const recognized=d.memberContext?.version===1?resolveIntent(query,previous):'legacy';
+ const recognized=d.memberContext?.version===1?(query==='next'?'focus':resolveIntent(query,previous)):'legacy';
  if(recognized==='unsupported'||recognized==='clarify'){
   const response=Object.freeze({intent:recognized,heading:recognized==='clarify'?'Which part do you mean?':'I can help within Rally One.',
     intro:recognized==='clarify'?'Tell me whether you mean your group, serving, Scripture or a care opportunity. Nothing has changed.':
@@ -341,8 +376,8 @@ function respond(raw,sources={},prior={}){
   return Object.freeze({query,response,context:Object.freeze({intent:recognized,focus:''}),suggestions:Object.freeze(['next','group','scripture'])});
  }
  if(recognized==='focus'){
-  const response=answer('next',sources);
-  const focus=topicOf(response,b);
+  const response=focusConversation(sources);
+  const focus=topicOf({...response,intent:'next'},b);
   return Object.freeze({query,response,context:Object.freeze({intent:response.intent,focus}),suggestions:Object.freeze(recommend(focus||response.intent))});
  }
  if(recognized==='care'||recognized==='care-status'){
@@ -350,12 +385,9 @@ function respond(raw,sources={},prior={}){
   const focus=d.memberContext?.permissions?.group===true&&d.memberContext?.care?.visible===true?'care':'';
   return Object.freeze({query,response,context:Object.freeze({intent:recognized,focus}),suggestions:Object.freeze(['next','group','scripture'])});
  }
- // Community and leader action plans remain scoped to 10C.4D.
  if(['connect','leader'].includes(recognized)){
-  const response=Object.freeze({intent:recognized,heading:'I understand what you are looking for.',
-    intro:'This preview is learning to handle that kind of question. You can still ask what needs your attention or open the relevant existing church experience. Nothing has been changed.',
-    items:Object.freeze([]),note:sourceNote});
-  return Object.freeze({query,response,context:Object.freeze({intent:recognized,focus:''}),suggestions:Object.freeze(['next','group','scripture'])});
+  const response=guidanceConversation(recognized,d);
+  return Object.freeze({query,response,context:Object.freeze({intent:recognized,focus:response.topic}),suggestions:Object.freeze(['next','group','scripture'])});
  }
  // F-10.2: flexible wording over a fixed, source-backed intent allowlist.
  // Language can select a topic; it can never directly perform an action.
@@ -506,7 +538,13 @@ function respond(raw,sources={},prior={}){
     'Scripture suggestions reflect only your saved reading state or follow-through intention.',
     base.items,'scripture');
  }
- const response=answer(known,sources);
+ let response=answer(known,sources);
+ // The frozen opening/Week chip retains its approved snapshot copy. Explicit
+ // typed weekly queries explain that the broader count is not a to-do list.
+ if(d.memberContext?.version===1&&query!=='week'&&response.intent==='week'){
+  const count=b.weeklyTaskCount??b.taskCount;
+  if(count>0)response=Object.freeze({...response,intro:response.intro.replace(/ You also have \d+ sample items? needing attention\.$/,'')+' The wider sample overview includes '+count+' item'+(count===1?'':'s')+'; some may be deferred or require only review. Ask what needs your attention for the current focused steps.'});
+ }
  // Unsupported prompts do not preserve an unrelated conversational referent.
  focus=response.intent==='unknown'?'':subject||topicOf(response,b)||focus;
  return Object.freeze({query:known,response,
@@ -536,7 +574,7 @@ function render(response,asked='',notice='',history=[],suggested=[]){
     (action.kind==='care-route'&&['care-prayer','care-check-in'].includes(action.id)));
   const control=allowed?
    '<button type="button" class="f10-route" '+(action.kind==='go'?
-      'data-go="'+esc(action.id)+'"'+(action.pane?' data-pane="'+esc(action.pane)+'"':''):
+      'data-go="'+esc(action.id)+'"'+(action.pane?' data-pane="'+esc(action.pane)+'"':'')+(action.requested===true&&action.id==='group'&&action.pane==='leader'?' data-requested-check-in="1"':''):
       'data-action="'+(action.kind==='care-route'?'f10-care-route':'f10-confirm')+'" data-value="'+esc(action.id)+'"')+'>'+
       esc(action.label||'Open')+' <span aria-hidden="true">›</span></button>':'';
   return '<div class="f10-result-card"><div><strong>'+esc(x.title)+'</strong>'+

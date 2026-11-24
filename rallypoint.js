@@ -783,7 +783,12 @@ document.addEventListener('click',ev=>{
 const b=ev.target.closest('button');if(!b)return;
 if(b.type==='submit'&&b.form)return;
 if(b.id==='role'){s.role=s.role==='leader'?'member':'leader';s.groupPane=rallyOne?'overview':'chat';s.teamPane='schedule';render();renderDialog();notify(s.role==='leader'?'Scoped leader fixture enabled':'Member fixture enabled');return}
-if(b.dataset.go){navigate(b.dataset.go,b.dataset.pane||((b.dataset.leader)?'leader':''),b.dataset.reading);return}
+if(b.dataset.go){
+ if(rallyOne&&b.dataset.requestedCheckIn==='1'){
+   if(dialog!=='f10-companion'||s.view!=='today'||b.dataset.go!=='group'||b.dataset.pane!=='leader'||!hasLeaderRequest()||s.reached.includes('taylor'))return;
+ }
+ navigate(b.dataset.go,b.dataset.pane||((b.dataset.leader)?'leader':''),b.dataset.reading);return
+}
 const a=b.dataset.action,v=b.dataset.value||'',person=b.dataset.person;
 if(f09Preview&&!f09Board&&s.view==='today'&&a==='f09-stack'){
  const m=window.RallySmartDashboard.model({
