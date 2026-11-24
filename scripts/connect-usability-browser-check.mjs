@@ -16,6 +16,10 @@ try{
   const page=await context.newPage();
   const errors=[];
   page.on('pageerror',error=>errors.push(error.message));
+  // Monday noon: neither Wednesday RSVP nor Sunday serving is urgent.
+  // This test specifically exercises unread messages as the Today hero.
+  // Separate fixed-date journey tests cover urgent commitments and ordering.
+  await page.clock.setFixedTime(new Date('2026-11-23T12:00:00'));
   await page.goto(base);
   await page.locator('[data-welcome="login"]:visible').click();
   await page.locator('[data-welcome="demo"]:visible').click();

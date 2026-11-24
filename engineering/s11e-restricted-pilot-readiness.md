@@ -32,3 +32,6 @@ Review agenda: demonstrate approved existing fictional app, demonstrate separate
  
 ## Validation
 `npm test` includes six new local HTTP tests; existing full QA plus `node scripts/s11e-local-review-browser-check.mjs` runs at 320/390/430 with axe, screenshots, no external requests and state transitions. All previous visual and functional gates preserved; exact-head CI/Netlify pending at authoring. Physical device gate for unchanged demo remains; local-only lab must be reviewed on laptop. No Node/browser execution performed during connector authoring; results not yet observed.
+
+## QA incident and controlled remediation
+Original candidate 496ba92a8107f771f9d31ff28a60645ef7a46739, workflow 45461592319 / job 138685313079, failed in the existing connect-usability-browser-check.mjs line 31 waiting for the group-unread hero. Runner time was Tuesday 2026-11-24 18:41 UTC, within 24 hours of Wednesday 18:30, so existing priority ranking can promote RSVP rather than unread. This test had no fixed clock. The new local pilot browser check and immutable visual comparison were skipped; no acceptance claim. Pin this test to Monday 2026-11-23 noon local, when neither gathering nor serving is urgent; retain exact existing selector and every assertion. No runtime change, no weakened gate, no retry masking. Full corrected-head CI and local review pending.
