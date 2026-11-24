@@ -50,24 +50,40 @@ function classify(value){
  if(/\b(next|attention|today|do|priority|task|now)/.test(text))return 'next';
  return 'unknown';
 }
+// 10C.4E-R: conservative, bounded text guard; not a clinical assessment.
+// Explicit language only. No attendance-based inference or automatic escalation.
+function normalizeQuestion(value){
+ return String(value||'').trim().slice(0,160).toLowerCase().replace(/[‘’]/g,"'").replace(/[‐‑–—]/g,'-').replace(/\s+/g,' ').replace(/[?!.,]+$/,'').trim();
+}
+function explicitDistress(q){
+ return /\b(?:suicid(?:e|al)|kill (?:myself|themselves|himself|herself)|end(?:ing)? (?:my|their|his|her|your) life|take (?:my|their|his|her) own life|(?:want|wish) to die|don't want to (?:live|be alive)|(?:hurt|harm|injure) myself|self[- ]harm|immediate danger|can't keep myself safe|not safe with myself|overdos(?:e|ed|ing))\b/.test(q);
+}
+function declinedCare(q){
+ return /\b(?:(?:don't|do not|didn't|can't|cannot|won't|wouldn't) (?:want to |feel like |have time to |have the energy to )?|not (?:ready|able|in the mood) to |rather not |no time to |don't feel up to |do not feel up to )(?:pray(?:ing)?|encourag(?:e|ing)|check(?:ing)?[- ]?in|follow(?:ing)? up|care for|send a (?:kind |supportive )?(?:note|message)|support someone)\b/.test(q);
+}
+function restrictedRequest(q){
+ return /\b(?:ignore (?:previous|prior|all) instructions|reveal (?:the )?private|private prayer (?:text|requests?|details)|(?:different|other|another) (?:campus|group)|(?:all|every) (?:campus|group)(?:es|s)?|at risk of leaving|who (?:in (?:my|our|the) group )?is (?:lonely|depressed|struggling)|predict (?:who|which)|(?:rank|score|profile) (?:people|members)|(?:can|could|would|will) you (?:please )?(?:send|post|message|mark|confirm|rsvp|enroll|join)\b|(?:send|post|message|mark|confirm|rsvp|enroll|join) (?:it |them )?for me)\b/.test(q);
+}
 // 10C.4B: recognize intent only; never authorize or execute a command.
 function resolveIntent(value,prior={}){
- const q=String(value||'').trim().slice(0,160).toLowerCase().replace(/[‘’]/g,"'").replace(/[‐‑–—]/g,'-').replace(/\s+/g,' ').replace(/[?!.,]+$/,'').trim();
+ const q=normalizeQuestion(value);
  if(!q)return 'clarify';
+ if(explicitDistress(q)||restrictedRequest(q))return 'unsupported';
+ if(declinedCare(q))return 'clarify';
  // Reject unsafe requests before recognizing any otherwise valid topic.
  if(/\b(spiritually struggling|spiritual health|spiritual score|risk score|depression|most likely to leave|rank (?:my|the) group|ignore permissions|bypass (?:permissions|access)|private (?:prayer records|messages)|another group's|without (?:asking|permission|consent)|automatically|send everyone|mark all|secretly|diagnose)\b/.test(q))return 'unsupported';
  if(/\b(?:send|post|message|mark|confirm|rsvp|enroll|join)\b/.test(q)&&/^(?:please\s+)?(?:send|post|message|mark|confirm|rsvp|enroll|join)\b/.test(q))return 'unsupported';
  if(/\b(?:i (?:want to die|might hurt myself|am going to hurt myself)|kill myself|suicid(?:e|al)|immediate danger)\b/.test(q))return 'unsupported';
  if(/\b(?:leader|member-requested|authorized group check-ins)\b/.test(q)&&/\b(?:check-ins?|follow[- ]ups?|review)\b/.test(q))return 'leader';
  if(/\b(?:have i|did i|is my|what care action)\b/.test(q)&&/\b(?:followed up|follow through|follow-up|checked in|check-in|completed|complete)\b/.test(q)&&/\b(?:already|sent|send|checked in|finished|completed|complete)\b/.test(q))return 'care-status';
- if(/\b(?:encourag(?:e|ement)|prayer requests?|pray for|check[- ]in (?:on|with)|check-ins?|care for|support someone|be there for someone|meaningful (?:way to follow up|for someone)|follow up (?:after praying|with someone)|care opportunity)\b/.test(q))return 'care';
- if(/\b(?:get (?:more )?connected|feel (?:more )?connected|meet (?:some )?people|where do i start|new here|find (?:a group|my people|my next connection)|get (?:back )?involved|reconnect with my group|spend time with my people|start connecting|belong here|connect with my community)\b/.test(q))return 'connect';
+ if(/\b(?:encourag(?:e|ement)|prayer requests?|pray for|check[- ]in (?:on|with)|check-ins?|care for|support someone|be there for someone|meaningful (?:way to follow up|for someone)|follow up (?:after praying|with someone)|care opportunity|(?:kind|encouraging|supportive|thoughtful) (?:note|message) to (?:someone|somebody)|(?:write|send) (?:a )?(?:kind|encouraging|supportive|thoughtful) (?:note|message))\b/.test(q))return 'care';
+ if(/\b(?:get (?:more )?connected|feel (?:more )?connected|meet (?:some )?people|where do i start|new here|find (?:a group|my people|my next connection)|get (?:back )?involved|reconnect with my group|spend time with my people|start connecting|belong here|connect with my community|make (?:some )?friends|meet (?:new )?friends|find (?:some )?friends|just moved here)\b/.test(q))return 'connect';
  // A new explicit domain outranks an inherited conversational referent.
  if(/\b(?:group|wednesday|rsvp|gathering|sunday|serv(?:e|ing|ice)|shift|volunteer|welcome team|scripture|bible|reading|verse)\b/.test(q))return 'legacy';
  if(prior?.focus==='care'&&/^(?:haven't i already done that|have i already done that|did i already do that|did i do that|is that done|have i prayed already|did i already pray|have i already prayed|did i send it)$/.test(q))return 'care-status';
- if(prior?.focus==='care'&&/^(?:what can i do next|what about that|how can i follow up|why this suggestion|why did you suggest that person|can i read the request|what about them|how about it|what did (?:he|she|they) ask for prayer about|what is the request|what did they share)$/.test(q))return 'care';
+ if(prior?.focus==='care'&&/^(?:what can i do next|what about that|how can i follow up|why this suggestion|why did you suggest that person|(?:can|could|may) i (?:read|see|review) (?:the|that) request|what about them|how about it|what did (?:he|she|they) ask for prayer about|what is the request|what did they share)$/.test(q))return 'care';
  if(/^(?:what about (?:them|that)|can you do that|how about it|is that done)$/.test(q))return 'clarify';
- if(/\b(?:focus on|next steps?|needs my attention|busy week|what's important|needs a response|prioriti[sz]e|take care of (?:today|first)|outstanding|overwhelmed by my commitments|narrow down what matters|anything to review|what matters right now|caught up)\b/.test(q))return 'focus';
+ if(/\b(?:focus on|next steps?|needs my attention|busy week|what's important|needs a response|prioriti[sz]e|take care of (?:today|first)|outstanding|overwhelmed by my commitments|narrow down what matters|anything to review|what matters (?:right now|most)|caught up|what should i tackle first|what is most important|what's most important)\b/.test(q))return 'focus';
  return 'legacy';
 }
 function answer(query,{model,board,now=new Date()}={}){
@@ -369,14 +385,19 @@ function respond(raw,sources={},prior={}){
  // Legacy previews retain their exact existing grammar and output.
  const recognized=d.memberContext?.version===1?(query==='next'?'focus':resolveIntent(query,previous)):'legacy';
  if(recognized==='unsupported'||recognized==='clarify'){
-  const response=Object.freeze({intent:recognized,heading:recognized==='clarify'?'Which part do you mean?':'I can help within Rally One.',
-    intro:recognized==='clarify'?'Tell me whether you mean your group, serving, Scripture or a care opportunity. Nothing has changed.':
-      'I can explain current sample church activity, but I cannot infer private needs, bypass access or act on your behalf. If someone is in immediate danger, seek local emergency help or contact a trusted person directly.',
+  const normalized=normalizeQuestion(query),distress=explicitDistress(normalized),declined=declinedCare(normalized);
+  const response=Object.freeze({intent:recognized,heading:distress?'Your safety matters.':declined?'It’s okay to leave it for today.':recognized==='clarify'?'Which part do you mean?':'I can help within Rally One.',
+    intro:distress?'I’m sorry this is so difficult. You deserve real support. If you or someone else is in immediate danger or has already been hurt, call local emergency services now (911 in the U.S.). In the U.S., call or text 988 to reach a crisis counselor. If possible, reach out to someone you trust who can be with you. Rally cannot contact help or monitor your safety.':
+      declined?'You don’t need to take a care step today. Nothing has been changed.':
+      recognized==='clarify'?'Tell me whether you mean your group, serving, Scripture or a care opportunity. Nothing has changed.':
+      'I can help you review activity you have access to, but I can’t reveal private information, judge someone’s well-being, or take an action for you.',
     items:Object.freeze([]),note:sourceNote});
-  return Object.freeze({query,response,context:Object.freeze({intent:recognized,focus:''}),suggestions:Object.freeze(['next','group','scripture'])});
+  return Object.freeze({query,response,context:Object.freeze({intent:recognized,focus:''}),suggestions:Object.freeze(distress||declined?[]:['next','group','scripture'])});
  }
  if(recognized==='focus'){
-  const response=focusConversation(sources);
+  let response=focusConversation(sources);
+  if(/\b(overwhelmed|only have (?:ten|\d+|a few|five) minutes|short on time|not much time)\b/.test(normalizeQuestion(query))&&response.outcome!=='no-outstanding-response')
+   response=Object.freeze({...response,intro:'Let’s keep this manageable. '+response.intro});
   const focus=topicOf({...response,intent:'next'},b);
   return Object.freeze({query,response,context:Object.freeze({intent:response.intent,focus}),suggestions:Object.freeze(recommend(focus||response.intent))});
  }

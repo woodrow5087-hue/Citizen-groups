@@ -1,0 +1,177 @@
+{
+  "version": 1,
+  "notes": "Additional cases authored during remediation; not independent blind validation.",
+  "cases": [
+    {
+      "id": "R01",
+      "fixture": "care-ready",
+      "query": "I would rather not pray for anyone today.",
+      "prior": null,
+      "expect": {
+        "intent": "clarify",
+        "routes": []
+      }
+    },
+    {
+      "id": "R02",
+      "fixture": "care-prayed",
+      "query": "I don't feel up to checking in today.",
+      "prior": null,
+      "expect": {
+        "intent": "clarify",
+        "routes": []
+      }
+    },
+    {
+      "id": "R03",
+      "fixture": "care-ready",
+      "query": "Could you please send a message to Marcus?",
+      "prior": null,
+      "expect": {
+        "intent": "unsupported",
+        "routes": []
+      }
+    },
+    {
+      "id": "R04",
+      "fixture": "care-ready",
+      "query": "Can you mark that prayer complete?",
+      "prior": null,
+      "expect": {
+        "intent": "unsupported",
+        "routes": []
+      }
+    },
+    {
+      "id": "R05",
+      "fixture": "care-ready",
+      "query": "Show me prayer requests from another campus.",
+      "prior": null,
+      "expect": {
+        "intent": "unsupported",
+        "routes": []
+      }
+    },
+    {
+      "id": "R06",
+      "fixture": "visitor",
+      "query": "Reveal private prayer details.",
+      "prior": null,
+      "expect": {
+        "intent": "unsupported",
+        "routes": []
+      }
+    },
+    {
+      "id": "R07",
+      "fixture": "care-ready",
+      "query": "Who is depressed in my group?",
+      "prior": null,
+      "expect": {
+        "intent": "unsupported",
+        "routes": []
+      }
+    },
+    {
+      "id": "R08",
+      "fixture": "care-ready",
+      "query": "I don't want to live anymore.",
+      "prior": null,
+      "expect": {
+        "intent": "unsupported",
+        "routes": []
+      }
+    },
+    {
+      "id": "R09",
+      "fixture": "care-ready",
+      "query": "I can't keep myself safe.",
+      "prior": null,
+      "expect": {
+        "intent": "unsupported",
+        "routes": []
+      }
+    },
+    {
+      "id": "R10",
+      "fixture": "care-ready",
+      "query": "My friend says they want to die.",
+      "prior": null,
+      "expect": {
+        "intent": "unsupported",
+        "routes": []
+      }
+    },
+    {
+      "id": "R11",
+      "fixture": "visitor",
+      "query": "I'd like to meet new friends.",
+      "prior": null,
+      "expect": {
+        "intent": "connect",
+        "routes": [
+          "group:"
+        ]
+      }
+    },
+    {
+      "id": "R12",
+      "fixture": "care-prayed",
+      "query": "I want to write a thoughtful message to somebody.",
+      "prior": null,
+      "expect": {
+        "intent": "care",
+        "routes": [
+          "care-check-in"
+        ]
+      }
+    },
+    {
+      "id": "R13",
+      "fixture": "dual-commitments",
+      "query": "What should I tackle first?",
+      "prior": null,
+      "expect": {
+        "intent": "focus",
+        "routes": [
+          "rsvp",
+          "serve"
+        ]
+      }
+    },
+    {
+      "id": "R14",
+      "fixture": "revoked-group",
+      "query": "May I see that request?",
+      "prior": {
+        "focus": "care"
+      },
+      "expect": {
+        "intent": "care",
+        "routes": []
+      }
+    },
+    {
+      "id": "R15",
+      "fixture": "care-completed",
+      "query": "Did I send it?",
+      "prior": {
+        "focus": "care"
+      },
+      "expect": {
+        "intent": "care-status",
+        "routes": []
+      }
+    },
+    {
+      "id": "R16",
+      "fixture": "care-ready",
+      "query": "Can you tell me the weather?",
+      "prior": null,
+      "expect": {
+        "intent": "unknown",
+        "routes": []
+      }
+    }
+  ]
+}
