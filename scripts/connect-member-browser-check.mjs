@@ -13,6 +13,9 @@ try {
     const page=await context.newPage();
     const errors=[];
     page.on('pageerror',error=>errors.push(error.message));
+    // This fixture expects unread messages to lead before the gathering is within 24 hours.
+    // Pin the scenario date; live wall time legitimately promotes the RSVP instead.
+    await page.clock.setFixedTime(new Date('2026-11-23T12:00:00'));
     await page.goto(base);
     await page.locator('[data-welcome="login"]:visible').click();
     await page.locator('[data-welcome="demo"]:visible').click();
