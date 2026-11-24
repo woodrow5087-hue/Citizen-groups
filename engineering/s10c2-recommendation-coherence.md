@@ -1,0 +1,7 @@
+# Sprint 10C.2 — Recommendation coherence
+
+Base: a40f2d6feb4b8c52aa54e799c1183e404459ea73, accepted PR #129. The shared service previously combined the selected hero/rows with the baseline task count and caught-up flag. This created false "caught up" responses for care-only states and extra phantom items for focused or deferred recommendations.
+
+The existing board now exposes the focused count and matching caught-up flag. Ask next and the existing goal-check response consume that count without new storage or ranking logic. The existing week overview deliberately retains the wider baseline commitment count to preserve its schedule-summary semantics and approved opening screen. It is not a count of the Today shortlist; broader weekly wording and deferred-item semantics remain a follow-up item. Care is voluntary and the next answer now explicitly says so. No direct care buttons yet: 10C.3/4 will implement reviewed navigation and explicit completion. No new identity, inferred need, auto outreach, provider or persistence.
+
+Visual source locks: reconstruct exactly the two intentional Ask changes before comparing the historical blob; no change to expected hashes, other protected files or immutable screenshot comparison. New tests cover care-only, completion, competing commitments, pause/resume, revocation, unavailable data, legacy behavior, and exact previous source. No CSS/asset/layout changes; only intentional next-answer copy changes. Local Node not executed; require full CI and device acceptance.
