@@ -37,6 +37,9 @@ const baseline=Object.freeze({
   "rally-one-graphite-parity.css": "0c518266f28f0eddad3212767b2ea79946c1a5c6"
 });
 function restoreUXSource(name,source=fs.readFileSync(path.join(root,name),'utf8')){
+ const premium=require('./ux01e-changes.json')[name]||[];
+ for(const [from,to] of premium){assert.equal(source.split(from).length,2,'Exact UX1E boundary changed: '+name);source=source.replace(from,to);}
+
  assert.ok(Object.hasOwn(rules,name),'Unrecognized UX source: '+name);
  return rules[name].reduce((s,[from,to])=>{
   assert.equal(s.split(from).length,2,'Exact UX boundary changed: '+name);

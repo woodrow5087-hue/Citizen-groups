@@ -21,7 +21,7 @@ test('UX01 compact landing retains one native game entry and all original readin
  assert.equal(doc.querySelector('.ux-circuit').getAttribute('href'),'verse-circuit-playground.html');
  assert.equal(doc.querySelectorAll('details[open]').length,0);
  assert.ok(doc.querySelector('[data-go="play"]'));
- assert.ok(doc.querySelector('[data-reading="memorize"]'));
+ assert.equal(doc.querySelectorAll('[data-ux-read-panel="classic"] summary').length,1);
  assert.ok(doc.querySelector('[data-action="read"]'));
  assert.ok(doc.querySelector('[data-action="pray"]'));
  assert.ok(doc.querySelector('[data-action="rhythm-test"]'));

@@ -497,9 +497,10 @@ function read(){
      <button type="button" class="round ${s.prayed?'done':''}" aria-label="Mark prayer time" data-action="pray">${s.prayed?'✓':'↗'}</button>
    </div>`;
  if(rallyOne){
- return `<section class="read-screen-v09 ux-read">
+ return `<section class="read-screen-v09 ux-read ux-read-premium">
    <header class="ux-read-heading"><h1>READ<span>.</span></h1><p>Engage the Word. Build your faith.</p></header>
    <section class="ux-reading-feature" aria-label="Your reading">
+     <svg class="ux-scripture-art" viewBox="0 0 100 100" aria-hidden="true" focusable="false"><path d="M12 18 48 29v56L12 74zM48 29l36-11v56L48 85M20 32l18 6m-18 5 18 6m21-11 17-6m-17 17 17-6"/><path d="m76 5 2 5 5 2-5 2-2 5-2-5-5-2 5-2z"/></svg>
      <span class="ux-eyebrow">YOUR READING · SAMPLE</span>
      <h2>Read &amp; reflect.</h2><p>${e(plan.passage)} · ${e(plan.name)}</p>
      <button type="button" data-go="read" data-reading="scripture" class="ux-cta">${s.read?'Read again':'Open Scripture'} ${icon('arrow')}</button>
@@ -508,17 +509,16 @@ function read(){
      <a data-verse-circuit-entry class="ux-circuit" href="verse-circuit-playground.html" aria-label="Play Verse Circuit">
        <span class="ux-eyebrow">VERSEPLAY ARCADE</span><strong>VERSE<br>CIRCUIT</strong>
        <span>Play it. Learn it. Remember it.</span><span class="ux-cta">Play now →</span>
-       <svg class="ux-bolt" aria-hidden="true" viewBox="0 0 100 140"><path fill="currentColor" d="M65 0 5 82h39L29 140l67-88H57z"/></svg>
+       <svg class="ux-circuit-art" viewBox="0 0 120 150" aria-hidden="true" focusable="false"><path class="ux-circuit-frame" d="m60 8 49 28v66l-49 29-49-29V36z"/><path d="M24 49h30l15 24h27M24 101h28l17-28V43"/><circle cx="24" cy="49" r="6"/><circle cx="96" cy="73" r="6"/><circle cx="24" cy="101" r="6"/><path d="m54 73 6 6 12-16"/></svg>
      </a>
      <div class="ux-game-row">
-       <button type="button" class="rp-game-entry-play" data-go="play" aria-label="Play Blank Battle">Blank Battle ${icon('arrow')}</button>
-       <button type="button" data-go="read" data-reading="memorize" aria-label="Play Classic VersePlay">Classic ${icon('arrow')}</button>
+       <button type="button" class="rp-game-entry-play" data-go="play" aria-label="Play Blank Battle">${icon('check')} <span>Blank Battle</span> ${icon('arrow')}</button>
+       <details class="ux-classic" data-ux-read-panel="classic"><summary>${icon('read')} <span>Classic VersePlay</span> ${icon('arrow')}</summary>${VP.render(s,e,icon)}</details>
      </div>
    </section>
    <details class="ux-disclosure" data-ux-read-panel="scripture"><summary>Read, reflect &amp; pray</summary>
      ${readingBody}
    </details>
-   <details class="ux-disclosure" data-ux-read-panel="classic"><summary>Classic VersePlay</summary>${VP.render(s,e,icon)}</details>
    ${footer()}
  </section>`;
  }

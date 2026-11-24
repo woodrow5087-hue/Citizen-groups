@@ -235,3 +235,43 @@
 
 /* UX-01: readable footer against charcoal, not the old light surface. */
 .rally-one .premium-alive.is-read-v09 .read-screen-v09.ux-read .disclaimer{color:#c4c2bf}
+
+/* UX-1E: Read-only compact editorial hierarchy. No shared shell overrides. */
+.rally-one .premium-alive.is-read-v09 .ux-read-premium{gap:10px;padding:10px 16px 18px}
+.ux-read-premium .ux-read-heading{padding:0}
+.ux-read-premium .ux-read-heading h1{font-size:clamp(34px,10vw,42px);line-height:1;border-left-width:4px;padding-left:8px}
+.ux-read-premium .ux-read-heading p{margin-top:5px;font-size:.625rem;line-height:1.4}
+.ux-read-premium .ux-reading-feature{padding:14px;border-radius:15px}
+.ux-read-premium .ux-reading-feature h2{font-size:clamp(25px,7vw,30px);margin:5px 0;position:relative;z-index:1}
+.ux-read-premium .ux-reading-feature p{margin-bottom:8px;max-width:78%;position:relative;z-index:1}
+.ux-read-premium .ux-eyebrow{font-size:.625rem;line-height:1.4;position:relative;z-index:1}
+.ux-read-premium .ux-scripture-art{position:absolute;right:2px;top:8px;width:90px;height:90px;fill:none;stroke:#a34e38;stroke-width:1.4;opacity:.22;pointer-events:none}
+.ux-read-premium .ux-cta{min-height:44px;padding:7px 11px;font-size:.8125rem;position:relative;z-index:1}
+.ux-read-premium .ux-circuit{background:#e3002b;padding:14px;min-height:152px;border-radius:15px;gap:5px}
+.ux-read-premium .ux-circuit strong{font-size:clamp(31px,9vw,39px);line-height:.9;letter-spacing:-.045em;max-width:70%}
+.ux-read-premium .ux-circuit-art{position:absolute;right:5px;top:8px;width:110px;height:140px;fill:none;stroke:#fff3e1;stroke-width:2;pointer-events:none;opacity:.7}
+.ux-read-premium .ux-circuit-art circle{fill:#e3002b}
+.ux-read-premium .ux-circuit-frame{stroke-width:1;opacity:.45}
+.ux-read-premium .ux-circuit .ux-cta{color:#a00023}
+.ux-read-premium .ux-game-row{align-items:start;gap:8px}
+.ux-read-premium .ux-game-row button,.ux-read-premium .ux-classic>summary{display:flex;align-items:center;justify-content:space-between;gap:6px;min-width:0;min-height:48px;padding:9px 10px;border:1px solid #4b4c4e;border-radius:11px;background:#303133;color:#fff;font:inherit;font-size:.75rem;font-weight:800;text-align:left;letter-spacing:normal;box-shadow:none;cursor:pointer}
+.ux-read-premium .ux-classic>summary{list-style:none}
+.ux-read-premium .ux-classic>summary::-webkit-details-marker{display:none}
+.ux-read-premium .ux-classic>summary .icon{width:16px;height:16px;flex:none}
+.ux-read-premium .ux-classic[open]{grid-column:1/-1}
+.ux-read-premium .ux-classic[open]>summary{margin-bottom:10px}
+.ux-read-premium .ux-classic[open]>summary .icon:last-child{transform:rotate(90deg)}
+.ux-read-premium .ux-game-row button:after{display:none}
+.ux-read-premium .ux-game-row .icon:first-child{opacity:.8}
+.ux-read-premium :is(.ux-cta,.ux-circuit,.ux-game-row button,.ux-classic>summary,.ux-disclosure>summary){transition:transform .14s ease,background-color .14s ease}
+.ux-read-premium :is(.ux-cta,.ux-circuit,.ux-game-row button,.ux-classic>summary,.ux-disclosure>summary):active{transform:translateY(1px)}
+.ux-read-premium .ux-disclosure>summary{min-height:44px;padding:9px 10px;font-size:.8125rem}
+@media(max-width:350px){.rally-one .premium-alive.is-read-v09 .ux-read-premium{padding-inline:11px}.ux-read-premium .ux-circuit-art{right:0;width:95px;opacity:.55}.ux-read-premium .ux-game-row button,.ux-read-premium .ux-classic>summary{padding-inline:8px;gap:4px}}
+@media(prefers-reduced-motion:reduce){.ux-read-premium :is(.ux-cta,.ux-circuit,.ux-game-row button,.ux-classic>summary,.ux-disclosure>summary){transition:none;transform:none}}
+
+.rally-one .premium-alive.is-read-v09 .ux-read-premium .read-focus-card p,.rally-one .premium-alive.is-read-v09 .ux-read-premium .read-focus-detail strong{color:#f8f3e9}
+.rally-one .premium-alive.is-read-v09 .ux-read-premium .read-focus-detail small{color:#d3cfc9}
+.ux-read-premium .ux-game-row :is(button,summary)>span{min-width:0;overflow-wrap:anywhere}
+@media(prefers-reduced-motion:reduce){.ux-read-premium :is(.ux-cta,.ux-circuit,.ux-game-row button,.ux-classic>summary,.ux-disclosure>summary):active{transform:none}}
+
+.rally-one .premium-alive.is-read-v09 .ux-read-premium .pa-rhythm-editor :is(h3,p,label){color:#242322}
