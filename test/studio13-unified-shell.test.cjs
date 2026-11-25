@@ -29,7 +29,8 @@ test('Team moves canonical huddle content without altering confirmation and cove
 });
 test('Read surfaces real Scripture and preserves all game, reflection and prayer actions',()=>{
  const d=fixture('<section class="read-screen-v09 ux-read-premium"><header class="ux-read-heading"><h1>READ.</h1><p>Read</p></header><section class="ux-reading-feature"><span class="ux-eyebrow">Reading</span><h2>Read</h2><button data-go="read" data-reading="scripture">Open Scripture</button></section><section class="ux-arcade"><a data-verse-circuit-entry href="verse-circuit-playground.html">Circuit</a><button data-go="play">Blank Battle</button><details data-ux-read-panel="classic"><summary>Classic</summary></details></section><details class="ux-disclosure" data-ux-read-panel="scripture"><summary>Read</summary><section id="reading-scripture"><blockquote>Canonical BSB text</blockquote><button data-action="read">Read</button></section><button data-action="pray">Pray</button></details></section>'),v=d.querySelector('#view'),a=keys(v),scripture=v.querySelector('#reading-scripture');
- Studio.unify(v);assert.equal(v.querySelector('.ux-reading-feature').nextElementSibling,scripture);assert.equal(scripture.querySelector('blockquote').textContent,'Canonical BSB text');assert.equal(v.querySelector('.ux-disclosure').nextElementSibling.textContent,'VersePlay');assert.deepEqual(keys(v),a);
+ Studio.unify(v);assert.equal(v.querySelector('.ux-read-heading').nextElementSibling,scripture);
+ assert.equal(v.querySelector('.ux-reading-feature'),null);assert.equal(scripture.querySelector('blockquote').textContent,'Canonical BSB text');assert.equal(v.querySelector('.ux-arcade').previousElementSibling.textContent,'VersePlay');assert.deepEqual(keys(v),a);
 });
 
 test('Ask Rally uses the original action in the Today header once and disappears on other destinations',()=>{

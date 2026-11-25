@@ -281,21 +281,55 @@
  grid-area:1/3/3/4;width:var(--s13-icon);height:var(--s13-icon);margin:0;color:var(--s13-paper);stroke-width:var(--s13-icon-stroke);
 }
 .rally-one .premium-alive.s13-shell #view .s13-team-chat-copy .team-message-preview-text{display:inline;font:inherit;color:inherit}
-.rally-one .premium-alive.s13-shell #view .ux-reading-feature{position:relative;isolation:isolate;min-height:142px;background:var(--s13-card,#292c2f);border:1px solid var(--s13-border,#3d4042);color:var(--s13-paper,#f4eee3);border-radius:18px;padding:16px;margin:0 0 12px;box-shadow:none;overflow:hidden}
-.rally-one .premium-alive.s13-shell #view .ux-reading-feature :is(h2,p,.ux-eyebrow){color:var(--s13-paper,#f4eee3)}
-.rally-one .premium-alive.s13-shell #view .ux-reading-feature h2{font-size:1.625rem;line-height:1.06;letter-spacing:-.04em}
-.rally-one .premium-alive.s13-shell #view .ux-reading-feature .ux-scripture-art{color:#d5c5b2;stroke:#d5c5b2;opacity:.38;pointer-events:none}
-.rally-one .premium-alive.s13-shell #view .ux-reading-feature .ux-cta{background:var(--s13-paper,#f4eee3);color:var(--s13-dark-ink,#191a1b);border:0;min-height:44px;border-radius:11px}
-.rally-one .premium-alive.s13-shell #view .ux-read-premium>.read-scripture-card{background:var(--s13-paper,#f4eee3);color:var(--s13-dark-ink,#191a1b);border:0;border-radius:18px;padding:18px;margin:0 0 12px;box-shadow:none}
-.rally-one .premium-alive.s13-shell #view .ux-read-premium>.read-scripture-card :is(h2,blockquote){color:var(--s13-dark-ink,#191a1b)}
-.rally-one .premium-alive.s13-shell #view .ux-read-premium>.read-scripture-card blockquote{font-size:1.5rem;line-height:1.18;letter-spacing:-.035em;margin:12px 0;font-weight:750;overflow-wrap:anywhere}
-.rally-one .premium-alive.s13-shell #view .ux-read-premium>.read-scripture-card .read-section-label{color:#9e1630;font-size:.625rem;font-weight:800}
-.rally-one .premium-alive.s13-shell #view .ux-read-premium>.read-scripture-card .fine-note{color:#555759;font-size:.6875rem}
-.rally-one .premium-alive.s13-shell #view .ux-read-premium>.read-scripture-card .btn{display:block;width:100%;min-height:44px;background:var(--s13-dark-ink,#191a1b);color:#fff;border:0;border-radius:11px}
-.rally-one .premium-alive.s13-shell #view .ux-read-premium>.read-scripture-card .btn.chosen{background:#dce8db;color:#285938;border:1px solid #9db59e}
-.rally-one .premium-alive.s13-shell #view .ux-disclosure{background:var(--s13-card,#292c2f);border-color:var(--s13-border,#3d4042);border-radius:13px;margin:10px 0}
-.rally-one .premium-alive.s13-shell #view .ux-disclosure>summary{min-height:44px;color:var(--s13-paper,#f4eee3);padding:12px}
-.rally-one .premium-alive.s13-shell #view .ux-arcade{margin:0 0 12px}
+/* Daily Rhythm surfaces the reading before optional reflection, prayer and play. */
+.rally-one .premium-alive.s13-shell #view .ux-read-premium .ux-read-heading h1{border:0;padding:0}
+.rally-one .premium-alive.s13-shell #view .ux-read-premium .ux-read-heading p{text-transform:none;letter-spacing:normal}
+.rally-one .premium-alive.s13-shell #view .ux-read-premium .read-scripture-card{
+ background:var(--s13-paper);color:var(--s13-dark-ink);border:0;
+ padding:var(--s13-space-4);margin:0 0 var(--s13-space-3);
+}
+.rally-one .premium-alive.s13-shell #view .ux-read-premium .read-scripture-card :is(h2,blockquote){color:var(--s13-dark-ink)}
+.rally-one .premium-alive.s13-shell #view .ux-read-premium .read-scripture-card h2{margin:var(--s13-space-2) 0;font-size:1.125rem}
+.rally-one .premium-alive.s13-shell #view .ux-read-premium .read-scripture-card blockquote{
+ font-size:1.625rem;line-height:1.2;letter-spacing:-.04rem;margin:0 0 var(--s13-space-4);
+ font-weight:750;overflow-wrap:anywhere;
+}
+.rally-one .premium-alive.s13-shell #view .ux-read-premium .read-scripture-card .read-section-label{color:#9e1630;font-size:.6875rem;font-weight:800}
+.rally-one .premium-alive.s13-shell #view .ux-read-premium .read-scripture-card .fine-note{color:#555759;font-size:.75rem;line-height:1.4}
+.rally-one .premium-alive.s13-shell #view .ux-read-premium .read-scripture-card .btn{display:block;width:100%;background:var(--s13-dark-ink);color:#fff;border:0}
+.rally-one .premium-alive.s13-shell #view .ux-read-premium .read-scripture-card .btn.chosen{background:#dce8db;color:#285938;border:1px solid #9db59e}
+.rally-one .premium-alive.s13-shell #view .ux-read-premium .s13-subhead{margin:0 0 var(--s13-space-2)}
+.rally-one .premium-alive.s13-shell #view .ux-read-premium .s13-read-invitations{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--s13-space-2);margin:0 0 var(--s13-space-4)}
+.rally-one .premium-alive.s13-shell #view .ux-read-premium .s13-read-panel{min-width:0;background:var(--s13-card);border:1px solid var(--s13-border)}
+.rally-one .premium-alive.s13-shell #view .ux-read-premium .s13-read-panel[open]{grid-column:1/-1}
+.rally-one .premium-alive.s13-shell #view .ux-read-premium .s13-read-panel>summary{
+ display:flex;flex-wrap:wrap;align-items:center;gap:var(--s13-space-2);list-style:none;
+ padding:var(--s13-space-3);min-height:var(--s13-touch);cursor:pointer;color:var(--s13-ink);
+}
+.rally-one .premium-alive.s13-shell #view .ux-read-premium .s13-read-panel>summary::-webkit-details-marker{display:none}
+.rally-one .premium-alive.s13-shell #view .ux-read-premium .s13-read-panel>summary svg{width:var(--s13-icon);height:var(--s13-icon);color:var(--s13-paper);flex:none}
+.rally-one .premium-alive.s13-shell #view .ux-read-premium .s13-read-panel-copy{display:grid;gap:2px;min-width:0}
+.rally-one .premium-alive.s13-shell #view .ux-read-premium .s13-read-panel-copy strong{font-size:var(--s13-row-title)}
+.rally-one .premium-alive.s13-shell #view .ux-read-premium .s13-read-panel-copy small{font-size:var(--s13-row-detail);color:var(--s13-secondary)}
+.rally-one .premium-alive.s13-shell #view .ux-read-premium .s13-read-panel>.card{margin:0 var(--s13-space-2) var(--s13-space-2)}
+.rally-one .premium-alive.s13-shell #view .ux-read-premium .ux-arcade{margin:0 0 var(--s13-space-3)}
+.rally-one .premium-alive.s13-shell #view .ux-read-premium .ux-circuit{
+ display:grid;grid-template-columns:var(--s13-icon-box) minmax(0,1fr) var(--s13-icon);align-items:center;
+ min-height:64px;gap:var(--s13-space-3);padding:var(--s13-space-3);
+ background:#24212d;color:#f5efff;border:1px solid #514463;
+}
+.rally-one .premium-alive.s13-shell #view .ux-read-premium .s13-circuit-mark{
+ display:grid;place-items:center;min-height:var(--s13-icon-box);
+ background:#382d49;border-radius:10px;font-weight:850;color:#ead8ff;
+}
+.rally-one .premium-alive.s13-shell #view .ux-read-premium .s13-circuit-copy{display:grid;gap:2px}
+.rally-one .premium-alive.s13-shell #view .ux-read-premium .s13-circuit-copy strong{font-size:var(--s13-row-title);font-style:normal;line-height:1.3;letter-spacing:normal;max-width:none}
+.rally-one .premium-alive.s13-shell #view .ux-read-premium .s13-circuit-copy small{font-size:var(--s13-row-detail);color:#e5d9f5}
+.rally-one .premium-alive.s13-shell #view .ux-read-premium .s13-circuit-arrow svg{width:var(--s13-icon);height:var(--s13-icon);display:block}
+.rally-one .premium-alive.s13-shell #view .ux-read-premium .ux-disclosure{background:var(--s13-card);border-color:var(--s13-border);margin:0 0 var(--s13-space-3)}
+.rally-one .premium-alive.s13-shell #view .ux-read-premium .ux-disclosure>summary{color:var(--s13-paper)}
+.rally-one .premium-alive.s13-shell #view .ux-read-premium .ux-disclosure>.ux-cta{margin:0 var(--s13-space-3) var(--s13-space-3);background:var(--s13-paper);color:var(--s13-dark-ink)}
+.rally-one .premium-alive.s13-shell #view .ux-read-premium .disclaimer{color:var(--s13-secondary)}
 .rally-one .premium-alive.s13-shell #view :is(button,a,summary):focus-visible{outline:3px solid #ff6573;outline-offset:2px}
 .rally-one .premium-alive.s13-shell #view .gv2-home .gv2-widget-gather:has(.gv2-widget-cta):active,.rally-one .premium-alive.s13-shell #view .gv2-group-hero:active{transform:scale(.985)}
 @media(max-width:360px){.rally-one:not(.rp-welcome-active) .premium-alive.s13-shell .header-controls{gap:3px}.rally-one:not(.rp-welcome-active) .premium-alive.s13-shell .brand-home span{font-size:17px}.rally-one .premium-alive.s13-shell #view :is(.gv2-heading-row h1,.team-v08-hero h1,.ux-read-heading h1,.gv2-detail-heading h1){font-size:2.0625rem}}
@@ -408,8 +442,6 @@
 .rally-one .premium-alive.s13-shell #view .gv2-home .gv2-care>b{display:grid;place-items:center;width:22px;flex:none}
 .rally-one .premium-alive.s13-shell #view .gv2-home .gv2-care>b svg{width:20px;height:20px;stroke-width:1.75}
 .rally-one .premium-alive.s13-shell #view .team-screen-v08 .team-shift-date strong{font-variant-numeric:tabular-nums}
-.rally-one .premium-alive.s13-shell #view .ux-read-premium .read-scripture-card{padding:var(--s13-space-4)}
-.rally-one .premium-alive.s13-shell #view .ux-read-premium .ux-disclosure{border-radius:var(--s13-row-radius)}
 .rally-one .premium-alive.s13-shell #view .ux-read-premium .ux-disclosure>summary{display:flex;align-items:center;gap:var(--s13-space-2);min-height:var(--s13-touch);font-weight:750;font-size:var(--s13-row-title)}
 .rally-one .premium-alive.s13-shell #view .s13-component-action:focus-visible{outline:2px solid currentColor;outline-offset:3px}
 @media(max-width:360px){.rally-one .premium-alive.s13-shell{--s13-title-size:2.0625rem}}

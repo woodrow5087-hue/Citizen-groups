@@ -131,7 +131,7 @@ function render(html,{model:d,board:b,now,campus}={},doc=globalThis.document){
 // This does not create actions, intercept events, or own member state.
 const componentRoles=Object.freeze({
  's13-component-feature':'.gv2-group-hero,.gv2-widget-gather,.team-schedule-card,.s13-gather-card,.ux-reading-feature,.read-scripture-card',
- 's13-component-row':'.gv2-widget-chat,.gv2-care,.team-message-preview,.s13-assignment-detail,.ux-disclosure',
+ 's13-component-row':'.gv2-widget-chat,.gv2-care,.team-message-preview,.s13-assignment-detail,.ux-disclosure,.s13-read-panel,.ux-circuit',
  's13-component-action':'.gv2-hero-action,.gv2-widget-cta,.team-shift-actions .btn,.s13-gather-actions .btn,.ux-reading-feature .ux-cta,.read-scripture-card .btn',
  's13-component-title':'.gv2-heading h1,.team-v08-hero h1,.ux-read-heading h1,.gv2-detail-heading h1',
  's13-component-section':'.s13-subhead',
@@ -228,16 +228,51 @@ function unify(view){
  if(read){
   const header=read.querySelector('.ux-read-heading');
   if(header){header.prepend(node('span','s13-page-eyebrow','DAILY RHYTHM'));header.querySelector('h1').textContent='Make space.';header.querySelector('p').textContent='Read, reflect and pray at your own pace.';}
-  const feature=read.querySelector('.ux-reading-feature'),scripture=read.querySelector('#reading-scripture'),disclosure=read.querySelector('.ux-disclosure'),arcade=read.querySelector('.ux-arcade');
-  if(feature){
-   const label=feature.querySelector('.ux-eyebrow');if(label)label.textContent='A MOMENT WITH GOD';
-   // Keep the source's real reading path, not the studio's sample translation.
-   feature.querySelector('h2').textContent='Read & reflect.';
-   if(scripture)feature.after(scripture);
+  const feature=read.querySelector('.ux-reading-feature');
+  const scripture=read.querySelector('#reading-scripture');
+  const disclosure=read.querySelector('.ux-disclosure');
+  const arcade=read.querySelector('.ux-arcade');
+  if(scripture&&disclosure){
+   // Surface the original BSB card and let the existing render cycle restore open panels.
+   header?.after(scripture);
+   const invitations=node('div','s13-read-invitations');
+   const panels=[
+    ['reflect','Reflect','Consider a question',read.querySelector('#reading-questions')],
+    ['pray','Pray','Take a quiet moment',read.querySelector('.read-prayer-card')]
+   ];
+   for(const [id,title,description,content] of panels){
+    if(!content)continue;
+    const panel=node('details','s13-read-panel');
+    panel.dataset.uxReadPanel=id;
+    const summary=node('summary','');
+    const text=node('span','s13-read-panel-copy');
+    text.append(node('strong','',title),node('small','',description));
+    summary.append(text);
+    const glyph=content.querySelector('.icon')?.cloneNode(true);
+    if(glyph)summary.prepend(glyph);
+    panel.append(summary,content);invitations.append(panel);
+   }
+   if(invitations.childElementCount)scripture.after(node('h2','s13-subhead','Go a little deeper'),invitations);
+   const prayer=read.querySelector('[data-action="pray"]');
+   if(prayer)prayer.setAttribute('aria-pressed',String(prayer.classList.contains('done')));
+   const summary=disclosure.querySelector('summary');
+   if(summary)summary.textContent='Reading pathway';
+   const jump=feature?.querySelector('button');
+   if(jump){jump.textContent='Back to Scripture';disclosure.append(jump);}
+   feature?.remove();
   }
-  if(disclosure&&arcade){
-   const summary=disclosure.querySelector('summary');if(summary)summary.textContent='Go a little deeper · reflect & pray';
-   arcade.before(disclosure);arcade.before(node('h2','s13-subhead','VersePlay'));
+  if(arcade){
+   arcade.before(node('h2','s13-subhead','VersePlay'));
+   const entry=arcade.querySelector('.ux-circuit');
+   if(entry){
+    const title=node('span','s13-circuit-copy');
+    title.append(node('strong','','Verse Circuit'),node('small','','Practice a verse'));
+    const mark=node('span','s13-circuit-mark','V');
+    mark.setAttribute('aria-hidden','true');
+    const trailing=node('span','s13-circuit-arrow');trailing.innerHTML=arrow;
+    entry.replaceChildren(mark,title,trailing);
+   }
+   if(disclosure)arcade.after(disclosure);
   }
  }
 }

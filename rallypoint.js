@@ -623,7 +623,6 @@ if(s.view==='group'&&s.groupPane==='chat'&&todayUI.memberships.group){
   conversationAccess.markRead();
 }
 view.innerHTML=(storageWarning?`<p class="storage-notice" role="status">${e(storageWarning)}</p>`:'')+(s.view==='today'?(f09Preview?f09Today():today()):s.view==='group'?group():s.view==='team'?team():s.view==='play'?play():read());
-if(s.view==='read')view.querySelectorAll('details[data-ux-read-panel]').forEach(node=>{node.open=openReadPanels.includes(node.dataset.uxReadPanel);});
 if(rallyOne&&window.RallyCareFlow){
   // ONE source projection across Today → Groups → the existing local DM.
   // Rendering this card is read-only; no message cursor or prayer is marked.
@@ -646,6 +645,7 @@ if(rallyOne&&window.RallyCareFlow){
 }
 if(rallyOne&&((s.view==='today'&&f09Board)||(s.view==='group'&&s.groupPane==='overview')||(s.view==='team'&&s.teamPane==='schedule')))window.RallyWidgets?.apply(view);
 window.RallyStudioToday?.shell(view,icon);
+if(s.view==='read')view.querySelectorAll('details[data-ux-read-panel]').forEach(node=>{node.open=openReadPanels.includes(node.dataset.uxReadPanel);});
 if(s.view==='play')mountBlankBattle();
 view.querySelectorAll('textarea').forEach(field=>{if(drafts[field.dataset.draftKey||field.id]!==undefined)field.value=drafts[field.dataset.draftKey||field.id]});
 if(s.view==='group'&&s.groupPane==='chat'&&todayUI.memberships.group&&$('rpx-chat')){
