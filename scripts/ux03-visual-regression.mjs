@@ -7,7 +7,7 @@ import {readFile,readdir,stat,mkdir,rm,writeFile} from 'node:fs/promises';
 import {resolve,sep,extname} from 'node:path';
 import visual from '../test/helpers/ux03-visual.cjs';
 import {compareScreenshots} from '../verseplay/tests/visual-comparison.mjs';
-const approved=process.argv[2];assert.ok(approved,'Usage: node scripts/ux03-visual-regression.mjs <approved-26153ba-dist> [candidate-dist]');
+const approved=process.argv[2];assert.ok(approved,'Usage: node scripts/ux03-visual-regression.mjs <owner-approved-connect-dist> [candidate-dist]');
 const candidate=process.argv[3]||'dist',out=resolve('test-results/ux03-visual');
 const report={reference:visual.reference.source,engine:visual.reference.engine,protectedFiles:0,comparisons:[],errors:[]};
 const mime={'.html':'text/html','.js':'text/javascript','.css':'text/css','.json':'application/json','.webp':'image/webp','.svg':'image/svg+xml','.ttf':'font/ttf','.png':'image/png','.jpg':'image/jpeg'};

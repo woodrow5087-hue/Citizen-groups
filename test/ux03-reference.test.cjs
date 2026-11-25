@@ -2,7 +2,7 @@
 const {test}=require('node:test'),assert=require('node:assert/strict'),fs=require('node:fs');
 const {PNG}=require('pngjs'),visual=require('./helpers/ux03-visual.cjs');
 test('owner-approved Connect source identity and complete capture inventory stay fixed',()=>{
- assert.equal(visual.reference.source,'26153bab8660144e4bf8e50bbef6482b6e112d12');
+ assert.equal(visual.reference.source,'042ab829400437093058b5e99c9c438b0f33fe17');
  assert.equal(Object.keys(visual.reference.files).length,10);
  const standalone=visual.expectedCaptures('standalone'),embedded=visual.expectedCaptures('embedded');
  assert.equal(standalone.length,42);assert.equal(embedded.length,44);
@@ -44,4 +44,20 @@ test('native paint readiness discards a stale frame without consulting the refer
 test('a perpetually unstable native paint fails instead of accepting or relaxing pixels',async()=>{
  let calls=0;await assert.rejects(()=>visual.captureStable({screenshot:async()=>Buffer.from('frame '+(++calls)),evaluate:async()=>{}}),/did not stabilize/);
  assert.equal(calls,8);
+});
+
+test('previous approved Connect manifest and source remain reconstructable without portrait correction',()=>{
+ const crypto=require('node:crypto'),hash=bytes=>crypto.createHash('sha256').update(bytes).digest('hex');
+ const raw=fs.readFileSync('test/helpers/ux03-26153ba-reference.json');
+ assert.equal(hash(raw),'6b4d9a89a85c9f22a1e96af76629f56b136bb66dcb5120c05dab7177e061f1f7');
+ const previous=JSON.parse(raw),changes=require('./helpers/ux03-changes.json');
+ assert.equal(previous.source,'26153bab8660144e4bf8e50bbef6482b6e112d12');
+ for(const [file,expected] of Object.entries(previous.files)){
+  let source=fs.readFileSync(file);
+  if(file==='connect-usability.css'){
+   const [from,to]=changes[file][0],text=source.toString();
+   assert.equal(text.split(from).length,2);source=Buffer.from(text.replace(from,to));
+  }
+  assert.equal(hash(source),expected,'Previous approved source changed: '+file);
+ }
 });

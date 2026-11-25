@@ -95,3 +95,15 @@ background fills behind rail/list images. Portrait assets, dimensions, circular
 borders, layout, typography, colors, state and runtime JavaScript remain unchanged.
 `26153ba` stays the immutable historical reference; no replacement is pinned here.
 The existing reference hash guard must remain blocked until explicit source approval.
+
+## Owner revised reference approval — 2026-11-25
+
+The owner explicitly approved corrected source `042ab829400437093058b5e99c9c438b0f33fe17`
+as the revised Connect-only visual reference. This supersedes the pending-reference
+status above. The active manifest and CI archive now pin that immutable source; only
+the approved portrait stylesheet hash changes. The original 26153ba manifest is
+retained byte-for-byte, with a regression test proving reconstruction of all ten
+previous source owners through the exact portrait inverse. No runtime, screenshot
+tolerance, inventory, assertion or historical comparison is removed or relaxed.
+Physical iPhone Safari/VoiceOver, final visual acceptance and merge authorization
+remain outstanding. Automated acceptance results follow after validation.

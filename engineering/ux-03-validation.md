@@ -336,3 +336,32 @@ reference outputs. This proves observed repeatability, not CI acceptance against
 new reference. The old manifest remains pinned to 26153ba and rejects this candidate
 exactly as intended (869/870 unit assertions pass, one reference-owner test blocked).
 No physical, final visual or merge acceptance is inferred.
+
+## Revised reference establishment — 2026-11-25
+
+The owner explicitly approved corrected source `042ab829400437093058b5e99c9c438b0f33fe17`
+as the revised Connect-only visual reference. This supersedes the pending-reference
+status above. The active manifest and CI archive now pin that immutable source; only
+the approved portrait stylesheet hash changes. The original 26153ba manifest is
+retained byte-for-byte, with a regression test proving reconstruction of all ten
+previous source owners through the exact portrait inverse. No runtime, screenshot
+tolerance, inventory, assertion or historical comparison is removed or relaxed.
+Physical iPhone Safari/VoiceOver, final visual acceptance and merge authorization
+remain outstanding. Automated acceptance results follow after validation.
+
+Reference-establishment local checks: 871/871 units pass (including the new previous-
+reference preservation check), and deploy-preview build passes. All 186 output files
+are byte-identical to the clean approved 042ab82 build. Therefore the immediately
+preceding comprehensive browser/mobile/persistence/synthetic, 172 VersePlay unit,
+433 VersePlay browser / 49-pair and 75-file / 64-pair historical results remain
+applicable without rerunning identical functional work locally. The strict revised
+Connect comparison is executed separately, and mandatory CI runs the complete
+configured workflow at the final head; no CI step is skipped by this decision.
+
+Strict revised-source local gate passes: WebKit 27.2, ten protected source files,
+86 comparison pairs, zero raw pixel differences and no errors. Existing standalone
+and embedded assertions pass on both approved and current builds, including all
+four widths, short height and doubled text. This establishes the owner-authorized
+reference without changing runtime bytes. Exact-head CI/deployment provenance and
+physical-acceptance URL are recorded in PR147; the eight-category device checklist
+above remains outstanding.
