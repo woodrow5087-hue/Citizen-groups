@@ -244,3 +244,33 @@
 .rally-one:not(.rp-welcome-active) .premium-alive.s13-shell.s13-ask-header .brand-home span{font-size:clamp(14px,4.2vw,20px);letter-spacing:-.07em}
 .rally-one:not(.rp-welcome-active) .premium-alive.s13-shell.s13-ask-header .brand-home img{width:20px;height:22px}
 @media(max-width:360px){.rally-one:not(.rp-welcome-active) .premium-alive.s13-shell.s13-ask-header .header{padding-inline:9px;gap:4px}.rally-one:not(.rp-welcome-active) .premium-alive.s13-shell.s13-ask-header .header-controls{gap:2px}.rally-one:not(.rp-welcome-active) .premium-alive.s13-shell.s13-ask-header .brand-home span{font-size:14px}.rally-one:not(.rp-welcome-active) .premium-alive.s13-shell.s13-ask-header .brand-home img{width:16px;height:18px}}
+
+/* Studio 13 All Set polish: preserve the reference composition and schedule. */
+.rally-one:not(.rp-welcome-active) .premium-alive.s13-shell .header{height:60px;min-height:60px;padding-block:8px}
+.rally-one:not(.rp-welcome-active) .premium-alive.s13-shell .header-controls{gap:7px}
+.rally-one:not(.rp-welcome-active) .premium-alive.s13-shell.s13-ask-header .header-controls{gap:7px}
+.rally-one:not(.rp-welcome-active) .premium-alive.s13-shell .header-controls [data-action="notifications"][hidden]{display:none!important}
+.rally-one:not(.rp-welcome-active) .premium-alive.s13-shell .header-controls #connect-entry{position:relative;overflow:visible}
+.rally-one:not(.rp-welcome-active) .premium-alive.s13-shell #connect-entry #activity-dot{position:absolute;inset:2px 2px auto auto;width:10px;height:10px;border:2px solid #181a1b;border-radius:50%;background:#e3002b;pointer-events:none}
+.rally-one:not(.rp-welcome-active) .premium-alive.s13-shell #connect-entry #activity-dot[hidden]{display:none!important}
+.rally-one:not(.rp-welcome-active) .premium-alive.s13-shell.is-f09-board #view{padding-top:6px;padding-bottom:12px;scroll-padding-bottom:12px}
+.rally-one .premium-alive.is-f09-board #view .s13-today .f09-greeting{margin-bottom:12px}
+.rally-one .premium-alive.is-f09-board #view .s13-today .s13-settled .s13-image-placeholder.is-wide{height:103px}
+.rally-one .premium-alive.is-f09-board #view .s13-today .s13-settled .s13-image-placeholder img{object-position:center 78%}
+.rally-one .premium-alive.is-f09-board #view .s13-today .s13-settled-copy{position:relative;padding:11px 14px}
+.rally-one .premium-alive.is-f09-board #view .s13-today .s13-settled-copy h2{font-size:1.375rem;line-height:1.12;margin:0 0 3px}
+.rally-one .premium-alive.is-f09-board #view .s13-today .s13-settled-copy>p{font-size:.8125rem;line-height:1.35}
+.rally-one .premium-alive.is-f09-board #view .s13-today .s13-settled-copy:has(>.s13-info):not(:has(>.s13-info[open])){padding-right:52px}
+.rally-one .premium-alive.is-f09-board #view .s13-today .s13-settled-copy>.s13-info:not([open]){position:absolute;top:5px;right:4px}
+.rally-one .premium-alive.is-f09-board #view .s13-today .s13-section-head{margin-top:12px;margin-bottom:7px}
+.rally-one .premium-alive.is-f09-board #view .s13-today .s13-optional{margin-top:8px}
+.rally-one .premium-alive.is-f09-board #view .s13-today .s13-optional>.s13-utility{min-height:52px;padding:8px 12px}
+.rally-one .premium-alive.is-f09-board #view .s13-today .f09b-footer{padding-top:8px}
+/* The Connect overlay keeps its original back button and gains an Activity
+   shortcut in the same top row, not a new navigation layer. */
+.rally-one .connect-overlay.s13-connect-combined>button{max-width:calc(100% - 116px)}
+.rally-one .connect-overlay.s13-connect-combined>.s13-connect-tools{position:absolute;right:8px;top:0;display:flex;align-items:center;height:44px}
+.rally-one .connect-overlay.s13-connect-combined .s13-activity-trigger{display:flex;align-items:center;gap:6px;min-height:44px;padding:0 10px;background:transparent;border:0;border-radius:12px;color:#f4eee3;font:inherit;font-weight:750;font-size:.75rem}
+.rally-one .connect-overlay.s13-connect-combined .s13-activity-trigger svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:1.8}
+.rally-one .connect-overlay.s13-connect-combined .s13-activity-trigger:focus-visible{outline:3px solid #ff8996;outline-offset:-3px}
+@media(max-width:360px){.rally-one:not(.rp-welcome-active) .premium-alive.s13-shell.s13-ask-header .header{padding-inline:15px}.rally-one:not(.rp-welcome-active) .premium-alive.s13-shell.s13-ask-header .brand-home span{font-size:17px}.rally-one:not(.rp-welcome-active) .premium-alive.s13-shell.s13-ask-header .brand-home img{width:20px;height:22px}}
