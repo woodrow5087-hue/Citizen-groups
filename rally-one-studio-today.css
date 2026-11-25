@@ -1,0 +1,113 @@
+/* Studio 13 Stage 1. Scoped presentation primitives; no global tokens or unrelated surfaces. */
+.s13-connect-icon{display:none}
+.rally-one .premium-alive.is-f09-board #view .s13-today{color:#f6f0e7;background:#181a1b;padding:4px 0 18px;--s13-cream:#f4eee3;--s13-red:#c91c37;--s13-panel:#282b2d;--s13-line:#383a3b}
+.rally-one .premium-alive.is-f09-board #view .s13-today .f09-greeting{display:block;padding:0;margin:0 0 16px;border:0;background:none}
+.rally-one .premium-alive.is-f09-board #view .s13-today .s13-eyebrow{display:block;font-size:.625rem;line-height:1.5;letter-spacing:.078rem;font-weight:800;color:#b8b8b2;text-transform:uppercase}
+.rally-one .premium-alive.is-f09-board #view .s13-today .f09-greeting h1{margin:6px 0 7px;font-size:2.3125rem;line-height:1.02;letter-spacing:-.09rem;font-weight:850;color:#f6f0e7;white-space:normal;overflow-wrap:anywhere}
+.rally-one .premium-alive.is-f09-board #view .s13-today .s13-summary{display:flex;align-items:center;gap:7px;margin:0;color:#b4b4ae;font-size:.875rem;line-height:1.45}
+.rally-one .premium-alive.is-f09-board #view .s13-today .s13-summary::before{content:"";width:7px;height:7px;flex:none;border-radius:50%;background:#ff6573}
+.rally-one .premium-alive.is-f09-board #view .s13-today .s13-summary.is-complete::before{background:#9bc8a6}
+.rally-one .premium-alive.is-f09-board #view .s13-today .f09b-priorities{display:block;gap:0;margin:0;padding:0;background:none;border:0}
+.rally-one .premium-alive.is-f09-board #view .s13-today .f09b-hero{display:block;position:relative;min-height:0;height:auto;padding:14px;background:var(--s13-cream);color:#191a1b;border:0;border-radius:19px;box-shadow:none;overflow:hidden;margin:0}
+.rally-one .premium-alive.is-f09-board #view .s13-today .f09b-hero::before{content:none}
+.rally-one .premium-alive.is-f09-board #view .s13-today .f09b-hero::after{content:none}
+.rally-one .premium-alive.is-f09-board #view .s13-today .s13-priority-meta{display:flex;align-items:baseline;justify-content:space-between;gap:8px;font-size:.75rem;font-weight:750;line-height:1.4;margin-bottom:10px}
+.rally-one .premium-alive.is-f09-board #view .s13-today .s13-kicker{color:#ad0025;font-size:.625rem;letter-spacing:.078rem;text-transform:uppercase}
+.rally-one .premium-alive.is-f09-board #view .s13-today .s13-priority-line{display:flex;flex-wrap:wrap;align-items:center;gap:13px;margin-bottom:10px}
+.rally-one .premium-alive.is-f09-board #view .s13-today .s13-priority-copy{flex:1;min-width:min(100%,10rem)}
+.rally-one .premium-alive.is-f09-board #view .s13-today #f09b-hero-title{font-size:1.5rem;font-weight:850;letter-spacing:-.055rem;line-height:1.08;margin:0 0 5px;color:inherit;overflow-wrap:anywhere}
+.rally-one .premium-alive.is-f09-board #view .s13-today .f09b-hero p{margin:0 0 9px;font-size:.8125rem;line-height:1.35;color:#555759}
+.rally-one .premium-alive.is-f09-board #view .s13-today .f09b-faces{display:flex;gap:0;margin:9px 0 0;padding:0;min-height:26px}
+.rally-one .premium-alive.is-f09-board #view .s13-today .f09b-faces>*{width:26px;height:26px;min-width:26px;border:2px solid var(--s13-cream);border-radius:50%;margin:0 0 0 -3px;background-color:#d3c9bc;color:#191a1b;font-size:.625rem}
+.rally-one .premium-alive.is-f09-board #view .s13-today .s13-image-placeholder{width:86px;height:85px;flex:none;border-radius:11px;display:grid;place-items:center;background:#3c4041;color:#c3c6c1;overflow:hidden}
+.rally-one .premium-alive.is-f09-board #view .s13-today .s13-image-placeholder svg{width:36px;height:36px}
+.rally-one .premium-alive.is-f09-board #view .s13-today .f09b-primary{position:static;display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:46px;width:100%;max-width:none;margin:0;padding:11px 12px;border-radius:11px;background:var(--s13-red);color:#fff;border:0;font-size:.875rem;line-height:1.4;font-weight:750;box-shadow:none;white-space:normal;text-align:left}
+.rally-one .premium-alive.is-f09-board #view .s13-today .s13-arrow{display:inline-flex;flex:none;align-items:center;justify-content:center}
+.rally-one .premium-alive.is-f09-board #view .s13-today .s13-arrow svg{width:20px;height:20px;stroke:currentColor;fill:none}
+.rally-one .premium-alive.is-f09-board #view .s13-today .s13-section-head{display:flex;justify-content:space-between;align-items:baseline;gap:8px;margin:15px 0 8px}
+.rally-one .premium-alive.is-f09-board #view .s13-today .s13-section-head h2{font-size:1.125rem;line-height:1.3;letter-spacing:-.031rem;font-weight:800;margin:0;color:#f6f0e7}
+.rally-one .premium-alive.is-f09-board #view .s13-today .s13-section-head small{font-size:.6875rem;line-height:1.4;color:#b4b4ae;text-align:right}
+.rally-one .premium-alive.is-f09-board #view .s13-today .f09b-row-stack{display:grid;gap:8px;margin:0;padding:0;border:0;background:none}
+.rally-one .premium-alive.is-f09-board #view .s13-today .f09b-row-stack:empty{display:none}
+.rally-one .premium-alive.is-f09-board #view .s13-today .f09b-row{display:flex;align-items:center;gap:10px;min-height:64px;padding:10px 12px;border:1px solid #35383a;border-radius:14px;background:#272a2c;margin:0}
+.rally-one .premium-alive.is-f09-board #view .s13-today .f09b-row-icon{width:34px;height:36px;flex:none;background:#3d3437;border:0;border-radius:9px;color:#ff8996}
+.rally-one .premium-alive.is-f09-board #view .s13-today .f09b-row-icon svg{width:19px;height:19px}
+.rally-one .premium-alive.is-f09-board #view .s13-today .f09b-row-copy{flex:1;min-width:0}
+.rally-one .premium-alive.is-f09-board #view .s13-today .f09b-row-copy strong{font-size:.875rem;line-height:1.25;color:#f6f0e7}
+.rally-one .premium-alive.is-f09-board #view .s13-today .f09b-row-copy small{font-size:.75rem;line-height:1.4;color:#c0c2bf;margin-top:4px;white-space:normal}
+.rally-one .premium-alive.is-f09-board #view .s13-today .f09b-row .f09b-row-cta{display:flex;align-items:center;justify-content:center;min-height:44px;min-width:44px;max-width:40%;padding:8px 10px;border:0;border-radius:9px;background:var(--s13-cream);color:#181a1b;font-size:.75rem;font-weight:750;line-height:1.3;white-space:normal;position:static;margin:0}
+.rally-one .premium-alive.is-f09-board #view .s13-today .f09b-row-cta span{display:none}
+.rally-one .premium-alive.is-f09-board #view .s13-today .s13-agenda{background:#272a2c;border:1px solid #35383a;border-radius:14px;padding:0 12px}
+.rally-one .premium-alive.is-f09-board #view .s13-today .f09b-agenda-row{display:block;min-height:0;padding:0;margin:0;border:0;background:none}
+.rally-one .premium-alive.is-f09-board #view .s13-today .f09b-agenda-row+.f09b-agenda-row{border-top:1px solid #424548}
+.rally-one .premium-alive.is-f09-board #view .s13-today .s13-schedule-link{display:flex;align-items:center;gap:10px;width:100%;min-height:59px;padding:9px 0;background:none;border:0;color:inherit;text-align:left}
+.rally-one .premium-alive.is-f09-board #view .s13-today .s13-date{width:auto;min-width:34px;max-width:25%;flex:none;border-right:1px solid #484b4c;padding-right:8px;text-align:center}
+.rally-one .premium-alive.is-f09-board #view .s13-today .s13-date small{display:block;font-size:.625rem;line-height:1.3;text-transform:uppercase;font-weight:800;color:#c4c5c0}
+.rally-one .premium-alive.is-f09-board #view .s13-today .s13-date b{display:block;font-size:1.5rem;line-height:1;letter-spacing:-.03rem}
+.rally-one .premium-alive.is-f09-board #view .s13-today .f09b-agenda-copy{flex:1;min-width:0}
+.rally-one .premium-alive.is-f09-board #view .s13-today .f09b-agenda-copy strong{display:block;font-size:.875rem;line-height:1.3;color:#f6f0e7}
+.rally-one .premium-alive.is-f09-board #view .s13-today .f09b-agenda-copy small{display:block;font-size:.75rem;line-height:1.4;color:#c0c2bf;margin-top:4px;white-space:normal}
+.rally-one .premium-alive.is-f09-board #view .s13-today .f09b-status::before{content:none}
+.rally-one .premium-alive.is-f09-board #view .s13-today .f09b-agenda-row .f09b-status{background:none;border:0;padding:0;color:#ff9aa3;font-size:.6875rem;line-height:1.4;font-weight:750;max-width:82px;text-align:right;flex:none;box-shadow:none;min-height:0;min-width:0;border-radius:0;display:block}
+.rally-one .premium-alive.is-f09-board #view .s13-today .f09b-agenda-row .f09b-status.complete{color:#acd5ac}
+.rally-one .premium-alive.is-f09-board #view .s13-today .f09b-agenda-row .f09b-status.neutral{color:#c0c2bf}
+.rally-one .premium-alive.is-f09-board #view .s13-today .s13-utility{display:flex;align-items:center;gap:12px;min-height:60px;width:100%;border:1px solid var(--s13-line);background:var(--s13-panel);color:#f6f0e7;padding:10px 12px;border-radius:14px;margin:10px 0 0;text-align:left}
+.rally-one .premium-alive.is-f09-board #view .s13-today .s13-utility-icon{width:36px;height:36px;flex:none;border-radius:9px;display:grid;place-items:center;background:#383b3d;color:#f5e6ce}
+.rally-one .premium-alive.is-f09-board #view .s13-today .s13-utility-icon svg{width:22px;height:22px}
+.rally-one .premium-alive.is-f09-board #view .s13-today .s13-utility-copy{flex:1;min-width:0}
+.rally-one .premium-alive.is-f09-board #view .s13-today .s13-utility strong{display:block;font-size:.875rem;line-height:1.3;font-weight:750}
+.rally-one .premium-alive.is-f09-board #view .s13-today .s13-utility small{display:block;font-size:.75rem;line-height:1.4;color:#c1c2bf;margin-top:3px}
+.rally-one .premium-alive.is-f09-board #view .s13-today .f09b-hero.s13-settled{padding:0;background:#272a2c;color:#f6f0e7;border:1px solid #3d4041;border-radius:17px}
+.rally-one .premium-alive.is-f09-board #view .s13-today .s13-image-placeholder.is-wide{width:100%;height:148px;border-radius:0;background:#343839;color:#a4aba8}
+.rally-one .premium-alive.is-f09-board #view .s13-today .s13-image-placeholder.is-wide svg{width:55px;height:55px}
+.rally-one .premium-alive.is-f09-board #view .s13-today .s13-settled-copy{padding:14px 16px}
+.rally-one .premium-alive.is-f09-board #view .s13-today .s13-settled #f09b-hero-title{font-size:1.4375rem;margin:0 0 4px;letter-spacing:-.04rem}
+.rally-one .premium-alive.is-f09-board #view .s13-today .s13-settled p{font-size:.8125rem;color:#c7c8c4;line-height:1.4;margin:0}
+.rally-one .premium-alive.is-f09-board #view .s13-today .f10-entry{margin:16px 0 0;min-height:65px;padding:12px;border:1px solid #383a3b;border-radius:14px;background:#282b2d;box-shadow:none}
+.rally-one .premium-alive.is-f09-board #view .s13-today .f10-entry-copy strong{font-size:.875rem}
+.rally-one .premium-alive.is-f09-board #view .s13-today .f10-entry-copy small{font-size:.75rem;line-height:1.4}
+.rally-one .premium-alive.is-f09-board #view .s13-today .f10-entry-button{min-height:44px;min-width:44px;font-size:.8125rem}
+.rally-one .premium-alive.is-f09-board #view .s13-today .gv2-today-people{margin:16px 0 0;padding:0;border:0;background:none}
+.rally-one .premium-alive.is-f09-board #view .s13-today .gv2-today-heading{padding:0;margin:0 0 8px}
+.rally-one .premium-alive.is-f09-board #view .s13-today .gv2-today-heading h2{font-size:1.125rem;line-height:1.3;letter-spacing:-.03rem}
+.rally-one .premium-alive.is-f09-board #view .s13-today .gv2-today-heading h2 span{display:none}
+.rally-one .premium-alive.is-f09-board #view .s13-today .gv2-today-people .gv2-rail{gap:12px;padding:4px 0 10px}
+.rally-one .premium-alive.is-f09-board #view .s13-today .gv2-today-people .gv2-ring{width:48px;height:48px}
+.rally-one .premium-alive.is-f09-board #view .s13-today .gv2-today-people .gv2-rail-button{min-width:48px}
+.rally-one .premium-alive.is-f09-board #view .s13-today .gv2-today-note{font-size:.6875rem}
+.rally-one .premium-alive.is-f09-board #view .s13-today .s13-community-link{min-height:44px;display:flex;justify-content:space-between;align-items:center;padding:12px;margin:10px 0 0;background:#282b2d;border:1px solid #383a3b;border-radius:12px;color:#f6f0e7;font-size:.8125rem;box-shadow:none}
+.rally-one .premium-alive.is-f09-board #view .s13-today .s13-community-link::before{content:none}
+.rally-one .premium-alive.is-f09-board #view .s13-today .s13-community-link::after{content:none}
+.rally-one .premium-alive.is-f09-board #view .s13-today .s13-context{margin-top:12px}
+.rally-one .premium-alive.is-f09-board #view .s13-today .f09b-explain{position:static;display:block;margin:0;border:1px solid #383a3b;background:#282b2d;border-radius:12px;color:#d0d0ca;padding:0}
+.rally-one .premium-alive.is-f09-board #view .s13-today .f09b-explain summary{min-height:44px;display:flex;align-items:center;padding:10px 12px;font-size:.8125rem}
+.rally-one .premium-alive.is-f09-board #view .s13-today .f09b-explain p{padding:0 12px 12px;margin:0;font-size:.8125rem;color:#d0d0ca;line-height:1.5}
+.rally-one .premium-alive.is-f09-board #view .s13-today .s13-context .f09b-row-stack{margin-top:10px}
+.rally-one .premium-alive.is-f09-board #view .s13-today .f09b-footer{padding:16px 0 0;font-size:.5625rem;color:#b4b4ae;border:0}
+.rally-one .premium-alive.is-f09-board #view .s13-today button:focus-visible{outline:3px solid #e3002b;outline-offset:3px}
+@media(max-width:360px){.rally-one .premium-alive.is-f09-board #view .s13-today .f09-greeting h1{font-size:2.0625rem}.rally-one .premium-alive.is-f09-board #view .s13-today #f09b-hero-title{font-size:1.4375rem}.rally-one .premium-alive.is-f09-board #view .s13-today .s13-image-placeholder{width:64px;height:76px}.rally-one .premium-alive.is-f09-board #view .s13-today .s13-image-placeholder.is-wide{width:100%;height:148px}.rally-one .premium-alive.is-f09-board #view .s13-today .s13-priority-meta{font-size:.6875rem}}
+@media(prefers-reduced-motion:no-preference){.rally-one .premium-alive.is-f09-board #view .s13-today :is(.f09b-primary,.f09b-row-cta,.s13-utility,.s13-schedule-link){transition:transform .14s ease,background-color .18s ease}.rally-one .premium-alive.is-f09-board #view .s13-today :is(.f09b-primary,.f09b-row-cta,.s13-utility,.s13-schedule-link):active{transform:scale(.985)}}
+@media(prefers-reduced-motion:reduce){.rally-one .premium-alive.is-f09-board #view .s13-today :is(button,.f09b-hero){transition:none;animation:none;transform:none}}
+
+/* Necessary Today-only shell adaptation; other routes and welcome retain canonical chrome. */
+.rally-one:not(.rp-welcome-active) .premium-alive.is-f09-board.s13-shell{background:#181a1b}
+.rally-one:not(.rp-welcome-active) .premium-alive.is-f09-board.s13-shell #view{background:#181a1b;padding:10px 20px 24px;scroll-padding-bottom:24px}
+.rally-one:not(.rp-welcome-active) .premium-alive.is-f09-board.s13-shell .header{height:68px;min-height:68px;padding:13px 20px 10px;gap:6px;background:#181a1b;border:0;box-shadow:none}
+.rally-one:not(.rp-welcome-active) .premium-alive.is-f09-board.s13-shell .brand-home{gap:6px;min-height:44px;padding:0}
+.rally-one:not(.rp-welcome-active) .premium-alive.is-f09-board.s13-shell .brand-home img{width:24px;height:25px}
+.rally-one:not(.rp-welcome-active) .premium-alive.is-f09-board.s13-shell .brand-home span{font-size:20px;letter-spacing:-1.1px;line-height:1;font-weight:900;white-space:nowrap}
+.rally-one:not(.rp-welcome-active) .premium-alive.is-f09-board.s13-shell .header-controls{gap:8px}
+.rally-one:not(.rp-welcome-active) .premium-alive.is-f09-board.s13-shell .header-button{width:44px;height:44px;min-width:44px;min-height:44px;border:1px solid #3b3e40;background:#252729}
+.rally-one:not(.rp-welcome-active) .premium-alive.is-f09-board.s13-shell .profile-avatar{width:44px;height:44px;min-width:44px;background:#eee4d5;color:#222;border:0}
+.rally-one:not(.rp-welcome-active) .premium-alive.is-f09-board.s13-shell #connect-entry{position:absolute;top:13px;right:124px;width:44px;height:44px;min-height:44px;min-width:44px;border:1px solid #3b3e40;border-radius:50%;display:grid;place-items:center;padding:0;margin:0;background:#252729;color:#f6f0e7;z-index:6}
+.rally-one:not(.rp-welcome-active) .premium-alive.is-f09-board.s13-shell #connect-entry>strong{display:none}
+.rally-one:not(.rp-welcome-active) .premium-alive.is-f09-board.s13-shell #connect-entry>span:not(.s13-connect-icon){display:none}
+.rally-one:not(.rp-welcome-active) .premium-alive.is-f09-board.s13-shell #connect-entry .s13-connect-icon{display:grid;place-items:center}
+.rally-one:not(.rp-welcome-active) .premium-alive.is-f09-board.s13-shell #connect-entry svg{width:22px;height:22px;stroke:#f6f0e7;fill:none}
+.rally-one:not(.rp-welcome-active) .premium-alive.is-f09-board.s13-shell #nav{position:relative;left:auto;right:auto;bottom:auto;flex-shrink:0;width:100%;margin:0;border-radius:0;border:0;border-top:1px solid #3b3d3e;background:#181a1b;box-shadow:none;padding:6px 12px max(7px,env(safe-area-inset-bottom));gap:4px;min-height:66px}
+.rally-one:not(.rp-welcome-active) .premium-alive.is-f09-board.s13-shell #nav button{display:flex;flex-direction:column;gap:3px;align-items:center;justify-content:center;min-height:53px;border-radius:0;background:none;color:#b8b9b7;padding:3px 0;box-shadow:none}
+.rally-one:not(.rp-welcome-active) .premium-alive.is-f09-board.s13-shell #nav button.active{color:#f6f0e7;background:none}
+.rally-one:not(.rp-welcome-active) .premium-alive.is-f09-board.s13-shell #nav button svg{width:42px;height:30px;padding:5px 10px;border-radius:10px;background:none;color:inherit}
+.rally-one:not(.rp-welcome-active) .premium-alive.is-f09-board.s13-shell #nav button.active svg{background:#f4eee3;color:#17191b}
+.rally-one:not(.rp-welcome-active) .premium-alive.is-f09-board.s13-shell #nav button small{font-size:.6875rem;line-height:1.4;font-weight:650}
+@media(max-width:360px){.rally-one:not(.rp-welcome-active) .premium-alive.is-f09-board.s13-shell #view{padding-left:15px;padding-right:15px}.rally-one:not(.rp-welcome-active) .premium-alive.is-f09-board.s13-shell .header{padding-left:15px;padding-right:15px}.rally-one:not(.rp-welcome-active) .premium-alive.is-f09-board.s13-shell #connect-entry{right:119px}.rally-one:not(.rp-welcome-active) .premium-alive.is-f09-board.s13-shell .brand-home span{font-size:18px}}
