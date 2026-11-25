@@ -17,10 +17,10 @@ test('Studio shared shell moves the original Connect button, retains profile/Act
  v.innerHTML='<section class="rp-play-screen"></section>';d.querySelector('.phone-inner').classList.add('is-play-v08');Studio.shell(v,()=>'<svg></svg>');
  assert.equal(connect.parentElement.className.includes('phone-inner'),true);assert.equal(d.querySelector('.phone-inner').classList.contains('s13-shell'),false);assert.equal(d.querySelector('[data-action=notifications]').hidden,false);assert.equal(d.querySelector('#activity-dot').parentElement,d.querySelector('[data-action=notifications]'));assert.deepEqual(keys(d),actions);
 });
-test('Groups uses the deployed community photo and moves the existing shortcuts and people rail intact',()=>{
+test('Groups uses the Citizen small-group photo and moves the existing shortcuts and people rail intact',()=>{
  const d=fixture('<section class="group-screen-v07 gv2-home"><div class="gv2-heading"><div class="gv2-heading-row"><h1>Your people</h1><small>Wednesday Group</small></div></div><nav class="gv2-rail-wrap"><button data-action="gv2-profile" data-person="demo">Person</button></nav><button class="gv2-group-hero" data-action="pane" data-area="group" data-value="people"><span class="gv2-hero-brand">Your group</span><strong>Wednesday Group</strong></button><div class="gv2-widgets"><button class="gv2-widget-chat" data-go="group" data-pane="chat"><strong>Conversation</strong></button><button class="gv2-widget-gather" data-action="pane" data-area="group" data-value="gather"><strong>This week</strong></button></div><button class="gv2-care" data-action="pane" data-area="group" data-value="prayer">Care</button></section>'),v=d.querySelector('#view'),a=keys(v);
  const rail=v.querySelector('.gv2-rail-wrap');Studio.unify(v);
- assert.equal(v.querySelector('.s13-group-cover img').getAttribute('src'),'assets/rally-one/community.webp');assert.equal(v.querySelector('.gv2-widgets').firstElementChild.className,'gv2-widget-gather');
+ assert.equal(v.querySelector('.s13-group-cover img').getAttribute('src'),'assets/rally-one/citizen-group-circle.jpg');assert.equal(v.querySelector('.gv2-widgets').firstElementChild.className,'gv2-widget-gather');
  assert.equal(v.querySelector('.gv2-rail-wrap'),rail);assert.deepEqual(keys(v),a);
 });
 test('Team moves canonical huddle content without altering confirmation and coverage commands',()=>{

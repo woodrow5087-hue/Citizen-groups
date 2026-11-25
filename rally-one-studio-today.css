@@ -162,7 +162,7 @@
 }
 .rally-one .premium-alive.s13-shell #view .gv2-group-hero::before,.rally-one .premium-alive.s13-shell #view .gv2-group-hero::after{content:none}
 .rally-one .premium-alive.s13-shell #view .s13-group-cover{display:block;aspect-ratio:3 / 1;overflow:hidden}
-.rally-one .premium-alive.s13-shell #view .s13-group-cover img{display:block;width:100%;height:100%;object-fit:cover;object-position:50% 46%}
+.rally-one .premium-alive.s13-shell #view .s13-group-cover img{display:block;width:100%;height:100%;object-fit:cover;object-position:50% 48%}
 .rally-one .premium-alive.s13-shell #view .s13-group-caption{
  display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:0 var(--s13-space-2);
  padding:var(--s13-space-2) var(--s13-space-3);
@@ -457,4 +457,25 @@
   from{opacity:.65;transform:translateY(4px)}
   to{opacity:1;transform:translateY(0)}
  }
+}
+
+.rally-one .premium-alive.s13-shell #view .s13-team-role{
+ display:grid;grid-template-columns:minmax(82px,32%) minmax(0,1fr);
+ overflow:hidden;margin:0 0 var(--s13-space-2);border:1px solid var(--s13-border);
+ border-radius:var(--s13-row-radius);background:var(--s13-card);color:var(--s13-ink);
+}
+.rally-one .premium-alive.s13-shell #view .s13-team-role-photo{overflow:hidden;min-height:82px}
+.rally-one .premium-alive.s13-shell #view .s13-team-role-photo img{
+ display:block;width:100%;height:100%;object-fit:cover;object-position:52% 51%;transform:scale(1.1);
+}
+.rally-one .premium-alive.s13-shell #view .s13-team-role figcaption{
+ display:grid;align-content:center;gap:3px;min-width:0;padding:var(--s13-space-3);overflow-wrap:anywhere;
+}
+.rally-one .premium-alive.s13-shell #view .s13-team-role strong{font-size:var(--s13-row-title)}
+.rally-one .premium-alive.s13-shell #view .s13-team-role span{font-size:var(--s13-row-detail)}
+.rally-one .premium-alive.s13-shell #view .s13-team-role small{font-size:var(--s13-row-detail);color:var(--s13-secondary)}
+
+.rally-one .premium-alive.s13-shell #view .team-screen-v08 .s13-team-chat-copy,
+.rally-one .premium-alive.s13-shell #view .team-screen-v08 .s13-team-chat-copy .team-message-preview-text{
+ min-width:0;white-space:normal;overflow-wrap:anywhere;
 }

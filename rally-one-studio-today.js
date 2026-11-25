@@ -158,7 +158,9 @@ function unify(view){
   if(header&&label){label.textContent='Life together.';header.after(label);}
   const rail=group.querySelector('.gv2-rail-wrap'),hero=group.querySelector('.gv2-group-hero'),widgets=group.querySelector('.gv2-widgets');
   if(hero){
-   const art=node('span','s13-group-cover');const img=node('img','');img.src='assets/rally-one/community.webp';img.alt='';img.decoding='async';art.append(img);hero.prepend(art);
+   const art=node('span','s13-group-cover');const img=node('img','');img.src='assets/rally-one/citizen-group-circle.jpg';img.alt='';img.decoding='async';art.append(img);hero.prepend(art);
+   const groupAvatar=rail?.querySelector('.gv2-ring-red img');
+   if(groupAvatar)groupAvatar.src=img.getAttribute('src');
    const caption=node('span','s13-group-caption');
    const identity=node('span','s13-group-identity');
    for(const part of hero.querySelectorAll('strong,.gv2-hero-meta'))identity.append(part);
@@ -172,7 +174,7 @@ function unify(view){
    if(gather){widgets.prepend(gather);gather.querySelector('strong').textContent='Next gathering';}
    if(chat){const h=node('h2','s13-subhead','Stay connected');chat.before(h);chat.querySelector('strong').textContent='Group conversation';const glyph=chat.querySelector('.gv2-widget-icon');if(glyph)glyph.innerHTML=messageIcon;}
   }
-  if(rail&&widgets){const h=node('h2','s13-subhead','Your people');widgets.after(h,rail);}
+  if(rail&&widgets){const h=node('h2','s13-subhead','People in your group');widgets.after(h,rail);}
  }
  const team=view.querySelector('.team-screen-v08:not(.team-empty-v08)');
  if(team){
@@ -219,7 +221,17 @@ function unify(view){
      tabs.classList.add('s13-team-schedule-nav');
      tabs.querySelector('button[data-value="schedule"]')?.remove();
      chatTab.replaceWith(chat);
-     (team.querySelector('.s13-assignment-detail')||shift).after(tabs);
+     const role=node('figure','s13-team-role');
+     const photo=node('img','');
+     photo.src='assets/rally-one/citizen-serving.jpg';
+     photo.alt='';
+     photo.decoding='async';
+     const caption=node('figcaption','');
+     caption.append(node('strong','','What to expect'),node('span','','Welcome people as they arrive.'),node('small','','Sample serving role'));
+     const photoFrame=node('span','s13-team-role-photo');
+     photoFrame.append(photo);
+     role.append(photoFrame,caption);
+     (team.querySelector('.s13-assignment-detail')||shift).after(role,tabs);
     }
    }
   }
