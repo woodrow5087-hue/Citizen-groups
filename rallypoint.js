@@ -160,7 +160,7 @@ function renderPeople(snapshot,chat){
 const campusNames={central:'Central',north:'North',maui:'Maui',online:'Online'};
 function f09Today(){
  const now=new Date(),chat=conversation();
- const {model,focus:unifiedFocus}=recommendationSnapshot(now,chat);
+ const {model,focus:unifiedFocus,board:priorityBoard}=recommendationSnapshot(now,chat);
  f09Index=Math.max(0,Math.min(f09Index,model.stack.length-1));
  if(f09Board){
    const portraitFolder=rallyOne?'rally-one':'today-priority';
@@ -174,10 +174,11 @@ function f09Today(){
      window.RallyGroupsV2.renderTodayRail(memberContext()?.permissions.group===true):
      H.peopleRail(todayUI,'today',portraits,'assets/today-priority/group.webp');
    const campus=rallyOne?campusNames[todayUI.campus]:'';
-   return window.RallyPriorityBoard.render({
+   const markup=window.RallyPriorityBoard.render({
      ...model,receipt:rallyOne&&f09Feedback?receiptType:null,feedback:f09Feedback,f10Enabled:f10Preview,campus,
      ...(unifiedFocus?{unifiedFocus}:{})
    },peopleRail,portraits,now);
+   return rallyOne?(window.RallyStudioToday?.render(markup,{model,board:priorityBoard,now,campus})??markup):markup;
  }
  return window.RallySmartDashboard.render(model,f09Index,H.peopleRail(todayUI,'today'),H.portraits);
 }
@@ -619,6 +620,7 @@ if(rallyOne&&window.RallyCareFlow){
   }
 }
 if(rallyOne&&((s.view==='today'&&f09Board)||(s.view==='group'&&s.groupPane==='overview')||(s.view==='team'&&s.teamPane==='schedule')))window.RallyWidgets?.apply(view);
+window.RallyStudioToday?.shell(view,icon);
 if(s.view==='play')mountBlankBattle();
 view.querySelectorAll('textarea').forEach(field=>{if(drafts[field.dataset.draftKey||field.id]!==undefined)field.value=drafts[field.dataset.draftKey||field.id]});
 if(s.view==='group'&&s.groupPane==='chat'&&todayUI.memberships.group&&$('rpx-chat')){
