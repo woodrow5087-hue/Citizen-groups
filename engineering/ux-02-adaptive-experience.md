@@ -1,0 +1,29 @@
+# UX-02 — Adaptive experience and shared widget system
+
+Accepted base: PR #145 merge 20e71571de10edb3fb09c8b0512997c990ac22bd. Branch: rally-one/ux-02-adaptive-experience. Owner authorizes implementation sequence, not final reference, device acceptance or merge. Target executive demo Dec 2; freeze Dec 1. No production, real data, credentials or recovery ref changes.
+
+## Source audit and ownership
+- rallypoint.js f09Today() invokes recommendationSnapshot and passes existing model/unifiedFocus to RallyPriorityBoard.render; shared portraits come from RallyGroupsV2. Keep legacy SmartDashboard path.
+- rally-one-intelligence.js derive(): Context -> Smart -> Board -> Focus, plus Care; returns decision, context, model, board. Preserve ranking, taskCount vs weeklyTaskCount, selected IDs, deferred IDs, reasons and Ask Rally consistency. No new decision engine or persisted roles.
+- rallypoint-priority-board.js render(): hero, row stack, agenda, receipt, Ask Rally, people rail, mission and legacy links. Preserve semantic actions, data attributes and accessible names; prioritize hero over decorative content and compact greeting.
+- rally-one-member-context.js owns membership and leader permissions. Never infer care need from absence, or use invented engagement/roster scores. Use explicit authorized sample requests and existing care actions. No auto-send.
+- rally-one-groups-v2.js renderHome() owns Wednesday Group, portraits, conversation status, RSVP, prayer/care and gated leader shortcuts. Preserve unavailable vs zero unread distinction, profile origins and actual routes.
+- rallypoint.js team() owns existing Welcome Team sample schedule, response, coverage, messages and authorized leader tools. Use actual fixture values; no claimed Planning Center synchronization.
+- PR145 premium Read is accepted and remains visually protected; four tabs and global Connect access stay intact.
+
+## Staged implementation
+A. Shared presentation primitives: scope only UX02 Today, Groups home and Team overview/schedule. Reuse existing font assets; proposed palette charcoal #17181A, graphite #292A2D, red #E3002B, cream #F3E9D8; reconcile with accepted tokens. Compact editorial headings, clear hierarchy, modular cards, restrained borders, consistent icons/actions, status words plus color. No global CSS churn, gradients/glows, or spiritual scores. Existing data selectors/actions retained. Use explicit build allowlist for new runtime assets if necessary.
+B. Today: compact greeting/header, surface actual selected hero first, retain existing rows, agenda, people, Ask Rally and receipts. Prioritize commitments over decorative Scripture when existing model selects them. Use existing output, no fabricated tasks/counts or changed ranking. Keep legacy preview modes unchanged.
+C. Leader: render existing authorized requests and leadership destinations using current context; no new eligibility, unauthorized data, real attendance analytics or auto outreach. Respect overlap of member/serving/leader; do not introduce role switch that grants authority.
+D. All Set: only when canonical hero id is caught-up and no outstanding response is indicated; distinguish paused/unavailable/visitor states. Optional encouragement only when supported by existing routes. Never fabricate streaks or suggest spiritual performance.
+E. Transition validation: representative visitor, group, serving, leader, dual-role, completed, deferred, unavailable and clock-sensitive scenarios; confirm explicit actions update Today/Ask consistently, receipts remain, read/unread semantics unchanged, no implicit writes or unauthorized routes. Keyboard, focus, reduced motion, axe, 320/375/390/430 widths, short viewport and doubled text; primary actions above fold when feasible, scrolling allowed for accessibility. Preserve actual source data and test selectors; update tests to exercise genuine new paths, not bypass.
+F. Groups and Team: apply accepted component patterns to existing home/schedule surfaces. Compact portrait/group widget and conversation status, actual schedule timeline and confirmation/coverage actions. Preserve discovery, role-specific tools, message privacy, focus/return and existing care flows. No Connect redesign or Read changes in this block.
+
+## Validation strategy before runtime changes
+Inspect current exact inverse-source helpers, visual regression runner, workflow and accepted reference manifests. Preserve all original hashes and immutable PR119, PR144 and PR145 source references. Keep strict pixel equality for unaffected states; collect full before/after candidate captures for each intentionally affected state/width, document exact delta and reference provenance. Obtain owner visual-reference acceptance before pinning any new source. No masks, threshold relaxation, blanket exemptions, arbitrary retries or baseline replacement. Exact inverse transformations must reject unrelated mutations. Preserve CI coverage; add state/role/accessibility tests and negative controls.
+Run targeted local tests first, then consolidated full application, VersePlay, browser, synthetic and strict visual validation. Create one draft PR targeting rally-one/develop; verify exact-head CI and immutable preview contents. Stop at physical Safari/VoiceOver and final visual acceptance; separate explicit merge authorization required.
+
+## Deferred features
+Native iOS widgets/Live Activities, real-time Sunday Live Mode, QR/giving, open volunteer marketplace, drag/resize Smart Stack, church-wide reading campaigns, voice comms, real provider integration. No simulated live capabilities presented as real.
+
+Status: source audit and charter committed; implementation, candidate captures, tests and deployment not yet executed.
