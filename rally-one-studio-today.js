@@ -194,7 +194,8 @@ function unify(view){
   }
  }
  const team=view.querySelector('.team-screen-v08:not(.team-empty-v08)');
- if(team){
+ if(team&&!team.classList.contains('s13-serve')){
+  team.classList.add('s13-serve');
   const header=team.querySelector('.team-v08-hero');
   if(header){
    const title=header.querySelector('h1'),kicker=header.querySelector('.team-v08-kicker');
@@ -212,14 +213,14 @@ function unify(view){
    const response=shift.querySelector('.team-shift-response');
    const coverage=response?.querySelector('.pill');
    if(coverage)shift.querySelector('.team-card-overline')?.append(coverage);
-   response?.remove();
+   if(response){const note=response.querySelector('p');if(note){note.className='s13-shift-note';shift.append(note);}response.remove();}
 
    const huddle=team.querySelector('.team-huddle');
    if(huddle){
     const details=node('details','s13-assignment-detail');
     const summary=node('summary','','Arrival & huddle');
     const timing=huddle.querySelector('.team-huddle-time');
-    if(timing)summary.append(timing);
+    if(timing){const label=node('span','s13-huddle-label','Arrival & huddle');summary.replaceChildren(label,timing);}
     details.append(summary,huddle);
     shift.after(details);
     huddle.querySelector('.kicker')?.remove();
@@ -242,9 +243,9 @@ function unify(view){
      const photo=node('img','');
      photo.src='assets/rally-one/citizen-serving.jpg';
      photo.alt='';
-     photo.decoding='async';
+     photo.decoding='async';photo.loading='eager';
      const caption=node('figcaption','');
-     caption.append(node('strong','','What to expect'),node('span','','Welcome people as they arrive.'),node('small','','Sample serving role'));
+     caption.append(node('strong','','Make someone feel welcome.'),node('span','','Welcome people as they arrive.'),node('small','','Sample serving role'));
      const photoFrame=node('span','s13-team-role-photo');
      photoFrame.append(photo);
      role.append(photoFrame,caption);
