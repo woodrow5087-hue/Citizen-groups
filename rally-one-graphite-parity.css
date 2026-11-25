@@ -275,3 +275,104 @@
 @media(prefers-reduced-motion:reduce){.ux-read-premium :is(.ux-cta,.ux-circuit,.ux-game-row button,.ux-classic>summary,.ux-disclosure>summary):active{transform:none}}
 
 .rally-one .premium-alive.is-read-v09 .ux-read-premium .pa-rhythm-editor :is(h3,p,label){color:#242322}
+
+/* UX-02 shared presentation components; no Read, Connect or shared-shell rules. */
+.rw-root{--rw-bg:#17181a;--rw-panel:#292a2d;--rw-line:#48494d;--rw-cream:#f3e9d8;--rw-muted:#c8c6c1;--rw-red:#e3002b;background:var(--rw-bg);color:var(--rw-cream)}
+.rally-one #view .rw-root :is(h1,h2,h3,strong){color:inherit}
+.rally-one #view .rw-root .rw-header{padding:4px 0 12px;margin:0;background:none;border:0}
+.rally-one #view .rw-root .rw-header h1{font-size:clamp(30px,8vw,38px);line-height:1.08;letter-spacing:-.055em;margin:5px 0;color:var(--rw-cream)}
+.rw-root .rw-header h1 br{display:none}
+.rally-one #view .rw-root .rw-header h1 em{font:inherit;color:inherit}
+.rally-one #view .rw-root .rw-header :is(p,.f09-date,.ro-campus){font-size:.75rem;line-height:1.4;color:var(--rw-muted);margin:3px 0}
+.rally-one #view .rw-root .rw-header :is(.f09-preview-label,.team-v08-kicker){font-size:.625rem;letter-spacing:.14em;color:var(--rw-muted)}
+.rally-one #view .rw-root .rw-priority{border:1px solid var(--rw-line);border-radius:20px;box-shadow:none;overflow:hidden}
+.rally-one #view .rw-root .rw-card{border:1px solid var(--rw-line);border-radius:16px;background:var(--rw-panel);box-shadow:none;color:var(--rw-cream)}
+.rally-one #view .rw-root .rw-status{border-radius:7px;font-size:.6875rem;font-weight:800;letter-spacing:.02em}
+.rally-one #view .rw-root .rw-action{min-height:44px;border-radius:10px;box-shadow:none;font-size:.8125rem;letter-spacing:normal}
+.rally-one #view .rw-root :is(button,a):focus-visible{outline:3px solid #fff;outline-offset:3px}
+.rally-one #view .rw-root :is(button,a){transition:transform .14s ease,background-color .14s ease}
+.rally-one #view .rw-root :is(button,a):active{transform:translateY(1px)}
+.rally-one #view .rw-root[data-widget-surface="today"]{padding:12px 16px 24px}
+.rally-one #view .rw-root .f09b-hero{padding:18px;display:flex;gap:12px;background:var(--rw-red);color:#fff;min-height:0;box-shadow:none}
+.rally-one #view .rw-root .f09b-hero:before,.rally-one #view .rw-root .f09b-hero:after{display:none}
+.rally-one #view .rw-root .f09b-hero-symbol{position:static;flex:0 0 34px;width:34px;height:34px;padding:7px;border:1px solid #ffffff70;border-radius:10px;opacity:1;background:transparent;color:#fff}
+.rally-one #view .rw-root .f09b-hero-symbol svg{width:100%;height:100%}
+.rally-one #view .rw-root .f09b-hero-main{min-width:0;flex:1}
+.rally-one #view .rw-root .f09b-hero h2{font-size:clamp(26px,7vw,34px);line-height:1.08;letter-spacing:-.045em;margin:7px 0}
+.rally-one #view .rw-root .f09b-hero p{font-size:.8125rem;line-height:1.45;color:#fff;margin:0 0 12px}
+.rally-one #view .rw-root .f09b-overline{font-size:.625rem;letter-spacing:.12em;color:#fff}
+.rally-one #view .rw-root .f09b-hero-bottom{margin-top:10px;gap:10px;flex-wrap:wrap}
+.rally-one #view .rw-root .f09b-primary{background:var(--rw-cream);color:#242322;min-height:44px;padding:10px 13px;white-space:normal}
+.rally-one #view .rw-root .f09b-explain{color:#fff;font-size:.6875rem;flex-basis:100%}
+.rally-one #view .rw-root .f09b-hero{flex-wrap:wrap}
+.rally-one #view .rw-root .f09b-row-stack{gap:8px;margin:10px 0 0}
+.rally-one #view .rw-root .f09b-row{padding:12px;min-height:76px;background:var(--rw-panel)}
+.rally-one #view .rw-root .f09b-row :is(strong,small){color:var(--rw-cream)}
+.rally-one #view .rw-root .f09b-row-cta{background:var(--rw-cream);color:#242322;border:0;white-space:normal}
+.rally-one #view .rw-root .f10-entry{margin:12px 0;padding:12px}
+.rally-one #view .rw-root .f10-entry :is(strong,small){color:var(--rw-cream)}
+.rally-one #view .rw-root .f09b-glance{margin:12px 0;padding:14px}
+.rally-one #view .rw-root .f09b-glance-heading{margin-bottom:10px}
+.rally-one #view .rw-root .f09b-glance-heading h2{font-size:1rem}
+.rally-one #view .rw-root .f09b-agenda-row{background:transparent;border-color:var(--rw-line);padding:10px 0}
+.rally-one #view .rw-root .f09b-agenda-copy :is(strong,small),.rally-one #view .rw-root .f09b-glance-heading>span{color:var(--rw-muted)}
+.rally-one #view .rw-root .f09b-mission{min-height:95px;margin:12px 0;background:var(--rw-panel);border:1px solid var(--rw-line);border-radius:16px;box-shadow:none}
+.rally-one #view .rw-root .f09b-mission:before,.rally-one #view .rw-root .f09b-mission:after{display:none}
+.rally-one #view .rw-root .f09b-mission-content strong{font-size:1.4rem;line-height:1.1;color:var(--rw-cream)}
+.rally-one #view .rw-root[data-widget-audience="leader"] .f09b-hero{background:var(--rw-cream);color:#242322;border-left:5px solid var(--rw-red)}
+.rally-one #view .rw-root[data-widget-audience="leader"] .f09b-hero :is(p,.f09b-overline,.f09b-explain){color:#49423b}
+.rally-one #view .rw-root[data-widget-audience="leader"] .f09b-primary{background:var(--rw-red);color:#fff}
+.rally-one #view .rw-root[data-widget-audience="leader"] .f09b-hero-symbol{color:var(--rw-red);border-color:#a99d8e}
+.rally-one #view .rw-root[data-widget-state="caught-up"] .f09b-hero{background:var(--rw-cream);color:#242322}
+.rally-one #view .rw-root[data-widget-state="caught-up"] .f09b-hero :is(p,.f09b-overline,.f09b-explain){color:#49423b}
+.rally-one #view .rw-root[data-widget-state="caught-up"] .f09b-hero-symbol{font-size:20px;text-align:center;line-height:20px;color:#242322;border-color:#a99d8e}
+.rally-one #view .rw-root[data-widget-state="caught-up"] .f09b-primary{background:#242322;color:#fff}
+.rally-one #view .rw-root[data-widget-state="paused"] .f09b-hero{background:var(--rw-panel);border-style:dashed}
+.rally-one #view .rw-root[data-widget-state="group-unavailable"] .f09b-hero{background:var(--rw-panel);border-left:5px solid var(--rw-cream)}
+.rally-one #view .rw-root[data-widget-state="welcome-community"] .f09b-hero{background:var(--rw-panel)}
+.rally-one #view .rw-root.gv2-home{padding:14px 16px 24px}
+.rally-one #view .rw-root .gv2-heading h1{font-size:clamp(30px,8vw,38px)}
+.rally-one #view .rw-root .gv2-rail{margin:0 -16px 14px;padding:5px 16px 9px}
+.rally-one #view .rw-root .gv2-group-hero{background:var(--rw-red);padding:17px;min-height:170px;color:#fff}
+.rally-one #view .rw-root .gv2-group-hero:before,.rally-one #view .rw-root .gv2-group-hero:after{display:none}
+.rally-one #view .rw-root .gv2-group-hero>strong{font-size:clamp(28px,8vw,36px);line-height:1.05}
+.rally-one #view .rw-root .gv2-widgets{gap:10px;margin:12px 0}
+.rally-one #view .rw-root .gv2-widget{min-height:160px;padding:14px;color:var(--rw-cream)}
+.rally-one #view .rw-root .gv2-widget :is(strong,span){color:inherit}
+.rally-one #view .rw-root .gv2-widget-cta{border-color:#9c9b96;color:var(--rw-cream);padding:10px 8px}
+.rally-one #view .rw-root .gv2-care{padding:14px;min-height:80px;color:var(--rw-cream)}
+.rally-one #view .rw-root .gv2-care small{color:var(--rw-muted)}
+.rally-one #view .rw-root.team-screen-v08{padding:12px 16px 24px}
+.rally-one #view .rw-root .team-v08-hero h1{font-size:clamp(30px,8vw,38px)}
+.rally-one #view .rw-root .team-v08-wave{display:none}
+.rally-one #view .rw-root .team-v08-hero-row{margin-top:10px;padding:10px 0}
+.rally-one #view .rw-root .team-v08-hero-row :is(strong,small){color:var(--rw-cream)}
+.rally-one #view .rw-root .team-schedule-card{background:var(--rw-cream);padding:16px;margin-top:12px}
+.rally-one #view .rw-root .team-schedule-card h2{font-size:1.65rem;margin:12px 0}
+.rally-one #view .rw-root .team-shift{margin:12px 0;padding:12px 0}
+.rally-one #view .rw-root .team-shift-date{background:#242322;color:var(--rw-cream);box-shadow:none;border:0}
+.rally-one #view .rw-root .team-shift-date :is(strong,small){color:inherit}
+.rally-one #view .rw-root .team-shift-response{padding:12px;margin:10px 0;background:#e8dcc9;border:1px solid #b3a58e;border-radius:12px}
+.rally-one #view .rw-root .team-shift-actions{gap:8px;flex-wrap:wrap}
+.rally-one #view .rw-root .team-shift-actions .btn{flex:1 1 125px;white-space:normal}
+.rally-one #view .rw-root .team-message-preview{margin:12px 0;padding:14px;min-height:130px}
+.rally-one #view .rw-root .team-message-preview :is(strong,span){color:var(--rw-cream)}
+.rally-one #view .rw-root .team-huddle{padding:14px}
+@media(max-width:350px){.rally-one #view .rw-root[data-widget-surface="today"],.rally-one #view .rw-root.gv2-home,.rally-one #view .rw-root.team-screen-v08{padding-inline:11px}.rally-one #view .rw-root .f09b-hero{padding:14px;gap:8px}.rally-one #view .rw-root .f09b-row{flex-wrap:wrap}.rally-one #view .rw-root .f09b-row-cta{margin-left:auto}}
+@media(prefers-reduced-motion:reduce){.rally-one #view .rw-root :is(button,a){transition:none}.rally-one #view .rw-root :is(button,a):active{transform:none}}
+.rally-one #view .rw-root .f09b-overline{background:transparent}
+.rally-one #view .rw-root .f09b-explain{position:static;inset:auto;width:100%;margin-top:4px;font-size:.75rem}
+.rally-one #view .rw-root .f09b-explain summary{background:#242322;color:#fff;border:1px solid #8b8b88;opacity:1;min-height:44px;padding:10px;border-radius:9px}
+
+.rally-one #view .rw-root .rw-header{min-height:0}
+.rally-one #view .rw-root .team-schedule-card{color:#242322}
+.rally-one #view .rw-root .gv2-group-hero :is(.gv2-hero-brand,.gv2-hero-meta,.gv2-hero-copy){color:#fff;opacity:1}
+.rally-one #view .rw-root .f09b-explain{max-width:none;flex:0 0 100%}
+.rally-one #view .rw-root .gv2-widget-cta{background:#242322;color:#fff}
+.rally-one #view .rw-root .rw-status{white-space:normal;overflow-wrap:anywhere}
+.rally-one #view .rw-root :is(.f09b-agenda-copy,.f09b-row-copy){min-width:0;overflow-wrap:anywhere}
+.rally-one #view .rw-root .f09b-explain summary{font-size:.75rem;text-align:left;list-style-position:inside;font-weight:700}
+.rally-one #view .rw-root .rw-icon{width:20px;height:20px;display:inline-block;vertical-align:middle;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.rally-one #view .rw-root .gv2-rail-wrap{margin:0 -16px}
+.rally-one #view .rw-root .gv2-rail{margin:0;width:100%;padding:5px 16px 9px;box-sizing:border-box}
+.rally-one #view .rw-root .gv2-rail-label{white-space:normal;overflow:visible;text-overflow:clip;overflow-wrap:anywhere;line-height:1.25}

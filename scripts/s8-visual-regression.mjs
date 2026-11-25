@@ -16,6 +16,9 @@ const readReference=process.argv[3];
 assert.ok(readReference,'An immutable approved UX-01 Read reference build is required');
 const premiumReference=process.argv[4];
 assert.ok(premiumReference,'An immutable owner-approved UX-1E reference build is required');
+const adaptiveReference=process.argv[5];
+assert.ok(adaptiveReference,'Owner-approved UX02 build required');
+const adaptiveStates=new Set(['today','groups','team','visitor','group-member','serving','leader']);
 const out=resolve('test-results/s8-visual');
 await mkdir(out,{recursive:true});
 const mime={'.html':'text/html','.js':'text/javascript','.css':'text/css','.json':'application/json','.webp':'image/webp','.png':'image/png','.jpg':'image/jpeg','.svg':'image/svg+xml','.ttf':'font/ttf'};
@@ -34,7 +37,7 @@ async function serve(directory){
  await new Promise(r=>server.listen(0,'127.0.0.1',r));
  return {server,url:`http://127.0.0.1:${server.address().port}/`};
 }
-const before=await serve(reference),approvedRead=await serve(readReference),approvedPremium=await serve(premiumReference),after=await serve('dist');
+const before=await serve(reference),approvedRead=await serve(readReference),approvedPremium=await serve(premiumReference),approvedAdaptive=await serve(adaptiveReference),after=await serve('dist');
 // Match the proven VersePlay capture configuration: avoid GPU image-edge
 // blending differences and platform-dependent LCD/subpixel text paths.
 const launchBrowser=()=>chromium.launch({executablePath:process.env.BROWSER_PATH,
@@ -42,30 +45,31 @@ const launchBrowser=()=>chromium.launch({executablePath:process.env.BROWSER_PATH
  // 1–2 channel rounding differences even in PR119-versus-itself controls.
  args:['--deterministic-mode','--disable-partial-raster','--disable-yuv-image-decoding','--disable-gpu','--disable-lcd-text','--disable-font-subpixel-positioning','--font-render-hinting=none']});
 let browser=await launchBrowser();
-const report={reference:'5aa88c93c3d4cd22902ef98af98c09b74ca436ce',readReference:'4e3baa96cc10ab4b32cbaecb69d19098f05840c0',premiumReadReference:'16868e6c5f86d38c296e71bb6da8f94f32446028',protectedFiles:0,approvedReadDeltas:[],premiumReadDeltas:[],comparisons:[],errors:[]};
+const report={reference:'5aa88c93c3d4cd22902ef98af98c09b74ca436ce',readReference:'4e3baa96cc10ab4b32cbaecb69d19098f05840c0',premiumReadReference:'16868e6c5f86d38c296e71bb6da8f94f32446028',adaptiveReference:'ef4b8e7bfc2523d109da463b41c78c22ca40d1e9',adaptiveDeltas:[],protectedFiles:0,approvedReadDeltas:[],premiumReadDeltas:[],comparisons:[],errors:[]};
 async function protectedEntries(root,directory=''){
  const files=[];
  for(const name of (await readdir(resolve(root,directory))).sort()){
   const relative=directory?`${directory}/${name}`:name;
   if((await stat(resolve(root,relative))).isDirectory())files.push(...await protectedEntries(root,relative));
   else if(relative.startsWith('assets/')||relative.startsWith('verseplay/')||relative.endsWith('.css')||
-   ['rallypoint-welcome.js','blank-battle.js','rallypoint-verseplay-ui.js','rallypoint-memorize.js'].includes(relative))files.push(relative);
+   ['rallypoint-welcome.js','blank-battle.js','rallypoint-verseplay-ui.js','rallypoint-memorize.js','rally-one-widgets.js'].includes(relative))files.push(relative);
  }
  return files;
 }
 async function protect(){
  const current=await protectedEntries('dist');
- assert.deepEqual(current,await protectedEntries(reference),'Protected file inventory changed');
+ assert.deepEqual(current,[...await protectedEntries(reference),'rally-one-widgets.js'].sort(),'Protected file inventory changed');
  for(const file of current){
-  const actual=await readFile(resolve('dist',file)),approved=await readFile(resolve(reference,file));
+  const actual=await readFile(resolve('dist',file)),approved=await readFile(resolve(file==='rally-one-widgets.js'?adaptiveReference:reference,file));
   if(file==='rallypoint-welcome.js')invariant.assertWelcomeSource(approved,actual);
-  else if(file==='rally-one-graphite-parity.css')assert.equal(ux.restoreUXSource(file,actual.toString()),approved.toString(),'Only the exact owner-approved Read additions are permitted');
+  else if(file==='rally-one-graphite-parity.css')assert.equal(ux.restoreUXSource(file,actual.toString()),approved.toString(),'Only exact owner-approved Read and UX02 additions are permitted');
   else assert.ok(actual.equals(approved),`Protected source/asset changed: ${file}`);
  }
  report.protectedFiles=current.length;
 }
 async function capture(page,kind,width,label){
  if(['read-reference','premium-reference'].includes(kind)&&label!=='read')return;
+ if(kind==='adaptive-reference'&&!adaptiveStates.has(label))return;
  await page.evaluate(async()=>{
   await document.fonts.ready;
   await Promise.all([...document.images].map(img=>img.decode()));
@@ -82,18 +86,19 @@ async function capture(page,kind,width,label){
  await writeFile(resolve(out,name),buffer);
  if(kind==='read-reference')report.approvedReadDeltas.push({width,...compareScreenshots(await readFile(resolve(out,`before-${width}-read.png`)),buffer)});
  if(kind==='premium-reference')report.premiumReadDeltas.push({width,...compareScreenshots(await readFile(resolve(out,`read-reference-${width}-read.png`)),buffer)});
+ if(kind==='adaptive-reference')report.adaptiveDeltas.push({width,state:label,...compareScreenshots(await readFile(resolve(out,`before-${width}-${label}.png`)),buffer)});
  if(kind==='after'){
-  const comparison=compareScreenshots(await readFile(resolve(out,`${label==='read'?'premium-reference':'before'}-${width}-${label}.png`)),buffer);
-  report.comparisons.push({width,state:label,reference:label==='read'?report.premiumReadReference:report.reference,...comparison});
+  const comparison=compareScreenshots(await readFile(resolve(out,`${label==='read'?'premium-reference':adaptiveStates.has(label)?'adaptive-reference':'before'}-${width}-${label}.png`)),buffer);
+  report.comparisons.push({width,state:label,reference:label==='read'?report.premiumReadReference:adaptiveStates.has(label)?report.adaptiveReference:report.reference,...comparison});
   assert.ok(comparison.equal,`Visual regression ${width} ${label}: ${JSON.stringify(comparison)}`);
  }
 }
 try{
  await protect();
- for(const [kind,base] of [['before',before.url],['read-reference',approvedRead.url],['premium-reference',approvedPremium.url],['after',after.url]])for(const width of [320,390,430]){
+ for(const [kind,base] of [['before',before.url],['read-reference',approvedRead.url],['premium-reference',approvedPremium.url],['adaptive-reference',approvedAdaptive.url],['after',after.url]])for(const width of [320,375,390,430]){
   // Separate rendering caches: the approved Read run must not warm only one side.
   if(width===320&&kind!=='before'){await browser.close();browser=await launchBrowser();}
-  if(!['read-reference','premium-reference'].includes(kind)){
+  if(!['read-reference','premium-reference','adaptive-reference'].includes(kind)){
   const titleContext=await browser.newContext({viewport:{width,height:844},isMobile:true,hasTouch:true,reducedMotion:'no-preference',timezoneId:'UTC',locale:'en-US'});
   const title=await titleContext.newPage();
   title.on('pageerror',e=>report.errors.push({kind,width,message:e.message}));
@@ -165,9 +170,9 @@ try{
  }
  assert.deepEqual(report.errors,[]);
  report.status='passed';
- console.log(JSON.stringify({protectedFiles:report.protectedFiles,pairs:report.comparisons.length,pr119Pairs:report.comparisons.filter(c=>c.reference===report.reference).length,approvedReadPairs:report.comparisons.filter(c=>c.reference===report.premiumReadReference).length,rawDifferentPixels:report.comparisons.reduce((n,c)=>n+c.rawDifferentPixels,0),errors:report.errors}));
+ console.log(JSON.stringify({protectedFiles:report.protectedFiles,pairs:report.comparisons.length,pr119Pairs:report.comparisons.filter(c=>c.reference===report.reference).length,approvedReadPairs:report.comparisons.filter(c=>c.reference===report.premiumReadReference).length,adaptivePairs:report.comparisons.filter(c=>c.reference===report.adaptiveReference).length,rawDifferentPixels:report.comparisons.reduce((n,c)=>n+c.rawDifferentPixels,0),errors:report.errors}));
 }catch(error){report.status='failed';report.error=error.message;throw error;}
 finally{
  await writeFile(resolve(out,'results.json'),JSON.stringify(report,null,2)+'\n');
- await browser.close();await Promise.all([new Promise(r=>before.server.close(r)),new Promise(r=>approvedRead.server.close(r)),new Promise(r=>approvedPremium.server.close(r)),new Promise(r=>after.server.close(r))]);
+ await browser.close();await Promise.all([new Promise(r=>before.server.close(r)),new Promise(r=>approvedRead.server.close(r)),new Promise(r=>approvedPremium.server.close(r)),new Promise(r=>approvedAdaptive.server.close(r)),new Promise(r=>after.server.close(r))]);
 }
