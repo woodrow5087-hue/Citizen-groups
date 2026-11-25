@@ -152,29 +152,46 @@ function unify(view){
  const doc=view.ownerDocument;
  const node=(tag,cls,text)=>{const n=doc.createElement(tag);n.className=cls;if(text!==undefined)n.textContent=text;return n;};
  const group=view.querySelector('.gv2-home');
- if(group){
+ if(group&&!group.classList.contains('s13-belong')){
+  group.classList.add('s13-belong');
   const header=group.querySelector('.gv2-heading-row'),title=header?.querySelector('h1'),label=header?.querySelector('small');
   if(title)title.textContent='Your people.';
   if(header&&label){label.textContent='Life together.';header.after(label);}
   const rail=group.querySelector('.gv2-rail-wrap'),hero=group.querySelector('.gv2-group-hero'),widgets=group.querySelector('.gv2-widgets');
+  const glyph=(name)=>'<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">'+(name==='calendar'?'<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M7 3v4m10-4v4M3 10h18"/>':name==='heart'?'<path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8L12 21l8.8-8.6a5.5 5.5 0 0 0 0-7.8Z"/>':'<path d="m9 18 6-6-6-6"/>')+'</svg>';
   if(hero){
-   const art=node('span','s13-group-cover');const img=node('img','');img.src='assets/rally-one/citizen-group-circle.jpg';img.alt='';img.decoding='async';art.append(img);hero.prepend(art);
+   const art=node('span','s13-group-cover');const img=node('img','');img.src='assets/rally-one/citizen-group-circle.jpg';img.alt='';img.decoding='async';img.loading='eager';art.append(img);hero.prepend(art);
    const groupAvatar=rail?.querySelector('.gv2-ring-red img');
    if(groupAvatar)groupAvatar.src=img.getAttribute('src');
-   const caption=node('span','s13-group-caption');
-   const identity=node('span','s13-group-identity');
+   const caption=node('span','s13-group-caption'),identity=node('span','s13-group-identity');
    for(const part of hero.querySelectorAll('strong,.gv2-hero-meta'))identity.append(part);
    caption.append(identity);
-   const action=hero.querySelector('.gv2-hero-action');if(action)caption.append(action);
+   const action=hero.querySelector('.gv2-hero-action');if(action){action.textContent='';action.innerHTML=glyph('chevron');caption.append(action);}
    hero.querySelector('.gv2-hero-brand')?.remove();
    hero.append(caption);
   }
   if(widgets){
    const gather=widgets.querySelector('.gv2-widget-gather'),chat=widgets.querySelector('.gv2-widget-chat');
-   if(gather){widgets.prepend(gather);gather.querySelector('strong').textContent='Next gathering';}
-   if(chat){const h=node('h2','s13-subhead','Stay connected');chat.before(h);chat.querySelector('strong').textContent='Group conversation';const glyph=chat.querySelector('.gv2-widget-icon');if(glyph)glyph.innerHTML=messageIcon;}
+   if(gather){
+    widgets.prepend(gather);
+    const heading=gather.querySelector('strong');if(heading)heading.textContent='Next gathering';
+    const mark=gather.querySelector('.gv2-widget-icon');if(mark)mark.innerHTML=glyph('calendar');
+    const cta=gather.querySelector('.gv2-widget-cta i');if(cta)cta.innerHTML=glyph('chevron');
+   }
+   if(chat){
+    const h=node('h2','s13-subhead','Stay connected');chat.before(h);
+    const heading=chat.querySelector('strong');if(heading)heading.textContent='Group conversation';
+    const mark=chat.querySelector('.gv2-widget-icon');if(mark)mark.innerHTML=messageIcon;
+    const cta=chat.querySelector('.gv2-widget-cta i');if(cta)cta.innerHTML=glyph('chevron');
+   }
   }
-  if(rail&&widgets){const h=node('h2','s13-subhead','People in your group');widgets.after(h,rail);}
+  if(rail&&widgets){const h=node('h2','s13-subhead','Your people');widgets.after(h,rail);}
+  const care=group.querySelector('.gv2-care');
+  if(care){
+   const title=care.querySelector('strong');if(title)title.textContent='Pray for one another';
+   const mark=care.querySelector('.gv2-care-icon');if(mark)mark.innerHTML=glyph('heart');
+   const trailing=care.querySelector('b');if(trailing)trailing.innerHTML=glyph('chevron');
+  }
  }
  const team=view.querySelector('.team-screen-v08:not(.team-empty-v08)');
  if(team){
