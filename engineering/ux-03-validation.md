@@ -263,3 +263,76 @@ Netlify provenance and the current device-acceptance URL are recorded in PR147.
 Physical iPhone Safari, VoiceOver and final visual acceptance are outstanding;
 record the actual device model/iOS/Safari, reviewer and results for all eight
 checklist categories. Reference approval does not authorize merging.
+
+## Post-establishment CI blocker
+
+The local acceptance results above describe 3c2ad3a before remote validation; they
+are not a claim of passing CI. Run 45559180941 failed the strict Connect comparison
+on `embedded/320-568-group-serving-inbox.png`: 404 raw pixels (124 non-AA, 280 AA).
+Its application source bytes matched the approved 26153ba source. Repeated controls
+localized variants to circular portrait edges rather than layout, content, storage
+or navigation. Capture-only interventions did not reliably remove them.
+
+## Deterministic portrait correction candidate
+
+Owner authorized preparation after the failed 3c2ad3a gate. The candidate is limited
+to `.story-ring img` clipping/background and `.list-avatar` background in the existing
+Connect stylesheet. The rail now uses `clip-path:circle(50%)` instead of the rounded
+image/background combination; both portrait types have transparent image backing
+rather than a second opaque clipped fill. Existing circular borders, image assets,
+geometry and every runtime controller/data owner are retained. No screenshot masks,
+tolerances, baseline replacement or gate removal is used.
+
+A rail-only control eliminated rail variants but still exposed differences at list
+avatar boundaries. Removing the redundant list backing then passed 24 independent
+Chromium inbox captures (six at each 320/375/390/430 width) with zero raw differences.
+All six existing standalone viewport/text/axe/focus/motion cases also passed.
+The full unit run reports 869/870 passing: the one intentional failure is the
+approved-reference byte guard for the changed Connect stylesheet. Its old hash is
+not updated or bypassed. Historical inverse-source coverage includes only the exact
+declared candidate addition. No new reference or physical acceptance is claimed.
+
+Candidate verification uses the ordinary Chromium behavior suites and a separate
+WebKit repeatability diagnostic. The latter compares two independently captured
+86-state candidate runs; it is a same-source stability control, not an approved
+reference comparison. It cannot authorize replacement of the 26153ba reference.
+The first WebKit repeatability attempt could not connect to a stopped local server;
+rerunning against the active candidate server changes no application or test gate.
+The legacy phase1 runner initially received a deploy-preview build (which explicitly
+selects the new Today fixture). Its legacy Your People assertion therefore failed;
+normal-build suites are rerun from an isolated source snapshot as CI specifies.
+
+The candidate preserves the historical gate: 75 protected files, 64 pairs, zero raw
+pixel differences and no page errors. VersePlay units pass 172/172. Existing embedded
+profile validation passes all 14 cases (44 captures); standalone passes six viewport/
+text cases, and persistence/reply/draft/return tests pass at 320/390/430. Twelve fresh
+WebKit instances reproduce the previously failing 320×568 combined-profile inbox
+with zero raw differences. These controls support the correction without replacing
+the outstanding approved-reference gate.
+
+The preview Today/member journeys, leadership demo, premium Read, UX02 scenarios
+and synthetic review pass. The isolated normal build passes legacy mobile/source/
+storage flows, onboarding, Blank Battle, Groups safety and standalone Wednesday
+messaging. Exact commands remain the existing CI scripts; none was edited.
+
+The second standalone WebKit run matches the first in all 42 captures with zero raw
+pixel differences, including doubled text and the short viewport. Integrated
+Wednesday messaging also passes reply, draft, reaction, retry, refresh, revocation
+and malformed-snapshot controls. The initial VersePlay invocation had no server at
+its default port; its rerun uses the active preview URL and CI's browser executable.
+This harness correction changes no runtime files, assertions or reference material.
+
+VersePlay rerun passes 433 browser checks and 49 visual comparison pairs with zero
+raw differences, no console errors and no font failures. All broad normal-build
+and preview browser suites complete successfully. Physical iPhone Safari/VoiceOver,
+final visual acceptance and merge remain outstanding; the corrected source must
+first receive explicit new Connect-only reference approval.
+
+Final candidate repeatability result: both complete WebKit runs pass every existing
+functional/accessibility assertion and inventory check. All 86 pairs (42 standalone,
+44 embedded) compare at zero raw pixel differences. Diagnostic evidence lives in
+`test-results/portrait-correction/matrix-repeatability.json`, separate from immutable
+reference outputs. This proves observed repeatability, not CI acceptance against a
+new reference. The old manifest remains pinned to 26153ba and rejects this candidate
+exactly as intended (869/870 unit assertions pass, one reference-owner test blocked).
+No physical, final visual or merge acceptance is inferred.

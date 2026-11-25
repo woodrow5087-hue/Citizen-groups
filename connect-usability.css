@@ -189,3 +189,7 @@
 #room-panel-people .panel-note{line-height:1.5;color:#c8c6c1}
 @media(max-width:350px){.conversation-row .list-avatar{width:50px;height:50px}.conversation-row{gap:10px}.people-rail{gap:9px}.people-rail .person{flex-basis:58px;width:58px}.event-card{gap:5px 8px;padding:12px}.event-card .rsvp-action{font-size:.75rem;padding-inline:10px}}
 @media(max-height:600px){.room-hero{min-height:0;padding-top:2px;gap:2px}.room-hero-toolbar{min-height:40px}.room-identity h2{font-size:1.25rem}}
+
+/* UX-03 portrait correction: a single explicit circular clip avoids rounded-image/background double rasterization. */
+.story-ring img{border-radius:0;clip-path:circle(50%);background:transparent}
+.list-avatar{background:transparent}

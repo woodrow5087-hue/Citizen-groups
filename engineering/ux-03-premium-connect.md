@@ -85,3 +85,13 @@ Strict Connect pixels use Playwright WebKit after Chromium self-comparisons expo
 intermittent portrait-edge raster variations in identical builds. All existing
 Chromium functional checks and historical pixel gates are retained unchanged in
 scope. This is a validation-engine decision; the approved application is unchanged.
+
+## Authorized deterministic-portrait candidate — pending new reference review
+
+Following the blocked 3c2ad3a gate, the owner authorized preparing a narrowly scoped
+portrait-rendering correction and a new Connect-only reference review. The candidate
+uses a single explicit circular clip for rail images and removes redundant opaque
+background fills behind rail/list images. Portrait assets, dimensions, circular
+borders, layout, typography, colors, state and runtime JavaScript remain unchanged.
+`26153ba` stays the immutable historical reference; no replacement is pinned here.
+The existing reference hash guard must remain blocked until explicit source approval.
