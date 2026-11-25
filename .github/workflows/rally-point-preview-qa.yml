@@ -16,7 +16,7 @@ permissions:
   contents: read
 
 jobs:
-  preview-qa:
+  functional:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
@@ -36,17 +36,17 @@ jobs:
       - name: Install Playwright Chromium and WebKit
         run: npx playwright install --with-deps chromium webkit
       - name: Run mobile, accessibility, source navigation and VersePlay regression
-        run: npm run test:browser
+        run: node scripts/phase1-browser-check.mjs
       - name: Run animated onboarding → dashboard integration regression
-        run: npm run test:onboarding
+        run: node scripts/onboarding-browser-check.mjs
       - name: Run Blank Battle mobile gameplay and screenshot QA
-        run: npm run test:blank-battle
+        run: node scripts/blank-battle-browser-check.mjs
       - name: Run F-03/F-04/F-08 Groups and storage-protection browser QA
-        run: npm run test:groups-safety
+        run: node scripts/groups-safety-browser-check.mjs
       - name: Verify reused standalone Wednesday conversation experience
-        run: npm run test:chat-lab
+        run: node scripts/chat-lab-browser-check.mjs
       - name: Verify Wednesday messaging inside canonical Groups and legacy archive
-        run: npm run test:groups-integrated
+        run: node scripts/groups-integrated-browser-check.mjs
       - name: Check the default Today on the Netlify preview build
         run: |
           CONTEXT=deploy-preview npm run build
@@ -63,6 +63,32 @@ jobs:
           node scripts/ux03-profile-review.mjs http://127.0.0.1:8514/
       - name: Exercise isolated synthetic review lab (loopback only)
         run: node scripts/s11e-local-review-browser-check.mjs
+      - name: Save visual QA screenshots and results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: rally-point-preview-qa-functional
+          path: test-results/
+          if-no-files-found: ignore
+          retention-days: 7
+
+  visual:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Check out preview branch
+        uses: actions/checkout@v4
+      - name: Use Node 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Install locked dependencies
+        run: npm ci
+      - name: Build deploy-preview once
+        run: CONTEXT=deploy-preview npm run build
+      - name: Install Playwright Chromium and WebKit
+        run: npx playwright install --with-deps chromium webkit
       - name: Compare immutable PR 119 and owner-approved Read references
         run: |
           reference_dir="$RUNNER_TEMP/rally-one-approved-119"
@@ -98,7 +124,20 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: rally-point-preview-qa
+          name: rally-point-preview-qa-visual
           path: test-results/
           if-no-files-found: ignore
           retention-days: 7
+
+  preview-qa:
+    if: always()
+    needs: [functional, visual]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Require every validation job
+        env:
+          FUNCTIONAL: ${{ needs.functional.result }}
+          VISUAL: ${{ needs.visual.result }}
+        run: |
+          test "$FUNCTIONAL" = success
+          test "$VISUAL" = success
