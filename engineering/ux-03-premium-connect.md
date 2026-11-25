@@ -128,3 +128,7 @@ geometry, icons, palette, runtime controllers, state and functionality. The acti
 Historical source tests reconstruct both 042ab82 and 26153ba through exact inverses.
 The old-source guard is expected to reject the changed stylesheet until explicit
 source-reference approval. Physical acceptance and merge remain blocked.
+
+## Owner SVG source-reference approval — 2026-11-25
+
+Owner explicitly approves bb8f2446a71221148587f09bdf8192d5bde57d83, replacing 042ab82 as the Connect-only reference. The original 042ab82 manifest is retained alongside 26153ba, and reconstruction tests remain. No runtime or tolerance changes. Recent complete candidate validation (86 repeatability pairs, 64 historical pairs, native color controls) remains applicable to identical runtime bytes. Physical Safari/VoiceOver, final visual acceptance and merge remain outstanding. Final CI and immutable preview provenance are recorded in PR147.

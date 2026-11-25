@@ -90,8 +90,8 @@ jobs:
         run: |
           connect_reference_dir="$RUNNER_TEMP/rally-one-approved-ux03"
           mkdir -p "$connect_reference_dir"
-          git fetch --depth=1 origin 042ab829400437093058b5e99c9c438b0f33fe17
-          git archive 042ab829400437093058b5e99c9c438b0f33fe17 | tar -x -C "$connect_reference_dir"
+          git fetch --depth=1 origin bb8f2446a71221148587f09bdf8192d5bde57d83
+          git archive bb8f2446a71221148587f09bdf8192d5bde57d83 | tar -x -C "$connect_reference_dir"
           CONTEXT=deploy-preview node "$connect_reference_dir/scripts/build.cjs"
           node scripts/ux03-visual-regression.mjs "$connect_reference_dir/dist"
       - name: Save visual QA screenshots and results

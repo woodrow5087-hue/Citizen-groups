@@ -2,7 +2,7 @@
 const {test}=require('node:test'),assert=require('node:assert/strict'),fs=require('node:fs');
 const {PNG}=require('pngjs'),visual=require('./helpers/ux03-visual.cjs');
 test('owner-approved Connect source identity and complete capture inventory stay fixed',()=>{
- assert.equal(visual.reference.source,'042ab829400437093058b5e99c9c438b0f33fe17');
+ assert.equal(visual.reference.source,'bb8f2446a71221148587f09bdf8192d5bde57d83');
  assert.equal(Object.keys(visual.reference.files).length,10);
  const standalone=visual.expectedCaptures('standalone'),embedded=visual.expectedCaptures('embedded');
  assert.equal(standalone.length,42);assert.equal(embedded.length,44);
