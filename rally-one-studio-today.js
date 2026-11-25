@@ -137,6 +137,33 @@ const componentRoles=Object.freeze({
  's13-component-section':'.s13-subhead',
  's13-component-icon':'.gv2-widget-icon,.gv2-care-icon'
 });
+// Care presentation only: keep all original commands, request text, notices,
+// and saved-state semantics. On the overview, optional actions are disclosed
+// rather than competing with the gathering and community.
+function refineCare(view){
+ const doc=view.ownerDocument;
+ for(const card of view.querySelectorAll('.group-screen-v07 :is(.ro-care--group,.ro-care--prayer)')){
+  if(card.classList.contains('s13-care-refined'))continue;
+  card.classList.add('s13-care-refined');
+  const stage=card.dataset.careStage;
+  const title=card.querySelector('.ro-care-copy h2');
+  if(title)title.textContent=stage==='followed-up'?'A thoughtful follow-up.':stage==='paused'?'Whenever you’re ready.':stage==='prayed'?'Keep caring.':'Take a moment to care.';
+  const overline=card.querySelector('.ro-care-overline');if(overline)overline.textContent='CARE FOR ONE ANOTHER';
+  const mark=card.querySelector('.ro-care-mark');
+  if(mark)mark.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8L12 21l8.8-8.6a5.5 5.5 0 0 0 0-7.8Z"/></svg>';
+  // Keep progress meaning accessible; avoid the numbered task-like treatment.
+  const steps=card.querySelector('.ro-care-steps');
+  if(steps){steps.setAttribute('aria-label','Optional care actions');}
+  if(card.classList.contains('ro-care--group')){
+   const actions=card.querySelector('.ro-care-actions');
+   if(actions){
+    const disclosure=doc.createElement('details');disclosure.className='s13-care-disclosure';
+    const summary=doc.createElement('summary');summary.textContent=stage==='followed-up'?'Review follow-up':stage==='paused'?'Revisit when ready':'Ways to respond';
+    disclosure.append(summary);actions.before(disclosure);disclosure.append(actions);
+   }
+  }
+ }
+}
 function applyCraft(view){
  for(const [role,selector] of Object.entries(componentRoles)){
   view.querySelectorAll(selector).forEach(el=>el.classList.add(role));
@@ -339,7 +366,8 @@ function shell(view,icon){
  const music=controls?.querySelector('.spotify-link');
  if(music&&!today){const link=music.cloneNode(true);link.className='s13-music-link';link.removeAttribute('id');link.textContent='Citizen worship playlist ↗';view.append(link);}
  unify(view);
+ refineCare(view);
  applyCraft(view);
 }
-return Object.freeze({render,shell,unify,applyCraft});
+return Object.freeze({render,shell,unify,applyCraft,refineCare});
 });
