@@ -1,5 +1,10 @@
 # UX-03 — implementation and acceptance ledger
 
+Approved Connect-only reference: `26153bab8660144e4bf8e50bbef6482b6e112d12`
+(owner approval 2026-11-25). Physical Safari/VoiceOver and final visual acceptance
+remain outstanding; no merge is authorized. This status supersedes earlier
+reference-pending entries retained below as history.
+
 Canonical base: `94d373cdc30a0defe2d35054770312faaf2db747` (accepted PR146).
 Working branch: `rally-one/ux-03-premium-connect`. No reference approval, physical
 acceptance or merge authorization is inferred from approval of prior sprints.
@@ -160,3 +165,101 @@ Final focused local run: all 14 embedded profile cases/44 captures passed on the
 final review script; full preview and 11E synthetic review passed again. VersePlay
 browser regression again passed 433 checks and 49 pairs with no mismatches, console
 errors or font failures. No new immutable visual reference is established.
+
+## Approved reference establishment — 2026-11-25
+
+Owner authorization pins only the Connect visual direction at exact commit
+`26153bab8660144e4bf8e50bbef6482b6e112d12`. Approval covers inboxes/compact circle,
+conversation type/bubbles, direct messaging, Room Chat/Plans/People, event widgets,
+composer and compact return. No product design or application runtime is changed
+while establishing this reference; 186 built files match the approved build exactly.
+
+`test/helpers/ux03-reference.json` records the immutable source and SHA-256 hashes
+of ten Connect HTML/script/style owners. `ux03-visual-regression.mjs` verifies those
+hashes on the approved build and candidate, runs both existing standalone/profile
+suites on each build, checks exact capture inventories, and compares 42 standalone
+plus 44 embedded pairs with **zero raw different pixels** required. Missing/extra
+frames, dimension drift, substituted reference bytes and any source/pixel mutation
+fail. Unit negative controls exercise real one-pixel PNG and dimension mutations,
+plus mutations of each protected Connect file. No masks or tolerance changes exist.
+
+CI fetches/builds the exact approved source, not a mutable branch or saved images.
+The original Chromium standalone/profile functional invocations remain. The added
+strict WebKit gate executes the same complete assertions on reference and candidate.
+Historical capture mode is explicitly excluded. Output redirection and paint-readiness controls apply only to test evidence.
+Normal Chromium launch settings remain unchanged; no application code is modified.
+All original historical (PR119/144/145/146), synthetic, messaging and game gates stay
+in place; no approved source hash is replaced. Evidence is under
+`test-results/ux03-visual/{reference,candidate}/{standalone,embedded}` and results.json.
+
+Local application tests: 868 passed, including four new reference/inventory/source/
+pixel negative-control tests. VersePlay unit tests: 172 passed. Comprehensive browser,
+new strict Connect, historical and game regression results are recorded below and
+in the exact-head PR handoff when complete. The existing eight-category physical
+checklist remains mandatory, with actual iPhone model/iOS and reviewer details.
+
+Strict-gate raster investigation: Chromium self-comparisons intermittently differed
+only at circular portrait edges even though all 186 application files were identical.
+Cold processes, full-page capture, image/font/paint waits, audit ordering and CPU
+raster controls did not reliably eliminate those native-render variants. No design,
+image mask, reference source or tolerance was changed to conceal this behavior.
+
+The new strict Connect gate therefore uses pinned Playwright WebKit, adding
+Safari-family engine coverage while preserving every original Chromium check.
+Twelve repeated WebKit controls matched with zero raw differences. Both sources
+use the same WebKit engine, fresh per-case browser processes, native full-page
+screenshots and uninstrumented-first capture; every axe assertion still executes.
+Reduced-motion duration is compared as exact numeric seconds (1e-6), preserving
+its value across Chromium's `1e-06s` and WebKit's `0.000001s` serialization.
+Single-pixel/source/dimension negative controls remain mandatory. This is additional
+automated WebKit coverage, not physical iPhone Safari or VoiceOver acceptance.
+
+CI installs both Chromium and WebKit using Playwright's supported installer. Local
+non-root WebKit setup uses the same official browser binary with user-owned Debian
+libraries and an optional `RALLY_WEBKIT_EXECUTABLE` launcher; no system configuration,
+QA check, or CI dependency validation is bypassed. The normal CI path needs no
+custom launcher. Final full-gate results below validate the chosen engine/pipeline.
+
+WebKit readiness control: one doubled-text snapshot initially showed the previous
+normal-size native paint although the DOM had its larger text applied. Strict
+capture now flushes layout before font readiness and requires two consecutive
+byte-identical native screenshots (the same bounded eight-frame rule used by the
+historical suite), failing if native paint never stabilizes. This readiness loop
+never reads the approved image or changes application styles. Real one-pixel and
+source/dimension regressions still fail the separate zero-raw-difference comparison.
+Two added unit controls prove stale frames are not accepted and persistent
+instability fails rather than relaxing the gate. Total application test count: 870.
+
+Visual pose is explicit: after navigation RAFs and font weights have settled, each
+visual fixture is scrolled to the start of its active content region before native
+capture. A doubled-text thread control had different allowed initial scroll offsets
+as font/composer layout finished; comparing different portions of the same thread
+is not a style comparison. This known-position pose matches the reviewed thread /
+Room presentation. Default opening position and saved scroll restoration remain
+covered by the unchanged original Chromium behavioral suites, and all accessibility,
+permission, draft, reply, reaction and RSVP assertions still execute. No region is
+cropped, hidden or exempted from the exact comparison.
+
+## Final local automated acceptance
+
+- Strict approved Connect reference: WebKit 27.2, ten protected source files,
+  **86 comparison pairs / zero raw pixel differences / no errors**. Complete
+  standalone and profile functional/accessibility assertions passed on both builds.
+- Original historical gate: 75 protected files, **64 comparison pairs / zero raw
+  pixel differences / no page errors**, preserving PR119, prior Read and UX02 sources.
+- All 13 comprehensive local browser suites passed: mobile/legacy/source flows,
+  onboarding, Blank Battle, Groups safety, standalone/integrated messaging,
+  leadership demo, full preview/Today/Ask/care/roles/Connect, representative journeys,
+  premium Read, adaptive scenarios, synthetic review and VersePlay browser.
+- VersePlay browser: 433 checks, 49 pairs, no mismatches, console errors or font failures.
+- Final application/unit count is 870; VersePlay unit count is 172. Normal and
+  deploy-preview builds pass; all 186 built application files match approved source.
+
+The capture investigations and engine choice above are documented rather than
+hidden by masks, skipped scenes or relaxed thresholds. Original Chromium coverage
+remains mandatory, alongside the added WebKit gate. Runtime, permissions, read
+cursors, persistence and approved presentation remain unchanged. CI/exact-head
+Netlify provenance and the current device-acceptance URL are recorded in PR147.
+Physical iPhone Safari, VoiceOver and final visual acceptance are outstanding;
+record the actual device model/iOS/Safari, reviewer and results for all eight
+checklist categories. Reference approval does not authorize merging.

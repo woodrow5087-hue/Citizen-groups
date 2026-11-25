@@ -61,3 +61,27 @@ sending, shared Chat/Plans RSVP state, axe, four tabs and host focus restoration
 Existing standalone, persistence, unavailable/guest, draft/reaction and cross-surface
 suites remain. No new visual reference may be pinned and no merge performed without
 explicit owner approval. Consolidated review evidence is separate from references.
+
+## Owner visual-reference approval — 2026-11-25
+
+The owner explicitly approved `26153bab8660144e4bf8e50bbef6482b6e112d12`
+as the intentional Connect-only visual regression reference. This supersedes all
+reference-pending statements above. Preserve the approved inboxes/portrait rail,
+conversation type/bubbles, direct experience, Room Chat/Plans/People, event widgets,
+composer and return control. This is reference approval only; physical Safari /
+VoiceOver, final visual acceptance and merge authorization remain outstanding.
+
+Reference establishment is validation/documentation only: no application runtime
+change. The immutable source manifest protects ten Connect HTML/script/style files.
+The strict runner builds the approved commit and compares all 86 existing standalone
+and embedded state captures, including four widths, short height, doubled text and
+three membership profiles, requiring zero raw pixel differences. Both existing
+functional/assertion suites execute on each WebKit build. Their original Chromium
+CI invocations also remain, so this adds engine coverage without removing checks.
+All original 64 historical comparisons,
+source inverses/hashes, game protection, synthetic and other regression gates remain.
+
+Strict Connect pixels use Playwright WebKit after Chromium self-comparisons exposed
+intermittent portrait-edge raster variations in identical builds. All existing
+Chromium functional checks and historical pixel gates are retained unchanged in
+scope. This is a validation-engine decision; the approved application is unchanged.
