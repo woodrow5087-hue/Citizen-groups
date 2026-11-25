@@ -647,10 +647,11 @@ if(s.view==='group'&&s.groupPane==='chat'&&todayUI.memberships.group&&$('rpx-cha
     if(note){note.hidden=false;note.textContent='The new fictional conversation could not load. Your earlier saved messages remain available below.';}
   }
 }
-$('nav').innerHTML=[['today','Today','home'],['group','Groups','group'],['team','Team','team'],['read','Read','read']].map(([id,label,glyph])=>`<button type="button" class="${s.view===id||(s.view==='play'&&id==='read')?'active':''}" data-go="${id}" ${s.view===id||(s.view==='play'&&id==='read')?'aria-current="page"':''}>${icon(glyph)}<small>${label}</small></button>`).join('');
+$('nav').innerHTML=[['today','Today','home'],['group','Groups','group'],['team','Team','team'],['read','Read','read']].map(([id,label,glyph])=>`<button type="button" class="${s.view===id||(s.view==='play'&&id==='read')?'active':''}" data-go="${id}" ${s.view===id||(s.view==='play'&&id==='read')?'aria-current="page"':''}>${icon(glyph==='team'&&hybridShell.classList.contains('s13-shell')?'heart':glyph)}<small>${label}</small></button>`).join('');
 
 $('profile-initials').textContent=(todayUI.name||'Jonathan').split(/\s+/).map(v=>v[0]).join('').slice(0,2).toUpperCase();
 const snapshot=T.snapshot(s,todayUI,new Date(),conversation());$('activity-dot').hidden=!snapshot.attention&&!snapshot.leader;
+if(hybridShell.classList.contains('s13-shell'))$('connect-entry').setAttribute('aria-label',$('activity-dot').hidden?'Connect messages and activity':'Connect messages and activity, new activity available');
 view.scrollTop=position;
 }
 function openConnect(screen='inbox', person=''){
@@ -716,6 +717,15 @@ function openConnect(screen='inbox', person=''){
  };
  frame.src='connect-design-lab.html';
  overlay.append(back,frame);
+ let openActivityAfterClose=false;
+ if(phone.classList.contains('s13-shell')){
+   overlay.classList.add('s13-connect-combined');
+   const tools=document.createElement('div');tools.className='s13-connect-tools';
+   const activity=document.createElement('button');activity.type='button';activity.className='s13-activity-trigger';
+   activity.innerHTML=icon('bell')+'<span>Activity</span>';
+   activity.onclick=()=>{if(openActivityAfterClose)return;openActivityAfterClose=true;history.back();};
+   tools.append(activity);overlay.insertBefore(tools,frame);
+ }
  phone.append(overlay);
  fit();
  overlay.showModal();
@@ -733,6 +743,7 @@ function openConnect(screen='inbox', person=''){
    window.removeEventListener('popstate',close);
    overlay.close();overlay.remove();
    render();
+   if(openActivityAfterClose){showDialog('notifications',$('connect-entry'));return;}
    if(opener?.isConnected)opener.focus();
    else $('connect-entry').focus();
  }
