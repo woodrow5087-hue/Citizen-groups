@@ -282,7 +282,8 @@ function unify(view){
   }
  }
  const read=view.querySelector('.ux-read-premium');
- if(read){
+ if(read&&!read.classList.contains('s13-daily-rhythm')){
+  read.classList.add('s13-daily-rhythm');
   const header=read.querySelector('.ux-read-heading');
   if(header){header.prepend(node('span','s13-page-eyebrow','DAILY RHYTHM'));header.querySelector('h1').textContent='Make space.';header.querySelector('p').textContent='Read, reflect and pray at your own pace.';}
   const feature=read.querySelector('.ux-reading-feature');
@@ -292,6 +293,8 @@ function unify(view){
   if(scripture&&disclosure){
    // Surface the original BSB card and let the existing render cycle restore open panels.
    header?.after(scripture);
+   const readButton=scripture.querySelector('[data-action="read"]');
+   if(readButton)readButton.setAttribute('aria-pressed',String(readButton.classList.contains('chosen')));
    const invitations=node('div','s13-read-invitations');
    const panels=[
     ['reflect','Reflect','Consider a question',read.querySelector('#reading-questions')],
@@ -307,6 +310,7 @@ function unify(view){
     summary.append(text);
     const glyph=content.querySelector('.icon')?.cloneNode(true);
     if(glyph)summary.prepend(glyph);
+    const chevron=node('span','s13-panel-chevron');chevron.setAttribute('aria-hidden','true');chevron.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>';summary.append(chevron);
     panel.append(summary,content);invitations.append(panel);
    }
    if(invitations.childElementCount)scripture.after(node('h2','s13-subhead','Go a little deeper'),invitations);
@@ -320,11 +324,12 @@ function unify(view){
   }
   if(arcade){
    arcade.before(node('h2','s13-subhead','VersePlay'));
+   arcade.prepend(node('p','s13-verseplay-intro','Practice Scripture. Make it stick.'));
    const entry=arcade.querySelector('.ux-circuit');
    if(entry){
     const title=node('span','s13-circuit-copy');
-    title.append(node('strong','','Verse Circuit'),node('small','','Practice a verse'));
-    const mark=node('span','s13-circuit-mark','V');
+    title.append(node('strong','','Verse Circuit'),node('small','','Trace · Link · Echo'));
+    const mark=node('span','s13-circuit-mark');mark.innerHTML='<svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3 28 10v12l-12 7L4 22V10zM9 10h5l4 6h5M9 22h5l4-6"/><circle cx="9" cy="10" r="1.7"/><circle cx="23" cy="16" r="1.7"/><circle cx="9" cy="22" r="1.7"/></svg>';
     mark.setAttribute('aria-hidden','true');
     const trailing=node('span','s13-circuit-arrow');trailing.innerHTML=arrow;
     entry.replaceChildren(mark,title,trailing);
