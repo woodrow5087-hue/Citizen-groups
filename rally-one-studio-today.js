@@ -130,12 +130,12 @@ function render(html,{model:d,board:b,now,campus}={},doc=globalThis.document){
 // ALIVE 01: shared presentation roles, applied to existing nodes only.
 // This does not create actions, intercept events, or own member state.
 const componentRoles=Object.freeze({
- 's13-component-feature':'.gv2-group-hero,.gv2-widget-gather,.team-schedule-card,.s13-serve-feature,.ux-reading-feature,.read-scripture-card',
+ 's13-component-feature':'.gv2-group-hero,.gv2-widget-gather,.team-schedule-card,.s13-gather-card,.ux-reading-feature,.read-scripture-card',
  's13-component-row':'.gv2-widget-chat,.gv2-care,.team-message-preview,.s13-assignment-detail,.ux-disclosure',
- 's13-component-action':'.gv2-hero-action,.gv2-widget-cta,.team-shift-actions .btn,.ux-reading-feature .ux-cta,.read-scripture-card .btn',
+ 's13-component-action':'.gv2-hero-action,.gv2-widget-cta,.team-shift-actions .btn,.s13-gather-actions .btn,.ux-reading-feature .ux-cta,.read-scripture-card .btn',
  's13-component-title':'.gv2-heading h1,.team-v08-hero h1,.ux-read-heading h1,.gv2-detail-heading h1',
  's13-component-section':'.s13-subhead',
- 's13-component-icon':'.gv2-widget-chat .gv2-widget-icon,.gv2-care-icon'
+ 's13-component-icon':'.gv2-widget-icon,.gv2-care-icon'
 });
 function applyCraft(view){
  for(const [role,selector] of Object.entries(componentRoles)){
@@ -155,12 +155,17 @@ function unify(view){
  if(group){
   const header=group.querySelector('.gv2-heading-row'),title=header?.querySelector('h1'),label=header?.querySelector('small');
   if(title)title.textContent='Your people.';
-  if(header&&label){label.textContent='Wednesday Group · demo community';header.after(label);}
+  if(header&&label){label.textContent='Life together.';header.after(label);}
   const rail=group.querySelector('.gv2-rail-wrap'),hero=group.querySelector('.gv2-group-hero'),widgets=group.querySelector('.gv2-widgets');
   if(hero){
    const art=node('span','s13-group-cover');const img=node('img','');img.src='assets/rally-one/community.webp';img.alt='';img.decoding='async';art.append(img);hero.prepend(art);
-   // Retain the existing group-details action and exact group metadata.
-   const brand=hero.querySelector('.gv2-hero-brand');if(brand)brand.classList.add('s13-cover-label');
+   const caption=node('span','s13-group-caption');
+   const identity=node('span','s13-group-identity');
+   for(const part of hero.querySelectorAll('strong,.gv2-hero-meta'))identity.append(part);
+   caption.append(identity);
+   const action=hero.querySelector('.gv2-hero-action');if(action)caption.append(action);
+   hero.querySelector('.gv2-hero-brand')?.remove();
+   hero.append(caption);
   }
   if(widgets){
    const gather=widgets.querySelector('.gv2-widget-gather'),chat=widgets.querySelector('.gv2-widget-chat');
@@ -178,16 +183,44 @@ function unify(view){
    if(kicker)kicker.textContent='SERVE TOGETHER';
   }
   const shift=team.querySelector('.team-schedule-card');
+  const tabs=team.querySelector('.tabs');
+
   if(shift){
-   const heading=shift.querySelector('h2');if(heading)heading.textContent='Your next assignment.';
+   header?.querySelector('.team-v08-hero-row')?.remove();
+   const heading=shift.querySelector('h2'),name=shift.querySelector('.team-shift-info strong');
+   if(heading&&name){heading.textContent=name.textContent;name.remove();}
    const over=shift.querySelector('.team-card-overline>span:first-child');if(over)over.textContent='NEXT ASSIGNMENT';
-   const info=shift.querySelector('.team-shift-info');
-   if(info){const art=node('span','s13-team-mini','HERE TO SERVE.');art.setAttribute('aria-hidden','true');info.after(art);}
+   const response=shift.querySelector('.team-shift-response');
+   const coverage=response?.querySelector('.pill');
+   if(coverage)shift.querySelector('.team-card-overline')?.append(coverage);
+   response?.remove();
+
    const huddle=team.querySelector('.team-huddle');
    if(huddle){
-    // Keep the canonical huddle time and coordination action, expose them progressively.
-    const details=node('details','s13-assignment-detail');details.append(node('summary','','Assignment details'));huddle.before(details);details.append(huddle);
-    const art=node('aside','s13-serve-feature');art.append(node('span','s13-serve-eyebrow','SERVING TOGETHER'),node('strong','','Small acts. Real impact.'),node('p','','Everyone has a part to play.'));details.after(art);
+    const details=node('details','s13-assignment-detail');
+    const summary=node('summary','','Arrival & huddle');
+    const timing=huddle.querySelector('.team-huddle-time');
+    if(timing)summary.append(timing);
+    details.append(summary,huddle);
+    shift.after(details);
+    huddle.querySelector('.kicker')?.remove();
+    huddle.querySelector('h3')?.remove();
+   }
+   const chat=team.querySelector('.team-message-preview');
+   if(chat){
+    const preview=node('span','s13-team-chat-copy');
+    const sender=chat.querySelector(':scope > strong'),message=chat.querySelector('.team-message-preview-text');
+    if(sender&&message){preview.textContent=sender.textContent+' · ';preview.append(message);sender.replaceWith(preview);}
+    const label=chat.querySelector('.team-message-preview-top>span:first-of-type');
+    if(label)label.textContent='Team conversation';
+    chat.querySelector('.team-message-preview-action')?.remove();
+    const chatTab=tabs?.querySelector('button[data-value="chat"]');
+    if(chatTab){
+     tabs.classList.add('s13-team-schedule-nav');
+     tabs.querySelector('button[data-value="schedule"]')?.remove();
+     chatTab.replaceWith(chat);
+     (team.querySelector('.s13-assignment-detail')||shift).after(tabs);
+    }
    }
   }
  }
