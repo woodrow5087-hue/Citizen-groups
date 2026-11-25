@@ -88,3 +88,13 @@ test('ALIVE 02B preserves schedule response, coverage and arrival commands when 
  assert.match(v.querySelector('.s13-shift-note').textContent,/not attendance/);
  assert.equal(v.querySelector('.team-schedule-card').dataset.response,'declined');assert.deepEqual(keys(v),before);
 });
+
+test('ALIVE 02C care presentation preserves every original command, state and disclosure',()=>{
+ const d=fixture('<section class="group-screen-v07"><section class="ro-care ro-care--group" data-care-stage="prayed"><div class="ro-care-header"><span class="ro-care-mark">R.</span><span class="ro-care-overline">CARE</span></div><div class="ro-care-copy"><h2>Care</h2><p>A personal check-in is optional.</p></div><ol class="ro-care-steps"><li class="is-complete">Notice</li><li class="is-complete">Pray</li><li>Connect</li></ol><div class="ro-care-actions"><button data-action="companion-encourage">Write a check-in</button><button data-action="care-open-prayer">Review prayer</button><button data-action="companion-snooze">Later</button></div><small class="ro-care-disclaimer">No automatic outreach</small></section></section>'),v=d.querySelector('#view'),before=keys(v);
+ Studio.refineCare(v);Studio.refineCare(v);
+ assert.equal(v.querySelectorAll('.s13-care-disclosure').length,1);
+ assert.equal(v.querySelector('.ro-care').dataset.careStage,'prayed');
+ assert.match(v.querySelector('.ro-care-copy').textContent,/optional/);
+ assert.match(v.querySelector('.ro-care-disclaimer').textContent,/No automatic outreach/);
+ assert.deepEqual(keys(v),before);
+});
