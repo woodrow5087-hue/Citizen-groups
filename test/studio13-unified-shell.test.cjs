@@ -56,3 +56,13 @@ test('Activity indicator stays attached to the chat glyph when visible and hidde
  dot.hidden=true;Studio.shell(v,()=>'<svg></svg>');assert.equal(dot.parentElement,mark);assert.equal(dot.hidden,true);
  assert.equal(d.querySelectorAll('#activity-dot').length,1);assert.equal(connect.dataset.action,'connect-inbox');
 });
+
+test('ALIVE craftsmanship assigns reusable presentation roles without adding or losing actions',()=>{
+ const d=fixture('<section class="team-screen-v08"><div class="team-v08-hero"><h1>Your team.</h1></div><div class="team-schedule-card"><div class="team-shift-actions"><button class="btn" data-action="shift" data-value="confirmed">Confirm</button></div></div><button class="team-message-preview" data-action="pane" data-area="team" data-value="chat"><span class="team-message-preview-top"><svg></svg><span>Conversation</span><svg></svg></span></button></section>'),v=d.querySelector('#view'),before=keys(v);
+ Studio.applyCraft(v);Studio.applyCraft(v);
+ assert.ok(v.querySelector('.team-schedule-card.s13-component-feature'));
+ assert.ok(v.querySelector('.team-shift-actions .s13-component-action'));
+ assert.ok(v.querySelector('.team-v08-hero .s13-component-title'));
+ assert.equal(v.querySelectorAll('.team-message-preview-top .s13-message-glyph').length,1);
+ assert.deepEqual(keys(v),before);
+});
