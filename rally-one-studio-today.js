@@ -17,15 +17,24 @@ function render(html,{model:d,board:b,now,campus}={},doc=globalThis.document){
  const calm=allSet||clearCommitments;
  const head=root.querySelector('.f09-greeting');head.replaceChildren();
  head.append(node('span','s13-eyebrow',[d.nowLabel,campus&&campus+' campus'].filter(Boolean).join(' · ')));
- head.append(node('h1','',allSet?'You’re all set.':clearCommitments?'Commitments handled.':h.id==='welcome-community'?'Glad you’re here.':h.id==='paused'?h.title:(d.greeting||'Welcome back')+'.'));
+ head.append(node('h1','',calm?'You’re all set.':h.id==='welcome-community'?'Glad you’re here.':h.id==='paused'?h.title:(d.greeting||'Welcome back')+'.'));
  const count=requiredIds.size;
  head.append(node('p','s13-summary'+(calm?' is-complete':''),allSet?'No outstanding responsibilities':clearCommitments?'No outstanding commitment responses':h.id==='paused'?h.subtitle:h.id==='welcome-community'?'Explore at your pace.':count?count+' '+(count===1?'thing needs':'things need')+' your response':hasPending?'A commitment remains to review':'Your next step'));
  const priority=root.querySelector('.f09b-hero'),title=priority.querySelector('h2'),detail=priority.querySelector('.f09b-hero-main>p');
  const primary=priority.querySelector('.f09b-primary'),explain=priority.querySelector('.f09b-explain');
  const faces=priority.querySelector('.f09b-faces');
- const context=node('section','s13-context');context.setAttribute('aria-label','Priority context');
- if(explain)context.append(explain);
- const ask=root.querySelector('.f10-entry');if(ask)context.append(ask);
+ // Compact controls replace the permanent bottom-of-page dashboard.
+ const ask=root.querySelector('.f10-entry');
+ if(ask){
+  const askButton=ask.querySelector('[data-action="f10-open"]');
+  if(askButton){askButton.className='s13-ask-trigger';askButton.textContent='Ask';askButton.setAttribute('aria-label','Ask Rally');head.append(askButton);}
+  ask.remove();
+ }
+ if(explain){
+  explain.classList.add('s13-info');
+  const summary=explain.querySelector('summary');
+  if(summary){summary.textContent='i';summary.setAttribute('aria-label','Why this priority?');summary.title='Why this priority?';}
+ }
  const placeholder=(large=false)=>{
   const el=node('div','s13-image-placeholder'+(large?' is-wide':''));
   if((d.member&&large)||h.id==='group-rsvp'||h.id==='welcome-community'){
@@ -39,11 +48,14 @@ function render(html,{model:d,board:b,now,campus}={},doc=globalThis.document){
  const dateFor=id=>id==='group-rsvp'?d.groupDate:id==='serve-response'?d.serveDate:null;
  const valid=date=>date instanceof Date&&Number.isFinite(date.valueOf());
  const dateLabel=date=>valid(date)?(date.toDateString()===now.toDateString()?'Today':date.toLocaleDateString('en-US',{weekday:'short'}))+' · '+date.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'}):'';
- let readAction=primary;
- if(allSet){
-  priority.classList.add('s13-settled');title.textContent=d.member?'Life is better together.':'Small acts. Real impact.';
+ if(calm){
+  priority.classList.add('s13-settled');if(clearCommitments)priority.classList.add('s13-commitments-clear');
+  title.textContent=d.member?'Life is better together.':'Small acts. Real impact.';
   detail.textContent=d.member?'Take a moment to connect with your people.':'Your serving community is here for you.';
   const body=node('div','s13-settled-copy');body.append(title,detail);priority.replaceChildren(placeholder(true),body);
+  if(allSet&&explain)body.append(explain);
+  // This is a presentation state only: never alter the canonical caught-up flag.
+  if(clearCommitments)priority.removeAttribute('data-priority');
  }else{
   const top=node('div','s13-priority-meta');top.append(node('span','s13-kicker',h.eyebrow==='NEXT UP'?'UP NEXT':h.eyebrow),node('span','',dateLabel(dateFor(h.id))));
   const line=node('div','s13-priority-line'),copy=node('div','s13-priority-copy');
@@ -55,20 +67,15 @@ function render(html,{model:d,board:b,now,campus}={},doc=globalThis.document){
   const actionLabel=h.id==='group-rsvp'&&valid(d.groupDate)?'RSVP for '+(d.groupDate.toDateString()===now.toDateString()&&d.groupDate.getHours()>=17?'tonight':d.groupDate.toLocaleDateString('en-US',{weekday:'long'})):h.id==='serve-response'?'Confirm availability':h.heroLabel;
   primary.replaceChildren(doc.createTextNode(actionLabel),node('span','s13-arrow'));primary.lastChild.innerHTML=arrow;
   priority.replaceChildren(top,line,primary);
+  if(explain)top.append(explain);
  }
  const priorities=root.querySelector('.f09b-priorities'),rows=root.querySelector('.f09b-row-stack');
  const responseRows=[...rows.querySelectorAll('.is-actionable')];
  const requiredRows=responseRows.filter(r=>requiredIds.has(r.dataset.row));
- const optionalRows=[...rows.children].filter(r=>!requiredRows.includes(r));
- const optionalStack=node('div','f09b-row-stack');
- for(const row of optionalRows)optionalStack.append(row);
- if(clearCommitments){
-  const settled=node('article','f09b-hero s13-settled s13-commitments-clear');
-  const body=node('div','s13-settled-copy');
-  body.append(node('h2','',d.member?'Life is better together.':'Small acts. Real impact.'),node('p','','Your commitments remain on your schedule.'));
-  settled.append(placeholder(true),body);priority.before(settled);
-  priority.classList.add('s13-optional-hero');
- }
+ // Non-commitment suggestions already have homes in Groups, Connect and Read.
+ // Preserve an unavailable-conversation action rather than treating unknown data as read.
+ const unavailableRow=responseRows.find(r=>r.dataset.row==='group-unavailable');
+ for(const row of [...rows.children])if(!requiredRows.includes(row))row.remove();
  for(const row of responseRows){const item=b.agenda.find(a=>a.id===(row.dataset.row==='serve-response'?'serve':row.dataset.row==='group-rsvp'?'group':''));if(item)row.querySelector('.f09b-row-copy strong').textContent=item.title;}
  if(requiredRows.length){const label=node('div','s13-section-head');label.append(node('h2','','Also needs a response'),node('small','',requiredRows.length+' remaining here'));priorities.append(label,rows);}
  else rows.remove();
@@ -92,14 +99,29 @@ function render(html,{model:d,board:b,now,campus}={},doc=globalThis.document){
   const mark=node('span','s13-utility-icon');mark.setAttribute('aria-hidden','true');mark.innerHTML=type==='read'?'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 6C9 4 6 4 2 4v15c4 0 7 0 10 2 3-2 6-2 10-2V4c-4 0-7 0-10 2Zm0 0v15"/></svg>':'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M21 11a8 8 0 0 1-8 8H8l-5 3 1-7A8 8 0 1 1 21 11Z"/></svg>';
   const copy=node('span','s13-utility-copy');copy.append(node('strong','',title),node('small','',sub));const next=node('span','s13-arrow');next.setAttribute('aria-hidden','true');next.innerHTML=arrow;button.append(mark,copy,next);return button;
  };
- if(clearCommitments)priorities.append(priority);
- if(optionalStack.children.length)priorities.append(optionalStack);
- if(d.member&&h.id!=='group-unread'&&!optionalRows.some(r=>r.dataset.row==='group-unread'||r.dataset.row==='group-unavailable'||r.dataset.row==='community')&&h.id!=='group-unavailable')priorities.append(utility(d.conversationStatus==='unavailable'?'Review your conversation':d.unread>0?d.unread+' new group '+(d.unread===1?'message':'messages'):'Group conversation',d.conversationStatus==='unavailable'?'Conversation data unavailable':'Wednesday Group','group','chat'));
- const reading=utility(d.readToday?'Reading complete':'A moment with God',d.passage||'Your Scripture reading','read','','read');
- if(allSet){reading.classList.add('f09b-primary');reading.dataset.go=readAction.dataset.go||'read';}
- if(h.id!=='scripture-step'&&!optionalRows.some(r=>['scripture-step','scripture-read','scripture-overview'].includes(r.dataset.row)))priorities.append(reading);
- const mission=root.querySelector('.f09b-mission');if(mission){mission.classList.add('s13-community-link');mission.replaceChildren(doc.createTextNode(d.member?'View your community':'Explore community'),node('span','s13-arrow'));mission.lastChild.innerHTML=arrow;}
- priorities.after(context);
+ const optional=node('div','s13-optional');
+ const messageNeeded=d.member&&(d.conversationStatus==='unavailable'||d.unread>0);
+ const primaryIsMessage=!calm&&['group-unread','group-unavailable'].includes(h.id);
+ if(messageNeeded&&!primaryIsMessage){
+  if(unavailableRow&&d.conversationStatus==='unavailable')optional.append(unavailableRow);
+  else optional.append(utility(d.conversationStatus==='unavailable'?'Review your conversation':d.unread+' new group '+(d.unread===1?'message':'messages'),d.conversationStatus==='unavailable'?'Conversation data unavailable':'Wednesday Group','group','chat'));
+ }
+ // Reading is an invitation, not a required response. A completed reading
+ // never needs its own Today card; a saved due intention stays reachable in Read.
+ if((calm||!optional.children.length)&&(!d.readToday||d.rhythmDue===true)&&!(h.id==='scripture-step'&&!calm)){
+  optional.append(utility(d.rhythmDue===true?'Review your saved Scripture step':'A moment with God',d.passage||'Your Scripture reading','read','','read'));
+ }
+ if(optional.children.length)priorities.append(optional);
+ // Member rail, community shortcut, and optional prayer suggestions live on
+ // their existing destination screens; do not create duplicate Today's actions.
+ root.querySelector('.gv2-today-people')?.remove();
+ root.querySelector('.f09b-mission')?.remove();
+ const footer=root.querySelector('.f09b-footer');
+ if(footer){
+  // Keep the local-demo disclosure, not the obsolete layout comparison shortcuts.
+  footer.querySelectorAll('a').forEach(link=>link.remove());
+ }
+
  return root.outerHTML;
 }
 // Studio 13 presentation transplant: rearrange existing authorized nodes, never copy
@@ -169,13 +191,20 @@ function shell(view,icon){
  const active=doc.body.classList.contains('rally-one')&&!!view.querySelector('.s13-today,.group-screen-v07,.team-screen-v08,.read-screen-v09')&&!phone?.classList.contains('is-play-v08');
  phone?.classList.toggle('s13-shell',active);
  const connect=doc.getElementById('connect-entry'),controls=phone?.querySelector('.header-controls'),profile=controls?.querySelector('.profile-avatar');
+ const today=!!view.querySelector('.s13-today');
+ // Reuse the original Ask action and keep focus stable on Today re-renders.
+ const incoming=view.querySelector('.s13-ask-trigger'),previous=controls?.querySelector('.s13-ask-trigger');
+ if(active&&today&&incoming&&controls){
+  if(previous)incoming.remove();else controls.insertBefore(incoming,connect?.parentElement===controls?connect:profile||null);
+ }else previous?.remove();
+ phone?.classList.toggle('s13-ask-header',active&&today&&!!controls?.querySelector('.s13-ask-trigger'));
  if(connect&&!connect.querySelector('.s13-connect-icon')){const mark=doc.createElement('span');mark.className='s13-connect-icon';mark.setAttribute('aria-hidden','true');mark.innerHTML=icon('message');connect.append(mark);}
  if(!active){if(connect&&connect.parentElement!==phone&&phone)phone.insertBefore(connect,view);return;}
  // Move the same inbox control so its target/focus remains canonical.
  if(connect&&controls&&profile)controls.insertBefore(connect,profile);
  // The external music link remains accessible as a quiet optional utility.
  const music=controls?.querySelector('.spotify-link');
- if(music){const link=music.cloneNode(true);link.className='s13-music-link';link.removeAttribute('id');link.textContent='Citizen worship playlist ↗';view.append(link);}
+ if(music&&!today){const link=music.cloneNode(true);link.className='s13-music-link';link.removeAttribute('id');link.textContent='Citizen worship playlist ↗';view.append(link);}
  unify(view);
 }
 return Object.freeze({render,shell,unify});
