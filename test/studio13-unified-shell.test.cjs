@@ -38,3 +38,11 @@ test('Ask Rally uses the original action in the Today header once and disappears
  v.innerHTML=markup;Studio.shell(v,()=>'<svg></svg>');assert.equal(d.querySelector('.header-controls [data-action=f10-open]'),ask);assert.equal(d.querySelectorAll('[data-action=f10-open]').length,1);
  v.innerHTML='<section class="group-screen-v07"></section>';Studio.shell(v,()=>'<svg></svg>');assert.equal(d.querySelector('[data-action=f10-open]'),null);
 });
+
+test('Shared header renders the standard chat glyph once and preserves notification badge ownership',()=>{
+ const d=fixture('<section class="s13-today"></section>'),v=d.querySelector('#view');
+ Studio.shell(v,()=>'<svg></svg>');Studio.shell(v,()=>'<svg></svg>');
+ const connect=d.querySelector('#connect-entry'),glyph=connect.querySelector('.s13-message-glyph');
+ assert.ok(glyph);assert.equal(glyph.querySelectorAll('circle').length,3);assert.equal(connect.querySelectorAll('.s13-message-glyph').length,1);
+ assert.equal(d.querySelector('#activity-dot').parentElement,connect);assert.equal(connect.dataset.action,'connect-inbox');
+});
