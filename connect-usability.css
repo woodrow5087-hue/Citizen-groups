@@ -215,3 +215,16 @@ body.connect-member :is(.composer,#thread-form) .send-btn:disabled{background:#4
 body.connect-member :is(.composer,#thread-form) .send-btn svg{stroke:currentColor}
 body.connect-member .room-tabs button[aria-selected=true]{background:#f4eee3;color:#191a1b}
 body.connect-member .moment-card{background:#292c2f;border-color:#3d4042;box-shadow:none}
+
+/* ALIVE 01: match the shell component geometry inside the existing member iframe.
+   Explicit palette matches the Studio contract; standalone lab is unchanged. */
+body.connect-member{--s13-card:#292c2f;--s13-paper:#f4eee3;--s13-border:#3d4042;--s13-touch:44px;--s13-icon:22px;--s13-row-radius:14px}
+body.connect-member .conversation-row{border-radius:var(--s13-row-radius);border-color:var(--s13-border);padding:12px;gap:12px;min-height:72px;box-shadow:none}
+body.connect-member .conversation-row .list-avatar{width:44px;height:44px;flex:0 0 44px}
+body.connect-member .conversation-copy strong{font-size:.9375rem;line-height:1.3;font-weight:750}
+body.connect-member .conversation-copy>span{font-size:.8125rem;line-height:1.4}
+body.connect-member :is(#search-toggle,#compose-toggle){box-sizing:border-box;width:var(--s13-touch);height:var(--s13-touch);min-width:var(--s13-touch);min-height:var(--s13-touch);display:grid;place-items:center;padding:0;box-shadow:none}
+body.connect-member :is(#search-toggle,#compose-toggle) .icon{width:var(--s13-icon);height:var(--s13-icon);stroke:#f3e9d8;stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round}
+body.connect-member :is(.composer,#thread-form) .send-btn{box-sizing:border-box;min-width:var(--s13-touch);min-height:var(--s13-touch);width:var(--s13-touch);height:var(--s13-touch);display:grid;place-items:center;flex:none}
+body.connect-member :is(.composer,#thread-form) .send-btn svg{width:var(--s13-icon);height:var(--s13-icon);stroke-width:1.75}
+@media(max-width:350px){body.connect-member .conversation-row{gap:8px;padding:10px}}
