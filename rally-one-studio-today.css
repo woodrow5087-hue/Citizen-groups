@@ -222,3 +222,25 @@
 .rally-one .premium-alive.s13-shell #view .gv2-home .gv2-widget-gather:has(.gv2-widget-cta):active,.rally-one .premium-alive.s13-shell #view .gv2-group-hero:active{transform:scale(.985)}
 @media(max-width:360px){.rally-one:not(.rp-welcome-active) .premium-alive.s13-shell .header-controls{gap:3px}.rally-one:not(.rp-welcome-active) .premium-alive.s13-shell .brand-home span{font-size:17px}.rally-one .premium-alive.s13-shell #view :is(.gv2-heading-row h1,.team-v08-hero h1,.ux-read-heading h1,.gv2-detail-heading h1){font-size:2.0625rem}.rally-one .premium-alive.s13-shell #view .s13-team-mini{width:52px;height:60px;font-size:.6875rem}}
 @media(prefers-reduced-motion:reduce){.rally-one .premium-alive.s13-shell #view :is(button,a):active{transform:none}.rally-one .premium-alive.s13-shell #view :is(button,a){animation:none;transition:none}}
+
+/* Studio 13: deliberate subtraction from Today only. */
+.rally-one .premium-alive.is-f09-board #view .s13-today .s13-optional{display:grid;gap:8px;margin-top:10px}
+.rally-one .premium-alive.is-f09-board #view .s13-today .s13-optional>.s13-utility{margin:0}
+.rally-one .premium-alive.is-f09-board #view .s13-today .f09b-footer{display:block;text-align:center;padding:12px 0 0;margin:0;background:none;min-height:0}
+.rally-one .premium-alive.is-f09-board #view .s13-today .f09b-footer>span{font-size:.5625rem;letter-spacing:.035em;color:#b4b4ae}
+.rally-one .premium-alive.is-f09-board #view .s13-today .s13-priority-meta{display:flex;align-items:center;flex-wrap:wrap;gap:6px;margin-bottom:7px}
+.rally-one .premium-alive.is-f09-board #view .s13-today .s13-priority-meta>span:nth-child(2){margin-left:auto}
+.rally-one .premium-alive.is-f09-board #view .s13-today .f09b-explain.s13-info{position:relative;display:block;width:auto;max-width:100%;flex:0 0 auto;min-height:0;padding:0;margin:0;background:transparent;color:inherit;border:0;border-radius:0}
+.rally-one .premium-alive.is-f09-board #view .s13-today .f09b-explain.s13-info[open]{flex:0 0 100%}
+.rally-one .premium-alive.is-f09-board #view .s13-today .f09b-explain.s13-info summary{display:grid;place-items:center;width:44px;min-height:44px;padding:0;border:0;background:transparent;color:inherit;font-size:.875rem;font-weight:800;cursor:pointer;list-style:none;border-radius:50%;outline-offset:-3px}
+.rally-one .premium-alive.is-f09-board #view .s13-today .f09b-explain.s13-info summary::before,.rally-one .premium-alive.is-f09-board #view .s13-today .f09b-explain.s13-info summary::after{content:none}
+.rally-one .premium-alive.is-f09-board #view .s13-today .f09b-explain.s13-info summary::-webkit-details-marker{display:none}
+.rally-one .premium-alive.is-f09-board #view .s13-today .f09b-explain.s13-info p{padding:8px 0 0;margin:0;font-size:.75rem;line-height:1.5;color:inherit}
+.rally-one .premium-alive.is-f09-board #view .s13-today .s13-settled-copy>.s13-info summary{margin-top:2px}
+.rally-one .premium-alive.s13-shell .s13-ask-trigger{display:grid;place-items:center;min-width:44px;width:44px;height:44px;min-height:44px;flex:0 0 44px;border-radius:50%;border:1px solid #3b3e40;background:#252729;color:#f4eee3;font-size:.75rem;font-weight:800;padding:0;margin:0;box-shadow:none;letter-spacing:0}
+.rally-one:not(.rp-welcome-active) .premium-alive.s13-shell.s13-ask-header .header{gap:5px;padding-inline:15px}
+.rally-one:not(.rp-welcome-active) .premium-alive.s13-shell.s13-ask-header .header-controls{gap:4px}
+.rally-one:not(.rp-welcome-active) .premium-alive.s13-shell.s13-ask-header .brand-home{min-width:0;gap:4px}
+.rally-one:not(.rp-welcome-active) .premium-alive.s13-shell.s13-ask-header .brand-home span{font-size:clamp(14px,4.2vw,20px);letter-spacing:-.07em}
+.rally-one:not(.rp-welcome-active) .premium-alive.s13-shell.s13-ask-header .brand-home img{width:20px;height:22px}
+@media(max-width:360px){.rally-one:not(.rp-welcome-active) .premium-alive.s13-shell.s13-ask-header .header{padding-inline:9px;gap:4px}.rally-one:not(.rp-welcome-active) .premium-alive.s13-shell.s13-ask-header .header-controls{gap:2px}.rally-one:not(.rp-welcome-active) .premium-alive.s13-shell.s13-ask-header .brand-home span{font-size:14px}.rally-one:not(.rp-welcome-active) .premium-alive.s13-shell.s13-ask-header .brand-home img{width:16px;height:18px}}
