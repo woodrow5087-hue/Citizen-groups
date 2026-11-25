@@ -127,6 +127,27 @@ function render(html,{model:d,board:b,now,campus}={},doc=globalThis.document){
 }
 // Studio 13 presentation transplant: rearrange existing authorized nodes, never copy
 // the studio fixture state or introduce handlers. Existing renderers remain owners.
+// ALIVE 01: shared presentation roles, applied to existing nodes only.
+// This does not create actions, intercept events, or own member state.
+const componentRoles=Object.freeze({
+ 's13-component-feature':'.gv2-group-hero,.gv2-widget-gather,.team-schedule-card,.s13-serve-feature,.ux-reading-feature,.read-scripture-card',
+ 's13-component-row':'.gv2-widget-chat,.gv2-care,.team-message-preview,.s13-assignment-detail,.ux-disclosure',
+ 's13-component-action':'.gv2-hero-action,.gv2-widget-cta,.team-shift-actions .btn,.ux-reading-feature .ux-cta,.read-scripture-card .btn',
+ 's13-component-title':'.gv2-heading h1,.team-v08-hero h1,.ux-read-heading h1,.gv2-detail-heading h1',
+ 's13-component-section':'.s13-subhead',
+ 's13-component-icon':'.gv2-widget-chat .gv2-widget-icon,.gv2-care-icon'
+});
+function applyCraft(view){
+ for(const [role,selector] of Object.entries(componentRoles)){
+  view.querySelectorAll(selector).forEach(el=>el.classList.add(role));
+ }
+ // Use the same conventional chat mark in Team as in Today, Groups and the header.
+ const teamChat=view.querySelector('.team-message-preview-top svg:first-child');
+ if(teamChat){
+  const mark=view.ownerDocument.createElement('span');mark.className='s13-component-icon';mark.setAttribute('aria-hidden','true');
+  mark.innerHTML=messageIcon;teamChat.replaceWith(mark);
+ }
+}
 function unify(view){
  const doc=view.ownerDocument;
  const node=(tag,cls,text)=>{const n=doc.createElement(tag);n.className=cls;if(text!==undefined)n.textContent=text;return n;};
@@ -220,6 +241,7 @@ function shell(view,icon){
  const music=controls?.querySelector('.spotify-link');
  if(music&&!today){const link=music.cloneNode(true);link.className='s13-music-link';link.removeAttribute('id');link.textContent='Citizen worship playlist ↗';view.append(link);}
  unify(view);
+ applyCraft(view);
 }
-return Object.freeze({render,shell,unify});
+return Object.freeze({render,shell,unify,applyCraft});
 });
