@@ -27,3 +27,13 @@ Run targeted local tests first, then consolidated full application, VersePlay, b
 Native iOS widgets/Live Activities, real-time Sunday Live Mode, QR/giving, open volunteer marketplace, drag/resize Smart Stack, church-wide reading campaigns, voice comms, real provider integration. No simulated live capabilities presented as real.
 
 Status: A–F runtime candidate implemented at local source 18514495105b771b2ff06039f8df6d208df2297c. Targeted and comprehensive local functional validation passed; unaffected visual comparisons passed and intentional widget deltas are captured separately. Explicit owner approval of the new visual reference is pending; no new reference has been pinned, branch has not been pushed and no draft PR/deploy is claimed yet. Physical/final visual acceptance and merge authorization remain separate gates. See ux-02-validation.md.
+
+
+## Owner reference approval — 2026-11-25
+Owner approved the hosted visual reference at ef4b8e7bfc2523d109da463b41c78c22ca40d1e9
+(runtime identical to 1851449). This supersedes reference-pending statements above.
+Only Today role scenes, Groups home and Team schedule use the new reference.
+Ask Rally and unaffected PR119 surfaces remain strict; Read keeps its accepted
+premium reference. Four widths now yield 32 PR119 + 4 Read + 28 adaptive pairs.
+The shared module is additionally byte-protected against the approved source.
+Physical Safari/VoiceOver, final acceptance and merge authorization remain pending.

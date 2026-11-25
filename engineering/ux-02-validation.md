@@ -119,3 +119,13 @@ keyboard/VoiceOver names/order/expanded states/focus return and Reduce Motion.
 Recheck the unchanged premium Read, all games/return paths and Connect. Do not merge
 without explicit authorization. Production, canonical development, recovery refs
 and the engineering roadmap remain untouched; no credentials or live records.
+
+
+## Owner reference approval — 2026-11-25
+Owner approved the hosted visual reference at ef4b8e7bfc2523d109da463b41c78c22ca40d1e9
+(runtime identical to 1851449). This supersedes reference-pending statements above.
+Only Today role scenes, Groups home and Team schedule use the new reference.
+Ask Rally and unaffected PR119 surfaces remain strict; Read keeps its accepted
+premium reference. Four widths now yield 32 PR119 + 4 Read + 28 adaptive pairs.
+The shared module is additionally byte-protected against the approved source.
+Physical Safari/VoiceOver, final acceptance and merge authorization remain pending.
