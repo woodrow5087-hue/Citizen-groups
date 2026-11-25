@@ -11,5 +11,7 @@ if(require.main===module){
  const git=(args)=>execFileSync('git',args,{encoding:'utf8'}).trim();
  const baseSha=git(['rev-parse','--verify',base+'^{commit}']),headSha=git(['rev-parse','--verify',head+'^{commit}']);
  const files=execFileSync('git',['diff','--name-only','-z',baseSha,headSha],{encoding:'utf8'}).split('\0').filter(Boolean);
- console.log(JSON.stringify({base:baseSha,head:headSha,files,...classify(files)},null,2));
+ const dirty=!!git(['status','--porcelain']);
+ const plan=dirty?{...classify([]),reason:'Uncommitted work is outside the committed dependency inventory; Tier3 until reviewed'}:classify(files);
+ console.log(JSON.stringify({base:baseSha,head:headSha,dirty,files,...plan},null,2));
 }

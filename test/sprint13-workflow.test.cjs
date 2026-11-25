@@ -14,3 +14,17 @@ test('aggregate is unconditional and requires both isolated suites; original vis
  assert.ok(!s.includes('continue-on-error'));assert.ok(!s.includes('validation-plan.cjs'));
  assert.ok(s.includes('rally-point-preview-qa-functional'));assert.ok(s.includes('rally-point-preview-qa-visual'));
 });
+test('CLI cannot hide uncommitted dependencies behind a clean committed cosmetic diff',()=>{
+ const os=require('node:os'),path=require('node:path'),{execFileSync}=require('node:child_process');
+ const dir=fs.mkdtempSync(path.join(os.tmpdir(),'rally-validation-'));
+ const env={...process.env,GIT_CONFIG_GLOBAL:'/dev/null',GIT_CONFIG_NOSYSTEM:'1'};
+ const git=(...args)=>execFileSync('git',args,{cwd:dir,env,stdio:'pipe',encoding:'utf8'}).trim();
+ try{
+  git('init');fs.writeFileSync(path.join(dir,'connect-usability.css'),'a{}');git('add','.');
+  git('-c','user.name=Test','-c','user.email=test@example.invalid','commit','-m','fixture');const base=git('rev-parse','HEAD');
+  fs.writeFileSync(path.join(dir,'connect-usability.css'),'b{}');git('add','.');git('-c','user.name=Test','-c','user.email=test@example.invalid','commit','-m','cosmetic');
+  const plan=()=>JSON.parse(execFileSync(process.execPath,[path.resolve('scripts/validation-plan.cjs'),base,'HEAD'],{cwd:dir,env,encoding:'utf8'}));
+  assert.equal(plan().tier,1);assert.equal(plan().dirty,false);
+  fs.writeFileSync(path.join(dir,'authorization.js'),'unreviewed');assert.equal(plan().dirty,true);assert.equal(plan().tier,3);
+ }finally{fs.rmSync(dir,{recursive:true,force:true});}
+});

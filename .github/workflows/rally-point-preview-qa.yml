@@ -63,6 +63,17 @@ jobs:
           node scripts/ux03-profile-review.mjs http://127.0.0.1:8514/
       - name: Exercise isolated synthetic review lab (loopback only)
         run: node scripts/s11e-local-review-browser-check.mjs
+      - name: Report functional failure diagnostics
+        if: failure()
+        run: |
+          cat >> "$GITHUB_STEP_SUMMARY" <<'DIAGNOSTIC'
+          ### functional validation failed — merge blocked
+          Inspect the first failed step and its script/selector/comparison in the logs.
+          Evidence: rally-point-preview-qa-functional, including results.json and screenshots.
+          Next: reproduce the failing component with identical fixtures/browser/context;
+          inspect actual before/after pixels before assigning a cause. A focused pass
+          does not clear this gate: the complete failed job must subsequently pass.
+          DIAGNOSTIC
       - name: Save visual QA screenshots and results
         if: always()
         uses: actions/upload-artifact@v4
@@ -120,6 +131,17 @@ jobs:
           git archive bb8f2446a71221148587f09bdf8192d5bde57d83 | tar -x -C "$connect_reference_dir"
           CONTEXT=deploy-preview node "$connect_reference_dir/scripts/build.cjs"
           node scripts/ux03-visual-regression.mjs "$connect_reference_dir/dist"
+      - name: Report visual failure diagnostics
+        if: failure()
+        run: |
+          cat >> "$GITHUB_STEP_SUMMARY" <<'DIAGNOSTIC'
+          ### visual validation failed — merge blocked
+          Inspect the first failed step and its script/selector/comparison in the logs.
+          Evidence: rally-point-preview-qa-visual, including results.json and screenshots.
+          Next: reproduce the failing component with identical fixtures/browser/context;
+          inspect actual before/after pixels before assigning a cause. A focused pass
+          does not clear this gate: the complete failed job must subsequently pass.
+          DIAGNOSTIC
       - name: Save visual QA screenshots and results
         if: always()
         uses: actions/upload-artifact@v4
@@ -139,5 +161,6 @@ jobs:
           FUNCTIONAL: ${{ needs.functional.result }}
           VISUAL: ${{ needs.visual.result }}
         run: |
+          echo "Functional: $FUNCTIONAL; Visual: $VISUAL. Both must succeed; failed/skipped/canceled jobs block merging." >> "$GITHUB_STEP_SUMMARY"
           test "$FUNCTIONAL" = success
           test "$VISUAL" = success
