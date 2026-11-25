@@ -26,4 +26,4 @@ Run targeted local tests first, then consolidated full application, VersePlay, b
 ## Deferred features
 Native iOS widgets/Live Activities, real-time Sunday Live Mode, QR/giving, open volunteer marketplace, drag/resize Smart Stack, church-wide reading campaigns, voice comms, real provider integration. No simulated live capabilities presented as real.
 
-Status: source audit and charter committed; implementation, candidate captures, tests and deployment not yet executed.
+Status: A–F runtime candidate implemented at local source 18514495105b771b2ff06039f8df6d208df2297c. Targeted and comprehensive local functional validation passed; unaffected visual comparisons passed and intentional widget deltas are captured separately. Explicit owner approval of the new visual reference is pending; no new reference has been pinned, branch has not been pushed and no draft PR/deploy is claimed yet. Physical/final visual acceptance and merge authorization remain separate gates. See ux-02-validation.md.
