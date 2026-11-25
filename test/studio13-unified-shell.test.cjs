@@ -10,7 +10,7 @@ test('Studio shared shell moves the original Connect button, retains profile/Act
  assert.equal(d.querySelector('.phone-inner').classList.contains('s13-shell'),true);
  assert.equal(d.querySelector('.s13-music-link').href,d.querySelector('.spotify-link').href);
  assert.equal(d.querySelector('[data-action=notifications]').hidden,true);
- assert.equal(d.querySelector('#activity-dot').parentElement,connect);
+ assert.equal(d.querySelector('#activity-dot').parentElement,connect.querySelector('.s13-connect-icon'));
  assert.equal(d.querySelectorAll('#activity-dot').length,1);
  assert.equal(connect.getAttribute('aria-label'),'Connect messages and activity');
  assert.deepEqual(keys(d),actions);
@@ -44,5 +44,15 @@ test('Shared header renders the standard chat glyph once and preserves notificat
  Studio.shell(v,()=>'<svg></svg>');Studio.shell(v,()=>'<svg></svg>');
  const connect=d.querySelector('#connect-entry'),glyph=connect.querySelector('.s13-message-glyph');
  assert.ok(glyph);assert.equal(glyph.querySelectorAll('circle').length,3);assert.equal(connect.querySelectorAll('.s13-message-glyph').length,1);
- assert.equal(d.querySelector('#activity-dot').parentElement,connect);assert.equal(connect.dataset.action,'connect-inbox');
+ assert.equal(d.querySelector('#activity-dot').parentElement,connect.querySelector('.s13-connect-icon'));assert.equal(connect.dataset.action,'connect-inbox');
+});
+
+test('Activity indicator stays attached to the chat glyph when visible and hidden, with no duplicate or altered command',()=>{
+ const d=fixture('<section class="s13-today"></section>'),v=d.querySelector('#view');
+ const dot=d.querySelector('#activity-dot'),connect=d.querySelector('#connect-entry');
+ Studio.shell(v,()=>'<svg></svg>');
+ const mark=connect.querySelector('.s13-connect-icon');assert.equal(dot.parentElement,mark);
+ dot.hidden=false;Studio.shell(v,()=>'<svg></svg>');assert.equal(dot.parentElement,mark);assert.equal(dot.hidden,false);
+ dot.hidden=true;Studio.shell(v,()=>'<svg></svg>');assert.equal(dot.parentElement,mark);assert.equal(dot.hidden,true);
+ assert.equal(d.querySelectorAll('#activity-dot').length,1);assert.equal(connect.dataset.action,'connect-inbox');
 });
