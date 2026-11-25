@@ -67,3 +67,14 @@ test('ALIVE craftsmanship assigns reusable presentation roles without adding or 
  assert.equal(v.querySelectorAll('.team-message-preview-top .s13-message-glyph').length,1);
  assert.deepEqual(keys(v),before);
 });
+
+test('ALIVE 02A preserves group actions, photo, RSVP state, unread and care while applying the hierarchy only once',()=>{
+ const d=fixture('<section class="gv2-home"><div class="gv2-heading-row"><h1>Your people</h1><small>Group</small></div><nav class="gv2-rail-wrap"><button data-action="gv2-profile" data-person="anna">Anna</button></nav><button class="gv2-group-hero" data-action="pane" data-area="group" data-value="people"><strong>Wednesday Group</strong><span class="gv2-hero-meta">8 demo members</span><span class="gv2-hero-action">Meet your group</span></button><div class="gv2-widgets"><button class="gv2-widget-chat" data-go="group" data-pane="chat"><span class="gv2-widget-icon"></span><strong>Conversation</strong><span>3 new messages</span></button><button class="gv2-widget-gather" data-action="pane" data-area="group" data-value="gather" data-rsvp="maybe"><span class="gv2-widget-icon"></span><strong>This week</strong><span>Wednesday · 6:30 PM</span><b class="gv2-widget-cta">You responded Maybe</b></button></div><button class="gv2-care" data-action="pane" data-area="group" data-value="prayer"><span class="gv2-care-icon"></span><span><strong>Prayer & care</strong><small>2 sample prayer requests</small></span><b></b></button></section>'),v=d.querySelector('#view'),before=keys(v);
+ Studio.unify(v);Studio.unify(v);
+ assert.equal(v.querySelectorAll('.s13-group-cover').length,1);assert.equal(v.querySelector('.s13-group-cover img').getAttribute('src'),'assets/rally-one/citizen-group-circle.jpg');
+ assert.equal(v.querySelector('.gv2-widget-gather').dataset.rsvp,'maybe');
+ assert.match(v.querySelector('.gv2-widget-gather').textContent,/You responded Maybe/);
+ assert.match(v.querySelector('.gv2-widget-chat').textContent,/3 new messages/);
+ assert.match(v.querySelector('.gv2-care').textContent,/2 sample prayer requests/);
+ assert.deepEqual(keys(v),before);
+});
