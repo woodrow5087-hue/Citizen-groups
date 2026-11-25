@@ -275,8 +275,13 @@
 .rally-one .connect-overlay.s13-connect-combined .s13-activity-trigger:focus-visible{outline:3px solid #ff8996;outline-offset:-3px}
 @media(max-width:360px){.rally-one:not(.rp-welcome-active) .premium-alive.s13-shell.s13-ask-header .header{padding-inline:15px}.rally-one:not(.rp-welcome-active) .premium-alive.s13-shell.s13-ask-header .brand-home span{font-size:17px}.rally-one:not(.rp-welcome-active) .premium-alive.s13-shell.s13-ask-header .brand-home img{width:20px;height:22px}}
 
-/* Final brand and icon refinement: scoped to the Studio shell, not legacy
-   navigation, games, or approved standalone messaging source. */
+
+/* Studio header finish — a single control geometry for the whole shell.
+   Every control has a 44px target, fixed center, and consistent optical scale.
+   Keep the accepted brand, main layout and legacy views untouched. */
+.rally-one:not(.rp-welcome-active) .premium-alive.s13-shell .header{
+ --s13-control:44px;--s13-control-gap:4px;--s13-glyph:22px;--s13-avatar:30px;
+}
 .rally-one:not(.rp-welcome-active) .premium-alive.s13-shell .header .brand-home,
 .rally-one:not(.rp-welcome-active) .premium-alive.s13-shell.s13-ask-header .header .brand-home{display:flex;align-items:center;gap:6px;flex:0 0 auto;min-width:0;min-height:44px;opacity:1;padding:0}
 .rally-one:not(.rp-welcome-active) .premium-alive.s13-shell .header .brand-home>span,
@@ -285,25 +290,28 @@
 .rally-one:not(.rp-welcome-active) .premium-alive.s13-shell .header .brand-home img,
 .rally-one:not(.rp-welcome-active) .premium-alive.s13-shell.s13-ask-header .header .brand-home img{width:26px;height:25px;object-fit:contain;filter:none;opacity:1}
 .rally-one:not(.rp-welcome-active) .premium-alive.s13-shell .header .header-controls,
-.rally-one:not(.rp-welcome-active) .premium-alive.s13-shell.s13-ask-header .header .header-controls{gap:4px}
-.rally-one:not(.rp-welcome-active) .premium-alive.s13-shell .header .s13-ask-trigger,
-.rally-one:not(.rp-welcome-active) .premium-alive.s13-shell .header #connect-entry,
-.rally-one:not(.rp-welcome-active) .premium-alive.s13-shell .header .profile-avatar{width:44px;height:44px;min-width:44px;min-height:44px;flex:0 0 44px;display:grid;place-items:center;border:0;background:transparent;box-shadow:none;padding:0;margin:0;position:relative;color:#f4eee3}
-.rally-one:not(.rp-welcome-active) .premium-alive.s13-shell .header .s13-ask-trigger{font-size:.875rem;letter-spacing:0;font-weight:750}
-.rally-one:not(.rp-welcome-active) .premium-alive.s13-shell .header #connect-entry .s13-connect-icon{width:24px;height:24px;display:grid;place-items:center;padding:0;margin:0;line-height:0}
-.rally-one:not(.rp-welcome-active) .premium-alive.s13-shell .header #connect-entry .s13-message-glyph{width:24px;height:24px;display:block;margin:0;stroke:currentColor;stroke-width:1.75;fill:none;transform:none}
-.rally-one:not(.rp-welcome-active) .premium-alive.s13-shell .header #connect-entry #activity-dot{inset:6px 5px auto auto;box-shadow:none}
-.rally-one:not(.rp-welcome-active) .premium-alive.s13-shell .header .profile-avatar #profile-initials{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;background:#f4eee3;color:#191a1b;font-size:.8125rem;font-weight:800;line-height:1}
+.rally-one:not(.rp-welcome-active) .premium-alive.s13-shell.s13-ask-header .header .header-controls{display:flex;align-items:center;justify-content:flex-end;gap:var(--s13-control-gap);flex:0 0 auto;padding:0;margin:0}
+.rally-one:not(.rp-welcome-active) .premium-alive.s13-shell .header .header-controls>.s13-ask-trigger,
+.rally-one:not(.rp-welcome-active) .premium-alive.s13-shell .header .header-controls>#connect-entry,
+.rally-one:not(.rp-welcome-active) .premium-alive.s13-shell .header .header-controls>.profile-avatar{
+ box-sizing:border-box;width:var(--s13-control);height:var(--s13-control);min-width:var(--s13-control);min-height:var(--s13-control);max-width:var(--s13-control);max-height:var(--s13-control);
+ flex:0 0 var(--s13-control);display:grid;grid-template:1fr / 1fr;place-content:center;place-items:center;
+ border:0;border-radius:12px;background:transparent;box-shadow:none;padding:0;margin:0;position:relative;inset:auto;line-height:1;color:#f4eee3;
+}
+.rally-one:not(.rp-welcome-active) .premium-alive.s13-shell .header .s13-ask-trigger{font-size:13px;letter-spacing:0;font-weight:750}
+.rally-one:not(.rp-welcome-active) .premium-alive.s13-shell .header #connect-entry .s13-connect-icon{position:relative;box-sizing:border-box;width:var(--s13-glyph);height:var(--s13-glyph);display:grid;grid-template:1fr / 1fr;place-items:center;place-content:center;padding:0;margin:0;line-height:0;overflow:visible}
+.rally-one:not(.rp-welcome-active) .premium-alive.s13-shell .header #connect-entry .s13-message-glyph{width:var(--s13-glyph);height:var(--s13-glyph);display:block;margin:0;stroke:currentColor;stroke-width:1.75;fill:none;transform:none}
+.rally-one:not(.rp-welcome-active) .premium-alive.s13-shell .header #connect-entry .s13-connect-icon>#activity-dot{box-sizing:border-box;position:absolute;inset:-1px -1px auto auto;width:8px;height:8px;border:1.5px solid #181a1b;border-radius:50%;background:#e3002b;box-shadow:none;pointer-events:none}
+.rally-one:not(.rp-welcome-active) .premium-alive.s13-shell .header #connect-entry #activity-dot[hidden]{display:none!important}
+.rally-one:not(.rp-welcome-active) .premium-alive.s13-shell .header .profile-avatar #profile-initials{box-sizing:border-box;width:var(--s13-avatar);height:var(--s13-avatar);border-radius:50%;display:grid;place-items:center;background:#f4eee3;color:#191a1b;font-size:13px;font-weight:750;line-height:1;margin:0;padding:0}
 .rally-one .premium-alive.s13-shell #view .s13-message-glyph{width:22px;height:22px;display:block;margin:0;stroke:currentColor;stroke-width:1.75;fill:none;transform:none}
 .rally-one .premium-alive.is-f09-board #view .s13-today .s13-utility-icon:has(.s13-message-glyph){background:#323638;color:#f4eee3;border-radius:10px}
 .rally-one:not(.rp-welcome-active) .premium-alive.s13-shell .header :is(button,a):focus-visible{outline:2px solid #f4eee3;outline-offset:1px}
 @media(max-width:360px){
  .rally-one:not(.rp-welcome-active) .premium-alive.s13-shell .header,
- .rally-one:not(.rp-welcome-active) .premium-alive.s13-shell.s13-ask-header .header{padding-inline:10px;gap:4px}
+ .rally-one:not(.rp-welcome-active) .premium-alive.s13-shell.s13-ask-header .header{padding-inline:10px;gap:4px;--s13-control-gap:2px}
  .rally-one:not(.rp-welcome-active) .premium-alive.s13-shell .header .brand-home,
  .rally-one:not(.rp-welcome-active) .premium-alive.s13-shell.s13-ask-header .header .brand-home{gap:4px}
  .rally-one:not(.rp-welcome-active) .premium-alive.s13-shell .header .brand-home img,
  .rally-one:not(.rp-welcome-active) .premium-alive.s13-shell.s13-ask-header .header .brand-home img{width:22px;height:22px}
- .rally-one:not(.rp-welcome-active) .premium-alive.s13-shell .header .header-controls,
- .rally-one:not(.rp-welcome-active) .premium-alive.s13-shell.s13-ask-header .header .header-controls{gap:2px}
 }
