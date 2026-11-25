@@ -98,3 +98,14 @@ test('ALIVE 02C care presentation preserves every original command, state and di
  assert.match(v.querySelector('.ro-care-disclaimer').textContent,/No automatic outreach/);
  assert.deepEqual(keys(v),before);
 });
+
+test('ALIVE 03 keeps Scripture state, optional panels and every game entry intact on repeated presentation',()=>{
+ const d=fixture('<section class="read-screen-v09 ux-read-premium"><header class="ux-read-heading"><h1>READ</h1><p>Read</p></header><section class="ux-reading-feature"><button data-go="read" data-reading="scripture">Open Scripture</button></section><section class="ux-arcade"><a class="ux-circuit" data-verse-circuit-entry href="verse-circuit-playground.html">Circuit</a><button data-go="play">Blank Battle</button><details class="ux-classic" data-ux-read-panel="classic"><summary>Classic</summary><button data-action="memory">Practice</button></details></section><details class="ux-disclosure" data-ux-read-panel="scripture"><summary>Read</summary><section id="reading-scripture"><blockquote>Canonical text</blockquote><button class="chosen" data-action="read">Read today</button></section><section id="reading-questions"><p>Question</p><button data-go="group" data-pane="chat">Discuss</button></section><div class="read-prayer-card"><button class="done" data-action="pray">Pray</button></div><button data-action="plan">Leader pathway</button></details></section>'),v=d.querySelector('#view'),before=keys(v);
+ Studio.unify(v);Studio.unify(v);
+ assert.equal(v.querySelectorAll('.s13-read-invitations').length,1);
+ assert.equal(v.querySelectorAll('.s13-circuit-mark').length,1);
+ assert.equal(v.querySelector('[data-action=read]').getAttribute('aria-pressed'),'true');
+ assert.equal(v.querySelector('[data-action=pray]').getAttribute('aria-pressed'),'true');
+ assert.equal(v.querySelector('blockquote').textContent,'Canonical text');
+ assert.deepEqual(keys(v),before);
+});
