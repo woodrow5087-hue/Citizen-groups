@@ -4,6 +4,7 @@
 (function(root,factory){const api=factory();if(typeof module==='object'&&module.exports)module.exports=api;if(root)root.RallyStudioToday=api;})(typeof window==='undefined'?null:window,function(){
 'use strict';
 const arrow='<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 12h16m-6-6 6 6-6 6"/></svg>';
+const messageIcon='<svg class="s13-message-glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M20 11.5a7.5 7.5 0 0 1-7.5 7.5H9l-4.5 2 1.1-4.5A7.5 7.5 0 0 1 4 11.5V10a7 7 0 0 1 7-7h2a7 7 0 0 1 7 7z"/><circle cx="8.5" cy="11" r=".85" fill="currentColor" stroke="none"/><circle cx="12" cy="11" r=".85" fill="currentColor" stroke="none"/><circle cx="15.5" cy="11" r=".85" fill="currentColor" stroke="none"/></svg>';
 function render(html,{model:d,board:b,now,campus}={},doc=globalThis.document){
  if(!doc||!d||!b?.hero)return html;
  const template=doc.createElement('template');template.innerHTML=html;
@@ -96,7 +97,7 @@ function render(html,{model:d,board:b,now,campus}={},doc=globalThis.document){
  if(list.children.length){schedule.append(list);priorities.append(schedule);}glance.remove();
  const utility=(title,sub,go,pane='',type='message')=>{
   const button=node('button','s13-utility');button.type='button';button.dataset.go=go;if(pane)button.dataset.pane=pane;
-  const mark=node('span','s13-utility-icon');mark.setAttribute('aria-hidden','true');mark.innerHTML=type==='read'?'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 6C9 4 6 4 2 4v15c4 0 7 0 10 2 3-2 6-2 10-2V4c-4 0-7 0-10 2Zm0 0v15"/></svg>':'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M21 11a8 8 0 0 1-8 8H8l-5 3 1-7A8 8 0 1 1 21 11Z"/></svg>';
+  const mark=node('span','s13-utility-icon');mark.setAttribute('aria-hidden','true');mark.innerHTML=type==='read'?'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 6C9 4 6 4 2 4v15c4 0 7 0 10 2 3-2 6-2 10-2V4c-4 0-7 0-10 2Zm0 0v15"/></svg>':messageIcon;
   const copy=node('span','s13-utility-copy');copy.append(node('strong','',title),node('small','',sub));const next=node('span','s13-arrow');next.setAttribute('aria-hidden','true');next.innerHTML=arrow;button.append(mark,copy,next);return button;
  };
  const optional=node('div','s13-optional');
@@ -143,7 +144,7 @@ function unify(view){
   if(widgets){
    const gather=widgets.querySelector('.gv2-widget-gather'),chat=widgets.querySelector('.gv2-widget-chat');
    if(gather){widgets.prepend(gather);gather.querySelector('strong').textContent='Next gathering';}
-   if(chat){const h=node('h2','s13-subhead','Stay connected');chat.before(h);chat.querySelector('strong').textContent='Group conversation';}
+   if(chat){const h=node('h2','s13-subhead','Stay connected');chat.before(h);chat.querySelector('strong').textContent='Group conversation';const glyph=chat.querySelector('.gv2-widget-icon');if(glyph)glyph.innerHTML=messageIcon;}
   }
   if(rail&&widgets){const h=node('h2','s13-subhead','Your people');widgets.after(h,rail);}
  }
@@ -206,7 +207,7 @@ function shell(view,icon){
   if(previous)incoming.remove();else controls.insertBefore(incoming,connect?.parentElement===controls?connect:profile||null);
  }else previous?.remove();
  phone?.classList.toggle('s13-ask-header',active&&today&&!!controls?.querySelector('.s13-ask-trigger'));
- if(connect&&!connect.querySelector('.s13-connect-icon')){const mark=doc.createElement('span');mark.className='s13-connect-icon';mark.setAttribute('aria-hidden','true');mark.innerHTML=icon('message');connect.append(mark);}
+ if(connect&&!connect.querySelector('.s13-connect-icon')){const mark=doc.createElement('span');mark.className='s13-connect-icon';mark.setAttribute('aria-hidden','true');mark.innerHTML=messageIcon;connect.append(mark);}
  if(!active){if(connect&&connect.parentElement!==phone&&phone)phone.insertBefore(connect,view);return;}
  // Move the same inbox control so its target/focus remains canonical.
  if(connect&&controls&&profile)controls.insertBefore(connect,profile);
