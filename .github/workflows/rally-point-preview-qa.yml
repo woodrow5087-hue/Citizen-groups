@@ -57,9 +57,10 @@ jobs:
           node scripts/leadership-demo-browser-check.mjs http://127.0.0.1:8514/
           node scripts/preview-today-browser-check.mjs http://127.0.0.1:8514/
           node scripts/s10c5-member-journeys-browser-check.mjs http://127.0.0.1:8514/
+          node scripts/ux01e-browser-check.mjs http://127.0.0.1:8514/
       - name: Exercise isolated synthetic review lab (loopback only)
         run: node scripts/s11e-local-review-browser-check.mjs
-      - name: Compare Rally One against immutable approved PR 119
+      - name: Compare immutable PR 119 and owner-approved Read references
         run: |
           reference_dir="$RUNNER_TEMP/rally-one-approved-119"
           mkdir -p "$reference_dir"
@@ -71,7 +72,12 @@ jobs:
           git fetch --depth=1 origin 4e3baa96cc10ab4b32cbaecb69d19098f05840c0
           git archive 4e3baa96cc10ab4b32cbaecb69d19098f05840c0 | tar -x -C "$read_reference_dir"
           CONTEXT=deploy-preview node "$read_reference_dir/scripts/build.cjs"
-          BROWSER_PATH="$(node --input-type=module -e 'import {chromium} from "playwright"; process.stdout.write(chromium.executablePath())')" node scripts/s8-visual-regression.mjs "$reference_dir/dist" "$read_reference_dir/dist"
+          premium_reference_dir="$RUNNER_TEMP/rally-one-approved-ux01e"
+          mkdir -p "$premium_reference_dir"
+          git fetch --depth=1 origin 16868e6c5f86d38c296e71bb6da8f94f32446028
+          git archive 16868e6c5f86d38c296e71bb6da8f94f32446028 | tar -x -C "$premium_reference_dir"
+          CONTEXT=deploy-preview node "$premium_reference_dir/scripts/build.cjs"
+          BROWSER_PATH="$(node --input-type=module -e 'import {chromium} from "playwright"; process.stdout.write(chromium.executablePath())')" node scripts/s8-visual-regression.mjs "$reference_dir/dist" "$read_reference_dir/dist" "$premium_reference_dir/dist"
       - name: Save visual QA screenshots and results
         if: always()
         uses: actions/upload-artifact@v4
