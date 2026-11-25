@@ -564,3 +564,19 @@
 .rally-one .premium-alive.s13-shell #view .s13-care-disclosure>summary::after{content:'›';font-size:22px}
 .rally-one .premium-alive.s13-shell #view .s13-care-disclosure[open]>summary::after{transform:rotate(90deg)}
 .rally-one .premium-alive.s13-shell #view .s13-care-disclosure[open] .ro-care-actions{margin-top:6px}
+
+/* ALIVE 03 — Daily rhythm. Retain all reading, leader and game commands. */
+.rally-one .premium-alive.s13-shell #view .s13-daily-rhythm .read-scripture-card blockquote{font-size:clamp(1.25rem,5.5vw,1.5rem);line-height:1.4;letter-spacing:-.025em;font-weight:700;margin:12px 0 16px}
+.rally-one .premium-alive.s13-shell #view .s13-daily-rhythm .read-scripture-card .read-section-label{display:flex;align-items:center;gap:8px}
+.rally-one .premium-alive.s13-shell #view .s13-daily-rhythm .read-scripture-card .read-section-label svg{width:20px;height:20px;flex:none}
+.rally-one .premium-alive.s13-shell #view .s13-daily-rhythm .read-scripture-card .btn{min-height:44px;border-radius:var(--s13-button-radius);line-height:1.35}
+.rally-one .premium-alive.s13-shell #view .s13-daily-rhythm .s13-read-invitations{grid-template-columns:1fr;gap:8px;margin-bottom:16px}
+.rally-one .premium-alive.s13-shell #view .s13-daily-rhythm .s13-read-panel>summary{display:flex;align-items:center;gap:12px;min-height:52px;padding:10px 12px;cursor:pointer;list-style:none}
+.rally-one .premium-alive.s13-shell #view .s13-daily-rhythm .s13-read-panel>summary::after{content:none}
+.rally-one .premium-alive.s13-shell #view .s13-daily-rhythm .s13-read-panel-copy{flex:1;min-width:0}
+.rally-one .premium-alive.s13-shell #view .s13-daily-rhythm .s13-panel-chevron{display:grid;place-items:center;flex:0 0 22px}
+.rally-one .premium-alive.s13-shell #view .s13-daily-rhythm .s13-read-panel[open] .s13-panel-chevron{transform:rotate(90deg)}
+.rally-one .premium-alive.s13-shell #view .s13-daily-rhythm .s13-verseplay-intro{color:var(--s13-secondary);font-size:.8125rem;line-height:1.4;margin:-2px 0 10px}
+.rally-one .premium-alive.s13-shell #view .s13-daily-rhythm .s13-circuit-mark svg{width:28px;height:28px;display:block}
+.rally-one .premium-alive.s13-shell #view .s13-daily-rhythm .ux-game-row{gap:8px}
+.rally-one .premium-alive.s13-shell #view .s13-daily-rhythm .ux-game-row :is(.rp-game-entry-play,.ux-classic>summary){min-height:48px;white-space:normal;line-height:1.35}
