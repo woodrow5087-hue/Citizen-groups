@@ -107,3 +107,24 @@ previous source owners through the exact portrait inverse. No runtime, screensho
 tolerance, inventory, assertion or historical comparison is removed or relaxed.
 Physical iPhone Safari/VoiceOver, final visual acceptance and merge authorization
 remain outstanding. Automated acceptance results follow after validation.
+
+## CI evidence reconciliation and SVG paint candidate — 2026-11-25
+
+Reference establishment is recorded at 1db15eb, but CI run 45642393746 is blocked:
+all earlier unit, functional/mobile/messaging, synthetic and historical gates pass;
+the Connect raw-pixel gate fails at the 320×568 combined-profile inbox. The GitHub
+connector successfully retrieved this run's artifact, allowing direct examination.
+Its only differing capture has exactly 404 changed pixels within (226,67)–(296,88):
+the Search and New Conversation SVG icons paint nearly black in the approved-build
+frame and cream in the candidate-build frame. Every other pixel and all other
+85 capture pairs match. Portrait pixels are identical. Earlier local portrait-edge
+variants were real controls, but did not explain the repeated CI blocker.
+
+The SVGs use symbol/use paths and an inherited currentColor stroke. The candidate
+sets the two SVG strokes explicitly to the already-approved #f3e9d8 cream. This
+removes their dependency on inconsistent inherited-color painting, preserving all
+geometry, icons, palette, runtime controllers, state and functionality. The active
+042ab82 reference remains pinned; no unapproved source or baseline is substituted.
+Historical source tests reconstruct both 042ab82 and 26153ba through exact inverses.
+The old-source guard is expected to reject the changed stylesheet until explicit
+source-reference approval. Physical acceptance and merge remain blocked.

@@ -55,9 +55,18 @@ test('previous approved Connect manifest and source remain reconstructable witho
  for(const [file,expected] of Object.entries(previous.files)){
   let source=fs.readFileSync(file);
   if(file==='connect-usability.css'){
-   const [from,to]=changes[file][0],text=source.toString();
-   assert.equal(text.split(from).length,2);source=Buffer.from(text.replace(from,to));
+   for(const [from,to] of changes[file]){
+    if(hash(source)===expected)break;
+    const text=source.toString();assert.equal(text.split(from).length,2);source=Buffer.from(text.replace(from,to));
+   }
   }
   assert.equal(hash(source),expected,'Previous approved source changed: '+file);
  }
+});
+
+test('inbox SVG stroke correction reconstructs the approved 042ab82 stylesheet exactly',()=>{
+ const crypto=require('node:crypto'),changes=require('./helpers/ux03-changes.json');
+ const [from,to]=changes['connect-usability.css'][0],source=fs.readFileSync('connect-usability.css','utf8');
+ assert.equal(source.split(from).length,2);
+ assert.equal(crypto.createHash('sha256').update(source.replace(from,to)).digest('hex'),'37a1812254ad080dd414d113bc2047be50e507a65e3d8bfc8931f05c22d20da9');
 });

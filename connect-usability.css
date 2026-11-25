@@ -193,3 +193,6 @@
 /* UX-03 portrait correction: a single explicit circular clip avoids rounded-image/background double rasterization. */
 .story-ring img{border-radius:0;clip-path:circle(50%);background:transparent}
 .list-avatar{background:transparent}
+
+/* Keep inbox SVG-use strokes at the approved cream without deferred currentColor paint. */
+#search-toggle .icon,#compose-toggle .icon{stroke:#f3e9d8}

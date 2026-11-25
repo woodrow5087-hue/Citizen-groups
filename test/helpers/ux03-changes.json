@@ -1,6 +1,10 @@
 {
   "connect-usability.css": [
     [
+      "\n/* Keep inbox SVG-use strokes at the approved cream without deferred currentColor paint. */\n#search-toggle .icon,#compose-toggle .icon{stroke:#f3e9d8}\n",
+      ""
+    ],
+    [
       "\n/* UX-03 portrait correction: a single explicit circular clip avoids rounded-image/background double rasterization. */\n.story-ring img{border-radius:0;clip-path:circle(50%);background:transparent}\n.list-avatar{background:transparent}\n",
       ""
     ],

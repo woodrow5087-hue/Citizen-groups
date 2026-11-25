@@ -365,3 +365,45 @@ four widths, short height and doubled text. This establishes the owner-authorize
 reference without changing runtime bytes. Exact-head CI/deployment provenance and
 physical-acceptance URL are recorded in PR147; the eight-category device checklist
 above remains outstanding.
+
+## CI evidence reconciliation and SVG paint candidate — 2026-11-25
+
+Reference establishment is recorded at 1db15eb, but CI run 45642393746 is blocked:
+all earlier unit, functional/mobile/messaging, synthetic and historical gates pass;
+the Connect raw-pixel gate fails at the 320×568 combined-profile inbox. The GitHub
+connector successfully retrieved this run's artifact, allowing direct examination.
+Its only differing capture has exactly 404 changed pixels within (226,67)–(296,88):
+the Search and New Conversation SVG icons paint nearly black in the approved-build
+frame and cream in the candidate-build frame. Every other pixel and all other
+85 capture pairs match. Portrait pixels are identical. Earlier local portrait-edge
+variants were real controls, but did not explain the repeated CI blocker.
+
+The SVGs use symbol/use paths and an inherited currentColor stroke. The candidate
+sets the two SVG strokes explicitly to the already-approved #f3e9d8 cream. This
+removes their dependency on inconsistent inherited-color painting, preserving all
+geometry, icons, palette, runtime controllers, state and functionality. The active
+042ab82 reference remains pinned; no unapproved source or baseline is substituted.
+Historical source tests reconstruct both 042ab82 and 26153ba through exact inverses.
+The old-source guard is expected to reject the changed stylesheet until explicit
+source-reference approval. Physical acceptance and merge remain blocked.
+
+SVG candidate controls: normal deploy-preview build passes. All 64 historical
+pairs / 75 source protections pass at zero raw difference. Eight independent
+WebKit inbox runs across 320/375/390/430 widths verify both computed stroke and
+actual native cream pixels for each toolbar icon. The application unit run passes
+871/872 tests; the sole failure remains the unchanged 042ab82 source guard. Both
+042ab82 and 26153ba reconstruction checks pass. No reference or tolerance changes.
+
+Eight fresh Chromium runs also pass computed/native icon-paint checks. A supplementary
+pixel-only comparison against the previous local approved 042ab82 captures yields
+86 pairs / zero raw differences: the explicit stroke preserves the already-reviewed
+cream rendering. This diagnostic does not bypass source identity or establish a new
+reference. All other 185 build files remain identical to CI-tested 1db15eb.
+
+Final SVG candidate control: both complete WebKit runs pass standalone and embedded
+functional/accessibility assertions; all 86 candidate self-comparison pairs have
+zero raw differences. Native icon-color controls pass 8 WebKit + 8 Chromium fresh
+runs over four widths. The zero-tolerance historical 64-pair gate also passes.
+No new reference is pinned. The exact candidate must receive source-reference
+approval before the 042ab82 byte guard can be updated and exact-head CI completed.
+This is not a physical-device acceptance handoff or merge-ready checkpoint.
