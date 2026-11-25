@@ -19,7 +19,7 @@ function render(html,{model:d,board:b,now,campus}={},doc=globalThis.document){
  head.append(node('span','s13-eyebrow',[d.nowLabel,campus&&campus+' campus'].filter(Boolean).join(' · ')));
  head.append(node('h1','',calm?'You’re all set.':h.id==='welcome-community'?'Glad you’re here.':h.id==='paused'?h.title:(d.greeting||'Welcome back')+'.'));
  const count=requiredIds.size;
- head.append(node('p','s13-summary'+(calm?' is-complete':''),allSet?'No outstanding responsibilities':clearCommitments?'No outstanding commitment responses':h.id==='paused'?h.subtitle:h.id==='welcome-community'?'Explore at your pace.':count?count+' '+(count===1?'thing needs':'things need')+' your response':hasPending?'A commitment remains to review':'Your next step'));
+ head.append(node('p','s13-summary'+(calm?' is-complete':''),calm?'Nothing needs your response.':h.id==='paused'?h.subtitle:h.id==='welcome-community'?'Explore at your pace.':count?count+' '+(count===1?'thing needs':'things need')+' your response':hasPending?'A commitment remains to review':'Your next step'));
  const priority=root.querySelector('.f09b-hero'),title=priority.querySelector('h2'),detail=priority.querySelector('.f09b-hero-main>p');
  const primary=priority.querySelector('.f09b-primary'),explain=priority.querySelector('.f09b-explain');
  const faces=priority.querySelector('.f09b-faces');
@@ -192,6 +192,14 @@ function shell(view,icon){
  phone?.classList.toggle('s13-shell',active);
  const connect=doc.getElementById('connect-entry'),controls=phone?.querySelector('.header-controls'),profile=controls?.querySelector('.profile-avatar');
  const today=!!view.querySelector('.s13-today');
+ // One notification-aware Connect entry. Keep the original activity command
+ // for legacy views; its actual badge node stays owned by the controller.
+ const bell=controls?.querySelector('[data-action="notifications"]'),dot=doc.getElementById('activity-dot');
+ if(bell&&connect){
+  bell.hidden=active;
+  if(dot&&dot.parentElement!==(active?connect:bell))(active?connect:bell).append(dot);
+  connect.setAttribute('aria-label',active?'Connect messages and activity':'Connect messaging inbox');
+ }
  // Reuse the original Ask action and keep focus stable on Today re-renders.
  const incoming=view.querySelector('.s13-ask-trigger'),previous=controls?.querySelector('.s13-ask-trigger');
  if(active&&today&&incoming&&controls){
