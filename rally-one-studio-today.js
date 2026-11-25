@@ -4,7 +4,7 @@
 (function(root,factory){const api=factory();if(typeof module==='object'&&module.exports)module.exports=api;if(root)root.RallyStudioToday=api;})(typeof window==='undefined'?null:window,function(){
 'use strict';
 const arrow='<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 12h16m-6-6 6 6-6 6"/></svg>';
-const messageIcon='<svg class="s13-message-glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M20 11.5a7.5 7.5 0 0 1-7.5 7.5H9l-4.5 2 1.1-4.5A7.5 7.5 0 0 1 4 11.5V10a7 7 0 0 1 7-7h2a7 7 0 0 1 7 7z"/><circle cx="8.5" cy="11" r=".85" fill="currentColor" stroke="none"/><circle cx="12" cy="11" r=".85" fill="currentColor" stroke="none"/><circle cx="15.5" cy="11" r=".85" fill="currentColor" stroke="none"/></svg>';
+const messageIcon='<svg class="s13-message-glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M6 4h12a3 3 0 0 1 3 3v8a3 3 0 0 1-3 3h-7l-5 3v-3a3 3 0 0 1-3-3V7a3 3 0 0 1 3-3Z"/><circle cx="8.5" cy="11" r=".85" fill="currentColor" stroke="none"/><circle cx="12" cy="11" r=".85" fill="currentColor" stroke="none"/><circle cx="15.5" cy="11" r=".85" fill="currentColor" stroke="none"/></svg>';
 function render(html,{model:d,board:b,now,campus}={},doc=globalThis.document){
  if(!doc||!d||!b?.hero)return html;
  const template=doc.createElement('template');template.innerHTML=html;
@@ -196,9 +196,15 @@ function shell(view,icon){
  // One notification-aware Connect entry. Keep the original activity command
  // for legacy views; its actual badge node stays owned by the controller.
  const bell=controls?.querySelector('[data-action="notifications"]'),dot=doc.getElementById('activity-dot');
+ if(connect&&!connect.querySelector('.s13-connect-icon')){
+  const mark=doc.createElement('span');mark.className='s13-connect-icon';mark.setAttribute('aria-hidden','true');mark.innerHTML=messageIcon;connect.append(mark);
+ }
  if(bell&&connect){
   bell.hidden=active;
-  if(dot&&dot.parentElement!==(active?connect:bell))(active?connect:bell).append(dot);
+  // Anchor the sole existing badge to the glyph, not the 44px hit target.
+  // The canonical controller still owns when the indicator is visible.
+  const badgeHost=active?connect.querySelector('.s13-connect-icon'):bell;
+  if(dot&&badgeHost&&dot.parentElement!==badgeHost)badgeHost.append(dot);
   connect.setAttribute('aria-label',active?'Connect messages and activity':'Connect messaging inbox');
  }
  // Reuse the original Ask action and keep focus stable on Today re-renders.
@@ -207,7 +213,6 @@ function shell(view,icon){
   if(previous)incoming.remove();else controls.insertBefore(incoming,connect?.parentElement===controls?connect:profile||null);
  }else previous?.remove();
  phone?.classList.toggle('s13-ask-header',active&&today&&!!controls?.querySelector('.s13-ask-trigger'));
- if(connect&&!connect.querySelector('.s13-connect-icon')){const mark=doc.createElement('span');mark.className='s13-connect-icon';mark.setAttribute('aria-hidden','true');mark.innerHTML=messageIcon;connect.append(mark);}
  if(!active){if(connect&&connect.parentElement!==phone&&phone)phone.insertBefore(connect,view);return;}
  // Move the same inbox control so its target/focus remains canonical.
  if(connect&&controls&&profile)controls.insertBefore(connect,profile);
