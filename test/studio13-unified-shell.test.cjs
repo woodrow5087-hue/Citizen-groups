@@ -78,3 +78,13 @@ test('ALIVE 02A preserves group actions, photo, RSVP state, unread and care whil
  assert.match(v.querySelector('.gv2-care').textContent,/2 sample prayer requests/);
  assert.deepEqual(keys(v),before);
 });
+
+test('ALIVE 02B preserves schedule response, coverage and arrival commands when the Team shell is reapplied',()=>{
+ const d=fixture('<section class="team-screen-v08"><div class="team-v08-hero"><h1>Serve</h1></div><div class="team-schedule-card" data-response="declined"><div class="team-card-overline"><span>Schedule</span></div><h2>Next serve</h2><div class="team-shift-info"><strong>Welcome Team</strong></div><div class="team-shift-response"><p>Sample shift, not attendance.</p><span class="pill">Coverage requested</span></div><button data-action="shift" data-value="confirmed">Confirm</button><button data-action="cover">Withdraw request</button></div><div class="team-huddle"><span class="team-huddle-time">Arrive at 8:40 AM</span><button data-action="pane" data-area="team" data-value="chat">Coordinate</button></div></section>'),v=d.querySelector('#view'),before=keys(v);
+ Studio.unify(v);Studio.unify(v);
+ assert.equal(v.querySelectorAll('.s13-assignment-detail').length,1);
+ assert.match(v.querySelector('.s13-assignment-detail summary').textContent,/8:40 AM/);
+ assert.match(v.querySelector('.team-card-overline').textContent,/Coverage requested/);
+ assert.match(v.querySelector('.s13-shift-note').textContent,/not attendance/);
+ assert.equal(v.querySelector('.team-schedule-card').dataset.response,'declined');assert.deepEqual(keys(v),before);
+});
