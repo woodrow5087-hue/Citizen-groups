@@ -51,3 +51,10 @@ test('Busy Today shows at most one optional row, prefers new messages, and drops
  const noUnread=fixture({rsvp:'going',readToday:true,unread:0});out.innerHTML=Studio.render(noUnread.html,noUnread,noUnread.doc);
  assert.equal(out.querySelector('.s13-optional'),null);
 });
+
+test('Today uses the same compact chat glyph as the header, with no change to the message destination',()=>{
+ const f=fixture(),out=f.doc.createElement('div');out.innerHTML=Studio.render(f.html,f,f.doc);
+ const message=out.querySelector('.s13-optional [data-go=group][data-pane=chat]');
+ assert.ok(message);const glyph=message.querySelector('.s13-message-glyph');
+ assert.ok(glyph);assert.equal(glyph.querySelectorAll('circle').length,3);assert.equal(glyph.getAttribute('aria-hidden'),'true');
+});
