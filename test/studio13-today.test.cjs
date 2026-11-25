@@ -38,7 +38,7 @@ test('With commitments handled the warm settled layout retains schedule, never f
  const f=fixture({rsvp:'going',serveStatus:'confirmed',readToday:true,unread:3}),out=f.doc.createElement('div');out.innerHTML=Studio.render(f.html,f,f.doc);
  assert.equal(f.board.caughtUp,false);assert.equal(out.querySelector('.s13-today').dataset.caughtUp,'false');
  assert.ok(out.querySelector('.s13-commitments-clear'));assert.equal(out.querySelector('h1').textContent,'You’re all set.');
- assert.match(out.querySelector('.s13-summary').textContent,/No outstanding commitment responses/);
+ assert.match(out.querySelector('.s13-summary').textContent,/Nothing needs your response\./);
  assert.equal(out.querySelectorAll('.s13-schedule-link').length,2);
  assert.equal(out.querySelectorAll('.s13-optional>*').length,1);assert.match(out.querySelector('.s13-optional').textContent,/3 new group messages/);
  assert.doesNotMatch(out.textContent,/Reading complete|View your community|Why this\?/);
