@@ -11,17 +11,31 @@ function render(html,{model:d,board:b,now,campus}={},doc=globalThis.document){
  root.classList.add('s13-today');root.setAttribute('aria-label','Today');
  const node=(tag,cls,text)=>{const el=doc.createElement(tag);el.className=cls;if(text!==undefined)el.textContent=text;return el;};
  const h=b.hero,allSet=b.caughtUp===true;
+ const requiredIds=new Set(b.responsibilityIds||[b.hero,...b.rows].filter(x=>['group-rsvp','serve-response','leader-checkins'].includes(x.id)).map(x=>x.id));
+ const hasPending=!!(d.member&&!d.rsvp||d.team&&d.serveStatus==='pending'||d.member&&d.audience==='leader'&&d.leaderRemaining>0);
+ const clearCommitments=!hasPending&&!!(d.member||d.team)&&['group-unread','care-prayer','care-check-in','scripture-step'].includes(h.id)&&!(d.member&&d.conversationStatus==='unavailable');
+ const calm=allSet||clearCommitments;
  const head=root.querySelector('.f09-greeting');head.replaceChildren();
  head.append(node('span','s13-eyebrow',[d.nowLabel,campus&&campus+' campus'].filter(Boolean).join(' · ')));
- head.append(node('h1','',allSet?'You’re all set.':h.id==='welcome-community'?'Glad you’re here.':h.id==='paused'?h.title:(d.greeting||'Welcome back')+'.'));
- const count=Number.isSafeInteger(b.taskCount)?b.taskCount:0;
- head.append(node('p','s13-summary'+(allSet?' is-complete':''),allSet?'No outstanding responsibilities':h.id==='paused'?h.subtitle:h.id==='welcome-community'?'Explore at your pace.':count+' next '+(count===1?'action':'actions')+' for you'));
+ head.append(node('h1','',allSet?'You’re all set.':clearCommitments?'Commitments handled.':h.id==='welcome-community'?'Glad you’re here.':h.id==='paused'?h.title:(d.greeting||'Welcome back')+'.'));
+ const count=requiredIds.size;
+ head.append(node('p','s13-summary'+(calm?' is-complete':''),allSet?'No outstanding responsibilities':clearCommitments?'No outstanding commitment responses':h.id==='paused'?h.subtitle:h.id==='welcome-community'?'Explore at your pace.':count?count+' '+(count===1?'thing needs':'things need')+' your response':hasPending?'A commitment remains to review':'Your next step'));
  const priority=root.querySelector('.f09b-hero'),title=priority.querySelector('h2'),detail=priority.querySelector('.f09b-hero-main>p');
  const primary=priority.querySelector('.f09b-primary'),explain=priority.querySelector('.f09b-explain');
  const faces=priority.querySelector('.f09b-faces');
  const context=node('section','s13-context');context.setAttribute('aria-label','Priority context');
  if(explain)context.append(explain);
- const placeholder=(large=false)=>{const el=node('div','s13-image-placeholder'+(large?' is-wide':''));el.setAttribute('role','img');el.setAttribute('aria-label','Neutral community image placeholder');el.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1"><circle cx="9" cy="8" r="3"/><path d="M3 21v-2a6 6 0 0 1 12 0v2M17 5a3 3 0 0 1 0 6m1 5a5 5 0 0 1 3 5"/></svg>';return el;};
+ const ask=root.querySelector('.f10-entry');if(ask)context.append(ask);
+ const placeholder=(large=false)=>{
+  const el=node('div','s13-image-placeholder'+(large?' is-wide':''));
+  if((d.member&&large)||h.id==='group-rsvp'||h.id==='welcome-community'){
+   const img=node('img','');img.src='assets/rally-one/community.webp';img.alt='';img.decoding='async';el.append(img);
+  }else{
+   el.setAttribute('aria-hidden','true');el.classList.add('s13-editorial-art');
+   el.append(node('strong','',h.id==='serve-response'||d.team&&!d.member?'HERE TO SERVE.':'LIFE TOGETHER.'));
+  }
+  return el;
+ };
  const dateFor=id=>id==='group-rsvp'?d.groupDate:id==='serve-response'?d.serveDate:null;
  const valid=date=>date instanceof Date&&Number.isFinite(date.valueOf());
  const dateLabel=date=>valid(date)?(date.toDateString()===now.toDateString()?'Today':date.toLocaleDateString('en-US',{weekday:'short'}))+' · '+date.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'}):'';
@@ -44,9 +58,20 @@ function render(html,{model:d,board:b,now,campus}={},doc=globalThis.document){
  }
  const priorities=root.querySelector('.f09b-priorities'),rows=root.querySelector('.f09b-row-stack');
  const responseRows=[...rows.querySelectorAll('.is-actionable')];
+ const requiredRows=responseRows.filter(r=>requiredIds.has(r.dataset.row));
+ const optionalRows=[...rows.children].filter(r=>!requiredRows.includes(r));
+ const optionalStack=node('div','f09b-row-stack');
+ for(const row of optionalRows)optionalStack.append(row);
+ if(clearCommitments){
+  const settled=node('article','f09b-hero s13-settled s13-commitments-clear');
+  const body=node('div','s13-settled-copy');
+  body.append(node('h2','',d.member?'Life is better together.':'Small acts. Real impact.'),node('p','','Your commitments remain on your schedule.'));
+  settled.append(placeholder(true),body);priority.before(settled);
+  priority.classList.add('s13-optional-hero');
+ }
  for(const row of responseRows){const item=b.agenda.find(a=>a.id===(row.dataset.row==='serve-response'?'serve':row.dataset.row==='group-rsvp'?'group':''));if(item)row.querySelector('.f09b-row-copy strong').textContent=item.title;}
- if(responseRows.length){const label=node('div','s13-section-head');label.append(node('h2','',responseRows.every(r=>['serve-response','group-rsvp'].includes(r.dataset.row))?'Also needs a response':'Also for you'),node('small','',responseRows.length+' remaining here'));priorities.append(label,rows);}
- else if(rows.children.length)context.append(rows);
+ if(requiredRows.length){const label=node('div','s13-section-head');label.append(node('h2','','Also needs a response'),node('small','',requiredRows.length+' remaining here'));priorities.append(label,rows);}
+ else rows.remove();
  const glance=root.querySelector('.f09b-glance');
  const agendaRows=[...glance.querySelectorAll('[data-agenda]')];
  const schedule=node('section','s13-coming');schedule.setAttribute('aria-label','Coming up');
@@ -67,12 +92,14 @@ function render(html,{model:d,board:b,now,campus}={},doc=globalThis.document){
   const mark=node('span','s13-utility-icon');mark.setAttribute('aria-hidden','true');mark.innerHTML=type==='read'?'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 6C9 4 6 4 2 4v15c4 0 7 0 10 2 3-2 6-2 10-2V4c-4 0-7 0-10 2Zm0 0v15"/></svg>':'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M21 11a8 8 0 0 1-8 8H8l-5 3 1-7A8 8 0 1 1 21 11Z"/></svg>';
   const copy=node('span','s13-utility-copy');copy.append(node('strong','',title),node('small','',sub));const next=node('span','s13-arrow');next.setAttribute('aria-hidden','true');next.innerHTML=arrow;button.append(mark,copy,next);return button;
  };
- if(d.member)priorities.append(utility(d.conversationStatus==='unavailable'?'Review your conversation':d.unread>0?d.unread+' new group '+(d.unread===1?'message':'messages'):'Group conversation',d.conversationStatus==='unavailable'?'Conversation data unavailable':'Wednesday Group','group','chat'));
+ if(clearCommitments)priorities.append(priority);
+ if(optionalStack.children.length)priorities.append(optionalStack);
+ if(d.member&&h.id!=='group-unread'&&!optionalRows.some(r=>r.dataset.row==='group-unread'||r.dataset.row==='group-unavailable'||r.dataset.row==='community')&&h.id!=='group-unavailable')priorities.append(utility(d.conversationStatus==='unavailable'?'Review your conversation':d.unread>0?d.unread+' new group '+(d.unread===1?'message':'messages'):'Group conversation',d.conversationStatus==='unavailable'?'Conversation data unavailable':'Wednesday Group','group','chat'));
  const reading=utility(d.readToday?'Reading complete':'A moment with God',d.passage||'Your Scripture reading','read','','read');
  if(allSet){reading.classList.add('f09b-primary');reading.dataset.go=readAction.dataset.go||'read';}
- priorities.append(reading);
+ if(h.id!=='scripture-step'&&!optionalRows.some(r=>['scripture-step','scripture-read','scripture-overview'].includes(r.dataset.row)))priorities.append(reading);
  const mission=root.querySelector('.f09b-mission');if(mission){mission.classList.add('s13-community-link');mission.replaceChildren(doc.createTextNode(d.member?'View your community':'Explore community'),node('span','s13-arrow'));mission.lastChild.innerHTML=arrow;}
- root.insertBefore(context,root.querySelector('.f09b-footer'));
+ priorities.after(context);
  return root.outerHTML;
 }
 function shell(view,icon){
