@@ -114,3 +114,49 @@ Final VersePlay browser result: 433 checks, 98 screenshots/49 visual pairs,
 no mismatches, no console errors and no font failures. All local gates are complete.
 The earlier local port invocation failure was environmental and resolved without
 any runtime or validation change.
+
+## Focused owner review refinement — 2026-11-25
+
+The previous `db1daf0` candidate was returned for visual refinement, not approved.
+The focused update changes two existing presentation stylesheets only; no runtime
+JavaScript, HTML fixtures, storage or permission owners change from that candidate.
+Conversation portraits are 50–56px with 17px names, 15px previews and 18px message
+body text; Your Circle uses fixed 58–62px items rather than expanding sparse people.
+Room header and event card are verified below 135px and 190px respectively at normal
+phone text sizes; large text is allowed to grow and scroll. Sender/time spacing is
+consistent across group/direct/room. People uses open portrait/name rows with warm
+cream type. The app return stays visibly labeled and keeps its 44px target, existing
+accessible name, dialog close handler and original-route focus restoration.
+
+The added profile review covers all authorized conversation content: small-group
+member 3 rows, serving volunteer 1 row, combined 4 rows. Four widths plus short and
+doubled-text contexts yield 14 embedded cases and 44 captures. No people, presence,
+message counts or permissions were invented to fill sparse inboxes. Room screenshots
+are explicitly scrolled to show their content for review; interaction/scroll-policy
+tests remain unchanged. Notifications expire naturally before review captures; no
+screenshot masking or runtime style overrides are used.
+
+Local focused results: 864 application tests, 172 VersePlay units, standalone six
+viewport/text contexts, all 14 embedded profile cases, existing Connect behavior /
+persistence / read-cursor / malformed / guest / cross-tab suites pass. Strict
+historical validation again passes all 75 protected files and 64 comparison pairs
+with zero raw pixel differences and no page errors. Full preview, synthetic and
+VersePlay browser results and exact-source remote verification are recorded in the
+PR handoff when complete. No source hash, visual tolerance or assertion was weakened.
+
+Consolidated evidence: `test-results/ux03-refinement/review-board.png`, `review.pdf`
+and `review.html`, alongside full-size screenshots and `results.json` (ignored QA
+artifacts, not runtime assets or visual references). Eight panels show three inbox
+profiles, group thread, direct conversation and all three Rally Room tabs.
+
+To review in the preview: use the existing demo entry, profile avatar, then
+`02 · Small-group member`, `03 · Serving volunteer`, or `05 · Group + Serving`.
+Open the persistent Connect control after each selection. Scenes are existing
+controlled demonstration fixtures, not authentication or live member records.
+Owner reference approval, physical iPhone Safari/VoiceOver and final visual
+acceptance remain outstanding. The eight-category physical checklist above applies.
+
+Final focused local run: all 14 embedded profile cases/44 captures passed on the
+final review script; full preview and 11E synthetic review passed again. VersePlay
+browser regression again passed 433 checks and 49 pairs with no mismatches, console
+errors or font failures. No new immutable visual reference is established.

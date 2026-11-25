@@ -64,7 +64,7 @@ async function protect(){
   const actual=await readFile(resolve('dist',file)),approved=await readFile(resolve(file==='rally-one-widgets.js'?adaptiveReference:reference,file));
   if(file==='rallypoint-welcome.js')invariant.assertWelcomeSource(approved,actual);
   else if(file==='rally-one-graphite-parity.css')assert.equal(ux.restoreUXSource(file,actual.toString()),approved.toString(),'Only exact owner-approved Read and UX02 additions are permitted');
-  else if(file==='connect-usability.css')assert.equal(restoreConnect(file,actual.toString()),approved.toString(),'Only declared UX03 presentation addition permitted');
+  else if(['connect-usability.css','rally-one-connect-alive-shell.css'].includes(file))assert.equal(restoreConnect(file,actual.toString()),approved.toString(),'Only declared UX03 presentation addition permitted');
   else assert.ok(actual.equals(approved),`Protected source/asset changed: ${file}`);
  }
  report.protectedFiles=current.length;

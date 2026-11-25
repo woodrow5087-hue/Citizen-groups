@@ -41,3 +41,23 @@ and draft-preview preparation; device/final acceptance and merge remain separate
 Local application, messaging, accessibility, synthetic and immutable historical
 visual gates passed; result details and runner corrections are in ux-03-validation.md.
 No owner visual reference has been pinned.
+
+## Owner-requested focused refinement — 2026-11-25
+
+The owner requested one visual refinement pass on PR147 before approving a Connect
+reference; `db1daf0` is not an approved immutable Connect reference. The new candidate
+keeps all runtime owners/fixtures and refines only Connect presentation: larger row
+portraits/text, non-stretching sparse circle rail, compact room identity and event
+card, message spacing/type, relational People list and a compact labeled 44px app
+return control. The parent dialog/return handler, keyboard fit and focus lifecycle
+are unchanged. Shell CSS is guarded by an additional exact inverse to its original
+canonical hash; prior reference hashes and pixel comparisons remain intact.
+
+`ux03-profile-review.mjs` now validates group-only, serving-only and combined
+membership at all four phone widths, plus combined membership at short height and
+doubled text: 14 embedded cases/44 state captures. Expected authorized inbox counts
+are 3 / 1 / 4. It additionally checks sparse rail sizing, compact geometry, reply
+sending, shared Chat/Plans RSVP state, axe, four tabs and host focus restoration.
+Existing standalone, persistence, unavailable/guest, draft/reaction and cross-surface
+suites remain. No new visual reference may be pinned and no merge performed without
+explicit owner approval. Consolidated review evidence is separate from references.

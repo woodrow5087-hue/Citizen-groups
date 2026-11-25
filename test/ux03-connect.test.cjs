@@ -46,3 +46,9 @@ test('new-conversation dialog returns to the compose launcher',()=>{
  assert.equal(d.activeElement,d.querySelector('#direct-name'));d.querySelector('#screen-direct [data-open=inbox]').click();
  assert.equal(d.activeElement,d.querySelector('#compose-toggle'));dom.window.close();
 });
+
+test('compact shell exact inverse preserves immutable host styles',()=>{
+ const source=fs.readFileSync('rally-one-connect-alive-shell.css','utf8');
+ assert.equal(hash(restore('rally-one-connect-alive-shell.css',source)),'a6194bb5dedcee1b71f83ab3a7fdc1eaed982c35b746f7bde8a13de19168404b');
+ assert.throws(()=>restore('rally-one-connect-alive-shell.css',source.replace('height:44px','height:24px')));
+});
