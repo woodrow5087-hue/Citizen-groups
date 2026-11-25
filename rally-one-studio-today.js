@@ -102,10 +102,81 @@ function render(html,{model:d,board:b,now,campus}={},doc=globalThis.document){
  priorities.after(context);
  return root.outerHTML;
 }
-function shell(view,icon){
- const active=!!view.querySelector('.s13-today'),phone=view.closest('.phone-inner');phone?.classList.toggle('s13-shell',active);
- const connect=view.ownerDocument.getElementById('connect-entry');
- if(connect&&!connect.querySelector('.s13-connect-icon')){const mark=view.ownerDocument.createElement('span');mark.className='s13-connect-icon';mark.setAttribute('aria-hidden','true');mark.innerHTML=icon('message');connect.append(mark);}
+// Studio 13 presentation transplant: rearrange existing authorized nodes, never copy
+// the studio fixture state or introduce handlers. Existing renderers remain owners.
+function unify(view){
+ const doc=view.ownerDocument;
+ const node=(tag,cls,text)=>{const n=doc.createElement(tag);n.className=cls;if(text!==undefined)n.textContent=text;return n;};
+ const group=view.querySelector('.gv2-home');
+ if(group){
+  const header=group.querySelector('.gv2-heading-row'),title=header?.querySelector('h1'),label=header?.querySelector('small');
+  if(title)title.textContent='Your people.';
+  if(header&&label){label.textContent='Wednesday Group · demo community';header.after(label);}
+  const rail=group.querySelector('.gv2-rail-wrap'),hero=group.querySelector('.gv2-group-hero'),widgets=group.querySelector('.gv2-widgets');
+  if(hero){
+   const art=node('span','s13-group-cover');const img=node('img','');img.src='assets/rally-one/community.webp';img.alt='';img.decoding='async';art.append(img);hero.prepend(art);
+   // Retain the existing group-details action and exact group metadata.
+   const brand=hero.querySelector('.gv2-hero-brand');if(brand)brand.classList.add('s13-cover-label');
+  }
+  if(widgets){
+   const gather=widgets.querySelector('.gv2-widget-gather'),chat=widgets.querySelector('.gv2-widget-chat');
+   if(gather){widgets.prepend(gather);gather.querySelector('strong').textContent='Next gathering';}
+   if(chat){const h=node('h2','s13-subhead','Stay connected');chat.before(h);chat.querySelector('strong').textContent='Group conversation';}
+  }
+  if(rail&&widgets){const h=node('h2','s13-subhead','Your people');widgets.after(h,rail);}
+ }
+ const team=view.querySelector('.team-screen-v08:not(.team-empty-v08)');
+ if(team){
+  const header=team.querySelector('.team-v08-hero');
+  if(header){
+   const title=header.querySelector('h1'),kicker=header.querySelector('.team-v08-kicker');
+   if(title)title.textContent='Your team.';
+   if(kicker)kicker.textContent='SERVE TOGETHER';
+  }
+  const shift=team.querySelector('.team-schedule-card');
+  if(shift){
+   const heading=shift.querySelector('h2');if(heading)heading.textContent='Your next assignment.';
+   const over=shift.querySelector('.team-card-overline>span:first-child');if(over)over.textContent='NEXT ASSIGNMENT';
+   const info=shift.querySelector('.team-shift-info');
+   if(info){const art=node('span','s13-team-mini','HERE TO SERVE.');art.setAttribute('aria-hidden','true');info.after(art);}
+   const huddle=team.querySelector('.team-huddle');
+   if(huddle){
+    // Keep the canonical huddle time and coordination action, expose them progressively.
+    const details=node('details','s13-assignment-detail');details.append(node('summary','','Assignment details'));huddle.before(details);details.append(huddle);
+    const art=node('aside','s13-serve-feature');art.append(node('span','s13-serve-eyebrow','SERVING TOGETHER'),node('strong','','Small acts. Real impact.'),node('p','','Everyone has a part to play.'));details.after(art);
+   }
+  }
+ }
+ const read=view.querySelector('.ux-read-premium');
+ if(read){
+  const header=read.querySelector('.ux-read-heading');
+  if(header){header.prepend(node('span','s13-page-eyebrow','DAILY RHYTHM'));header.querySelector('h1').textContent='Make space.';header.querySelector('p').textContent='Read, reflect and pray at your own pace.';}
+  const feature=read.querySelector('.ux-reading-feature'),scripture=read.querySelector('#reading-scripture'),disclosure=read.querySelector('.ux-disclosure'),arcade=read.querySelector('.ux-arcade');
+  if(feature){
+   const label=feature.querySelector('.ux-eyebrow');if(label)label.textContent='A MOMENT WITH GOD';
+   // Keep the source's real reading path, not the studio's sample translation.
+   feature.querySelector('h2').textContent='Read & reflect.';
+   if(scripture)feature.after(scripture);
+  }
+  if(disclosure&&arcade){
+   const summary=disclosure.querySelector('summary');if(summary)summary.textContent='Go a little deeper · reflect & pray';
+   arcade.before(disclosure);arcade.before(node('h2','s13-subhead','VersePlay'));
+  }
+ }
 }
-return Object.freeze({render,shell});
+function shell(view,icon){
+ const phone=view.closest('.phone-inner'),doc=view.ownerDocument;
+ const active=doc.body.classList.contains('rally-one')&&!!view.querySelector('.s13-today,.group-screen-v07,.team-screen-v08,.read-screen-v09')&&!phone?.classList.contains('is-play-v08');
+ phone?.classList.toggle('s13-shell',active);
+ const connect=doc.getElementById('connect-entry'),controls=phone?.querySelector('.header-controls'),profile=controls?.querySelector('.profile-avatar');
+ if(connect&&!connect.querySelector('.s13-connect-icon')){const mark=doc.createElement('span');mark.className='s13-connect-icon';mark.setAttribute('aria-hidden','true');mark.innerHTML=icon('message');connect.append(mark);}
+ if(!active){if(connect&&connect.parentElement!==phone&&phone)phone.insertBefore(connect,view);return;}
+ // Move the same inbox control so its target/focus remains canonical.
+ if(connect&&controls&&profile)controls.insertBefore(connect,profile);
+ // The external music link remains accessible as a quiet optional utility.
+ const music=controls?.querySelector('.spotify-link');
+ if(music){const link=music.cloneNode(true);link.className='s13-music-link';link.removeAttribute('id');link.textContent='Citizen worship playlist ↗';view.append(link);}
+ unify(view);
+}
+return Object.freeze({render,shell,unify});
 });
