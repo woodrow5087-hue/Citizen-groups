@@ -1,7 +1,7 @@
 'use strict';
 const {test}=require('node:test'),assert=require('node:assert/strict'),{JSDOM}=require('jsdom');
 const Studio=require('../rally-one-studio-today.js');
-const fixture=markup=>new JSDOM('<body class="rally-one"><div class="phone-inner premium-alive"><header><div class="header-controls"><button class="header-button" data-action="notifications">Activity</button><button class="profile-avatar" data-action="demo-controls">Profile</button><a class="spotify-link" href="https://open.spotify.com/playlist/test" target="_blank" rel="noopener noreferrer">Music</a></div></header><button id="connect-entry" data-action="connect-inbox">Connect</button><main id="view">'+markup+'</main></div></body>').window.document;
+const fixture=markup=>new JSDOM('<body class="rally-one"><div class="phone-inner premium-alive"><header><div class="header-controls"><button class="header-button" data-action="notifications">Activity<i id="activity-dot" hidden></i></button><button class="profile-avatar" data-action="demo-controls">Profile</button><a class="spotify-link" href="https://open.spotify.com/playlist/test" target="_blank" rel="noopener noreferrer">Music</a></div></header><button id="connect-entry" data-action="connect-inbox">Connect</button><main id="view">'+markup+'</main></div></body>').window.document;
 const keys=root=>Array.from(root.querySelectorAll('[data-action],[data-go],[data-verse-circuit-entry]')).map(n=>[n.dataset.action,n.dataset.go,n.dataset.area,n.dataset.value,n.dataset.pane,n.dataset.verseCircuitEntry,n.getAttribute('href')].join('|')).sort();
 test('Studio shared shell moves the original Connect button, retains profile/Activity, and restores legacy shell',()=>{
  const d=fixture('<section class="group-screen-v07"></section>'),v=d.querySelector('#view'),connect=d.querySelector('#connect-entry'),actions=keys(d);
@@ -9,9 +9,13 @@ test('Studio shared shell moves the original Connect button, retains profile/Act
  assert.equal(connect.parentElement.className,'header-controls');assert.equal(d.querySelectorAll('#connect-entry').length,1);
  assert.equal(d.querySelector('.phone-inner').classList.contains('s13-shell'),true);
  assert.equal(d.querySelector('.s13-music-link').href,d.querySelector('.spotify-link').href);
+ assert.equal(d.querySelector('[data-action=notifications]').hidden,true);
+ assert.equal(d.querySelector('#activity-dot').parentElement,connect);
+ assert.equal(d.querySelectorAll('#activity-dot').length,1);
+ assert.equal(connect.getAttribute('aria-label'),'Connect messages and activity');
  assert.deepEqual(keys(d),actions);
  v.innerHTML='<section class="rp-play-screen"></section>';d.querySelector('.phone-inner').classList.add('is-play-v08');Studio.shell(v,()=>'<svg></svg>');
- assert.equal(connect.parentElement.className.includes('phone-inner'),true);assert.equal(d.querySelector('.phone-inner').classList.contains('s13-shell'),false);assert.deepEqual(keys(d),actions);
+ assert.equal(connect.parentElement.className.includes('phone-inner'),true);assert.equal(d.querySelector('.phone-inner').classList.contains('s13-shell'),false);assert.equal(d.querySelector('[data-action=notifications]').hidden,false);assert.equal(d.querySelector('#activity-dot').parentElement,d.querySelector('[data-action=notifications]'));assert.deepEqual(keys(d),actions);
 });
 test('Groups uses the deployed community photo and moves the existing shortcuts and people rail intact',()=>{
  const d=fixture('<section class="group-screen-v07 gv2-home"><div class="gv2-heading"><div class="gv2-heading-row"><h1>Your people</h1><small>Wednesday Group</small></div></div><nav class="gv2-rail-wrap"><button data-action="gv2-profile" data-person="demo">Person</button></nav><button class="gv2-group-hero" data-action="pane" data-area="group" data-value="people"><span class="gv2-hero-brand">Your group</span><strong>Wednesday Group</strong></button><div class="gv2-widgets"><button class="gv2-widget-chat" data-go="group" data-pane="chat"><strong>Conversation</strong></button><button class="gv2-widget-gather" data-action="pane" data-area="group" data-value="gather"><strong>This week</strong></button></div><button class="gv2-care" data-action="pane" data-area="group" data-value="prayer">Care</button></section>'),v=d.querySelector('#view'),a=keys(v);
