@@ -679,9 +679,9 @@ const snapshot=T.snapshot(s,todayUI,new Date(),conversation());$('activity-dot')
 if(hybridShell.classList.contains('s13-shell'))$('connect-entry').setAttribute('aria-label',$('activity-dot').hidden?'Connect messages and activity':'Connect messages and activity, new activity available');
 view.scrollTop=position;
 }
-function openConnect(screen='inbox', person=''){
+function openConnect(screen='inbox', person='', opener=document.activeElement){
  if(!rallyOne || !$('rp-gateway').hidden)return;
- const opener=document.activeElement;
+ const originScroll=$('view').scrollTop;
  closeDialog(false);
  const overlay=document.createElement('dialog');
  overlay.className='connect-overlay';
@@ -707,7 +707,8 @@ function openConnect(screen='inbox', person=''){
  const back=document.createElement('button');
  back.type='button';
  const area={today:'Today',group:'Groups',team:'Team',read:'Read',play:'Read'}[s.view];
- back.textContent='‹  Back to '+area;
+ const destination=s.view==='group'&&s.groupPane==='gather'?'Gathering':area;
+ back.textContent='‹  Back to '+destination;
  const access=()=>{
    const context=rallyOne?memberContext():null;
    return context?{group:context.permissions.group,team:context.permissions.team}:
@@ -770,14 +771,15 @@ function openConnect(screen='inbox', person=''){
    render();
    if(openActivityAfterClose){showDialog('notifications',$('connect-entry'));return;}
    const returnTarget=opener?.isConnected?opener:opener?.id?$(opener.id):null;
-   (returnTarget||$('connect-entry')).focus();
+   $('view').scrollTop=originScroll;
+   (returnTarget||$('connect-entry')).focus({preventScroll:true});
  }
  window.addEventListener('popstate',close,{once:true});
  back.onclick=()=>history.back();
  overlay.addEventListener('cancel',ev=>{ev.preventDefault();history.back();});
 }
-function navigate(view,pane,reading){
- return window.RallyNavigation.navigate(view,pane,reading,{rallyOne,memberContext,openConnect,closeDialog,s,clearFeedback:()=>{f09Feedback='';},resetIndex:()=>{f09Index=0;},f09Preview,canLead,render,$});
+function navigate(view,pane,reading,opener){
+ return window.RallyNavigation.navigate(view,pane,reading,{rallyOne,memberContext,openConnect:screen=>openConnect(screen,'',opener),closeDialog,s,clearFeedback:()=>{f09Feedback='';},resetIndex:()=>{f09Index=0;},f09Preview,canLead,render,$});
 }
 function closeDialog(restore=true){
  return window.RallyDialogLifecycle.closeDialog(restore,{dialog,dialogTrigger,f10ClearSession,clearDialog:()=>{dialog=null;},$,document});
@@ -845,7 +847,10 @@ function f10Ask(question){
 }
 function focusReceipt(){
  const receipt=$('view').querySelector('.r1-receipt button');
- if(receipt)receipt.focus({preventScroll:true});
+ if(receipt){
+   receipt.closest('.f09b-priorities')?.classList.add('s13-response-saved');
+   receipt.focus({preventScroll:true});
+ }
 }
 function notify(text){const x=$('toast');x.textContent=text;x.hidden=false;clearTimeout(notify.timer);notify.timer=setTimeout(()=>x.hidden=true,2600)}
 document.addEventListener('click',ev=>{
@@ -856,7 +861,7 @@ if(b.dataset.go){
  if(rallyOne&&b.dataset.requestedCheckIn==='1'){
    if(dialog!=='f10-companion'||s.view!=='today'||b.dataset.go!=='group'||b.dataset.pane!=='leader'||!hasLeaderRequest()||s.reached.includes('taylor'))return;
  }
- navigate(b.dataset.go,b.dataset.pane||((b.dataset.leader)?'leader':''),b.dataset.reading);return
+ navigate(b.dataset.go,b.dataset.pane||((b.dataset.leader)?'leader':''),b.dataset.reading,b);return
 }
 const a=b.dataset.action,v=b.dataset.value||'',person=b.dataset.person;
 if(f09Preview&&!f09Board&&s.view==='today'&&a==='f09-stack'){
@@ -949,7 +954,7 @@ if(a==='gv2-back-discovery'&&rallyOne&&s.view==='group'){
   render();$('view').scrollTop=0;return;
 }
 if(a==='connect-room' && (rallyOne?memberContext()?.permissions.team===true:!!todayUI.memberships.team)){openConnect('room');return;}
-if(a==='connect-inbox'){openConnect();return;}
+if(a==='connect-inbox'){openConnect('inbox','',b);return;}
 if(rallyOne && ['hybrid-person','message-person'].includes(a) && memberContext()?.permissions.group===true && ['anna','jess'].includes(person)){
  openConnect('direct',person==='anna'?'Anna':'Jess');return;
 }

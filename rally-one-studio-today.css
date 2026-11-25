@@ -445,3 +445,16 @@
 .rally-one .premium-alive.s13-shell #view .ux-read-premium .ux-disclosure>summary{display:flex;align-items:center;gap:var(--s13-space-2);min-height:var(--s13-touch);font-weight:750;font-size:var(--s13-row-title)}
 .rally-one .premium-alive.s13-shell #view .s13-component-action:focus-visible{outline:2px solid currentColor;outline-offset:3px}
 @media(max-width:360px){.rally-one .premium-alive.s13-shell{--s13-title-size:2.0625rem}}
+
+@media(prefers-reduced-motion:no-preference){
+ .rally-one .premium-alive.is-f09-board #view .s13-today .s13-response-saved .r1-receipt{
+  animation:s13-response-enter 180ms ease-out both;
+ }
+ .rally-one .premium-alive.is-f09-board #view .s13-today .s13-response-saved .f09b-hero{
+  animation:s13-response-enter 220ms ease-out 30ms both;
+ }
+ @keyframes s13-response-enter{
+  from{opacity:.65;transform:translateY(4px)}
+  to{opacity:1;transform:translateY(0)}
+ }
+}

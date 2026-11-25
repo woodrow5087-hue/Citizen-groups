@@ -8,6 +8,8 @@
   const {readModel,domain}=host;
   const actor={conversationId:readModel.CONVERSATION,userId:readModel.SELF};
   const threadInput=$('#thread-input');
+  const threadScreen=$('#screen-thread');
+  const syncDraftPresentation=()=>threadScreen.classList.toggle('has-thread-draft',threadInput.value.trim().length>0);
   const threadList=$('#thread-new-messages');
   const prayer=$('#prayer-moment');
   const note=$('.chat-caption');
@@ -94,6 +96,7 @@
       threadList.append(row);
     }
     threadInput.value=draft;
+    syncDraftPresentation();
     const quoted=messages.find(entry=>entry.id===replyTo);
     const context=$('#reply-context');
     context.hidden=!quoted;
@@ -197,7 +200,10 @@
     all('#thread-scroll > .message').forEach(row=>row.remove());
     prayer.before(threadList);
     $('.chat-header-title p').textContent='Wednesday Group · Small Group';
-    threadInput.addEventListener('input',()=>safeThread(()=>thread((repo,fields)=>{fields.draft=threadInput.value;})));
+    threadInput.addEventListener('input',()=>{
+      syncDraftPresentation();
+      safeThread(()=>thread((_repo,fields)=>{fields.draft=threadInput.value;}));
+    });
     $('#reply-cancel').addEventListener('click',()=>safeThread(()=>{
       thread((_repo,fields)=>{fields.replyTo=null;});
       drawThread();
