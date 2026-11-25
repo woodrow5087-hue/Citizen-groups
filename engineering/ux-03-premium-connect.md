@@ -23,3 +23,21 @@ Use accepted UX02 matte charcoal/graphite, Citizen red and cream; large readable
 Inspect historical source inverse guards and strict reference manifest before edits. Keep PR119/144/145/146 references and all unaffected surfaces pixel-identical. Identify exact Connect-only intended deltas and candidate capture states (inbox, search, thread, reply, direct, room tabs, guest, unavailable) across 320/375/390/430, short height and doubled text. Obtain explicit owner approval before pinning a new immutable Connect reference; no blanket exceptions, masks, threshold relaxation or skipped gates. Test actual embedded and standalone behavior, authorization, keyboard/focus, axe, reduced motion, safe areas, composer and scroll. Run targeted then comprehensive local application, VersePlay, synthetic and visual checks before consolidated push. Create draft PR targeting develop, verify exact-head CI and immutable preview provenance. Stop at physical Safari/VoiceOver and final visual acceptance; separate explicit merge authorization required.
 
 No production deployment, recovery changes, real data, credentials, integration changes or unrelated features. Target Dec 1 demo freeze. Status: charter and source audit committed; runtime implementation, rendered review and validation pending.
+
+## Implementation ledger — 2026-11-25
+
+Connect-scoped presentation and navigation-focus corrections are implemented; see
+`ux-03-validation.md` for ownership, file boundaries and physical checklist.
+The optional care card follows conversations in DOM order. Existing repositories,
+permissions, persistence keys, read models, intelligence, fixtures and unrelated
+screens are unchanged. Focus is consolidated into the existing navigation controller;
+no competing message or navigation state was introduced.
+
+Intentional Connect-only candidate captures are recorded separately from immutable
+PR119/144/145/146 comparisons. No new visual reference is approved or pinned.
+Owner visual-reference review is the next required decision after local validation
+and draft-preview preparation; device/final acceptance and merge remain separate.
+
+Local application, messaging, accessibility, synthetic and immutable historical
+visual gates passed; result details and runner corrections are in ux-03-validation.md.
+No owner visual reference has been pinned.

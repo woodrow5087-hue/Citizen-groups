@@ -23,6 +23,7 @@
   let activeDirect='Alex Morgan';
   const scrollPositions=new Map();
   const directDrafts=new Map();
+  let inboxOrigin=null;
   const scrollSelectors={inbox:'.inbox-body',thread:'#thread-scroll',room:'#room-scroll',direct:'#direct-scroll'};
   const scrollElement=screen=>screens[screen]?.querySelector(scrollSelectors[screen]);
   const scrollKey=(screen,person=activeDirect)=>screen==='direct'?'direct:'+person:screen;
@@ -36,9 +37,13 @@
     toast.hidden=false;
     toastTimer=setTimeout(()=>{toast.hidden=true;toastTimer=null;},3100);
   }
-  function openScreen(name,person=activeDirect){
+  function openScreen(name,person=activeDirect,origin=document.activeElement){
     if(!Object.prototype.hasOwnProperty.call(screens,name))return;
     if(member && !member.allowed(name))return;
+    if(activeScreen==='inbox'&&name!=='inbox'){
+      if(screens.inbox.contains(origin))inboxOrigin=origin;
+      else if(dialog.contains(origin))inboxOrigin=$('#compose-toggle');
+    }
     rememberScroll(activeScreen,activeDirect);
     if(document.activeElement?.matches('.composer textarea'))document.activeElement.blur();
     if(activeScreen==='direct')directDrafts.set(activeDirect,$('#direct-input').value);
@@ -53,6 +58,11 @@
       syncComposer($('#direct-input'));
     }
     member?.show(name,activeDirect);
+    const focusTarget=name==='inbox'?inboxOrigin:screens[name].querySelector('.chat-header h2,.room-identity h2');
+    if(focusTarget&&!focusTarget.hidden&&focusTarget.isConnected){
+      if(name!=='inbox')focusTarget.tabIndex=-1;
+      focusTarget.focus({preventScroll:true});
+    }
     if(name==='thread')syncComposer($('#thread-input'));
     const scroller=scrollElement(name);
     // Restore position after message rows have been reconciled with the
@@ -65,14 +75,14 @@
     });
     document.title=(name==='inbox'?'Connect':name==='thread'?'Wednesday Crew':name==='room'?'Citizen Serve Team':activeDirect)+' — Rally One';
   }
-  function openDirect(name){
+  function openDirect(name,origin=document.activeElement){
     if(!Object.prototype.hasOwnProperty.call(urls,name))return;
     $('#direct-name').textContent=name;
     $('#direct-author').textContent=name.split(' ')[0];
     $('#direct-first-message').textContent=greetings[name];
     $('#direct-avatar').src=urls[name];
     $('#direct-message-avatar').src=urls[name];
-    openScreen('direct',name);
+    openScreen('direct',name,origin);
   }
   function selectRoomTab(name){
     if(!['chat','plans','people'].includes(name))return;
@@ -136,10 +146,10 @@
     syncComposer(textarea);
   }
   $$('.screen [data-open]').forEach(button=>{
-    button.addEventListener('click',()=>openScreen(button.dataset.open));
+    button.addEventListener('click',()=>openScreen(button.dataset.open,activeDirect,button));
   });
   $$('[data-person]').forEach(button=>{
-    button.addEventListener('click',()=>openDirect(button.dataset.person));
+    button.addEventListener('click',()=>openDirect(button.dataset.person,button));
   });
   $$('.room-tabs [role=tab]').forEach((button,index,all)=>{
     button.addEventListener('click',()=>selectRoomTab(button.dataset.roomTab));
@@ -153,7 +163,7 @@
     });
   });
   $('#moment-open').addEventListener('click',()=>{
-    openScreen('thread');
+    openScreen('thread',activeDirect,$('#moment-open'));
     requestAnimationFrame(()=>$('#prayer-moment').scrollIntoView({block:'center',behavior:'auto'}));
   });
   $('#thread-info').addEventListener('click',()=>showToast('Fictional group conversation. Live member access is not connected.'));
@@ -173,7 +183,7 @@
     searchWrap.hidden=!open;
     searchButton.setAttribute('aria-expanded',String(open));
     if(open)search.focus();
-    else{search.blur();search.value='';filterConversations();}
+    else{search.value='';filterConversations();searchButton.focus();}
   }
   searchButton.addEventListener('click',()=>toggleSearch());
   search.addEventListener('input',filterConversations);

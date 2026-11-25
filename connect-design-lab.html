@@ -76,12 +76,7 @@
                 <button class="person" type="button" data-open="room"><span class="story-ring"><img src="assets/today-priority/group.webp" alt=""></span><span>Serve Team</span></button>
               </div>
 
-              <button type="button" class="moment-card" id="moment-open">
-                <span class="moment-eyebrow"><svg class="icon"><use href="#i-heart"/></svg> A MOMENT TO CONNECT</span>
-                <strong>Show up for someone.</strong>
-                <span>Anna shared a prayer request with your group.</span>
-                <span class="moment-action">Open conversation <svg class="icon"><use href="#i-arrow"/></svg></span>
-              </button>
+
 
               <div class="section-top conversations-heading"><h3>Conversations</h3><span class="section-note">RECENT</span></div>
               <div id="conversation-list" class="conversation-list">
@@ -107,6 +102,12 @@
                 </button>
               </div>
               <p id="no-results" class="no-results" hidden>No conversations found. Try another name.</p>
+              <button type="button" class="moment-card" id="moment-open">
+                <span class="moment-eyebrow"><svg class="icon"><use href="#i-heart"/></svg> A MOMENT TO CONNECT</span>
+                <strong>Show up for someone.</strong>
+                <span>Anna shared a prayer request with your group.</span>
+                <span class="moment-action">Open conversation <svg class="icon"><use href="#i-arrow"/></svg></span>
+              </button>
               <p class="inbox-footnote">A private space for genuine conversation.</p>
             </div>
             <nav class="bottom-nav" aria-label="Messaging concept navigation">
@@ -179,7 +180,7 @@
               <button type="button" role="tab" id="tab-room-plans" aria-selected="false" aria-controls="room-panel-plans" data-room-tab="plans">Plans</button>
               <button type="button" role="tab" id="tab-room-people" aria-selected="false" aria-controls="room-panel-people" data-room-tab="people">People</button>
             </div>
-            <div class="room-scroll scroll-area" id="room-scroll">
+            <div class="room-scroll scroll-area" id="room-scroll" tabindex="0" role="region" aria-label="Rally Room content">
               <div id="room-panel-chat" role="tabpanel" aria-labelledby="tab-room-chat" class="room-panel">
                 <div class="message incoming">
                   <img class="message-avatar" src="assets/today-priority/taylor.webp" alt="">

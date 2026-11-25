@@ -59,6 +59,7 @@ jobs:
           node scripts/s10c5-member-journeys-browser-check.mjs http://127.0.0.1:8514/
           node scripts/ux01e-browser-check.mjs http://127.0.0.1:8514/
           node scripts/ux02-browser-check.mjs http://127.0.0.1:8514/
+          node scripts/ux03-browser-check.mjs http://127.0.0.1:8514/
       - name: Exercise isolated synthetic review lab (loopback only)
         run: node scripts/s11e-local-review-browser-check.mjs
       - name: Compare immutable PR 119 and owner-approved Read references

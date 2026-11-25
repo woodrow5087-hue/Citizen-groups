@@ -5,6 +5,7 @@
 import assert from 'node:assert/strict';
 import invariant from './s9br-onboarding-source-invariant.cjs';
 import ux from '../test/helpers/ux01-source.cjs';
+import restoreConnect from '../test/helpers/ux03-source.cjs';
 import {createServer} from 'node:http';
 import {readFile,readdir,stat,mkdir,writeFile} from 'node:fs/promises';
 import {resolve,extname,sep} from 'node:path';
@@ -63,6 +64,7 @@ async function protect(){
   const actual=await readFile(resolve('dist',file)),approved=await readFile(resolve(file==='rally-one-widgets.js'?adaptiveReference:reference,file));
   if(file==='rallypoint-welcome.js')invariant.assertWelcomeSource(approved,actual);
   else if(file==='rally-one-graphite-parity.css')assert.equal(ux.restoreUXSource(file,actual.toString()),approved.toString(),'Only exact owner-approved Read and UX02 additions are permitted');
+  else if(file==='connect-usability.css')assert.equal(restoreConnect(file,actual.toString()),approved.toString(),'Only declared UX03 presentation addition permitted');
   else assert.ok(actual.equals(approved),`Protected source/asset changed: ${file}`);
  }
  report.protectedFiles=current.length;
