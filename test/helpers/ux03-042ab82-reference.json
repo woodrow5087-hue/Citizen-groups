@@ -1,0 +1,17 @@
+{
+  "source": "042ab829400437093058b5e99c9c438b0f33fe17",
+  "scope": "Connect only; owner revised visual-reference approval 2026-11-25; no device or merge approval",
+  "files": {
+    "connect-design-lab.html": "2228733614c7e62721bb7e79c3d8f20f6205b181f6f3b77b8a671de7010ff816",
+    "connect-design-lab.css": "fee2ed05c4d05cbed059ce7394a798df21bbe0caf71a2849b22ba71c6c55fdee",
+    "connect-design-lab.js": "ad5e7b0ec6704b5c3d87754ad93abf892c8afab9024a385aa0e313f3fe6e7ce7",
+    "connect-graphite-parity.css": "41e1c8e5e0c67083a9ffa4455e11855fc5234b71f771ccf2384161be37b53660",
+    "connect-alive.css": "b140202439dcabaaef605e56ca494fefeed9c217d5d52949d34c6ad3d2ade695",
+    "connect-alive.js": "b666789bb71ddb6f7827f5fdf5e423d5ba61bd80d2ee7584dfbf970c441f7522",
+    "connect-usability.css": "37a1812254ad080dd414d113bc2047be50e507a65e3d8bfc8931f05c22d20da9",
+    "connect-member.js": "bad0b5901f1e769a41e04c1a09adef162cb068b9f3535a3fa713df152103d331",
+    "rally-one-connect-alive-shell.css": "2945d059df0b708a02d27f32863c3c92c3bcc38763fde095fbc6e80451603ea1",
+    "rally-one-connect-usability-shell.css": "0dcbf0d7ec8b830a49cb86169f9007f64bd032aa006cacbdcd0bcf52fa2178c1"
+  },
+  "engine": "webkit"
+}

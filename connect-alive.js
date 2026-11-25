@@ -21,21 +21,5 @@
       }
     });
   }
-  // Keyboard users arrive at a meaningful heading after changing the
-  // embedded Connect screen; no extra navigation stack is introduced.
-  document.addEventListener('click',event=>{
-    const target=event.target.closest('[data-open]');
-    if(!target)return;
-    const name=target.dataset.open;
-    const screen=document.querySelector('#screen-'+name);
-    if(!screen)return;
-    queueMicrotask(()=>{
-      if(screen.hidden)return;
-      const heading=screen.querySelector('.inbox-headline h2,.chat-header-title h2,.room-identity h2');
-      if(heading){
-        heading.tabIndex=-1;
-        heading.focus({preventScroll:true});
-      }
-    });
-  });
+  // Screen focus and origin restoration are owned by connect-design-lab.js.
 })();
