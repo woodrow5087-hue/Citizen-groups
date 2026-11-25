@@ -479,3 +479,39 @@
 .rally-one .premium-alive.s13-shell #view .team-screen-v08 .s13-team-chat-copy .team-message-preview-text{
  min-width:0;white-space:normal;overflow-wrap:anywhere;
 }
+
+/* ALIVE 02A — Belong. Keep action ownership and the approved Today geometry.
+   Definite image dimensions avoid percentage-height/aspect-ratio ambiguity. */
+.rally-one .premium-alive.s13-shell #view .s13-belong .gv2-group-hero{
+ display:block;width:100%;min-width:0;overflow:hidden;text-align:left;
+ padding:0;border-radius:var(--s13-feature-radius,18px);
+}
+.rally-one .premium-alive.s13-shell #view .s13-belong .s13-group-cover{
+ display:block;position:relative;width:100%;height:clamp(112px,32vw,150px);
+ aspect-ratio:auto;overflow:hidden;background:var(--s13-card,#292c2f) url('assets/rally-one/community.webp') center 58% / cover no-repeat;
+}
+.rally-one .premium-alive.s13-shell #view .s13-belong .s13-group-cover img{
+ display:block;position:absolute;inset:0;width:100%;height:100%;max-width:none;max-height:none;
+ object-fit:cover;object-position:center 54%;opacity:1;visibility:visible;border:0;border-radius:0;
+}
+.rally-one .premium-alive.s13-shell #view .s13-belong .s13-group-caption{
+ display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 14px;
+}
+.rally-one .premium-alive.s13-shell #view .s13-belong .s13-group-identity{flex:1;min-width:0}
+.rally-one .premium-alive.s13-shell #view .s13-belong .s13-group-identity strong{font-size:1.1875rem;line-height:1.2;letter-spacing:-.025em}
+.rally-one .premium-alive.s13-shell #view .s13-belong .gv2-group-hero .gv2-hero-action{width:22px;min-width:22px;min-height:0;flex:0 0 22px;padding:0;margin:0}
+.rally-one .premium-alive.s13-shell #view .s13-belong :is(.gv2-hero-action,.gv2-widget-cta i,.gv2-care>b) svg{width:20px;height:20px;display:block;stroke:currentColor;fill:none;stroke-width:1.75}
+.rally-one .premium-alive.s13-shell #view .s13-belong .gv2-widget-gather .gv2-widget-icon{width:36px;height:36px;display:grid;place-items:center;border-radius:10px}
+.rally-one .premium-alive.s13-shell #view .s13-belong .gv2-widget-gather .gv2-widget-icon svg{width:22px;height:22px;display:block}
+.rally-one .premium-alive.s13-shell #view .s13-belong .gv2-widget-gather>span:not(.gv2-widget-icon){font-size:1rem;line-height:1.35}
+.rally-one .premium-alive.s13-shell #view .s13-belong .gv2-widget-gather .gv2-widget-cta{display:flex;justify-content:space-between;align-items:center;text-align:left;padding:10px 12px;gap:8px;min-height:44px;white-space:normal}
+.rally-one .premium-alive.s13-shell #view .s13-belong .gv2-rail-wrap{margin:0 0 12px}
+.rally-one .premium-alive.s13-shell #view .s13-belong .gv2-rail{gap:10px;padding:4px 0 8px;margin:0;scroll-padding-inline:0}
+.rally-one .premium-alive.s13-shell #view .s13-belong .gv2-rail-item{flex:0 0 56px}
+.rally-one .premium-alive.s13-shell #view .s13-belong .gv2-rail-button{width:56px;min-height:70px;gap:5px}
+.rally-one .premium-alive.s13-shell #view .s13-belong .gv2-ring{width:48px;height:48px;box-sizing:border-box;padding:2px;border:1px solid #77736f}
+.rally-one .premium-alive.s13-shell #view .s13-belong .gv2-ring-red{border-color:var(--s13-brand-red,#e3002b)}
+.rally-one .premium-alive.s13-shell #view .s13-belong .gv2-rail-label{font-size:.6875rem;line-height:1.3;min-height:1.3em;color:var(--s13-ink,#f6f0e7)}
+.rally-one .premium-alive.s13-shell #view .s13-belong .gv2-care{display:flex;align-items:center;gap:12px;text-align:left}
+.rally-one .premium-alive.s13-shell #view .s13-belong .gv2-care>span:not(.gv2-care-icon){flex:1;min-width:0}
+.rally-one .premium-alive.s13-shell #view .s13-belong .gv2-care small{white-space:normal;overflow-wrap:anywhere}
