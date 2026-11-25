@@ -274,3 +274,36 @@
 .rally-one .connect-overlay.s13-connect-combined .s13-activity-trigger svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:1.8}
 .rally-one .connect-overlay.s13-connect-combined .s13-activity-trigger:focus-visible{outline:3px solid #ff8996;outline-offset:-3px}
 @media(max-width:360px){.rally-one:not(.rp-welcome-active) .premium-alive.s13-shell.s13-ask-header .header{padding-inline:15px}.rally-one:not(.rp-welcome-active) .premium-alive.s13-shell.s13-ask-header .brand-home span{font-size:17px}.rally-one:not(.rp-welcome-active) .premium-alive.s13-shell.s13-ask-header .brand-home img{width:20px;height:22px}}
+
+/* Final brand and icon refinement: scoped to the Studio shell, not legacy
+   navigation, games, or approved standalone messaging source. */
+.rally-one:not(.rp-welcome-active) .premium-alive.s13-shell .header .brand-home,
+.rally-one:not(.rp-welcome-active) .premium-alive.s13-shell.s13-ask-header .header .brand-home{display:flex;align-items:center;gap:6px;flex:0 0 auto;min-width:0;min-height:44px;opacity:1;padding:0}
+.rally-one:not(.rp-welcome-active) .premium-alive.s13-shell .header .brand-home>span,
+.rally-one:not(.rp-welcome-active) .premium-alive.s13-shell.s13-ask-header .header .brand-home>span{font-size:clamp(19px,5.7vw,24px);font-weight:900;line-height:1;letter-spacing:-.045em;color:#f4eee3;opacity:1}
+.rally-one:not(.rp-welcome-active) .premium-alive.s13-shell .header .brand-home em{color:#e3002b;font-style:normal;font-weight:inherit;opacity:1}
+.rally-one:not(.rp-welcome-active) .premium-alive.s13-shell .header .brand-home img,
+.rally-one:not(.rp-welcome-active) .premium-alive.s13-shell.s13-ask-header .header .brand-home img{width:26px;height:25px;object-fit:contain;filter:none;opacity:1}
+.rally-one:not(.rp-welcome-active) .premium-alive.s13-shell .header .header-controls,
+.rally-one:not(.rp-welcome-active) .premium-alive.s13-shell.s13-ask-header .header .header-controls{gap:4px}
+.rally-one:not(.rp-welcome-active) .premium-alive.s13-shell .header .s13-ask-trigger,
+.rally-one:not(.rp-welcome-active) .premium-alive.s13-shell .header #connect-entry,
+.rally-one:not(.rp-welcome-active) .premium-alive.s13-shell .header .profile-avatar{width:44px;height:44px;min-width:44px;min-height:44px;flex:0 0 44px;display:grid;place-items:center;border:0;background:transparent;box-shadow:none;padding:0;margin:0;position:relative;color:#f4eee3}
+.rally-one:not(.rp-welcome-active) .premium-alive.s13-shell .header .s13-ask-trigger{font-size:.875rem;letter-spacing:0;font-weight:750}
+.rally-one:not(.rp-welcome-active) .premium-alive.s13-shell .header #connect-entry .s13-connect-icon{width:24px;height:24px;display:grid;place-items:center;padding:0;margin:0;line-height:0}
+.rally-one:not(.rp-welcome-active) .premium-alive.s13-shell .header #connect-entry .s13-message-glyph{width:24px;height:24px;display:block;margin:0;stroke:currentColor;stroke-width:1.75;fill:none;transform:none}
+.rally-one:not(.rp-welcome-active) .premium-alive.s13-shell .header #connect-entry #activity-dot{inset:6px 5px auto auto;box-shadow:none}
+.rally-one:not(.rp-welcome-active) .premium-alive.s13-shell .header .profile-avatar #profile-initials{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;background:#f4eee3;color:#191a1b;font-size:.8125rem;font-weight:800;line-height:1}
+.rally-one .premium-alive.s13-shell #view .s13-message-glyph{width:22px;height:22px;display:block;margin:0;stroke:currentColor;stroke-width:1.75;fill:none;transform:none}
+.rally-one .premium-alive.is-f09-board #view .s13-today .s13-utility-icon:has(.s13-message-glyph){background:#323638;color:#f4eee3;border-radius:10px}
+.rally-one:not(.rp-welcome-active) .premium-alive.s13-shell .header :is(button,a):focus-visible{outline:2px solid #f4eee3;outline-offset:1px}
+@media(max-width:360px){
+ .rally-one:not(.rp-welcome-active) .premium-alive.s13-shell .header,
+ .rally-one:not(.rp-welcome-active) .premium-alive.s13-shell.s13-ask-header .header{padding-inline:10px;gap:4px}
+ .rally-one:not(.rp-welcome-active) .premium-alive.s13-shell .header .brand-home,
+ .rally-one:not(.rp-welcome-active) .premium-alive.s13-shell.s13-ask-header .header .brand-home{gap:4px}
+ .rally-one:not(.rp-welcome-active) .premium-alive.s13-shell .header .brand-home img,
+ .rally-one:not(.rp-welcome-active) .premium-alive.s13-shell.s13-ask-header .header .brand-home img{width:22px;height:22px}
+ .rally-one:not(.rp-welcome-active) .premium-alive.s13-shell .header .header-controls,
+ .rally-one:not(.rp-welcome-active) .premium-alive.s13-shell.s13-ask-header .header .header-controls{gap:2px}
+}
