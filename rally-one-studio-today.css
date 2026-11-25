@@ -111,3 +111,16 @@
 .rally-one:not(.rp-welcome-active) .premium-alive.is-f09-board.s13-shell #nav button.active svg{background:#f4eee3;color:#17191b}
 .rally-one:not(.rp-welcome-active) .premium-alive.is-f09-board.s13-shell #nav button small{font-size:.6875rem;line-height:1.4;font-weight:650}
 @media(max-width:360px){.rally-one:not(.rp-welcome-active) .premium-alive.is-f09-board.s13-shell #view{padding-left:15px;padding-right:15px}.rally-one:not(.rp-welcome-active) .premium-alive.is-f09-board.s13-shell .header{padding-left:15px;padding-right:15px}.rally-one:not(.rp-welcome-active) .premium-alive.is-f09-board.s13-shell #connect-entry{right:119px}.rally-one:not(.rp-welcome-active) .premium-alive.is-f09-board.s13-shell .brand-home span{font-size:18px}}
+
+/* Studio 13 reference geometry: miniart 86 x 85, cover crop, settled media 128px. */
+.rally-one .premium-alive.is-f09-board #view .s13-today .s13-image-placeholder img{width:100%;height:100%;object-fit:cover;object-position:center 48%;display:block}
+.rally-one .premium-alive.is-f09-board #view .s13-today .s13-editorial-art{background:#292b2d;color:#f4eee3;padding:9px;text-align:left;place-items:end start}
+.rally-one .premium-alive.is-f09-board #view .s13-today .s13-editorial-art strong{font-size:1rem;line-height:.98;letter-spacing:-.04em;font-weight:900;overflow-wrap:anywhere}
+.rally-one .premium-alive.is-f09-board #view .s13-today .s13-image-placeholder.is-wide{height:128px}
+.rally-one .premium-alive.is-f09-board #view .s13-today .s13-settled-copy h2{font-size:1.4375rem;line-height:1.08;margin:0 0 4px;letter-spacing:-.04rem;color:#f6f0e7}
+.rally-one .premium-alive.is-f09-board #view .s13-today .f09b-row-stack{margin-top:8px}
+.rally-one .premium-alive.is-f09-board #view .s13-today .s13-optional-hero{margin-top:10px;background:#272a2c;color:#f6f0e7;border:1px solid #35383a;border-radius:14px;padding:12px}
+.rally-one .premium-alive.is-f09-board #view .s13-today .s13-optional-hero .s13-image-placeholder,.rally-one .premium-alive.is-f09-board #view .s13-today .s13-optional-hero .f09b-faces{display:none}
+.rally-one .premium-alive.is-f09-board #view .s13-today .s13-optional-hero #f09b-hero-title{font-size:1rem;letter-spacing:0}
+.rally-one .premium-alive.is-f09-board #view .s13-today .s13-optional-hero p{color:#c0c2bf}
+.rally-one .premium-alive.is-f09-board #view .s13-today .s13-optional-hero .s13-kicker{color:#ff9aa3}
