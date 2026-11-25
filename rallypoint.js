@@ -618,6 +618,7 @@ if(rallyOne&&window.RallyCareFlow){
     }
   }
 }
+if(rallyOne&&((s.view==='today'&&f09Board)||(s.view==='group'&&s.groupPane==='overview')||(s.view==='team'&&s.teamPane==='schedule')))window.RallyWidgets?.apply(view);
 if(s.view==='play')mountBlankBattle();
 view.querySelectorAll('textarea').forEach(field=>{if(drafts[field.dataset.draftKey||field.id]!==undefined)field.value=drafts[field.dataset.draftKey||field.id]});
 if(s.view==='group'&&s.groupPane==='chat'&&todayUI.memberships.group&&$('rpx-chat')){

@@ -37,6 +37,8 @@ const baseline=Object.freeze({
   "rally-one-graphite-parity.css": "0c518266f28f0eddad3212767b2ea79946c1a5c6"
 });
 function restoreUXSource(name,source=fs.readFileSync(path.join(root,name),'utf8')){
+ const adaptive=require('./ux02-changes.json')[name]||[];
+ for(const [from,to] of adaptive){assert.equal(source.split(from).length,2,'Exact UX02 boundary changed: '+name);source=source.replace(from,to);}
  const premium=require('./ux01e-changes.json')[name]||[];
  for(const [from,to] of premium){assert.equal(source.split(from).length,2,'Exact UX1E boundary changed: '+name);source=source.replace(from,to);}
 
