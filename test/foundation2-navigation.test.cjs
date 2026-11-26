@@ -27,7 +27,7 @@ test('Foundation 2 shell has four real links and one consistent Connect entry',(
  assert.ok(doc.querySelector('.brand[data-route=today]'));
  const scripts=[...doc.querySelectorAll('script[src]')].map(x=>x.getAttribute('src'));
  assert.ok(scripts.indexOf('navigation.js')>=0&&scripts.indexOf('app.js')>scripts.indexOf('navigation.js'));
- assert.equal(doc.querySelectorAll('link[rel=stylesheet]').length,1);
+ assert.equal(doc.querySelectorAll('link[rel=stylesheet]').length,2);
 });
 test('Four tabs render accessible current page state and unique route destinations',()=>{
  for(const id of [...Route.tabs,'connect']){
