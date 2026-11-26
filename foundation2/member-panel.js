@@ -22,7 +22,8 @@ function create({getSession,getUI,getStore,profileChanged,perform,navigate}){
   const uncertain=!session.valid||(!decision.board.taskCount&&(decision.view.unavailable||decision.view.unknownTeam))||FoundationServing.isActive(document.getElementById('scenario').value)||FoundationGroupPreview.isActive(document.getElementById('scenario').value);
   const provider=FoundationServing.isActive(document.getElementById('scenario').value)||FoundationGroupPreview.isActive(document.getElementById('scenario').value);
   const response=(provider&&turn.response.intent!=='unsupported'||uncertain&&['next','focus','why'].includes(turn.response.intent))?{...turn.response,heading:'Review the current source.',intro:'Some data is unavailable or is a read-only provider sample. Completion cannot be inferred.',items:[]}:turn.response;
-  shell('Ask Rally', '<p>Commitments need a response. Messages, care opportunities and Scripture remain optional.</p>'+RallyPersonalCompanion.render(response,query,notice,[],turn.suggestions));
+  const supported={...response,items:response.items.map(item=>item.action?.kind==='care-route'&&item.action.id==='care-check-in'?{...item,detail:item.detail+' Direct messaging remains in the existing full demo; nothing is sent here.',action:{kind:'go',id:'group',label:'Review group care'}}:item)};
+  shell('Ask Rally', '<p>Commitments need a response. Messages, care opportunities and Scripture remain optional.</p>'+RallyPersonalCompanion.render(supported,query,notice,[],turn.suggestions));
  }
  document.getElementById('ask-rally').addEventListener('click',()=>{returnFocus=document.getElementById('ask-rally');ask();});
  document.getElementById('member-profile-open').addEventListener('click',()=>{returnFocus=document.querySelector('#preview-tools>summary');document.getElementById('preview-tools').removeAttribute('open');profile();});
