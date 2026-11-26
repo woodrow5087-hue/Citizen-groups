@@ -47,7 +47,7 @@ function transition({state,ui,conversation,command,now=new Date(),owner='connect
 }
 function previewProfile(raw){
  if(raw===null)return {status:'empty'};
- try{const x=JSON.parse(raw);if(!object(x)||typeof x.name!=='string'||!['north','central','maui','online'].includes(x.campus))return {status:'malformed'};
+ try{const x=JSON.parse(raw);if(object(x)&&(!Object.hasOwn(x,'name')||!Object.hasOwn(x,'campus')))return {status:'unknown'};if(!object(x)||typeof x.name!=='string'||!['north','central','maui','online'].includes(x.campus))return {status:'malformed'};
  return {status:'ready',name:x.name.trim().slice(0,24)||'Friend',campus:x.campus};}catch{return {status:'malformed'};}
 }
 return Object.freeze({derive,decision,transition,previewProfile});

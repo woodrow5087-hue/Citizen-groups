@@ -45,3 +45,7 @@ test('unknown legacy response remains unknown rather than a confirmed or empty s
 test('personalization changes display identity, not synthetic member identity or permissions',()=>{
  const s=initial();const a=Session.derive({state:s,ui,conversation:chat,now});const b=Session.derive({state:s,ui:{...ui,name:'Other',campus:'maui'},conversation:chat,now});assert.equal(a.identity.id,b.identity.id);assert.equal(b.identity.name,'Other');assert.deepEqual(a.snapshot.context.permissions,b.snapshot.context.permissions);
 });
+
+test('handoff distinguishes absent, unknown and malformed source data',()=>{
+ assert.equal(Session.previewProfile(null).status,'empty');assert.equal(Session.previewProfile('{"name":"Older demo"}').status,'unknown');assert.equal(Session.previewProfile('{"name":[],"campus":"north"}').status,'malformed');
+});
