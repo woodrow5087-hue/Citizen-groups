@@ -1,4 +1,53 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="dark"><title>Rally One · Foundation 2</title><link rel="stylesheet" href="design.css"></head>
-<body><div class="shell"><header class="header"><a class="brand" href="./" aria-label="Rally One Today"><img src="../assets/citizen-flag.svg" alt=""><span>RALLY <em>ONE.</em></span></a><label class="scenario-label">Demo scenario<select id="scenario"><option value="connected">Group + team</option><option value="leader">Leader</option><option value="group">Group member</option><option value="team">Volunteer</option><option value="visitor">Visitor</option><option value="unavailable">Conversation unavailable</option></select></label></header><main id="today" tabindex="-1"></main><footer>FOUNDATION 2 · ISOLATED TODAY EXPERIMENT · SYNTHETIC DATA</footer><nav aria-label="Preview navigation"><span aria-current="page">Today</span><a href="../index.html">Existing full app ↗</a></nav></div>
-<script src="../rallypoint-today.js"></script><script src="../rallypoint-companion-decision.js"></script><script src="../rallypoint-smart-dashboard.js"></script><script src="../rally-one-member-context.js"></script><script src="../rally-one-unified-focus.js"></script><script src="../rallypoint-priority-board.js"></script><script src="../rally-one-care-flow.js"></script><script src="../rally-one-intelligence.js"></script><script src="today-model.js"></script><script src="today-view.js"></script><script src="app.js"></script></body></html>
+<html lang="en">
+<head>
+ <meta charset="utf-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1">
+ <meta name="color-scheme" content="dark">
+ <title>Rally One · Foundation 2 Today</title>
+ <link rel="stylesheet" href="design.css">
+</head>
+<body>
+ <div class="shell">
+  <header class="header">
+   <a class="brand" href="./" aria-label="Rally One, Today">
+    <img src="../assets/citizen-flag.svg" alt="" width="27" height="27">
+    <span>RALLY <em>ONE.</em></span>
+   </a>
+   <details class="preview-tools" id="preview-tools">
+    <summary aria-label="Show preview scenario controls" title="Preview scenarios">
+     <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"><path d="M4 7h16M4 17h16"/><circle cx="9" cy="7" r="2" fill="#181a1b"/><circle cx="16" cy="17" r="2" fill="#181a1b"/></svg>
+    </summary>
+    <div class="preview-tools-panel">
+     <label for="scenario">Demo scenario</label>
+     <select id="scenario">
+      <option value="connected">Group + team</option>
+      <option value="leader">Leader</option>
+      <option value="group">Group member</option>
+      <option value="team">Volunteer</option>
+      <option value="visitor">Visitor</option>
+      <option value="unavailable">Conversation unavailable</option>
+     </select>
+     <small>Fictional local state resets when you choose a scenario.</small>
+    </div>
+   </details>
+  </header>
+  <main id="today" tabindex="-1" aria-label="Today"></main>
+  <footer class="preview-footer">
+   <span>FOUNDATION 2 · SYNTHETIC PREVIEW · NO LIVE CHURCH DATA</span>
+   <a href="../index.html">Open the existing Rally One application <span aria-hidden="true">↗</span></a>
+  </footer>
+ </div>
+ <script src="../rallypoint-today.js"></script>
+ <script src="../rallypoint-companion-decision.js"></script>
+ <script src="../rallypoint-smart-dashboard.js"></script>
+ <script src="../rally-one-member-context.js"></script>
+ <script src="../rally-one-unified-focus.js"></script>
+ <script src="../rallypoint-priority-board.js"></script>
+ <script src="../rally-one-care-flow.js"></script>
+ <script src="../rally-one-intelligence.js"></script>
+ <script src="today-model.js"></script>
+ <script src="today-view.js"></script>
+ <script src="app.js"></script>
+</body>
+</html>
