@@ -14,7 +14,7 @@ const scenarioSessionKey='rally-one-foundation2-v1:selected-scenario';
 function restoreScenario(){
  try{
   const saved=window.sessionStorage.getItem(scenarioSessionKey);
-  if(saved&&Object.hasOwn(FoundationStateStore.scenarios,saved))select.value=saved;
+  if(saved&&Object.hasOwn(FoundationStateStore.scenarios,FoundationServing.localScenario(saved)))select.value=saved;
  }catch(_){/* private-mode fallback: default scenario */ }
 }
 function rememberScenario(value){
@@ -42,7 +42,8 @@ const conversation=()=>{
  if(select.value==='unavailable')return {status:'unavailable',unreadCount:null,messages:[],draft:'',replyTo:null};
  return connect?connect.view():{status:'unavailable',unreadCount:null,messages:[],draft:'',replyTo:null};
 };
-function selectScenario(name){
+function selectScenario(selection){
+ const name=FoundationServing.localScenario(selection);
  receipt='';blocked='';chatFeedback='';groupFeedback='';teamFeedback='';readFeedback='';
  try{
   store=FoundationStateStore.create({storage:window.localStorage,scenario:name,Guard:RallyStorageGuard,AppState:RallyAppState});
@@ -62,10 +63,12 @@ function selectScenario(name){
 }
 function draw(focus=false){
  const now=new Date(),chat=conversation(),snapshot=RallyIntelligence.derive({state,ui,conversation:chat,now});
- root.innerHTML=route==='today'?FoundationView.render(FoundationToday.project(snapshot,now),receipt):
+ const serving=FoundationServing.project(select.value,snapshot.context,window.FoundationServingFixtures);
+ const servingPreview=FoundationServing.render(serving);
+ root.innerHTML=route==='today'?FoundationView.render(FoundationToday.project(snapshot,now,serving?.state),receipt,servingPreview):
   route==='connect'?FoundationConnectView.render(chat,{thread:inThread(),member:snapshot.context.permissions.group,feedback:chatFeedback}):
   route==='groups'?FoundationGroups.render(FoundationGroups.project(snapshot,chat),{feedback:groupFeedback,blocked:!!blocked}):
-  route==='team'?FoundationTeam.render(FoundationTeam.project(snapshot),{feedback:teamFeedback,blocked:!!blocked}):
+  route==='team'?FoundationTeam.render(FoundationTeam.project(snapshot),{feedback:teamFeedback,blocked:!!blocked,servingPreview}):
   route==='read'?readMarkup(snapshot):
   FoundationNavigation.renderRoute(route,snapshot);
  root.setAttribute('aria-label',FoundationNavigation.names[route]);
@@ -103,6 +106,7 @@ select.addEventListener('change',()=>{
  rememberScenario(select.value);
  selectScenario(select.value);
  document.getElementById('preview-tools')?.removeAttribute('open');
+ if(FoundationServing.isActive(select.value))root.focus({preventScroll:true});
 });
 document.addEventListener('click',event=>{
  const link=event.target.closest('a[data-route]');
@@ -175,8 +179,8 @@ root.addEventListener('click',event=>{
   draw(true);return;
  }
  const teamButton=target.closest('button[data-team-action]');
- if(teamButton){
-  if(blocked)return;
+ if(teamButton&&route==='team'){
+  if(blocked||FoundationServing.isActive(select.value))return;
   const command=FoundationTeam.commandFor(teamButton.dataset.teamAction,teamButton.dataset.value);
   if(!command){teamFeedback='This serving action is not available.';draw(true);return;}
   const result=FoundationMemberActions.transition({state,ui,conversation:conversation(),command,now:new Date()});
@@ -215,9 +219,9 @@ root.addEventListener('click',event=>{
   draw(true);return;
  }
  const button=target.closest('button[data-command]');
- if(!button||blocked)return;
+ if(!button||blocked||route!=='today')return;
  const command=FoundationToday.commandFor(button.dataset.command,button.dataset.person);
- if(!command)return;
+ if(!command||(command.type==='serving-response'&&FoundationServing.isActive(select.value)))return;
  const result=FoundationMemberActions.transition({state,ui,conversation:conversation(),command,now:new Date()});
  if(!result.ok){receipt='No change: '+result.reason+'.';draw(true);return;}
  const saved=store?.save(result.state,ui)||{ok:false,reason:'Guarded storage is unavailable'};

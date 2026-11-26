@@ -10,6 +10,8 @@ import AxeBuilder from '@axe-core/playwright';
 const root=resolve(fileURLToPath(new URL('../',import.meta.url)));
 const {makeChatDomainBundle}=createRequire(import.meta.url)('./build-chat-lab.cjs');
 const canonicalChatBundle=makeChatDomainBundle();
+const {makeServingPreviewBundle}=createRequire(import.meta.url)('./build-serving-preview.cjs');
+const servingBundle=await makeServingPreviewBundle(Date.parse('2026-11-26T00:45:00Z'));
 const dir=resolve(root,'test-results/foundation2');
 const types={'.html':'text/html','.js':'text/javascript','.css':'text/css','.svg':'image/svg+xml','.webp':'image/webp','.jpg':'image/jpeg','.ttf':'font/ttf'};
 await mkdir(dir,{recursive:true});
@@ -20,6 +22,10 @@ const http=createServer(async(req,res)=>{
   if(rel==='rallypoint-chat-domain.browser.js'){
    res.writeHead(200,{'Content-Type':'text/javascript','Cache-Control':'no-store'});
    res.end(canonicalChatBundle);return;
+  }
+  if(rel==='foundation2/serving-fixtures.js'){
+   res.writeHead(200,{'Content-Type':'text/javascript','Cache-Control':'no-store'});
+   res.end(servingBundle);return;
   }
   const filename=resolve(root,rel);
   if(!filename.startsWith(root+sep)){res.writeHead(403);res.end();return;}
@@ -280,6 +286,66 @@ try{
    assert.equal(await page.locator('.storage-warning[role=alert]').count(),1,'interrupted transaction must block editing');
    assert.ok(await page.locator('button[data-command]').count()>0,'fixture must remain visible for review');
    assert.equal(await page.locator('button[data-command]:not([disabled])').count(),0,'blocked transactions must have no enabled command');
+  }
+  // F2-07 shares one read-only sample and truthful failure states on Today and Team.
+  const openTab=async tab=>page.locator('#primary-nav a[data-route='+tab+']').click();
+  const serving=page.locator('[data-serving-preview]');
+  const storageBeforePreview=await page.evaluate(()=>JSON.stringify(localStorage));
+  await openTab('today');
+  await change(page,'serving-ready');
+  assert.equal(await page.evaluate(()=>document.activeElement?.id),'today','Scenario switch must return focus to the main content');
+  assert.equal(await serving.getAttribute('data-serving-preview'),'ready');
+  assert.match(await serving.innerText(),/Welcome Team[\s\S]*North Campus/);
+  assert.equal(await page.locator('[data-command=serve]').count(),0);
+  assert.equal(await page.locator('.schedule .event').count(),0,'Local schedule must not replace the provider observation');
+  const assigned=await serving.innerText();
+  const startsAt=await serving.locator('time').getAttribute('datetime');
+  await check(page,'serving-preview-today-'+width);
+  await openTab('team');
+  assert.equal(await serving.innerText(),assigned);
+  assert.equal(await serving.locator('time').getAttribute('datetime'),startsAt);
+  assert.equal(await page.locator('[data-team-action]').count(),0);
+  await check(page,'serving-preview-team-'+width);
+  if(width===390){
+   await page.reload();
+   assert.equal(await page.locator('#scenario').inputValue(),'serving-ready');
+   assert.equal(await serving.innerText(),assigned);
+   for(const [mode,state,message] of [
+    ['denied','restricted',/schedule is restricted/],
+    ['outage','unavailable',/unavailable.*next shift is unknown/],
+    ['stale','stale',/out of date.*next shift is unknown/]
+   ]){
+    await change(page,'serving-'+mode);
+    assert.equal(await serving.getAttribute('data-serving-preview'),state);
+    assert.match(await serving.getByRole('status').innerText(),message);
+    assert.equal(await page.locator('[data-team-action],main time').count(),0);
+    const failure=await serving.innerText();
+    await check(page,'serving-preview-'+mode+'-team-'+width);
+    await openTab('today');
+    assert.equal(await serving.innerText(),failure);
+    assert.equal(await page.locator('[data-command=serve],main time,.settled').count(),0);
+    await check(page,'serving-preview-'+mode+'-today-'+width);
+    const servingAxe=await new AxeBuilder({page}).withTags(['wcag2a','wcag2aa','wcag21aa']).analyze();
+    report.violations.push(...servingAxe.violations.map(v=>({width,mode,id:v.id,targets:v.nodes.map(n=>n.target)})));
+    await openTab('team');
+   }
+   await change(page,'serving-ready');
+   assert.equal(await serving.innerText(),assigned,'A ready observation must be visible again after switching from stale');
+   try{
+    await page.evaluate(()=>{document.documentElement.style.fontSize='200%';});
+    await check(page,'serving-preview-team-enlarged-text-'+width);
+   }finally{
+    await page.evaluate(()=>{document.documentElement.style.removeProperty('font-size');});
+   }
+   const teamAxe=await new AxeBuilder({page}).withTags(['wcag2a','wcag2aa','wcag21aa']).analyze();
+   report.violations.push(...teamAxe.violations.map(v=>({width,mode:'serving-ready',id:v.id,targets:v.nodes.map(n=>n.target)})));
+   assert.equal(await page.evaluate(()=>JSON.stringify(localStorage)),storageBeforePreview,'Provider rehearsal must not write local state');
+   await change(page,'team');
+   assert.equal(await serving.count(),0);
+   assert.equal(await page.locator('.team-availability strong').innerText(),'Confirmed','Local fixture state must survive rehearsal');
+   await change(page,'visitor');
+   assert.equal(await serving.count(),0,'Visitor must not see the prior volunteer assignment');
+   assert.equal(await page.locator('[data-team-action]').count(),0);
   }
   await context.close();
  }

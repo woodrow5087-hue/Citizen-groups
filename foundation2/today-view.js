@@ -26,7 +26,7 @@ function action(item,vm,compact=false){
  const label=compact&&item.command==='serve'?'Confirm':compact&&item.command==='rsvp'?'RSVP':item.label;
  return '<button type="button" class="action'+(compact?' action-compact':'')+'" data-command="'+esc(item.command)+'" aria-label="'+esc(item.label)+'">'+esc(label)+arrow+'</button>';
 }
-function render(v,receipt=''){
+function render(v,receipt='',servingPreview=''){
  const p=v.primary;
  const meta=p?'<div class="priority-meta"><span class="kicker">UP NEXT</span><span>'+esc(dateLabel(p.date))+'</span></div>':'';
  const main=p?'<article class="priority" aria-label="Next responsibility">'+meta+
@@ -52,11 +52,11 @@ function render(v,receipt=''){
  if(v.unavailable)optional='<aside class="utility" role="status"><span class="utility-icon">'+chat+'</span><div><strong>Conversation unavailable</strong><small>Saved messages could not be read in this preview.</small></div></aside>';
  else if(v.unknownTeam)optional='<aside class="utility" role="status"><span class="utility-icon">'+book+'</span><div><strong>Serving response unavailable</strong><small>Review the saved schedule in the full application.</small></div></aside>';
  else if(v.unread>0)optional='<aside class="utility"><span class="utility-icon">'+chat+'</span><div><strong>'+esc(v.unread)+' new group '+(v.unread===1?'message':'messages')+'</strong><small>Sample activity · conversations remain in the full app</small></div></aside>';
- else if(v.reading)optional='<aside class="utility"><span class="utility-icon">'+book+'</span><div><strong>A moment with God</strong><small>'+esc(v.passage)+' · Read is not yet migrated</small></div></aside>';
+ else if(v.reading)optional='<aside class="utility"><span class="utility-icon">'+book+'</span><div><strong>A moment with God</strong><small>'+esc(v.passage)+' · Scripture and prayer</small></div></aside>';
  const heading='<header class="greeting"><div class="eyebrow">'+esc(v.date)+(v.campus==='unspecified'?'':' · '+esc(v.campus)+' campus')+'</div>'+
   '<h1>'+esc(v.greeting)+'</h1><p class="summary '+(v.calm?'complete':'')+'">'+esc(v.summary)+'</p></header>';
  return heading+'<p class="receipt" role="status" aria-live="polite">'+esc(receipt)+'</p>'+
-  main+settled+welcome+secondary+paused+schedule+optional;
+  main+settled+welcome+secondary+paused+schedule+servingPreview+optional;
 }
 return Object.freeze({render});
 });

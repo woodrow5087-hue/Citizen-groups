@@ -23,7 +23,14 @@ require('./build-chat-lab.cjs').buildChatDomainBundle(out);
 // The legacy, protected preview build must remain byte-for-byte identical in
 // GitHub QA. Only the actual Netlify-hosted deploy preview gets the isolated
 // Foundation 2 route; historical screenshot/file guards remain fully enforced.
-if(process.env.NETLIFY==='true'&&process.env.CONTEXT==='deploy-preview'){
- fs.cpSync(path.join(root,'foundation2'),path.join(out,'foundation2'),{recursive:true});
+async function buildPreview(){
+ if(process.env.NETLIFY==='true'&&process.env.CONTEXT==='deploy-preview'){
+  fs.cpSync(path.join(root,'foundation2'),path.join(out,'foundation2'),{recursive:true});
+  const {makeServingPreviewBundle}=require('./build-serving-preview.cjs');
+  const bundle=await makeServingPreviewBundle();
+  new vm.Script(bundle,{filename:'serving-fixtures.js'});
+  fs.writeFileSync(path.join(out,'foundation2','serving-fixtures.js'),bundle);
+ }
+ console.log('Built the Rally Point preview in dist, including approved references and the unchanged Citizen Connect archive.');
 }
-console.log('Built the Rally Point preview in dist, including approved references and the unchanged Citizen Connect archive.');
+buildPreview().catch(error=>{console.error(error);process.exitCode=1;});

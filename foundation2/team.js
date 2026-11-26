@@ -30,9 +30,10 @@ function commandFor(kind,value){
   return {type:'serving-coverage',value};
  return null;
 }
-function render(vm,{feedback='',blocked=false}={}){
+function render(vm,{feedback='',blocked=false,servingPreview=''}={}){
  const header='<section class="team-page" aria-labelledby="route-title"><span class="eyebrow">TEAM · SERVE TOGETHER</span>'+
   '<h1 id="route-title" tabindex="-1">'+(vm.member?'Your team.':'Find your team.')+'</h1>';
+ if(servingPreview)return header+servingPreview+'</section>';
  if(!vm.member)return header+'<p class="route-lead">You have not joined a fictional serving team in this demo scenario.</p>'+
   '<div class="route-preview-card"><span class="route-stage-label">NO SERVING MEMBERSHIP</span>'+
   '<p>Explore serving opportunities in the existing full demo. Browsing never creates a membership.</p>'+
