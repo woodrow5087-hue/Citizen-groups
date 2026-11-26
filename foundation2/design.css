@@ -377,3 +377,5 @@ a{color:inherit}
 .member-dialog .f10-result-card{border-top:1px solid var(--line);padding:12px 0}
 .member-dialog a{color:var(--paper)}
 button.member-help{font:inherit;font-weight:800;color:var(--ink);background:transparent;border:1px solid var(--line);padding:0;min-width:44px;min-height:44px;border-radius:50%}
+
+.member-dialog .f10-question span{display:block;color:var(--muted);font-size:.875em}
