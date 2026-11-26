@@ -2,18 +2,15 @@ name: Foundation 2 — isolated mobile review
 on:
   pull_request:
     branches: [rally-one/develop]
-    paths:
-      - 'foundation2/**'
-      - 'scripts/foundation2-browser-check.mjs'
-      - '.github/workflows/foundation2-review.yml'
+  push:
+    branches: [rally-one/develop]
 permissions:
   contents: read
 concurrency:
-  group: foundation2-visual-review
+  group: foundation2-visual-review-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 jobs:
   capture:
-    if: github.head_ref == 'rally-one/foundation-2'
     runs-on: ubuntu-latest
     timeout-minutes: 12
     steps:
@@ -28,13 +25,23 @@ jobs:
         run: npm ci
       - name: Install Chromium for focused review
         run: npx playwright install --with-deps chromium
+      - name: Verify publication isolation and deterministic demonstration fixtures
+        run: node --test test/convergence2a-publication.test.cjs
       - name: Capture real Foundation 2 views and verify phone/accessibility behavior
         run: node scripts/foundation2-browser-check.mjs
+      - name: Exercise canonical opt-in publication and explicit legacy return
+        run: |
+          NETLIFY=true CONTEXT=branch-deploy BRANCH=rally-one/develop npm run build
+          python3 -m http.server 8527 --bind 127.0.0.1 --directory dist &
+          server_pid=$!
+          trap 'kill "$server_pid"' EXIT
+          curl --silent --fail --retry 5 --retry-connrefused http://127.0.0.1:8527/ -o /dev/null
+          node scripts/convergence2a-preview-check.mjs http://127.0.0.1:8527/
       - name: Preserve visual evidence
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: foundation2-phone-review
           path: test-results/foundation2/
-          retention-days: 7
+          retention-days: 30
           if-no-files-found: warn
