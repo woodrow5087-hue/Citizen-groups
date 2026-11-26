@@ -4,9 +4,12 @@ import {createServer} from 'node:http';
 import {readFile,mkdir,writeFile} from 'node:fs/promises';
 import {resolve,extname,sep} from 'node:path';
 import {fileURLToPath} from 'node:url';
+import {createRequire} from 'node:module';
 import {chromium} from 'playwright';
 import AxeBuilder from '@axe-core/playwright';
 const root=resolve(fileURLToPath(new URL('../',import.meta.url)));
+const {makeChatDomainBundle}=createRequire(import.meta.url)('./build-chat-lab.cjs');
+const canonicalChatBundle=makeChatDomainBundle();
 const dir=resolve(root,'test-results/foundation2');
 const types={'.html':'text/html','.js':'text/javascript','.css':'text/css','.svg':'image/svg+xml','.webp':'image/webp','.jpg':'image/jpeg','.ttf':'font/ttf'};
 await mkdir(dir,{recursive:true});
@@ -14,6 +17,10 @@ const http=createServer(async(req,res)=>{
  try{
   let rel=decodeURIComponent(new URL(req.url,'http://localhost').pathname).replace(/^\/+/,'');
   if(!rel||rel.endsWith('/'))rel+='index.html';
+  if(rel==='rallypoint-chat-domain.browser.js'){
+   res.writeHead(200,{'Content-Type':'text/javascript','Cache-Control':'no-store'});
+   res.end(canonicalChatBundle);return;
+  }
   const filename=resolve(root,rel);
   if(!filename.startsWith(root+sep)){res.writeHead(403);res.end();return;}
   const bytes=await readFile(filename);
