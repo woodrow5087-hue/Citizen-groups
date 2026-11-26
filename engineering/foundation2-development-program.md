@@ -33,10 +33,14 @@ Last accepted canonical base: `d038fc6adfdbc7c9b5925fc91e475cb1f15c7467`. Origin
 | F2-07 Integrations | Synthetic auth/Planning Center/consent/security boundaries | Explicit provider contracts, never live credentials/member data, denial and outage tests, resilience pass. |
 | F2-08 Visual refinement | Accepted Studio 13 structure plus Studio 02 editorial accents | Real iPhone acceptance, full content states, screen captures, icon/spacing and motion consistency; no protected baseline regressions. |
 
-## Current boundary and next engineering work
-- Foundation 2.0 lives at `/foundation2/` on the **draft PR #151 Netlify preview**. The preview root `/` intentionally remains the protected canonical application.
-- The experiment currently has: `foundation2/today-model.js` (read-only projection); `foundation2/today-view.js` (escaped direct renderer); `foundation2/app.js` (temporary fixture controller); `foundation2/design.css` (sole component stylesheet).
-- Existing `RallyIntelligence`, `RallyMemberContext`, `RallyStorageGuard` and `RallyAppState` remain authoritative for their respective responsibilities.
-- **F2-01 is not marked accepted until the latest full preview QA finishes and passes.**
-- Next implementation: replace ephemeral Today state in `foundation2/app.js` using a *namespaced injected storage adapter* backed by the existing `RallyStorageGuard`. Keep the prior app's storage bytes untouched. Promote to shared real-app persistence only after an explicit migration/permission plan and tests.
-- F2-03 through F2-08 remain blocked on F2-02 acceptance. No new screens merely to imitate navigation.
+## Gate record — source-backed, no automatic promotion
+- **F2-01 Foundation and F2-02 Today verified on `b684146e35a06ffe71032138137a0b83824b70c1`:** Rally Point Preview QA, Foundation 2 mobile review, VersePlay foundation, and Netlify deployment reported success. The mobile suite included guarded reload persistence, scenario isolation, inaccessible-storage safeguards, and functional Today transitions. These remain source checkpoints; later changes must pass the same checks.
+- **F2-03 Navigation in progress:** `foundation2/navigation.js` owns the URL route table and read-only destination projections; `foundation2/app.js` owns browser history/focus transitions; `foundation2/index.html` contains the persistent four-tab navigation and Connect header route. Browser back/forward, 320/390/430px layout, keyboard navigation and guest visibility are required checks at the current head.
+- **Deliberate limitation:** Groups, Team, Read and Connect route pages are labeled *NOT YET MIGRATED*. They display permission-filtered, read-only sample summaries and explicitly link to the existing full application for functionality. Do **not** claim four completed functional destinations. Those engines migrate only under F2-04 through F2-06.
+- **Remaining Gate 3 acceptance:** full protected CI at current head, responsive screenshot evidence and physical mobile Safari/VoiceOver route/focus review. Do not merge before separate owner acceptance.
+- **Next engineering action after Gate 3 shell validation:** integrate real Connect domain in F2-04, preserving original authorization, thread read cursor, delivery semantics, and draft persistence. Do not invent a chat implementation or treat the read-only preview as a working inbox.
+
+## Current boundary
+- Foundation 2.0 is available only at `/foundation2/` on draft PR #151's Netlify deploy-preview. The root `/` stays the original canonical application.
+- Presentation and routing are isolated in `foundation2/`. `RallyIntelligence`, `RallyMemberContext`, `RallyStorageGuard`, `RallyAppState`, the existing messaging domain and VersePlay engines remain the only respective functional authorities.
+- There is no production deployment, live church data, credential use, original-app storage migration, release approval or merge authorization.
