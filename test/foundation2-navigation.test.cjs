@@ -41,21 +41,20 @@ test('Four tabs render accessible current page state and unique route destinatio
   assert.ok(anchors.every(a=>a.querySelector('svg[aria-hidden=true]')));
  }
 });
-test('Navigation summary respects memberships and does not claim migrated messaging or new permissions',()=>{
+test('Navigation enforces one presentation owner for Groups, Team and Connect',()=>{
  const connected=context(),guest=context(model,{...ui,memberships:{group:false,team:false}});
- const group=Route.summary('groups',connected);
- assert.match(group.detail,/RSVP open/);
- assert.match(group.status,/3 new sample messages/);
- assert.match(Route.summary('groups',guest).detail,/No fictional group membership/);
- assert.match(Route.summary('team',guest).detail,/No fictional serving membership/);
- assert.match(Route.summary('connect',connected).status,/Gate 4/);
- const unavailable=context(model,ui,{status:'unavailable'});
- assert.match(Route.summary('connect',unavailable).status,/unavailable/);
+ for(const id of ['groups','team']){
+  assert.throws(()=>Route.summary(id,connected),/dedicated Gate 5 presentation owner/);
+  assert.throws(()=>Route.renderRoute(id,connected),/dedicated presentation owner/);
+ }
+ assert.throws(()=>Route.renderRoute('connect',connected),/dedicated presentation owner/);
  assert.match(Route.summary('read',connected).detail,/Scripture/);
+ assert.match(Route.summary('connect',connected).detail,/Wednesday Group/);
+ assert.match(Route.summary('connect',guest).detail,/No group conversation/);
 });
 test('Unmigrated destination views are explicit and escaped',()=>{
  const snapshot=context();
- for(const route of ['groups','team','read','connect']){
+ for(const route of ['read']){
   const markup=Route.renderRoute(route,snapshot),doc=new JSDOM(markup).window.document;
   assert.equal(doc.querySelector('h1#route-title[tabindex="-1"]')?.textContent,Route.summary(route,snapshot).title);
   assert.match(doc.querySelector('.route-stage-label').textContent,/NOT YET MIGRATED/);
