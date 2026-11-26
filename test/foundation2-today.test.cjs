@@ -71,3 +71,25 @@ test('Foundation 2 escapes source-backed responsibility, status and optional tex
  assert.equal(doc.querySelector('[onerror],[onload]'),null);
  assert.match(doc.querySelector('.priority h2').textContent,/svg onload/);
 });
+
+test('Foundation 2 visual reconciliation keeps compact actions meaningful and prioritizes authentic imagery',()=>{
+ const {JSDOM}=require('jsdom');
+ const current=project(initial()),doc=new JSDOM('<main>'+View.render(current)+'</main>').window.document;
+ const compact=doc.querySelector('.responsibility .action-compact');
+ assert.ok(compact);
+ assert.equal(compact.textContent.trim(),'Confirm');
+ assert.equal(compact.getAttribute('aria-label'),'Confirm availability');
+ assert.equal(compact.getAttribute('data-command'),'serve');
+ const guest=project(initial(),{...ui,memberships:{group:false,team:false}});
+ const guestDoc=new JSDOM('<main>'+View.render(guest)+'</main>').window.document;
+ assert.equal(guestDoc.querySelector('.welcome-photo img')?.getAttribute('src'),'../assets/rally-one/title-card.jpg');
+ assert.match(guestDoc.querySelector('.welcome-card h2').textContent,/no one stands alone/);
+ const fs=require('node:fs'),path=require('node:path');
+ const markup=new JSDOM(fs.readFileSync(path.join(__dirname,'../foundation2/index.html'),'utf8')).window.document;
+ assert.equal(markup.querySelector('.preview-avatar')?.textContent,'D');
+ assert.equal(markup.querySelector('#preview-tools summary').getAttribute('aria-label'),'Open demo profile and scenario controls');
+ const css=fs.readFileSync(path.join(__dirname,'../foundation2/design.css'),'utf8');
+ for(const token of ['.priority-meta .kicker::before','.responsibility .action-compact','.welcome-photo img','.preview-avatar','.settled-photo']){
+  assert.ok(css.includes(token),'Missing design-system element '+token);
+ }
+});
