@@ -7,6 +7,19 @@
 const root=document.getElementById('today'),select=document.getElementById('scenario'),tabs=document.getElementById('primary-nav');
 let route=FoundationNavigation.resolve(window.location.search);
 let state,ui,store,connect,receipt='',blocked='',chatFeedback='',groupFeedback='';
+const scenarioSessionKey='rally-one-foundation2-v1:selected-scenario';
+// The selector represents a synthetic test persona, not app membership state.
+// Keep the selected persona across reloads within this tab only, without
+// touching any existing Rally One persistent keys or changing permissions.
+function restoreScenario(){
+ try{
+  const saved=window.sessionStorage.getItem(scenarioSessionKey);
+  if(saved&&Object.hasOwn(FoundationStateStore.scenarios,saved))select.value=saved;
+ }catch(_){/* private-mode fallback: default scenario */ }
+}
+function rememberScenario(value){
+ try{window.sessionStorage.setItem(scenarioSessionKey,value);}catch(_){/* no state mutation */ }
+}
 const fallback=name=>{
  const scope=FoundationStateStore.scenarios[name],defaultState=RallyAppState.initialize(()=>null,true);
  defaultState.role=scope.role;
@@ -72,6 +85,7 @@ function go(next,url){
  window.scrollTo(0,0);
 }
 select.addEventListener('change',()=>{
+ rememberScenario(select.value);
  selectScenario(select.value);
  document.getElementById('preview-tools')?.removeAttribute('open');
 });
@@ -169,5 +183,6 @@ root.addEventListener('submit',event=>{
   'Unable to save sample message. Draft and previous conversation were preserved.';
  draw(true);
 });
+restoreScenario();
 selectScenario(select.value);
 })();
