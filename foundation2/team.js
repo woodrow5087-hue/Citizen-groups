@@ -1,7 +1,7 @@
-/* Foundation 2 Gate 5B — Team.
- * One source-backed serving presentation. Only canonical MemberContext
- * transitions may write an availability response; coverage is read-only until
- * an authorized canonical transition is added and independently tested.
+/* Foundation 2 Gate 5B/C — Team.
+ * Availability AND coverage use only canonical RallyMemberContext transitions.
+ * These write browser-local fictional state; no staff notifications, attendance
+ * or real coverage requests are implied.
  */
 (function(root,factory){
  'use strict';
@@ -26,6 +26,8 @@ function project(snapshot){
 function commandFor(kind,value){
  if(kind==='serving-response'&&['confirmed','declined'].includes(value))
   return {type:'serving-response',value};
+ if(kind==='serving-coverage'&&['request','withdraw'].includes(value))
+  return {type:'serving-coverage',value};
  return null;
 }
 function render(vm,{feedback='',blocked=false}={}){
@@ -57,10 +59,12 @@ function render(vm,{feedback='',blocked=false}={}){
   '<img src="../assets/campuses/north.jpg" alt="Citizen Church North Campus building" width="440" height="185" decoding="async"></section>';
  const coverage='<section class="team-coverage" aria-labelledby="team-coverage-title">'+
   '<h2 id="team-coverage-title">Coverage and coordination</h2>'+
-  '<p>'+(vm.coverage?'A fictional coverage request is recorded in the existing saved state.':
-    vm.response==='declined'?'Coverage requests are managed in the existing full app.':
-    'Schedule coordination is managed in the existing full app.')+'</p>'+
-  '<p class="team-coverage-note">No coverage messages or requests are sent from Foundation 2.0.</p>'+
+  '<p>'+(vm.coverage?'You have a fictional local coverage request saved for this declined serving shift.':
+    vm.response==='declined'?'If you cannot serve, you can save a fictional coverage request on this device.':
+    'Coverage requests are available after you mark that you cannot serve.')+'</p>'+
+  (vm.response==='declined'&&!blocked?'<button type="button" class="team-coverage-action" data-team-action="serving-coverage" data-value="'+(vm.coverage?'withdraw':'request')+'">'+
+    (vm.coverage?'Withdraw sample coverage request':'Request sample coverage')+'</button>':'')+
+  '<p class="team-coverage-note">This is only a local scheduling fixture. No coverage message is delivered to teammates or church staff.</p>'+
   '<a class="route-full-app" href="../index.html">Open serving tools in the existing full demo <span aria-hidden="true">↗</span></a></section>';
  const leader=vm.authorizedLeader?'<p class="team-leader-notice">Authorized team-leader scenario · no attendance inferred from confirmations.</p>':'';
  return header+(feedback?'<p class="group-feedback" role="status">'+esc(feedback)+'</p>':'')+
