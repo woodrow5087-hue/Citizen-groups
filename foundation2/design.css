@@ -190,3 +190,40 @@ a{color:inherit}
  .primary-nav a{font-size:.625rem}
  .header-actions{gap:0}
 }
+
+/* Gate 4: Connect uses existing F-02 data and one clean, owned view.
+   All interaction controls are 44px minimum; no legacy chat styling imported. */
+.connect-page{padding:12px 0 18px;min-width:0}
+.connect-page>h1{margin:6px 0 8px;font-size:clamp(2rem,8vw,2.4rem);font-weight:800;letter-spacing:-.055em;line-height:1.08}
+.connect-disclaimer{font-size:.6875rem;line-height:1.5;color:var(--muted);margin:16px 0 10px}
+.connect-alert{border:1px solid #925b5c;background:#412b2d;padding:14px;border-radius:12px;color:#ffe3e3;font-size:.8125rem;line-height:1.5}
+.connect-thread-entry{display:flex;align-items:center;gap:12px;width:100%;min-height:74px;text-align:left;background:var(--panel);color:var(--ink);border:1px solid var(--line);border-radius:var(--radius);padding:12px}
+.connect-thread-avatar{display:grid;place-items:center;flex:0 0 42px;width:42px;height:42px;border-radius:50%;background:var(--paper);color:var(--dark);font-weight:800}
+.connect-thread-copy{display:grid;gap:4px;flex:1;min-width:0}
+.connect-thread-copy strong{font-size:.9375rem;line-height:1.3}
+.connect-thread-copy small{font-size:.75rem;color:var(--muted);line-height:1.4;overflow-wrap:anywhere;max-height:3em;overflow:hidden}
+.chat-unread{display:block;padding:4px 6px;border-radius:9px;background:#553038;color:#f8d5db;font-size:.6875rem;font-weight:750;white-space:nowrap}
+.connect-thread-entry>span:last-child{font-size:1.5rem}
+.connect-secondary-note{margin:12px 2px 0;color:var(--muted);font-size:.75rem;line-height:1.5}
+.chat-inbox-back{display:flex;align-items:center;min-height:44px;margin-top:6px;font-size:.8125rem;font-weight:750;text-underline-offset:4px}
+.chat-feedback{margin:10px 0;border-left:3px solid var(--good);padding:10px 12px;background:#2b3830;color:#e4f2e7;border-radius:0 10px 10px 0;font-size:.8125rem}
+.chat-messages{list-style:none;display:grid;gap:16px;margin:14px 0 20px;padding:0}
+.chat-message{display:grid;justify-items:start;gap:5px;min-width:0}
+.chat-message.is-mine{justify-items:end}
+.chat-message-meta{display:flex;gap:9px;align-items:center;flex-wrap:wrap;font-size:.6875rem;color:var(--muted)}
+.chat-message-meta strong{font-size:.75rem;color:var(--paper)}
+.chat-message-meta time{font-variant-numeric:tabular-nums}
+.chat-bubble{margin:0;max-width:min(100%,315px);padding:11px 13px;border-radius:15px 15px 15px 4px;background:var(--panel);font-size:.8125rem;line-height:1.5;color:var(--ink);overflow-wrap:anywhere;white-space:pre-wrap}
+.chat-message.is-mine .chat-bubble{background:var(--paper);color:var(--dark);border-radius:15px 15px 4px 15px}
+.chat-quote{margin:0;max-width:310px;border-left:3px solid #ac6b78;padding:5px 9px;background:#303336;color:var(--muted);font-size:.75rem;line-height:1.4}
+.chat-message-status{font-size:.625rem;color:var(--muted)}
+.chat-reply{min-height:44px;min-width:44px;margin:0;padding:5px 8px;background:transparent;border:0;border-radius:8px;text-decoration:underline;color:var(--muted);text-align:left;font-size:.6875rem}
+.chat-compose{display:grid;gap:8px;border:1px solid var(--line);background:var(--panel);border-radius:var(--radius);padding:12px}
+.chat-compose label{font-size:.75rem;font-weight:750}
+.chat-compose textarea{min-width:0;resize:vertical;border:1px solid #686d6d;border-radius:10px;background:#1f2223;color:var(--ink);padding:12px;line-height:1.45;font-size:.875rem;min-height:74px}
+.chat-compose textarea:disabled{opacity:.65}
+.chat-send{width:100%;padding:10px 12px;border:0;border-radius:11px;background:var(--red);color:#fff;font-size:.8125rem;font-weight:800}
+.chat-send:disabled{background:#4d5050;color:#b8b8b4;cursor:not-allowed}
+.chat-reply-context{display:flex;align-items:center;justify-content:space-between;gap:8px;background:#303739;padding:8px;border-radius:8px;font-size:.75rem;line-height:1.4;color:var(--ink)}
+.chat-reply-context button{width:44px;height:44px;display:grid;place-items:center;flex:none;border:0;background:#42494a;color:var(--ink);border-radius:8px;font-size:1.5rem}
+@media(max-width:360px){.connect-thread-entry{gap:8px;padding:10px}.chat-bubble{max-width:100%}}
