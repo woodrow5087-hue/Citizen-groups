@@ -44,21 +44,22 @@ function renderHome(data={}){
  const unread=Number.isFinite(data.unreadCount)?Math.max(0,Math.trunc(data.unreadCount)):0;
  const messageText=data.conversationStatus==='unavailable'
    ?'Saved thread needs review'
-   :unread>0?(unread+' new '+(unread===1?'message':'messages')):'Your group conversation';
- const response=data.rsvp==='going'?'You are going':data.rsvp==='maybe'?'You responded Maybe':'RSVP when ready';
+   :unread>0?(unread+' new '+(unread===1?'message':'messages')):'No new messages';
+ const response=data.rsvp==='going'?'You are going':data.rsvp==='maybe'?'You responded Maybe':'View gathering & RSVP';
  const prayerCount=Number.isFinite(data.prayerCount)?Math.max(0,Math.trunc(data.prayerCount)):0;
  return '<section class="group-screen-v07 gv2-home" aria-label="Your Groups overview">'+
  '<div class="gv2-heading"><div class="gv2-overline">YOUR COMMUNITY</div><div class="gv2-heading-row"><h1>Your people<span aria-hidden="true">✳</span></h1><small>WEDNESDAY GROUP</small></div></div>'+
  peopleRail()+
- '<button type="button" class="gv2-group-hero" data-action="pane" data-area="group" data-value="people" aria-label="Open Wednesday Group details and people">'+
+ '<button type="button" class="gv2-group-hero" data-action="pane" data-area="group" data-value="people" aria-label="Meet the Wednesday Group people">'+
  '<span class="gv2-hero-brand"><img src="assets/citizen-flag.svg" alt="" aria-hidden="true"> YOUR SMALL GROUP</span>'+
- '<strong>Wednesday Group</strong><span class="gv2-hero-meta">8 demo members <b aria-hidden="true">·</b> '+safe(data.nextDate||'Wednesday')+' <b aria-hidden="true">·</b> 6:30 PM</span>'+
- '<span class="gv2-hero-copy">Your people, your gathering, and care in one place.</span><span class="gv2-hero-action">View group details <b aria-hidden="true">↗</b></span></button>'+
+ '<strong>Wednesday Group</strong><span class="gv2-hero-meta">8 demo members</span>'+
+ '<span class="gv2-hero-action">Meet your group <b aria-hidden="true">↗</b></span></button>'+
  '<div class="gv2-widgets" aria-label="Group shortcuts">'+
- '<button type="button" class="gv2-widget gv2-widget-chat" data-go="group" data-pane="chat" aria-label="Open Wednesday Group Connect messages">'+
- '<span class="gv2-widget-icon" aria-hidden="true">✉</span><strong>Conversation</strong><span>'+safe(messageText)+'</span><b class="gv2-widget-cta">View messages <i aria-hidden="true">↗</i></b></button>'+
- '<button type="button" class="gv2-widget gv2-widget-gather" data-action="pane" data-area="group" data-value="gather" aria-label="Open Wednesday Group gathering details and RSVP">'+
- '<span class="gv2-widget-icon" aria-hidden="true">▦</span><strong>This week</strong><span>'+safe(data.nextDate||'Wednesday')+' · 6:30 PM</span><b class="gv2-widget-cta"> '+safe(response)+' <i aria-hidden="true">↗</i></b></button></div>'+
+ '<button type="button" class="gv2-widget gv2-widget-chat" id="group-overview-chat" data-go="group" data-pane="chat" aria-label="Open Wednesday Group Connect messages. '+safe(messageText)+'">'+
+ '<span class="gv2-widget-icon" aria-hidden="true">✉</span><strong>Conversation</strong><span>'+safe(messageText)+'</span><b class="gv2-widget-cta"><i aria-hidden="true">↗</i></b></button>'+
+ '<button type="button" class="gv2-widget gv2-widget-gather" data-action="pane" data-area="group" data-value="gather" data-rsvp="'+safe(data.rsvp||'')+'" aria-label="Open Wednesday Group gathering details and RSVP. '+safe(response)+'">'+
+ '<span class="gv2-widget-icon" aria-hidden="true">▦</span><strong>This week</strong><span>'+safe(data.nextDate||'Wednesday')+' · 6:30 PM</span>'+
+ (data.location?'<small class="gv2-gather-place">'+safe(data.location)+'</small>':'')+'<b class="gv2-widget-cta"> '+safe(response)+' <i aria-hidden="true">↗</i></b></button></div>'+
  '<button type="button" class="gv2-care" data-action="pane" data-area="group" data-value="prayer" aria-label="Open group prayer and care"><span class="gv2-care-icon" aria-hidden="true">♡</span><span><strong>Prayer & care</strong><small>'+safe(prayerCount?prayerCount+' sample prayer '+(prayerCount===1?'request':'requests'):'Encourage someone in your circle')+'</small></span><b aria-hidden="true">↗</b></button>'+
  '<div class="gv2-more"><button type="button" data-action="pane" data-area="group" data-value="people">All members ↗</button><button type="button" data-action="browse">Explore groups ↗</button>'+
  (data.canLead?'<button type="button" data-action="pane" data-area="group" data-value="leader">Leader tools ↗</button>':'')+'</div>'+

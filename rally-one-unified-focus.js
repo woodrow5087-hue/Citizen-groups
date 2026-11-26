@@ -43,8 +43,8 @@ function activeScore(id,model,now){
  const date=id==='group-rsvp'?model.groupDate:id==='serve-response'?model.serveDate:null;
  if(!(date instanceof Date)||!Number.isFinite(date.getTime()))return score[id]||0;
  const delta=date.getTime()-now.getTime();
- if(id==='group-rsvp')return delta>=0&&delta<=24*3600000?100:70;
- if(id==='serve-response')return delta>=0&&delta<=48*3600000?95:65;
+ if(id==='group-rsvp')return delta>=0&&delta<=24*3600000?100:88;
+ if(id==='serve-response')return delta>=0&&delta<=48*3600000?95:84;
  return score[id]||0;
 }
 const sourceLabels=Object.freeze({
@@ -107,6 +107,7 @@ function focus({board,model,care,now=new Date()}={}){
  const d=model&&typeof model==='object'?model:{};
  const candidates=[fromHero(b.hero,d,now),...(Array.isArray(b.rows)?b.rows:[]).map(r=>fromRow(r,d,now)),fromCare(care,d)]
   .filter(Boolean).sort((a,b)=>b.score-a.score||a.id.localeCompare(b.id));
+ const responsibilityIds=Object.freeze([...new Set(candidates.filter(c=>['group-rsvp','serve-response','leader-checkins'].includes(c.id)).map(c=>c.id))]);
  const selected=[],families=new Set();
  for(const candidate of candidates){
   if(families.has(candidate.family))continue;
@@ -119,7 +120,7 @@ function focus({board,model,care,now=new Date()}={}){
   return Object.freeze({audience:d.audience||'newcomer',
    hero:b.hero||null,rows:Object.freeze((b.rows||[]).filter(r=>!r.requiresResponse&&
     !(b.hero?.id==='welcome-community'&&['find-people','community'].includes(r.id))).slice(0,1)),
-   selectedIds:Object.freeze([]),actionCount:0,
+   selectedIds:Object.freeze([]),responsibilityIds,actionCount:0,
    explanation:'No response-needed sample action remains.'});
  }
  const [first,second]=selected;
@@ -139,7 +140,7 @@ function focus({board,model,care,now=new Date()}={}){
  })]:[];
  return Object.freeze({
   audience:d.audience||'newcomer',
-  hero,rows:Object.freeze(rows),selectedIds:Object.freeze(selected.map(s=>s.id)),
+  hero,rows:Object.freeze(rows),selectedIds:Object.freeze(selected.map(s=>s.id)),responsibilityIds,
   actionCount:selected.length,
   explanation:'One or two source-backed actions, chosen from existing commitments; nothing is inferred from attendance or browsing.'
  });

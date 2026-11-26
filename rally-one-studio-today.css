@@ -1,0 +1,582 @@
+/* ALIVE 01 — shared Studio component contract. Scoped to the accepted shell.
+   Today retains its approved compact metrics. Different content roles retain
+   distinct surface weights; game artwork and legacy renderers are excluded. */
+.rally-one .premium-alive.s13-shell{
+ --s13-canvas:#181a1b;--s13-ink:#f6f0e7;--s13-paper:#f4eee3;
+ --s13-dark-ink:#191a1b;--s13-action-red:#c91c37;--s13-brand-red:#e3002b;
+ --s13-card:#292c2f;--s13-border:#3d4042;--s13-secondary:#c0c2bf;
+ --s13-touch:44px;--s13-icon:22px;--s13-icon-box:36px;
+ --s13-row-radius:14px;--s13-feature-radius:18px;--s13-button-radius:11px;
+ --s13-space-1:4px;--s13-space-2:8px;--s13-space-3:12px;--s13-space-4:16px;
+ --s13-title-size:2.3125rem;--s13-section-size:1.125rem;--s13-row-title:.875rem;--s13-row-detail:.75rem;
+ --s13-icon-stroke:1.75;
+}
+/* Studio 13 Stage 1. Scoped presentation primitives; no global tokens or unrelated surfaces. */
+.s13-connect-icon{display:none}
+.rally-one .premium-alive.is-f09-board #view .s13-today{color:var(--s13-ink,#f6f0e7);background:var(--s13-canvas,#181a1b);padding:4px 0 18px;--s13-cream:var(--s13-paper,#f4eee3);--s13-red:var(--s13-action-red,#c91c37);--s13-panel:#282b2d;--s13-line:#383a3b}
+.rally-one .premium-alive.is-f09-board #view .s13-today .f09-greeting{display:block;padding:0;margin:0 0 16px;border:0;background:none}
+.rally-one .premium-alive.is-f09-board #view .s13-today .s13-eyebrow{display:block;font-size:.625rem;line-height:1.5;letter-spacing:.078rem;font-weight:800;color:#b8b8b2;text-transform:uppercase}
+.rally-one .premium-alive.is-f09-board #view .s13-today .f09-greeting h1{margin:6px 0 7px;font-size:2.3125rem;line-height:1.02;letter-spacing:-.09rem;font-weight:850;color:var(--s13-ink,#f6f0e7);white-space:normal;overflow-wrap:anywhere}
+.rally-one .premium-alive.is-f09-board #view .s13-today .s13-summary{display:flex;align-items:center;gap:7px;margin:0;color:#b4b4ae;font-size:.875rem;line-height:1.45}
+.rally-one .premium-alive.is-f09-board #view .s13-today .s13-summary::before{content:"";width:7px;height:7px;flex:none;border-radius:50%;background:#ff6573}
+.rally-one .premium-alive.is-f09-board #view .s13-today .s13-summary.is-complete::before{background:#9bc8a6}
+.rally-one .premium-alive.is-f09-board #view .s13-today .f09b-priorities{display:block;gap:0;margin:0;padding:0;background:none;border:0}
+.rally-one .premium-alive.is-f09-board #view .s13-today .f09b-hero{display:block;position:relative;min-height:0;height:auto;padding:14px;background:var(--s13-cream);color:var(--s13-dark-ink,#191a1b);border:0;border-radius:19px;box-shadow:none;overflow:hidden;margin:0}
+.rally-one .premium-alive.is-f09-board #view .s13-today .f09b-hero::before{content:none}
+.rally-one .premium-alive.is-f09-board #view .s13-today .f09b-hero::after{content:none}
+.rally-one .premium-alive.is-f09-board #view .s13-today .s13-priority-meta{display:flex;align-items:baseline;justify-content:space-between;gap:8px;font-size:.75rem;font-weight:750;line-height:1.4;margin-bottom:10px}
+.rally-one .premium-alive.is-f09-board #view .s13-today .s13-kicker{color:#ad0025;font-size:.625rem;letter-spacing:.078rem;text-transform:uppercase}
+.rally-one .premium-alive.is-f09-board #view .s13-today .s13-priority-line{display:flex;flex-wrap:wrap;align-items:center;gap:13px;margin-bottom:10px}
+.rally-one .premium-alive.is-f09-board #view .s13-today .s13-priority-copy{flex:1;min-width:min(100%,10rem)}
+.rally-one .premium-alive.is-f09-board #view .s13-today #f09b-hero-title{font-size:1.5rem;font-weight:850;letter-spacing:-.055rem;line-height:1.08;margin:0 0 5px;color:inherit;overflow-wrap:anywhere}
+.rally-one .premium-alive.is-f09-board #view .s13-today .f09b-hero p{margin:0 0 9px;font-size:.8125rem;line-height:1.35;color:#555759}
+.rally-one .premium-alive.is-f09-board #view .s13-today .f09b-faces{display:flex;gap:0;margin:9px 0 0;padding:0;min-height:26px}
+.rally-one .premium-alive.is-f09-board #view .s13-today .f09b-faces>*{width:26px;height:26px;min-width:26px;border:2px solid var(--s13-cream);border-radius:50%;margin:0 0 0 -3px;background-color:#d3c9bc;color:var(--s13-dark-ink,#191a1b);font-size:.625rem}
+.rally-one .premium-alive.is-f09-board #view .s13-today .s13-image-placeholder{width:86px;height:85px;flex:none;border-radius:11px;display:grid;place-items:center;background:#3c4041;color:#c3c6c1;overflow:hidden}
+.rally-one .premium-alive.is-f09-board #view .s13-today .s13-image-placeholder svg{width:36px;height:36px}
+.rally-one .premium-alive.is-f09-board #view .s13-today .f09b-primary{position:static;display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:46px;width:100%;max-width:none;margin:0;padding:11px 12px;border-radius:11px;background:var(--s13-red);color:#fff;border:0;font-size:.875rem;line-height:1.4;font-weight:750;box-shadow:none;white-space:normal;text-align:left}
+.rally-one .premium-alive.is-f09-board #view .s13-today .s13-arrow{display:inline-flex;flex:none;align-items:center;justify-content:center}
+.rally-one .premium-alive.is-f09-board #view .s13-today .s13-arrow svg{width:20px;height:20px;stroke:currentColor;fill:none}
+.rally-one .premium-alive.is-f09-board #view .s13-today .s13-section-head{display:flex;justify-content:space-between;align-items:baseline;gap:8px;margin:15px 0 8px}
+.rally-one .premium-alive.is-f09-board #view .s13-today .s13-section-head h2{font-size:1.125rem;line-height:1.3;letter-spacing:-.031rem;font-weight:800;margin:0;color:var(--s13-ink,#f6f0e7)}
+.rally-one .premium-alive.is-f09-board #view .s13-today .s13-section-head small{font-size:.6875rem;line-height:1.4;color:#b4b4ae;text-align:right}
+.rally-one .premium-alive.is-f09-board #view .s13-today .f09b-row-stack{display:grid;gap:8px;margin:0;padding:0;border:0;background:none}
+.rally-one .premium-alive.is-f09-board #view .s13-today .f09b-row-stack:empty{display:none}
+.rally-one .premium-alive.is-f09-board #view .s13-today .f09b-row{display:flex;align-items:center;gap:10px;min-height:64px;padding:10px 12px;border:1px solid #35383a;border-radius:14px;background:#272a2c;margin:0}
+.rally-one .premium-alive.is-f09-board #view .s13-today .f09b-row-icon{width:34px;height:36px;flex:none;background:#3d3437;border:0;border-radius:9px;color:#ff8996}
+.rally-one .premium-alive.is-f09-board #view .s13-today .f09b-row-icon svg{width:19px;height:19px}
+.rally-one .premium-alive.is-f09-board #view .s13-today .f09b-row-copy{flex:1;min-width:0}
+.rally-one .premium-alive.is-f09-board #view .s13-today .f09b-row-copy strong{font-size:.875rem;line-height:1.25;color:var(--s13-ink,#f6f0e7)}
+.rally-one .premium-alive.is-f09-board #view .s13-today .f09b-row-copy small{font-size:.75rem;line-height:1.4;color:var(--s13-secondary,#c0c2bf);margin-top:4px;white-space:normal}
+.rally-one .premium-alive.is-f09-board #view .s13-today .f09b-row .f09b-row-cta{display:flex;align-items:center;justify-content:center;min-height:44px;min-width:44px;max-width:40%;padding:8px 10px;border:0;border-radius:9px;background:var(--s13-cream);color:var(--s13-canvas,#181a1b);font-size:.75rem;font-weight:750;line-height:1.3;white-space:normal;position:static;margin:0}
+.rally-one .premium-alive.is-f09-board #view .s13-today .f09b-row-cta span{display:none}
+.rally-one .premium-alive.is-f09-board #view .s13-today .s13-agenda{background:#272a2c;border:1px solid #35383a;border-radius:14px;padding:0 12px}
+.rally-one .premium-alive.is-f09-board #view .s13-today .f09b-agenda-row{display:block;min-height:0;padding:0;margin:0;border:0;background:none}
+.rally-one .premium-alive.is-f09-board #view .s13-today .f09b-agenda-row+.f09b-agenda-row{border-top:1px solid #424548}
+.rally-one .premium-alive.is-f09-board #view .s13-today .s13-schedule-link{display:flex;align-items:center;gap:10px;width:100%;min-height:59px;padding:9px 0;background:none;border:0;color:inherit;text-align:left}
+.rally-one .premium-alive.is-f09-board #view .s13-today .s13-date{width:auto;min-width:34px;max-width:25%;flex:none;border-right:1px solid #484b4c;padding-right:8px;text-align:center}
+.rally-one .premium-alive.is-f09-board #view .s13-today .s13-date small{display:block;font-size:.625rem;line-height:1.3;text-transform:uppercase;font-weight:800;color:#c4c5c0}
+.rally-one .premium-alive.is-f09-board #view .s13-today .s13-date b{display:block;font-size:1.5rem;line-height:1;letter-spacing:-.03rem}
+.rally-one .premium-alive.is-f09-board #view .s13-today .f09b-agenda-copy{flex:1;min-width:0}
+.rally-one .premium-alive.is-f09-board #view .s13-today .f09b-agenda-copy strong{display:block;font-size:.875rem;line-height:1.3;color:var(--s13-ink,#f6f0e7)}
+.rally-one .premium-alive.is-f09-board #view .s13-today .f09b-agenda-copy small{display:block;font-size:.75rem;line-height:1.4;color:var(--s13-secondary,#c0c2bf);margin-top:4px;white-space:normal}
+.rally-one .premium-alive.is-f09-board #view .s13-today .f09b-status::before{content:none}
+.rally-one .premium-alive.is-f09-board #view .s13-today .f09b-agenda-row .f09b-status{background:none;border:0;padding:0;color:#ff9aa3;font-size:.6875rem;line-height:1.4;font-weight:750;max-width:82px;text-align:right;flex:none;box-shadow:none;min-height:0;min-width:0;border-radius:0;display:block}
+.rally-one .premium-alive.is-f09-board #view .s13-today .f09b-agenda-row .f09b-status.complete{color:#acd5ac}
+.rally-one .premium-alive.is-f09-board #view .s13-today .f09b-agenda-row .f09b-status.neutral{color:var(--s13-secondary,#c0c2bf)}
+.rally-one .premium-alive.is-f09-board #view .s13-today .s13-utility{display:flex;align-items:center;gap:12px;min-height:60px;width:100%;border:1px solid var(--s13-line);background:var(--s13-panel);color:var(--s13-ink,#f6f0e7);padding:10px 12px;border-radius:14px;margin:10px 0 0;text-align:left}
+.rally-one .premium-alive.is-f09-board #view .s13-today .s13-utility-icon{width:36px;height:36px;flex:none;border-radius:9px;display:grid;place-items:center;background:#383b3d;color:#f5e6ce}
+.rally-one .premium-alive.is-f09-board #view .s13-today .s13-utility-icon svg{width:22px;height:22px}
+.rally-one .premium-alive.is-f09-board #view .s13-today .s13-utility-copy{flex:1;min-width:0}
+.rally-one .premium-alive.is-f09-board #view .s13-today .s13-utility strong{display:block;font-size:.875rem;line-height:1.3;font-weight:750}
+.rally-one .premium-alive.is-f09-board #view .s13-today .s13-utility small{display:block;font-size:.75rem;line-height:1.4;color:#c1c2bf;margin-top:3px}
+.rally-one .premium-alive.is-f09-board #view .s13-today .f09b-hero.s13-settled{padding:0;background:#272a2c;color:var(--s13-ink,#f6f0e7);border:1px solid #3d4041;border-radius:17px}
+.rally-one .premium-alive.is-f09-board #view .s13-today .s13-image-placeholder.is-wide{width:100%;height:148px;border-radius:0;background:#343839;color:#a4aba8}
+.rally-one .premium-alive.is-f09-board #view .s13-today .s13-image-placeholder.is-wide svg{width:55px;height:55px}
+.rally-one .premium-alive.is-f09-board #view .s13-today .s13-settled-copy{padding:14px 16px}
+.rally-one .premium-alive.is-f09-board #view .s13-today .s13-settled #f09b-hero-title{font-size:1.4375rem;margin:0 0 4px;letter-spacing:-.04rem}
+.rally-one .premium-alive.is-f09-board #view .s13-today .s13-settled p{font-size:.8125rem;color:#c7c8c4;line-height:1.4;margin:0}
+.rally-one .premium-alive.is-f09-board #view .s13-today .f10-entry{margin:16px 0 0;min-height:65px;padding:12px;border:1px solid #383a3b;border-radius:14px;background:#282b2d;box-shadow:none}
+.rally-one .premium-alive.is-f09-board #view .s13-today .f10-entry-copy strong{font-size:.875rem}
+.rally-one .premium-alive.is-f09-board #view .s13-today .f10-entry-copy small{font-size:.75rem;line-height:1.4}
+.rally-one .premium-alive.is-f09-board #view .s13-today .f10-entry-button{min-height:44px;min-width:44px;font-size:.8125rem}
+.rally-one .premium-alive.is-f09-board #view .s13-today .gv2-today-people{margin:16px 0 0;padding:0;border:0;background:none}
+.rally-one .premium-alive.is-f09-board #view .s13-today .gv2-today-heading{padding:0;margin:0 0 8px}
+.rally-one .premium-alive.is-f09-board #view .s13-today .gv2-today-heading h2{font-size:1.125rem;line-height:1.3;letter-spacing:-.03rem}
+.rally-one .premium-alive.is-f09-board #view .s13-today .gv2-today-heading h2 span{display:none}
+.rally-one .premium-alive.is-f09-board #view .s13-today .gv2-today-people .gv2-rail{gap:12px;padding:4px 0 10px}
+.rally-one .premium-alive.is-f09-board #view .s13-today .gv2-today-people .gv2-ring{width:48px;height:48px}
+.rally-one .premium-alive.is-f09-board #view .s13-today .gv2-today-people .gv2-rail-button{min-width:48px}
+.rally-one .premium-alive.is-f09-board #view .s13-today .gv2-today-note{font-size:.6875rem}
+.rally-one .premium-alive.is-f09-board #view .s13-today .s13-community-link{min-height:44px;display:flex;justify-content:space-between;align-items:center;padding:12px;margin:10px 0 0;background:#282b2d;border:1px solid #383a3b;border-radius:12px;color:var(--s13-ink,#f6f0e7);font-size:.8125rem;box-shadow:none}
+.rally-one .premium-alive.is-f09-board #view .s13-today .s13-community-link::before{content:none}
+.rally-one .premium-alive.is-f09-board #view .s13-today .s13-community-link::after{content:none}
+.rally-one .premium-alive.is-f09-board #view .s13-today .s13-context{margin-top:12px}
+.rally-one .premium-alive.is-f09-board #view .s13-today .f09b-explain{position:static;display:block;margin:0;border:1px solid #383a3b;background:#282b2d;border-radius:12px;color:#d0d0ca;padding:0}
+.rally-one .premium-alive.is-f09-board #view .s13-today .f09b-explain summary{min-height:44px;display:flex;align-items:center;padding:10px 12px;font-size:.8125rem}
+.rally-one .premium-alive.is-f09-board #view .s13-today .f09b-explain p{padding:0 12px 12px;margin:0;font-size:.8125rem;color:#d0d0ca;line-height:1.5}
+.rally-one .premium-alive.is-f09-board #view .s13-today .s13-context .f09b-row-stack{margin-top:10px}
+.rally-one .premium-alive.is-f09-board #view .s13-today .f09b-footer{padding:16px 0 0;font-size:.5625rem;color:#b4b4ae;border:0}
+.rally-one .premium-alive.is-f09-board #view .s13-today button:focus-visible{outline:3px solid var(--s13-brand-red,#e3002b);outline-offset:3px}
+@media(max-width:360px){.rally-one .premium-alive.is-f09-board #view .s13-today .f09-greeting h1{font-size:2.0625rem}.rally-one .premium-alive.is-f09-board #view .s13-today #f09b-hero-title{font-size:1.4375rem}.rally-one .premium-alive.is-f09-board #view .s13-today .s13-image-placeholder{width:64px;height:76px}.rally-one .premium-alive.is-f09-board #view .s13-today .s13-image-placeholder.is-wide{width:100%;height:148px}.rally-one .premium-alive.is-f09-board #view .s13-today .s13-priority-meta{font-size:.6875rem}}
+@media(prefers-reduced-motion:no-preference){.rally-one .premium-alive.is-f09-board #view .s13-today :is(.f09b-primary,.f09b-row-cta,.s13-utility,.s13-schedule-link){transition:transform .14s ease,background-color .18s ease}.rally-one .premium-alive.is-f09-board #view .s13-today :is(.f09b-primary,.f09b-row-cta,.s13-utility,.s13-schedule-link):active{transform:scale(.985)}}
+@media(prefers-reduced-motion:reduce){.rally-one .premium-alive.is-f09-board #view .s13-today :is(button,.f09b-hero){transition:none;animation:none;transform:none}}
+
+/* Necessary Today-only shell adaptation; other routes and welcome retain canonical chrome. */
+.rally-one:not(.rp-welcome-active) .premium-alive.s13-shell{background:var(--s13-canvas,#181a1b)}
+.rally-one:not(.rp-welcome-active) .premium-alive.s13-shell #view{background:var(--s13-canvas,#181a1b);padding:10px 20px 24px;scroll-padding-bottom:24px}
+.rally-one:not(.rp-welcome-active) .premium-alive.s13-shell .header{height:68px;min-height:68px;padding:13px 20px 10px;gap:6px;background:var(--s13-canvas,#181a1b);border:0;box-shadow:none}
+.rally-one:not(.rp-welcome-active) .premium-alive.s13-shell .brand-home{gap:6px;min-height:44px;padding:0}
+.rally-one:not(.rp-welcome-active) .premium-alive.s13-shell .brand-home img{width:24px;height:25px}
+.rally-one:not(.rp-welcome-active) .premium-alive.s13-shell .brand-home span{font-size:20px;letter-spacing:-1.1px;line-height:1;font-weight:900;white-space:nowrap}
+.rally-one:not(.rp-welcome-active) .premium-alive.s13-shell .header-controls{gap:8px}
+.rally-one:not(.rp-welcome-active) .premium-alive.s13-shell .header-button{width:44px;height:44px;min-width:44px;min-height:44px;border:1px solid #3b3e40;background:#252729}
+.rally-one:not(.rp-welcome-active) .premium-alive.s13-shell .profile-avatar{width:44px;height:44px;min-width:44px;background:#eee4d5;color:#222;border:0}
+.rally-one:not(.rp-welcome-active) .premium-alive.s13-shell #connect-entry{position:absolute;top:13px;right:124px;width:44px;height:44px;min-height:44px;min-width:44px;border:1px solid #3b3e40;border-radius:50%;display:grid;place-items:center;padding:0;margin:0;background:#252729;color:var(--s13-ink,#f6f0e7);z-index:6}
+.rally-one:not(.rp-welcome-active) .premium-alive.s13-shell #connect-entry>strong{display:none}
+.rally-one:not(.rp-welcome-active) .premium-alive.s13-shell #connect-entry>span:not(.s13-connect-icon){display:none}
+.rally-one:not(.rp-welcome-active) .premium-alive.s13-shell #connect-entry .s13-connect-icon{display:grid;place-items:center}
+.rally-one:not(.rp-welcome-active) .premium-alive.s13-shell #connect-entry svg{width:22px;height:22px;stroke:var(--s13-ink,#f6f0e7);fill:none}
+.rally-one:not(.rp-welcome-active) .premium-alive.s13-shell #nav{position:relative;left:auto;right:auto;bottom:auto;flex-shrink:0;width:100%;margin:0;border-radius:0;border:0;border-top:1px solid #3b3d3e;background:var(--s13-canvas,#181a1b);box-shadow:none;padding:6px 12px max(7px,env(safe-area-inset-bottom));gap:4px;min-height:66px}
+.rally-one:not(.rp-welcome-active) .premium-alive.s13-shell #nav button{display:flex;flex-direction:column;gap:3px;align-items:center;justify-content:center;min-height:53px;border-radius:0;background:none;color:#b8b9b7;padding:3px 0;box-shadow:none}
+.rally-one:not(.rp-welcome-active) .premium-alive.s13-shell #nav button.active{color:var(--s13-ink,#f6f0e7);background:none}
+.rally-one:not(.rp-welcome-active) .premium-alive.s13-shell #nav button svg{width:42px;height:30px;padding:5px 10px;border-radius:10px;background:none;color:inherit}
+.rally-one:not(.rp-welcome-active) .premium-alive.s13-shell #nav button.active svg{background:var(--s13-paper,#f4eee3);color:#17191b}
+.rally-one:not(.rp-welcome-active) .premium-alive.s13-shell #nav button small{font-size:.6875rem;line-height:1.4;font-weight:650}
+@media(max-width:360px){.rally-one:not(.rp-welcome-active) .premium-alive.s13-shell #view{padding-left:15px;padding-right:15px}.rally-one:not(.rp-welcome-active) .premium-alive.s13-shell .header{padding-left:15px;padding-right:15px}.rally-one:not(.rp-welcome-active) .premium-alive.s13-shell #connect-entry{right:119px}.rally-one:not(.rp-welcome-active) .premium-alive.s13-shell .brand-home span{font-size:18px}}
+
+/* Studio 13 reference geometry: miniart 86 x 85, cover crop, settled media 128px. */
+.rally-one .premium-alive.is-f09-board #view .s13-today .s13-image-placeholder img{width:100%;height:100%;object-fit:cover;object-position:center 48%;display:block}
+.rally-one .premium-alive.is-f09-board #view .s13-today .s13-editorial-art{background:#292b2d;color:var(--s13-paper,#f4eee3);padding:9px;text-align:left;place-items:end start}
+.rally-one .premium-alive.is-f09-board #view .s13-today .s13-editorial-art strong{font-size:1rem;line-height:.98;letter-spacing:-.04em;font-weight:900;overflow-wrap:anywhere}
+.rally-one .premium-alive.is-f09-board #view .s13-today .s13-image-placeholder.is-wide{height:128px}
+.rally-one .premium-alive.is-f09-board #view .s13-today .s13-settled-copy h2{font-size:1.4375rem;line-height:1.08;margin:0 0 4px;letter-spacing:-.04rem;color:var(--s13-ink,#f6f0e7)}
+.rally-one .premium-alive.is-f09-board #view .s13-today .f09b-row-stack{margin-top:8px}
+.rally-one .premium-alive.is-f09-board #view .s13-today .s13-optional-hero{margin-top:10px;background:#272a2c;color:var(--s13-ink,#f6f0e7);border:1px solid #35383a;border-radius:14px;padding:12px}
+.rally-one .premium-alive.is-f09-board #view .s13-today .s13-optional-hero .s13-image-placeholder,.rally-one .premium-alive.is-f09-board #view .s13-today .s13-optional-hero .f09b-faces{display:none}
+.rally-one .premium-alive.is-f09-board #view .s13-today .s13-optional-hero #f09b-hero-title{font-size:1rem;letter-spacing:0}
+.rally-one .premium-alive.is-f09-board #view .s13-today .s13-optional-hero p{color:var(--s13-secondary,#c0c2bf)}
+.rally-one .premium-alive.is-f09-board #view .s13-today .s13-optional-hero .s13-kicker{color:#ff9aa3}
+
+/* Studio 13 unified presentation. Exact studio tokens and component geometry;
+   existing data/actions stay in their original renderers. No synthetic UI state. */
+.rally-one:not(.rp-welcome-active) .premium-alive.s13-shell {
+ --rg-canvas:var(--s13-canvas,#181a1b);--rg-panel:var(--s13-card,#292c2f);--rg-panel-raised:var(--s13-card,#292c2f);
+ --rg-ink:var(--s13-ink,#f6f0e7);--rg-muted:#b8b8b2;--rg-line:#3b3d3e;--rg-parchment:var(--s13-paper,#f4eee3);
+ --rw-canvas:var(--s13-canvas,#181a1b);--rw-panel:var(--s13-card,#292c2f);--rw-cream:var(--s13-paper,#f4eee3);
+}
+.rally-one:not(.rp-welcome-active) .premium-alive.s13-shell .header-controls{display:flex;align-items:center;flex:none;gap:6px}
+.rally-one:not(.rp-welcome-active) .premium-alive.s13-shell .header-controls #connect-entry{position:static;inset:auto;flex:0 0 44px;margin:0;z-index:auto}
+.rally-one:not(.rp-welcome-active) .premium-alive.s13-shell .header .spotify-link{display:none}
+.rally-one:not(.rp-welcome-active) .premium-alive.s13-shell .s13-music-link{display:block;text-align:center;padding:12px 0;min-height:44px;color:#d1d2cd;font-size:.75rem;text-decoration:underline}
+.rally-one:not(.rp-welcome-active) .premium-alive.s13-shell #view>.s13-music-link img{display:none}
+.rally-one .premium-alive.s13-shell #view :is(.gv2-home,.gv2-profile,.group-screen-v07,.team-screen-v08,.read-screen-v09){background:var(--s13-canvas,#181a1b);color:var(--s13-ink,#f6f0e7);padding:4px 0 16px;min-height:0;overflow:visible}
+.rally-one .premium-alive.s13-shell #view .s13-subhead{color:var(--s13-ink,#f6f0e7);font-size:1.125rem;line-height:1.3;letter-spacing:-.03rem;margin:14px 0 8px;font-weight:800}
+.rally-one .premium-alive.s13-shell #view :is(.gv2-overline,.team-v08-kicker,.s13-page-eyebrow){display:block;color:#b8b8b2;font-size:.625rem;letter-spacing:.078rem;font-weight:800;text-transform:uppercase;line-height:1.5}
+.rally-one .premium-alive.s13-shell #view :is(.gv2-heading,.team-v08-hero,.ux-read-heading,.gv2-detail-heading){padding:0;margin:0 0 13px;min-height:0;display:block;background:none;border:0;box-shadow:none}
+.rally-one .premium-alive.s13-shell #view :is(.gv2-heading-row h1,.team-v08-hero h1,.ux-read-heading h1,.gv2-detail-heading h1){font-size:2.3125rem;line-height:1.02;letter-spacing:-.09rem;color:var(--s13-ink,#f6f0e7);font-weight:850;white-space:normal;margin:6px 0 7px;overflow-wrap:anywhere}
+.rally-one .premium-alive.s13-shell #view :is(.gv2-heading>small,.ux-read-heading p){display:block;color:#b8b8b2;font-size:.8125rem;margin:0;line-height:1.4;font-weight:500}
+.rally-one .premium-alive.s13-shell #view .gv2-home .gv2-group-hero{
+ display:block;min-height:0;padding:0;margin:0 0 var(--s13-space-3);
+ background:var(--s13-card);border:1px solid var(--s13-border);
+}
+.rally-one .premium-alive.s13-shell #view .gv2-group-hero::before,.rally-one .premium-alive.s13-shell #view .gv2-group-hero::after{content:none}
+.rally-one .premium-alive.s13-shell #view .s13-group-cover{display:block;aspect-ratio:3 / 1;overflow:hidden}
+.rally-one .premium-alive.s13-shell #view .s13-group-cover img{display:block;width:100%;height:100%;object-fit:cover;object-position:50% 48%}
+.rally-one .premium-alive.s13-shell #view .s13-group-caption{
+ display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:0 var(--s13-space-2);
+ padding:var(--s13-space-2) var(--s13-space-3);
+}
+.rally-one .premium-alive.s13-shell #view .s13-group-identity{display:grid;gap:2px;min-width:0}
+.rally-one .premium-alive.s13-shell #view .s13-group-identity strong{font-size:1.0625rem;line-height:1.25;color:var(--s13-ink)}
+.rally-one .premium-alive.s13-shell #view .s13-group-identity .gv2-hero-meta{color:var(--s13-secondary);font-size:var(--s13-row-detail);line-height:1.4}
+.rally-one .premium-alive.s13-shell #view .gv2-home .gv2-group-hero .gv2-hero-action{
+ display:flex;align-items:center;gap:var(--s13-space-2);width:auto;margin:0;padding:0;background:none;
+ border:0;color:var(--s13-paper);font-size:var(--s13-row-detail);
+}
+.rally-one .premium-alive.s13-shell #view .gv2-home .gv2-widgets{display:grid;grid-template-columns:minmax(0,1fr);gap:var(--s13-space-2);margin:0 0 var(--s13-space-3)}
+.rally-one .premium-alive.s13-shell #view .gv2-home .gv2-widgets .s13-subhead{margin:var(--s13-space-1) 0 0}
+.rally-one .premium-alive.s13-shell #view .gv2-home .gv2-widget-gather{
+ display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:2px var(--s13-space-2);
+ background:var(--s13-paper);color:var(--s13-dark-ink);border:0;padding:var(--s13-space-3);min-height:0;
+}
+.rally-one .premium-alive.s13-shell #view .gv2-home .gv2-widget-gather .gv2-widget-icon{
+ grid-area:1/2/3/3;background:var(--s13-card);color:var(--s13-paper);
+}
+.rally-one .premium-alive.s13-shell #view .gv2-home .gv2-widget-gather>strong{font-size:1.125rem;color:var(--s13-dark-ink);line-height:1.2}
+.rally-one .premium-alive.s13-shell #view .gv2-home .gv2-widget-gather>span:not(.gv2-widget-icon){font-size:.875rem;font-weight:750;color:var(--s13-dark-ink)}
+.rally-one .premium-alive.s13-shell #view .gv2-gather-place{color:#555759;font-size:var(--s13-row-detail)}
+.rally-one .premium-alive.s13-shell #view .gv2-home .gv2-widget-gather .gv2-widget-cta{
+ grid-column:1/-1;background:var(--s13-action-red);color:#fff;border:0;margin-top:var(--s13-space-2);
+}
+.rally-one .premium-alive.s13-shell #view .gv2-home .gv2-widget-gather[data-rsvp="going"] .gv2-widget-cta{background:#dce8db;color:#285938}
+.rally-one .premium-alive.s13-shell #view .gv2-home .gv2-widget-gather[data-rsvp="maybe"] .gv2-widget-cta{background:#e5ded2;color:#242322}
+.rally-one .premium-alive.s13-shell #view :is(.gv2-home .gv2-widget-chat,.team-screen-v08 .team-message-preview){
+ display:grid;grid-template-columns:var(--s13-icon-box) minmax(0,1fr) auto;grid-template-rows:auto auto;
+ gap:2px var(--s13-space-3);align-items:center;min-height:64px;width:100%;padding:var(--s13-space-3);
+ background:var(--s13-card);border:1px solid var(--s13-border);color:var(--s13-ink);
+}
+.rally-one .premium-alive.s13-shell #view :is(.gv2-widget-chat .gv2-widget-icon,.team-message-preview .s13-component-icon){
+ grid-area:1/1/3/2;background:#323638;color:var(--s13-paper);
+}
+.rally-one .premium-alive.s13-shell #view :is(.gv2-home .gv2-widget-chat>strong,.team-message-preview-top>span:not(.s13-component-icon)){
+ grid-area:1/2;align-self:end;font-size:var(--s13-row-title);line-height:1.3;font-weight:800;color:var(--s13-ink);letter-spacing:normal;overflow-wrap:anywhere;
+}
+.rally-one .premium-alive.s13-shell #view :is(.gv2-home .gv2-widget-chat>span:not(.gv2-widget-icon),.s13-team-chat-copy){
+ grid-area:2/2;align-self:start;font-size:var(--s13-row-detail);line-height:1.35;color:var(--s13-secondary);overflow-wrap:anywhere;
+}
+.rally-one .premium-alive.s13-shell #view .gv2-home .gv2-widget-chat .gv2-widget-cta{
+ grid-area:1/3/3/4;display:grid;place-items:center;background:none;color:var(--s13-paper);border:0;width:var(--s13-icon);padding:0;margin:0;
+}
+.rally-one .premium-alive.s13-shell #view .gv2-home .gv2-widget-chat .gv2-widget-cta i{display:grid;place-items:center;margin:0}
+.rally-one .premium-alive.s13-shell #view .gv2-home .gv2-rail-label{white-space:normal;overflow-wrap:anywhere;text-overflow:clip}
+.rally-one .premium-alive.s13-shell #view .gv2-home .gv2-rail-wrap{margin:0 0 10px}
+.rally-one .premium-alive.s13-shell #view .gv2-home .gv2-rail{padding:4px 0 9px;gap:12px}
+.rally-one .premium-alive.s13-shell #view .gv2-home .gv2-rail-item{flex:0 0 54px}
+.rally-one .premium-alive.s13-shell #view .gv2-home .gv2-rail-button{width:54px;min-height:76px;gap:5px}
+.rally-one .premium-alive.s13-shell #view .gv2-home .gv2-ring{width:48px;height:48px;border:1px solid #77736f;padding:2px;background:var(--s13-card,#292c2f);box-shadow:none}
+.rally-one .premium-alive.s13-shell #view .gv2-home .gv2-ring-red{border-color:#ff6573}
+.rally-one .premium-alive.s13-shell #view .gv2-home .gv2-care{background:var(--s13-card,#292c2f);border:1px solid var(--s13-border,#3d4042);border-radius:14px;min-height:64px;box-shadow:none}
+.rally-one .premium-alive.s13-shell #view .gv2-home .gv2-care strong{font-size:.875rem;color:var(--s13-ink,#f6f0e7)}
+.rally-one .premium-alive.s13-shell #view .gv2-home .gv2-care small{color:var(--s13-secondary,#c0c2bf);font-size:.75rem}
+.rally-one .premium-alive.s13-shell #view .team-v08-hero-row{display:flex;align-items:center;gap:7px;background:transparent;border:0;box-shadow:none;padding:0;min-height:0;color:#b8b8b2}
+.rally-one .premium-alive.s13-shell #view .team-v08-hero-row>span:first-child,.rally-one .premium-alive.s13-shell #view .team-v08-wave{display:none}
+.rally-one .premium-alive.s13-shell #view .team-v08-hero-row strong,.rally-one .premium-alive.s13-shell #view .team-v08-hero-row small{font-size:.75rem;color:#b8b8b2}
+.rally-one .premium-alive.s13-shell #view .team-screen-v08 .tabs{display:flex;gap:6px;margin:0 0 12px;padding:0;flex-wrap:wrap}
+.rally-one .premium-alive.s13-shell #view .team-screen-v08 .tabs button:not(.team-message-preview){flex:1 1 auto;min-height:44px;background:var(--s13-card,#292c2f);border:1px solid var(--s13-border,#3d4042);color:var(--s13-paper,#f4eee3);border-radius:11px;font-size:.75rem;box-shadow:none}
+.rally-one .premium-alive.s13-shell #view .team-screen-v08 .tabs button.selected{background:var(--s13-paper,#f4eee3);color:var(--s13-dark-ink,#191a1b);border-color:var(--s13-paper,#f4eee3)}
+.rally-one .premium-alive.s13-shell #view :is(.team-screen-v08 .team-schedule-card,.gv2-detail .s13-gather-card){
+ background:var(--s13-paper);color:var(--s13-dark-ink);border:0;border-radius:var(--s13-feature-radius);
+ padding:var(--s13-space-4);box-shadow:none;margin:0 0 var(--s13-space-3);
+}
+.rally-one .premium-alive.s13-shell #view .team-schedule-card .team-card-overline{
+ display:flex;flex-wrap:wrap;gap:var(--s13-space-1) var(--s13-space-2);justify-content:space-between;
+ margin:0 0 var(--s13-space-2);color:#a60027;font-size:.6875rem;letter-spacing:.04rem;
+}
+.rally-one .premium-alive.s13-shell #view .team-schedule-card[data-response="confirmed"] .team-card-overline .pill{background:#dce8db;color:#285938;border-color:#9db59e}
+.rally-one .premium-alive.s13-shell #view .team-schedule-card[data-response="declined"] .team-card-overline .pill{background:#e5ded2;color:#242322;border-color:#bdb3a6}
+.rally-one .premium-alive.s13-shell #view :is(.team-schedule-card,.s13-gather-card) h2{
+ font-size:1.5rem;color:var(--s13-dark-ink);line-height:1.15;letter-spacing:-.04rem;margin:0 0 var(--s13-space-2);overflow-wrap:anywhere;
+}
+.rally-one .premium-alive.s13-shell #view .team-schedule-card .team-shift{
+ display:flex;gap:var(--s13-space-3);align-items:center;padding:0;background:none;border:0;box-shadow:none;min-height:0;margin:0 0 var(--s13-space-3);
+}
+.rally-one .premium-alive.s13-shell #view .team-schedule-card .team-shift-info{flex:1;min-width:0}
+.rally-one .premium-alive.s13-shell #view .team-schedule-card .team-shift-info span{color:var(--s13-dark-ink);font-size:.875rem;font-weight:750}
+.rally-one .premium-alive.s13-shell #view .team-schedule-card .team-shift-info small{color:#555759;font-size:.8125rem}
+.rally-one .premium-alive.s13-shell #view .team-schedule-card .team-shift-date{flex:none}
+.rally-one .premium-alive.s13-shell #view :is(.team-shift-actions,.s13-gather-actions){display:flex;gap:var(--s13-space-2);flex-wrap:wrap}
+.rally-one .premium-alive.s13-shell #view :is(.team-shift-actions,.s13-gather-actions) .btn{
+ min-height:var(--s13-touch);flex:1 1 120px;margin:0;white-space:normal;font-size:.8125rem;
+}
+.rally-one .premium-alive.s13-shell #view :is(.team-shift-actions,.s13-gather-actions) .red{background:var(--s13-action-red);color:#fff;border:0}
+.rally-one .premium-alive.s13-shell #view :is(.team-shift-actions,.s13-gather-actions) .chosen{background:#dce8db;color:#285938;border:1px solid #9db59e}
+.rally-one .premium-alive.s13-shell #view :is(.team-shift-actions,.s13-gather-actions) .outline{background:none;color:#333;border:1px solid #777}
+.rally-one .premium-alive.s13-shell #view .s13-gather-card p{margin:0 0 var(--s13-space-2);color:#555759;font-size:.875rem;line-height:1.45}
+.rally-one .premium-alive.s13-shell #view .s13-gather-card :is(.s13-gather-place,.group-gather-rsvp){font-weight:750;color:var(--s13-dark-ink)}
+.rally-one .premium-alive.s13-shell #view .s13-gather-card .group-gather-rsvp{margin-top:var(--s13-space-3)}
+.rally-one .premium-alive.s13-shell #view .gv2-detail:has(.s13-gather-card) .group-gather-next{display:grid;gap:var(--s13-space-2);margin:0}
+.rally-one .premium-alive.s13-shell #view .gv2-detail:has(.s13-gather-card) .group-gather-next button{
+ display:grid;grid-template-columns:var(--s13-icon) minmax(0,1fr) var(--s13-icon);gap:var(--s13-space-2);
+ align-items:center;min-height:var(--s13-touch);padding:var(--s13-space-2) var(--s13-space-3);text-align:left;
+ background:var(--s13-card);border:1px solid var(--s13-border);border-radius:var(--s13-row-radius);color:var(--s13-ink);font-size:var(--s13-row-title);
+}
+.rally-one .premium-alive.s13-shell #view .s13-gather-continuity summary{padding:var(--s13-space-3) 0;min-height:var(--s13-touch);cursor:pointer;font-size:.8125rem}
+.rally-one .premium-alive.s13-shell #view .s13-assignment-detail{
+ background:var(--s13-card);border:1px solid var(--s13-border);margin:0 0 var(--s13-space-2);color:var(--s13-ink);
+}
+.rally-one .premium-alive.s13-shell #view .s13-assignment-detail>summary{padding:var(--s13-space-3);min-height:var(--s13-touch);font-size:var(--s13-row-title);font-weight:750;cursor:pointer}
+.rally-one .premium-alive.s13-shell #view .s13-assignment-detail .team-huddle-time{
+ display:block;margin:var(--s13-space-1) 0 0;font-size:var(--s13-row-detail);font-weight:500;color:var(--s13-secondary);
+}
+.rally-one .premium-alive.s13-shell #view .s13-assignment-detail .team-huddle{background:none;border:0;box-shadow:none;margin:0;padding:0 var(--s13-space-3) var(--s13-space-3)}
+.rally-one .premium-alive.s13-shell #view .s13-assignment-detail .team-huddle button{min-height:var(--s13-touch)}
+.rally-one .premium-alive.s13-shell #view .team-screen-v08 .tabs.s13-team-schedule-nav{
+ display:grid;grid-template-columns:minmax(0,1fr);padding:0;background:none;border:0;box-shadow:none;
+}
+.rally-one .premium-alive.s13-shell #view .team-screen-v08 .disclaimer{color:var(--s13-secondary)}
+.rally-one .premium-alive.s13-shell #view .team-screen-v08 .team-message-preview{margin:0}
+.rally-one .premium-alive.s13-shell #view .team-screen-v08 .team-message-preview-top{display:contents}
+.rally-one .premium-alive.s13-shell #view .team-screen-v08 .team-message-preview-top>svg{
+ grid-area:1/3/3/4;width:var(--s13-icon);height:var(--s13-icon);margin:0;color:var(--s13-paper);stroke-width:var(--s13-icon-stroke);
+}
+.rally-one .premium-alive.s13-shell #view .s13-team-chat-copy .team-message-preview-text{display:inline;font:inherit;color:inherit}
+/* Daily Rhythm surfaces the reading before optional reflection, prayer and play. */
+.rally-one .premium-alive.s13-shell #view .ux-read-premium .ux-read-heading h1{border:0;padding:0}
+.rally-one .premium-alive.s13-shell #view .ux-read-premium .ux-read-heading p{text-transform:none;letter-spacing:normal}
+.rally-one .premium-alive.s13-shell #view .ux-read-premium .read-scripture-card{
+ background:var(--s13-paper);color:var(--s13-dark-ink);border:0;
+ padding:var(--s13-space-4);margin:0 0 var(--s13-space-3);
+}
+.rally-one .premium-alive.s13-shell #view .ux-read-premium .read-scripture-card :is(h2,blockquote){color:var(--s13-dark-ink)}
+.rally-one .premium-alive.s13-shell #view .ux-read-premium .read-scripture-card h2{margin:var(--s13-space-2) 0;font-size:1.125rem}
+.rally-one .premium-alive.s13-shell #view .ux-read-premium .read-scripture-card blockquote{
+ font-size:1.625rem;line-height:1.2;letter-spacing:-.04rem;margin:0 0 var(--s13-space-4);
+ font-weight:750;overflow-wrap:anywhere;
+}
+.rally-one .premium-alive.s13-shell #view .ux-read-premium .read-scripture-card .read-section-label{color:#9e1630;font-size:.6875rem;font-weight:800}
+.rally-one .premium-alive.s13-shell #view .ux-read-premium .read-scripture-card .fine-note{color:#555759;font-size:.75rem;line-height:1.4}
+.rally-one .premium-alive.s13-shell #view .ux-read-premium .read-scripture-card .btn{display:block;width:100%;background:var(--s13-dark-ink);color:#fff;border:0}
+.rally-one .premium-alive.s13-shell #view .ux-read-premium .read-scripture-card .btn.chosen{background:#dce8db;color:#285938;border:1px solid #9db59e}
+.rally-one .premium-alive.s13-shell #view .ux-read-premium .s13-subhead{margin:0 0 var(--s13-space-2)}
+.rally-one .premium-alive.s13-shell #view .ux-read-premium .s13-read-invitations{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--s13-space-2);margin:0 0 var(--s13-space-4)}
+.rally-one .premium-alive.s13-shell #view .ux-read-premium .s13-read-panel{min-width:0;background:var(--s13-card);border:1px solid var(--s13-border)}
+.rally-one .premium-alive.s13-shell #view .ux-read-premium .s13-read-panel[open]{grid-column:1/-1}
+.rally-one .premium-alive.s13-shell #view .ux-read-premium .s13-read-panel>summary{
+ display:flex;flex-wrap:wrap;align-items:center;gap:var(--s13-space-2);list-style:none;
+ padding:var(--s13-space-3);min-height:var(--s13-touch);cursor:pointer;color:var(--s13-ink);
+}
+.rally-one .premium-alive.s13-shell #view .ux-read-premium .s13-read-panel>summary::-webkit-details-marker{display:none}
+.rally-one .premium-alive.s13-shell #view .ux-read-premium .s13-read-panel>summary svg{width:var(--s13-icon);height:var(--s13-icon);color:var(--s13-paper);flex:none}
+.rally-one .premium-alive.s13-shell #view .ux-read-premium .s13-read-panel-copy{display:grid;gap:2px;min-width:0}
+.rally-one .premium-alive.s13-shell #view .ux-read-premium .s13-read-panel-copy strong{font-size:var(--s13-row-title)}
+.rally-one .premium-alive.s13-shell #view .ux-read-premium .s13-read-panel-copy small{font-size:var(--s13-row-detail);color:var(--s13-secondary)}
+.rally-one .premium-alive.s13-shell #view .ux-read-premium .s13-read-panel>.card{margin:0 var(--s13-space-2) var(--s13-space-2)}
+.rally-one .premium-alive.s13-shell #view .ux-read-premium .ux-arcade{margin:0 0 var(--s13-space-3)}
+.rally-one .premium-alive.s13-shell #view .ux-read-premium .ux-circuit{
+ display:grid;grid-template-columns:var(--s13-icon-box) minmax(0,1fr) var(--s13-icon);align-items:center;
+ min-height:64px;gap:var(--s13-space-3);padding:var(--s13-space-3);
+ background:#24212d;color:#f5efff;border:1px solid #514463;
+}
+.rally-one .premium-alive.s13-shell #view .ux-read-premium .s13-circuit-mark{
+ display:grid;place-items:center;min-height:var(--s13-icon-box);
+ background:#382d49;border-radius:10px;font-weight:850;color:#ead8ff;
+}
+.rally-one .premium-alive.s13-shell #view .ux-read-premium .s13-circuit-copy{display:grid;gap:2px}
+.rally-one .premium-alive.s13-shell #view .ux-read-premium .s13-circuit-copy strong{font-size:var(--s13-row-title);font-style:normal;line-height:1.3;letter-spacing:normal;max-width:none}
+.rally-one .premium-alive.s13-shell #view .ux-read-premium .s13-circuit-copy small{font-size:var(--s13-row-detail);color:#e5d9f5}
+.rally-one .premium-alive.s13-shell #view .ux-read-premium .s13-circuit-arrow svg{width:var(--s13-icon);height:var(--s13-icon);display:block}
+.rally-one .premium-alive.s13-shell #view .ux-read-premium .ux-disclosure{background:var(--s13-card);border-color:var(--s13-border);margin:0 0 var(--s13-space-3)}
+.rally-one .premium-alive.s13-shell #view .ux-read-premium .ux-disclosure>summary{color:var(--s13-paper)}
+.rally-one .premium-alive.s13-shell #view .ux-read-premium .ux-disclosure>.ux-cta{margin:0 var(--s13-space-3) var(--s13-space-3);background:var(--s13-paper);color:var(--s13-dark-ink)}
+.rally-one .premium-alive.s13-shell #view .ux-read-premium .disclaimer{color:var(--s13-secondary)}
+.rally-one .premium-alive.s13-shell #view :is(button,a,summary):focus-visible{outline:3px solid #ff6573;outline-offset:2px}
+.rally-one .premium-alive.s13-shell #view .gv2-home .gv2-widget-gather:has(.gv2-widget-cta):active,.rally-one .premium-alive.s13-shell #view .gv2-group-hero:active{transform:scale(.985)}
+@media(max-width:360px){.rally-one:not(.rp-welcome-active) .premium-alive.s13-shell .header-controls{gap:3px}.rally-one:not(.rp-welcome-active) .premium-alive.s13-shell .brand-home span{font-size:17px}.rally-one .premium-alive.s13-shell #view :is(.gv2-heading-row h1,.team-v08-hero h1,.ux-read-heading h1,.gv2-detail-heading h1){font-size:2.0625rem}}
+@media(prefers-reduced-motion:reduce){.rally-one .premium-alive.s13-shell #view :is(button,a):active{transform:none}.rally-one .premium-alive.s13-shell #view :is(button,a){animation:none;transition:none}}
+
+/* Studio 13: deliberate subtraction from Today only. */
+.rally-one .premium-alive.is-f09-board #view .s13-today .s13-optional{display:grid;gap:8px;margin-top:10px}
+.rally-one .premium-alive.is-f09-board #view .s13-today .s13-optional>.s13-utility{margin:0}
+.rally-one .premium-alive.is-f09-board #view .s13-today .f09b-footer{display:block;text-align:center;padding:12px 0 0;margin:0;background:none;min-height:0}
+.rally-one .premium-alive.is-f09-board #view .s13-today .f09b-footer>span{font-size:.5625rem;letter-spacing:.035em;color:#b4b4ae}
+.rally-one .premium-alive.is-f09-board #view .s13-today .s13-priority-meta{display:flex;align-items:center;flex-wrap:wrap;gap:6px;margin-bottom:7px}
+.rally-one .premium-alive.is-f09-board #view .s13-today .s13-priority-meta>span:nth-child(2){margin-left:auto}
+.rally-one .premium-alive.is-f09-board #view .s13-today .f09b-explain.s13-info{position:relative;display:block;width:auto;max-width:100%;flex:0 0 auto;min-height:0;padding:0;margin:0;background:transparent;color:inherit;border:0;border-radius:0}
+.rally-one .premium-alive.is-f09-board #view .s13-today .f09b-explain.s13-info[open]{flex:0 0 100%}
+.rally-one .premium-alive.is-f09-board #view .s13-today .f09b-explain.s13-info summary{display:grid;place-items:center;width:44px;min-height:44px;padding:0;border:0;background:transparent;color:inherit;font-size:.875rem;font-weight:800;cursor:pointer;list-style:none;border-radius:50%;outline-offset:-3px}
+.rally-one .premium-alive.is-f09-board #view .s13-today .f09b-explain.s13-info summary::before,.rally-one .premium-alive.is-f09-board #view .s13-today .f09b-explain.s13-info summary::after{content:none}
+.rally-one .premium-alive.is-f09-board #view .s13-today .f09b-explain.s13-info summary::-webkit-details-marker{display:none}
+.rally-one .premium-alive.is-f09-board #view .s13-today .f09b-explain.s13-info p{padding:8px 0 0;margin:0;font-size:.75rem;line-height:1.5;color:inherit}
+.rally-one .premium-alive.is-f09-board #view .s13-today .s13-settled-copy>.s13-info summary{margin-top:2px}
+.rally-one .premium-alive.s13-shell .s13-ask-trigger{display:grid;place-items:center;min-width:44px;width:44px;height:44px;min-height:44px;flex:0 0 44px;border-radius:50%;border:1px solid #3b3e40;background:#252729;color:var(--s13-paper,#f4eee3);font-size:.75rem;font-weight:800;padding:0;margin:0;box-shadow:none;letter-spacing:0}
+.rally-one:not(.rp-welcome-active) .premium-alive.s13-shell.s13-ask-header .header{gap:5px;padding-inline:15px}
+.rally-one:not(.rp-welcome-active) .premium-alive.s13-shell.s13-ask-header .header-controls{gap:4px}
+.rally-one:not(.rp-welcome-active) .premium-alive.s13-shell.s13-ask-header .brand-home{min-width:0;gap:4px}
+.rally-one:not(.rp-welcome-active) .premium-alive.s13-shell.s13-ask-header .brand-home span{font-size:clamp(14px,4.2vw,20px);letter-spacing:-.07em}
+.rally-one:not(.rp-welcome-active) .premium-alive.s13-shell.s13-ask-header .brand-home img{width:20px;height:22px}
+@media(max-width:360px){.rally-one:not(.rp-welcome-active) .premium-alive.s13-shell.s13-ask-header .header{padding-inline:9px;gap:4px}.rally-one:not(.rp-welcome-active) .premium-alive.s13-shell.s13-ask-header .header-controls{gap:2px}.rally-one:not(.rp-welcome-active) .premium-alive.s13-shell.s13-ask-header .brand-home span{font-size:14px}.rally-one:not(.rp-welcome-active) .premium-alive.s13-shell.s13-ask-header .brand-home img{width:16px;height:18px}}
+
+/* Studio 13 All Set polish: preserve the reference composition and schedule. */
+.rally-one:not(.rp-welcome-active) .premium-alive.s13-shell .header{height:60px;min-height:60px;padding-block:8px}
+.rally-one:not(.rp-welcome-active) .premium-alive.s13-shell .header-controls{gap:7px}
+.rally-one:not(.rp-welcome-active) .premium-alive.s13-shell.s13-ask-header .header-controls{gap:7px}
+.rally-one:not(.rp-welcome-active) .premium-alive.s13-shell .header-controls [data-action="notifications"][hidden]{display:none!important}
+.rally-one:not(.rp-welcome-active) .premium-alive.s13-shell .header-controls #connect-entry{position:relative;overflow:visible}
+.rally-one:not(.rp-welcome-active) .premium-alive.s13-shell #connect-entry #activity-dot{position:absolute;inset:2px 2px auto auto;width:10px;height:10px;border:2px solid var(--s13-canvas,#181a1b);border-radius:50%;background:var(--s13-brand-red,#e3002b);pointer-events:none}
+.rally-one:not(.rp-welcome-active) .premium-alive.s13-shell #connect-entry #activity-dot[hidden]{display:none!important}
+.rally-one:not(.rp-welcome-active) .premium-alive.s13-shell.is-f09-board #view{padding-top:6px;padding-bottom:12px;scroll-padding-bottom:12px}
+.rally-one .premium-alive.is-f09-board #view .s13-today .f09-greeting{margin-bottom:12px}
+.rally-one .premium-alive.is-f09-board #view .s13-today .s13-settled .s13-image-placeholder.is-wide{height:103px}
+.rally-one .premium-alive.is-f09-board #view .s13-today .s13-settled .s13-image-placeholder img{object-position:center 78%}
+.rally-one .premium-alive.is-f09-board #view .s13-today .s13-settled-copy{position:relative;padding:11px 14px}
+.rally-one .premium-alive.is-f09-board #view .s13-today .s13-settled-copy h2{font-size:1.375rem;line-height:1.12;margin:0 0 3px}
+.rally-one .premium-alive.is-f09-board #view .s13-today .s13-settled-copy>p{font-size:.8125rem;line-height:1.35}
+.rally-one .premium-alive.is-f09-board #view .s13-today .s13-settled-copy:has(>.s13-info):not(:has(>.s13-info[open])){padding-right:52px}
+.rally-one .premium-alive.is-f09-board #view .s13-today .s13-settled-copy>.s13-info:not([open]){position:absolute;top:5px;right:4px}
+.rally-one .premium-alive.is-f09-board #view .s13-today .s13-section-head{margin-top:12px;margin-bottom:7px}
+.rally-one .premium-alive.is-f09-board #view .s13-today .s13-optional{margin-top:8px}
+.rally-one .premium-alive.is-f09-board #view .s13-today .s13-optional>.s13-utility{min-height:52px;padding:8px 12px}
+.rally-one .premium-alive.is-f09-board #view .s13-today .f09b-footer{padding-top:8px}
+/* The Connect overlay keeps its original back button and gains an Activity
+   shortcut in the same top row, not a new navigation layer. */
+.rally-one .connect-overlay.s13-connect-combined>button{max-width:calc(100% - 116px)}
+.rally-one .connect-overlay.s13-connect-combined>.s13-connect-tools{position:absolute;right:8px;top:0;display:flex;align-items:center;height:44px}
+.rally-one .connect-overlay.s13-connect-combined .s13-activity-trigger{display:flex;align-items:center;gap:6px;min-height:44px;padding:0 10px;background:transparent;border:0;border-radius:12px;color:var(--s13-paper,#f4eee3);font:inherit;font-weight:750;font-size:.75rem}
+.rally-one .connect-overlay.s13-connect-combined .s13-activity-trigger svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:1.8}
+.rally-one .connect-overlay.s13-connect-combined .s13-activity-trigger:focus-visible{outline:3px solid #ff8996;outline-offset:-3px}
+@media(max-width:360px){.rally-one:not(.rp-welcome-active) .premium-alive.s13-shell.s13-ask-header .header{padding-inline:15px}.rally-one:not(.rp-welcome-active) .premium-alive.s13-shell.s13-ask-header .brand-home span{font-size:17px}.rally-one:not(.rp-welcome-active) .premium-alive.s13-shell.s13-ask-header .brand-home img{width:20px;height:22px}}
+
+
+/* Studio header finish — a single control geometry for the whole shell.
+   Every control has a 44px target, fixed center, and consistent optical scale.
+   Keep the accepted brand, main layout and legacy views untouched. */
+.rally-one:not(.rp-welcome-active) .premium-alive.s13-shell .header{
+ --s13-control:44px;--s13-control-gap:4px;--s13-glyph:22px;--s13-avatar:30px;
+}
+.rally-one:not(.rp-welcome-active) .premium-alive.s13-shell .header .brand-home,
+.rally-one:not(.rp-welcome-active) .premium-alive.s13-shell.s13-ask-header .header .brand-home{display:flex;align-items:center;gap:6px;flex:0 0 auto;min-width:0;min-height:44px;opacity:1;padding:0}
+.rally-one:not(.rp-welcome-active) .premium-alive.s13-shell .header .brand-home>span,
+.rally-one:not(.rp-welcome-active) .premium-alive.s13-shell.s13-ask-header .header .brand-home>span{font-size:clamp(19px,5.7vw,24px);font-weight:900;line-height:1;letter-spacing:-.045em;color:var(--s13-paper,#f4eee3);opacity:1}
+.rally-one:not(.rp-welcome-active) .premium-alive.s13-shell .header .brand-home em{color:var(--s13-brand-red,#e3002b);font-style:normal;font-weight:inherit;opacity:1}
+.rally-one:not(.rp-welcome-active) .premium-alive.s13-shell .header .brand-home img,
+.rally-one:not(.rp-welcome-active) .premium-alive.s13-shell.s13-ask-header .header .brand-home img{width:26px;height:25px;object-fit:contain;filter:none;opacity:1}
+.rally-one:not(.rp-welcome-active) .premium-alive.s13-shell .header .header-controls,
+.rally-one:not(.rp-welcome-active) .premium-alive.s13-shell.s13-ask-header .header .header-controls{display:flex;align-items:center;justify-content:flex-end;gap:var(--s13-control-gap);flex:0 0 auto;padding:0;margin:0}
+.rally-one:not(.rp-welcome-active) .premium-alive.s13-shell .header .header-controls>.s13-ask-trigger,
+.rally-one:not(.rp-welcome-active) .premium-alive.s13-shell .header .header-controls>#connect-entry,
+.rally-one:not(.rp-welcome-active) .premium-alive.s13-shell .header .header-controls>.profile-avatar{
+ box-sizing:border-box;width:var(--s13-control);height:var(--s13-control);min-width:var(--s13-control);min-height:var(--s13-control);max-width:var(--s13-control);max-height:var(--s13-control);
+ flex:0 0 var(--s13-control);display:grid;grid-template:1fr / 1fr;place-content:center;place-items:center;
+ border:0;border-radius:12px;background:transparent;box-shadow:none;padding:0;margin:0;position:relative;inset:auto;line-height:1;color:var(--s13-paper,#f4eee3);
+}
+.rally-one:not(.rp-welcome-active) .premium-alive.s13-shell .header .s13-ask-trigger{font-size:13px;letter-spacing:0;font-weight:750}
+.rally-one:not(.rp-welcome-active) .premium-alive.s13-shell .header #connect-entry .s13-connect-icon{position:relative;box-sizing:border-box;width:var(--s13-glyph);height:var(--s13-glyph);display:grid;grid-template:1fr / 1fr;place-items:center;place-content:center;padding:0;margin:0;line-height:0;overflow:visible}
+.rally-one:not(.rp-welcome-active) .premium-alive.s13-shell .header #connect-entry .s13-message-glyph{width:var(--s13-glyph);height:var(--s13-glyph);display:block;margin:0;stroke:currentColor;stroke-width:1.75;fill:none;transform:none}
+.rally-one:not(.rp-welcome-active) .premium-alive.s13-shell .header #connect-entry .s13-connect-icon>#activity-dot{box-sizing:border-box;position:absolute;inset:-1px -1px auto auto;width:8px;height:8px;border:1.5px solid var(--s13-canvas,#181a1b);border-radius:50%;background:var(--s13-brand-red,#e3002b);box-shadow:none;pointer-events:none}
+.rally-one:not(.rp-welcome-active) .premium-alive.s13-shell .header #connect-entry #activity-dot[hidden]{display:none!important}
+.rally-one:not(.rp-welcome-active) .premium-alive.s13-shell .header .profile-avatar #profile-initials{box-sizing:border-box;width:var(--s13-avatar);height:var(--s13-avatar);border-radius:50%;display:grid;place-items:center;background:var(--s13-paper,#f4eee3);color:var(--s13-dark-ink,#191a1b);font-size:13px;font-weight:750;line-height:1;margin:0;padding:0}
+.rally-one .premium-alive.s13-shell #view .s13-message-glyph{width:22px;height:22px;display:block;margin:0;stroke:currentColor;stroke-width:1.75;fill:none;transform:none}
+.rally-one .premium-alive.is-f09-board #view .s13-today .s13-utility-icon:has(.s13-message-glyph){background:#323638;color:var(--s13-paper,#f4eee3);border-radius:10px}
+.rally-one:not(.rp-welcome-active) .premium-alive.s13-shell .header :is(button,a):focus-visible{outline:2px solid var(--s13-paper,#f4eee3);outline-offset:1px}
+@media(max-width:360px){
+ .rally-one:not(.rp-welcome-active) .premium-alive.s13-shell .header,
+ .rally-one:not(.rp-welcome-active) .premium-alive.s13-shell.s13-ask-header .header{padding-inline:10px;gap:4px;--s13-control-gap:2px}
+ .rally-one:not(.rp-welcome-active) .premium-alive.s13-shell .header .brand-home,
+ .rally-one:not(.rp-welcome-active) .premium-alive.s13-shell.s13-ask-header .header .brand-home{gap:4px}
+ .rally-one:not(.rp-welcome-active) .premium-alive.s13-shell .header .brand-home img,
+ .rally-one:not(.rp-welcome-active) .premium-alive.s13-shell.s13-ask-header .header .brand-home img{width:22px;height:22px}
+}
+
+/* ALIVE 01 — explicit reusable roles on existing, authorized elements.
+   Do not change the Today hierarchy or add new widgets. */
+.rally-one .premium-alive.s13-shell #view :is(.gv2-home,.gv2-detail,.team-screen-v08,.ux-read-premium) .s13-component-feature{border-radius:var(--s13-feature-radius);box-shadow:none}
+.rally-one .premium-alive.s13-shell #view :is(.gv2-home,.gv2-detail,.team-screen-v08,.ux-read-premium) .s13-component-row{border-radius:var(--s13-row-radius);box-shadow:none}
+.rally-one .premium-alive.s13-shell #view :is(.gv2-home,.gv2-detail,.team-screen-v08,.ux-read-premium) .s13-component-action{min-height:var(--s13-touch);border-radius:var(--s13-button-radius);box-shadow:none;white-space:normal}
+.rally-one .premium-alive.s13-shell #view .s13-component-title{font-size:var(--s13-title-size);line-height:1.02;font-weight:850;letter-spacing:-.09rem;overflow-wrap:anywhere}
+.rally-one .premium-alive.s13-shell #view .s13-component-section{font-size:var(--s13-section-size);line-height:1.3;font-weight:800;letter-spacing:-.031rem}
+.rally-one .premium-alive.s13-shell #view .s13-component-icon{box-sizing:border-box;display:grid;place-items:center;width:var(--s13-icon-box);height:var(--s13-icon-box);flex:0 0 var(--s13-icon-box);border-radius:10px;padding:0;margin:0}
+.rally-one .premium-alive.s13-shell #view .s13-component-icon>svg{display:block;width:var(--s13-icon);height:var(--s13-icon);margin:0;fill:none;stroke:currentColor;stroke-width:var(--s13-icon-stroke);stroke-linecap:round;stroke-linejoin:round}
+.rally-one .premium-alive.s13-shell #view .gv2-home .gv2-care{padding:var(--s13-space-3);gap:var(--s13-space-3);margin-bottom:var(--s13-space-3)}
+.rally-one .premium-alive.s13-shell #view .gv2-home .gv2-care-icon{background:#323638;color:var(--s13-paper)}
+.rally-one .premium-alive.s13-shell #view .gv2-home .gv2-care>b{display:grid;place-items:center;width:22px;flex:none}
+.rally-one .premium-alive.s13-shell #view .gv2-home .gv2-care>b svg{width:20px;height:20px;stroke-width:1.75}
+.rally-one .premium-alive.s13-shell #view .team-screen-v08 .team-shift-date strong{font-variant-numeric:tabular-nums}
+.rally-one .premium-alive.s13-shell #view .ux-read-premium .ux-disclosure>summary{display:flex;align-items:center;gap:var(--s13-space-2);min-height:var(--s13-touch);font-weight:750;font-size:var(--s13-row-title)}
+.rally-one .premium-alive.s13-shell #view .s13-component-action:focus-visible{outline:2px solid currentColor;outline-offset:3px}
+@media(max-width:360px){.rally-one .premium-alive.s13-shell{--s13-title-size:2.0625rem}}
+
+@media(prefers-reduced-motion:no-preference){
+ .rally-one .premium-alive.is-f09-board #view .s13-today .s13-response-saved .r1-receipt{
+  animation:s13-response-enter 180ms ease-out both;
+ }
+ .rally-one .premium-alive.is-f09-board #view .s13-today .s13-response-saved .f09b-hero{
+  animation:s13-response-enter 220ms ease-out 30ms both;
+ }
+ @keyframes s13-response-enter{
+  from{opacity:.65;transform:translateY(4px)}
+  to{opacity:1;transform:translateY(0)}
+ }
+}
+
+.rally-one .premium-alive.s13-shell #view .s13-team-role{
+ display:grid;grid-template-columns:minmax(82px,32%) minmax(0,1fr);
+ overflow:hidden;margin:0 0 var(--s13-space-2);border:1px solid var(--s13-border);
+ border-radius:var(--s13-row-radius);background:var(--s13-card);color:var(--s13-ink);
+}
+.rally-one .premium-alive.s13-shell #view .s13-team-role-photo{overflow:hidden;min-height:82px}
+.rally-one .premium-alive.s13-shell #view .s13-team-role-photo img{
+ display:block;width:100%;height:100%;object-fit:cover;object-position:52% 51%;transform:scale(1.1);
+}
+.rally-one .premium-alive.s13-shell #view .s13-team-role figcaption{
+ display:grid;align-content:center;gap:3px;min-width:0;padding:var(--s13-space-3);overflow-wrap:anywhere;
+}
+.rally-one .premium-alive.s13-shell #view .s13-team-role strong{font-size:var(--s13-row-title)}
+.rally-one .premium-alive.s13-shell #view .s13-team-role span{font-size:var(--s13-row-detail)}
+.rally-one .premium-alive.s13-shell #view .s13-team-role small{font-size:var(--s13-row-detail);color:var(--s13-secondary)}
+
+.rally-one .premium-alive.s13-shell #view .team-screen-v08 .s13-team-chat-copy,
+.rally-one .premium-alive.s13-shell #view .team-screen-v08 .s13-team-chat-copy .team-message-preview-text{
+ min-width:0;white-space:normal;overflow-wrap:anywhere;
+}
+
+/* ALIVE 02A — Belong. Keep action ownership and the approved Today geometry.
+   Definite image dimensions avoid percentage-height/aspect-ratio ambiguity. */
+.rally-one .premium-alive.s13-shell #view .s13-belong .gv2-group-hero{
+ display:block;width:100%;min-width:0;overflow:hidden;text-align:left;
+ padding:0;border-radius:var(--s13-feature-radius,18px);
+}
+.rally-one .premium-alive.s13-shell #view .s13-belong .s13-group-cover{
+ display:block;position:relative;width:100%;height:clamp(112px,32vw,150px);
+ aspect-ratio:auto;overflow:hidden;background:var(--s13-card,#292c2f) url('assets/rally-one/community.webp') center 58% / cover no-repeat;
+}
+.rally-one .premium-alive.s13-shell #view .s13-belong .s13-group-cover img{
+ display:block;position:absolute;inset:0;width:100%;height:100%;max-width:none;max-height:none;
+ object-fit:cover;object-position:center 54%;opacity:1;visibility:visible;border:0;border-radius:0;
+}
+.rally-one .premium-alive.s13-shell #view .s13-belong .s13-group-caption{
+ display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 14px;
+}
+.rally-one .premium-alive.s13-shell #view .s13-belong .s13-group-identity{flex:1;min-width:0}
+.rally-one .premium-alive.s13-shell #view .s13-belong .s13-group-identity strong{font-size:1.1875rem;line-height:1.2;letter-spacing:-.025em}
+.rally-one .premium-alive.s13-shell #view .s13-belong .gv2-group-hero .gv2-hero-action{width:22px;min-width:22px;min-height:0;flex:0 0 22px;padding:0;margin:0}
+.rally-one .premium-alive.s13-shell #view .s13-belong :is(.gv2-hero-action,.gv2-widget-cta i,.gv2-care>b) svg{width:20px;height:20px;display:block;stroke:currentColor;fill:none;stroke-width:1.75}
+.rally-one .premium-alive.s13-shell #view .s13-belong .gv2-widget-gather .gv2-widget-icon{width:36px;height:36px;display:grid;place-items:center;border-radius:10px}
+.rally-one .premium-alive.s13-shell #view .s13-belong .gv2-widget-gather .gv2-widget-icon svg{width:22px;height:22px;display:block}
+.rally-one .premium-alive.s13-shell #view .s13-belong .gv2-widget-gather>span:not(.gv2-widget-icon){font-size:1rem;line-height:1.35}
+.rally-one .premium-alive.s13-shell #view .s13-belong .gv2-widget-gather .gv2-widget-cta{display:flex;justify-content:space-between;align-items:center;text-align:left;padding:10px 12px;gap:8px;min-height:44px;white-space:normal}
+.rally-one .premium-alive.s13-shell #view .s13-belong .gv2-rail-wrap{margin:0 0 12px}
+.rally-one .premium-alive.s13-shell #view .s13-belong .gv2-rail{gap:10px;padding:4px 0 8px;margin:0;scroll-padding-inline:0}
+.rally-one .premium-alive.s13-shell #view .s13-belong .gv2-rail-item{flex:0 0 56px}
+.rally-one .premium-alive.s13-shell #view .s13-belong .gv2-rail-button{width:56px;min-height:70px;gap:5px}
+.rally-one .premium-alive.s13-shell #view .s13-belong .gv2-ring{width:48px;height:48px;box-sizing:border-box;padding:2px;border:1px solid #77736f}
+.rally-one .premium-alive.s13-shell #view .s13-belong .gv2-ring-red{border-color:var(--s13-brand-red,#e3002b)}
+.rally-one .premium-alive.s13-shell #view .s13-belong .gv2-rail-label{font-size:.6875rem;line-height:1.3;min-height:1.3em;color:var(--s13-ink,#f6f0e7)}
+.rally-one .premium-alive.s13-shell #view .s13-belong .gv2-care{display:flex;align-items:center;gap:12px;text-align:left}
+.rally-one .premium-alive.s13-shell #view .s13-belong .gv2-care>span:not(.gv2-care-icon){flex:1;min-width:0}
+.rally-one .premium-alive.s13-shell #view .s13-belong .gv2-care small{white-space:normal;overflow-wrap:anywhere}
+
+/* ALIVE 02B — Serve: practical assignment first, purpose second. */
+.rally-one .premium-alive.s13-shell #view .s13-serve .s13-shift-note{font-size:.6875rem;color:#555759;line-height:1.4;margin:8px 0 0}
+.rally-one .premium-alive.s13-shell #view .s13-serve .team-shift-actions .btn{min-height:44px;flex:1 1 125px;padding:10px 12px;white-space:normal;line-height:1.35}
+.rally-one .premium-alive.s13-shell #view .s13-serve .s13-assignment-detail>summary{display:flex;flex-wrap:wrap;align-items:center;gap:4px 10px;padding:10px 12px;min-height:44px;list-style:none}
+.rally-one .premium-alive.s13-shell #view .s13-serve .s13-assignment-detail>summary::-webkit-details-marker{display:none}
+.rally-one .premium-alive.s13-shell #view .s13-serve .s13-assignment-detail>summary::after{content:'›';font-size:22px;line-height:1;margin-left:auto}
+.rally-one .premium-alive.s13-shell #view .s13-serve .s13-assignment-detail[open]>summary::after{transform:rotate(90deg)}
+.rally-one .premium-alive.s13-shell #view .s13-serve .s13-huddle-label{flex:1 0 100%;font-size:var(--s13-row-title);font-weight:750}
+.rally-one .premium-alive.s13-shell #view .s13-serve .s13-assignment-detail .team-huddle-time{flex:1;min-width:0;color:var(--s13-secondary);font-size:var(--s13-row-detail);line-height:1.4;white-space:normal}
+.rally-one .premium-alive.s13-shell #view .s13-serve .s13-team-role{display:grid;grid-template-columns:minmax(86px,34%) minmax(0,1fr);gap:0;align-items:stretch;overflow:hidden;margin:12px 0;border:1px solid var(--s13-border);border-radius:var(--s13-feature-radius);background:var(--s13-card)}
+.rally-one .premium-alive.s13-shell #view .s13-serve .s13-team-role-photo{position:relative;display:block;min-height:108px;background:var(--s13-card)}
+.rally-one .premium-alive.s13-shell #view .s13-serve .s13-team-role-photo img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 50%;display:block}
+.rally-one .premium-alive.s13-shell #view .s13-serve .s13-team-role figcaption{display:flex;flex-direction:column;justify-content:center;gap:5px;min-width:0;padding:12px}
+.rally-one .premium-alive.s13-shell #view .s13-serve .s13-team-role strong{font-size:1rem;line-height:1.18;letter-spacing:-.02em;color:var(--s13-ink)}
+.rally-one .premium-alive.s13-shell #view .s13-serve .s13-team-role figcaption>span{font-size:.8125rem;color:var(--s13-secondary);line-height:1.35}
+.rally-one .premium-alive.s13-shell #view .s13-serve .s13-team-role small{font-size:.6875rem;line-height:1.35}
+
+/* ALIVE 02C — Care. A personal invitation, never a completion funnel.
+   Existing state, source text and local-only disclosures remain visible. */
+.rally-one .premium-alive.s13-shell #view .s13-care-refined{
+ --ro-care-bg:var(--s13-card,#292c2f);--ro-care-copy:var(--s13-ink,#f6f0e7);
+ --ro-care-muted:var(--s13-secondary,#c0c2bf);--ro-care-border:var(--s13-border,#3d4042);
+ display:grid;gap:10px;margin:12px 0;padding:14px;
+ background:var(--ro-care-bg);border:1px solid var(--ro-care-border);border-radius:var(--s13-feature-radius,18px);box-shadow:none;
+}
+.rally-one .premium-alive.s13-shell #view .s13-care-refined .ro-care-header{gap:10px;min-height:36px}
+.rally-one .premium-alive.s13-shell #view .s13-care-refined .ro-care-mark{width:36px;height:36px;min-width:36px;border-radius:10px;background:#323638;color:var(--s13-paper,#f4eee3)}
+.rally-one .premium-alive.s13-shell #view .s13-care-refined .ro-care-mark svg{width:22px;height:22px}
+.rally-one .premium-alive.s13-shell #view .s13-care-refined .ro-care-overline{color:var(--s13-secondary,#c0c2bf);font-size:.6875rem;line-height:1.4;letter-spacing:.08em}
+.rally-one .premium-alive.s13-shell #view .s13-care-refined .ro-care-copy h2{font-size:1.25rem;line-height:1.2;letter-spacing:-.025em;color:var(--ro-care-copy)}
+.rally-one .premium-alive.s13-shell #view .s13-care-refined .ro-care-copy p{font-size:.8125rem;line-height:1.5;color:var(--ro-care-muted)}
+.rally-one .premium-alive.s13-shell #view .s13-care-refined .ro-care-source{background:#222527;border:1px solid var(--ro-care-border);border-left:3px solid var(--s13-brand-red,#e3002b);border-radius:10px;padding:12px}
+.rally-one .premium-alive.s13-shell #view .s13-care-refined .ro-care-source span{font-size:.6875rem;color:var(--ro-care-muted)}
+.rally-one .premium-alive.s13-shell #view .s13-care-refined .ro-care-source p{font-size:.9375rem;line-height:1.5;color:var(--ro-care-copy)}
+.rally-one .premium-alive.s13-shell #view .s13-care-refined .ro-care-steps{display:flex;flex-wrap:wrap;justify-content:flex-start;gap:8px 14px;margin:0}
+.rally-one .premium-alive.s13-shell #view .s13-care-refined .ro-care-steps li{font-size:.6875rem;color:var(--ro-care-muted);font-weight:600}
+.rally-one .premium-alive.s13-shell #view .s13-care-refined .ro-care-steps li::before{content:'·';width:12px;height:16px;background:transparent;color:inherit;font-size:1rem}
+.rally-one .premium-alive.s13-shell #view .s13-care-refined .ro-care-steps li.is-complete::before{content:'✓';color:#acd5ac;background:transparent}
+.rally-one .premium-alive.s13-shell #view .s13-care-refined .ro-care-actions{display:flex;flex-wrap:wrap;gap:8px}
+.rally-one .premium-alive.s13-shell #view .s13-care-refined .ro-care-button{min-height:44px;font-size:.8125rem;border-radius:var(--s13-button-radius,11px);padding:10px 12px;white-space:normal;line-height:1.3}
+.rally-one .premium-alive.s13-shell #view .s13-care-refined .ro-care-main{background:var(--s13-paper,#f4eee3);color:var(--s13-dark-ink,#191a1b);border-color:var(--s13-paper,#f4eee3);flex:1 1 145px}
+.rally-one .premium-alive.s13-shell #view .s13-care-refined .ro-care-secondary,.rally-one .premium-alive.s13-shell #view .s13-care-refined .ro-care-muted{background:transparent;color:var(--ro-care-copy);border:1px solid #5b6061}
+.rally-one .premium-alive.s13-shell #view .s13-care-refined .ro-care-disclaimer{font-size:.6875rem;line-height:1.4;color:var(--ro-care-muted)}
+.rally-one .premium-alive.s13-shell #view .s13-care-disclosure>summary{display:flex;align-items:center;justify-content:space-between;min-height:44px;font-size:.8125rem;font-weight:750;list-style:none;cursor:pointer}
+.rally-one .premium-alive.s13-shell #view .s13-care-disclosure>summary::-webkit-details-marker{display:none}
+.rally-one .premium-alive.s13-shell #view .s13-care-disclosure>summary::after{content:'›';font-size:22px}
+.rally-one .premium-alive.s13-shell #view .s13-care-disclosure[open]>summary::after{transform:rotate(90deg)}
+.rally-one .premium-alive.s13-shell #view .s13-care-disclosure[open] .ro-care-actions{margin-top:6px}
+
+/* ALIVE 03 — Daily rhythm. Retain all reading, leader and game commands. */
+.rally-one .premium-alive.s13-shell #view .s13-daily-rhythm .read-scripture-card blockquote{font-size:clamp(1.25rem,5.5vw,1.5rem);line-height:1.4;letter-spacing:-.025em;font-weight:700;margin:12px 0 16px}
+.rally-one .premium-alive.s13-shell #view .s13-daily-rhythm .read-scripture-card .read-section-label{display:flex;align-items:center;gap:8px}
+.rally-one .premium-alive.s13-shell #view .s13-daily-rhythm .read-scripture-card .read-section-label svg{width:20px;height:20px;flex:none}
+.rally-one .premium-alive.s13-shell #view .s13-daily-rhythm .read-scripture-card .btn{min-height:44px;border-radius:var(--s13-button-radius);line-height:1.35}
+.rally-one .premium-alive.s13-shell #view .s13-daily-rhythm .s13-read-invitations{grid-template-columns:1fr;gap:8px;margin-bottom:16px}
+.rally-one .premium-alive.s13-shell #view .s13-daily-rhythm .s13-read-panel>summary{display:flex;align-items:center;gap:12px;min-height:52px;padding:10px 12px;cursor:pointer;list-style:none}
+.rally-one .premium-alive.s13-shell #view .s13-daily-rhythm .s13-read-panel>summary::after{content:none}
+.rally-one .premium-alive.s13-shell #view .s13-daily-rhythm .s13-read-panel-copy{flex:1;min-width:0}
+.rally-one .premium-alive.s13-shell #view .s13-daily-rhythm .s13-panel-chevron{display:grid;place-items:center;flex:0 0 22px}
+.rally-one .premium-alive.s13-shell #view .s13-daily-rhythm .s13-read-panel[open] .s13-panel-chevron{transform:rotate(90deg)}
+.rally-one .premium-alive.s13-shell #view .s13-daily-rhythm .s13-verseplay-intro{color:var(--s13-secondary);font-size:.8125rem;line-height:1.4;margin:-2px 0 10px}
+.rally-one .premium-alive.s13-shell #view .s13-daily-rhythm .s13-circuit-mark svg{width:28px;height:28px;display:block}
+.rally-one .premium-alive.s13-shell #view .s13-daily-rhythm .ux-game-row{gap:8px}
+.rally-one .premium-alive.s13-shell #view .s13-daily-rhythm .ux-game-row :is(.rp-game-entry-play,.ux-classic>summary){min-height:48px;white-space:normal;line-height:1.35}

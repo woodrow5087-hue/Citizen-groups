@@ -23,7 +23,7 @@
   const focus=enabled?Focus.focus({board:baselineBoard,model:{...model,requestedCheckIn,twoCommitmentDemo},care,now}):null;
   // Focused actions and the broader weekly commitment overview are distinct.
   const board=focus?.hero?Object.freeze({...baselineBoard,hero:focus.hero,rows:focus.rows,
-   taskCount:focus.actionCount,weeklyTaskCount:baselineBoard.taskCount,
+   taskCount:focus.actionCount,responsibilityIds:focus.responsibilityIds,weeklyTaskCount:baselineBoard.taskCount,
    caughtUp:focus.hero.id==='caught-up'}):baselineBoard;
   const decision=focus?Object.freeze({selectedIds:focus.selectedIds,actionCount:focus.actionCount,
    deferredIds:model.deferredIds,explanation:focus.explanation,
