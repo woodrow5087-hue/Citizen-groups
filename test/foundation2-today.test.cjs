@@ -23,8 +23,10 @@ test('Foundation 2 direct Today matches the approved hierarchy without legacy ma
  assert.equal(doc.querySelectorAll('.responsibility').length,2);
  assert.equal(doc.querySelectorAll('.coming .event').length,2);
  assert.equal(doc.querySelectorAll('[data-command="leader"]').length,2);
- assert.ok(doc.querySelector('.priority-photo img[src$="/community.webp"]'));
- assert.equal(doc.querySelectorAll('.faces img').length,3);
+ const groupOnly=project(initial(),{...ui,memberships:{group:true,team:false}});
+ const groupDoc=new JSDOM('<main>'+View.render(groupOnly)+'</main>').window.document;
+ assert.ok(groupDoc.querySelector('.priority-photo img[src$="/community.webp"]'));
+ assert.equal(groupDoc.querySelectorAll('.faces img').length,3);
  assert.match(doc.querySelector('.utility strong').textContent,/3 new group messages/);
  assert.equal(doc.querySelector('[data-command="serve"]').tagName,'BUTTON');
 });
