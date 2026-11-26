@@ -59,6 +59,7 @@ test('Foundation 2 uses a recessed, accessible fixture selector and a single sty
  const css=fs.readFileSync(path.join(root,'foundation2/design.css'),'utf8');
  for(const rule of ['.priority-body','.responsibility','.schedule','.settled-photo','@media(max-width:360px)','prefers-reduced-motion:reduce'])assert.ok(css.includes(rule),rule);
  assert.doesNotMatch(css,/rally-one-studio-today|rallypoint-phase1/);
+ assert.match(css,/font-weight:200 800;/); // verified Manrope variable wght axis
 });
 test('Foundation 2 escapes source-backed responsibility, status and optional texts',()=>{
  const {JSDOM}=require('jsdom'),v=project(initial());
