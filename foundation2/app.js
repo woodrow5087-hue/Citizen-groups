@@ -5,6 +5,7 @@
 (function(){
 'use strict';
 const root=document.getElementById('today'),select=document.getElementById('scenario'),tabs=document.getElementById('primary-nav');
+let memberPanel,renderedEvents={};
 let route=FoundationNavigation.resolve(window.location.search);
 let scrollTimer;
 history.scrollRestoration='manual';
@@ -65,13 +66,21 @@ function selectScenario(selection){
  if(inThread()&&!blocked&&!groupPreviewActive()&&select.value!=='unavailable')connect?.markRead();
  draw();
 }
+function currentSession(){return FoundationMemberSession.derive({state,ui,conversation:conversation(),now:new Date(),owner:store?.scenario});}
+function memberTransition(options){
+ const kind=options.command.type==='group-rsvp'?'group':['serving-response','serving-coverage'].includes(options.command.type)?'team':null;
+ return FoundationMemberSession.transition({...options,owner:store?.scenario,command:{...options.command,...(kind?{eventId:options.command.eventId||renderedEvents[kind]}:{})}});
+}
 function draw(focus=false){
- const now=new Date(),chat=conversation(),snapshot=RallyIntelligence.derive({state,ui,conversation:chat,now});
+ const now=new Date(),chat=conversation(),session=FoundationMemberSession.derive({owner:store?.scenario,state,ui,conversation:chat,now}),snapshot=session.snapshot;
+ renderedEvents=session.events;
+ const avatar=document.querySelector('.preview-avatar');if(avatar)avatar.textContent=ui.name==='Friend'?'D':ui.name.slice(0,1).toUpperCase();
+ memberPanel?.scopeCheck();
  const serving=FoundationServing.project(select.value,snapshot.context,window.FoundationServingFixtures);
  const servingPreview=FoundationServing.render(serving);
  const group=FoundationGroupPreview.project(select.value,snapshot.context,window.FoundationGroupFixtures);
  const groupPreview=FoundationGroupPreview.render(group);
- root.innerHTML=route==='today'?FoundationView.render(FoundationToday.project(snapshot,now,serving?.state,group?.state),receipt,servingPreview+groupPreview):
+ root.innerHTML=route==='today'?FoundationView.render(FoundationMemberSession.decision(session,now,serving?.state,group?.state).view,receipt,servingPreview+groupPreview):
   route==='connect'?FoundationConnectView.render(chat,{thread:inThread(),member:!groupPreviewActive()&&snapshot.context.permissions.group,feedback:chatFeedback,returnToGroups:history.state?.returnRoute==='groups'}):
   route==='groups'?FoundationGroups.render(FoundationGroups.project(snapshot,chat),{feedback:groupFeedback,blocked:!!blocked,groupPreview}):
   route==='team'?FoundationTeam.render(FoundationTeam.project(snapshot),{feedback:teamFeedback,blocked:!!blocked,servingPreview}):
@@ -84,6 +93,7 @@ function draw(focus=false){
  if(route==='connect')connectLink?.setAttribute('aria-current','page');
  else connectLink?.removeAttribute('aria-current');
  document.title='Rally One · '+FoundationNavigation.names[route]+' · Foundation 2';
+ if(session.unbound||!session.valid){root.insertAdjacentHTML('afterbegin','<p role="status">'+(session.valid?'Earlier sample responses are preserved without assigning them to a new event.':'Saved event responses need review. No new response can be saved.')+'</p>');}
  if(blocked){
   const warning=document.createElement('p');
   warning.className='storage-warning';warning.setAttribute('role','alert');warning.textContent=blocked;
@@ -221,7 +231,7 @@ root.addEventListener('click',event=>{
   if(blocked)return;
   const command=FoundationRead.commandFor(readButton.dataset.readAction,readButton.dataset.value);
   if(!command){readFeedback='Unavailable reading action.';draw(true);return;}
-  const changed=FoundationMemberActions.transition({state,ui,conversation:conversation(),command,now:new Date()});
+  const changed=memberTransition({state,ui,conversation:conversation(),command,now:new Date()});
   if(!changed.ok){readFeedback='No change: '+changed.reason+'.';draw(true);return;}
   const saved=store?.save(changed.state,ui)||{ok:false,reason:'Guarded storage unavailable'};
   if(saved.ok){
@@ -235,7 +245,7 @@ root.addEventListener('click',event=>{
   if(blocked||FoundationServing.isActive(select.value))return;
   const command=FoundationTeam.commandFor(teamButton.dataset.teamAction,teamButton.dataset.value);
   if(!command){teamFeedback='This serving action is not available.';draw(true);return;}
-  const result=FoundationMemberActions.transition({state,ui,conversation:conversation(),command,now:new Date()});
+  const result=memberTransition({state,ui,conversation:conversation(),command,now:new Date()});
   if(!result.ok){teamFeedback='No change: '+result.reason+'.';draw(true);return;}
   const saved=store?.save(result.state,ui)||{ok:false,reason:'Guarded storage is unavailable'};
   if(saved.ok){
@@ -256,7 +266,7 @@ root.addEventListener('click',event=>{
   if(blocked||groupPreviewActive())return;
   const command=FoundationGroups.commandFor(groupButton.dataset.groupAction,groupButton.dataset.value);
   if(!command){groupFeedback='This group action is not available.';draw(true);return;}
-  const result=FoundationMemberActions.transition({state,ui,conversation:conversation(),command,now:new Date()});
+  const result=memberTransition({state,ui,conversation:conversation(),command,now:new Date()});
   if(!result.ok){groupFeedback='No change: '+result.reason+'.';draw(true);return;}
   const saved=store?.save(result.state,ui)||{ok:false,reason:'Guarded storage is unavailable'};
   if(saved.ok){
@@ -274,7 +284,7 @@ root.addEventListener('click',event=>{
  if(!button||blocked||route!=='today')return;
  const command=FoundationToday.commandFor(button.dataset.command,button.dataset.person);
  if(!command||groupPreviewActive()||(command.type==='serving-response'&&FoundationServing.isActive(select.value)))return;
- const result=FoundationMemberActions.transition({state,ui,conversation:conversation(),command,now:new Date()});
+ const result=memberTransition({state,ui,conversation:conversation(),command,now:new Date()});
  if(!result.ok){receipt='No change: '+result.reason+'.';draw(true);return;}
  const saved=store?.save(result.state,ui)||{ok:false,reason:'Guarded storage is unavailable'};
  if(saved.ok){
@@ -306,13 +316,13 @@ root.addEventListener('submit',event=>{
  if(form.id==='read-reflection-form'||form.id==='read-leader-question'){
   event.preventDefault();
   if(blocked||route!=='read')return;
-  const reading=FoundationRead.project(RallyIntelligence.derive({
+  const reading=FoundationRead.project(FoundationMemberSession.derive({owner:store?.scenario,
    state,ui,conversation:conversation(),now:new Date()
-  }),state,RallyMemory,new Date());
+  }).snapshot,state,RallyMemory,new Date());
   const command=form.id==='read-reflection-form'?
    {type:'reflection-save',text:form.elements.reflection.value,passage:reading.passage.reference}:
    {type:'reading-question-save',text:form.elements.question.value};
-  const changed=FoundationMemberActions.transition({state,ui,conversation:conversation(),command,now:new Date()});
+  const changed=memberTransition({state,ui,conversation:conversation(),command,now:new Date()});
   if(!changed.ok){readFeedback='Unable to save: '+changed.reason+'.';draw(true);return;}
   const saved=store?.save(changed.state,ui)||{ok:false,reason:'Guarded storage unavailable'};
   if(saved.ok){state=changed.state;readFeedback='Your sample reflection was saved only on this device.';}
@@ -330,5 +340,9 @@ root.addEventListener('submit',event=>{
 });
 restoreScenario();
 selectScenario(select.value);
+memberPanel=FoundationMemberPanel.create({getSession:currentSession,getUI:()=>ui,getStore:()=>store,
+ navigate:(next,pane)=>go(next==='groups'&&pane==='chat'?'connect':next,next==='groups'&&pane==='chat'?'?screen=connect&thread=group':null),
+ profileChanged:()=>{ui=store.read().ui;draw(true);},
+ perform:command=>{if(FoundationGroupPreview.isActive(select.value)||FoundationServing.isActive(select.value))return {ok:false,reason:'Provider samples are read-only'};if(blocked)return {ok:false,reason:blocked};const r=memberTransition({state,ui,conversation:conversation(),command,now:new Date()});if(!r.ok)return r;const saved=store?.save(r.state,ui);if(!saved?.ok)return {ok:false,reason:saved?.reason||'Storage unavailable'};state=r.state;draw();return {ok:true};}});
 restorePosition(history.state);
 })();

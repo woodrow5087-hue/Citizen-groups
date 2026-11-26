@@ -37,11 +37,14 @@ jobs:
           trap 'kill "$server_pid"' EXIT
           curl --silent --fail --retry 5 --retry-connrefused http://127.0.0.1:8527/ -o /dev/null
           node scripts/convergence2a-preview-check.mjs http://127.0.0.1:8527/
+          node scripts/convergence2b-browser-check.mjs http://127.0.0.1:8527/
       - name: Preserve visual evidence
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: foundation2-phone-review
-          path: test-results/foundation2/
+          path: |
+            test-results/foundation2/
+            test-results/convergence2b/
           retention-days: 30
           if-no-files-found: warn

@@ -1,0 +1,29 @@
+import assert from 'node:assert/strict';
+import {chromium} from 'playwright';import AxeBuilder from '@axe-core/playwright';import {mkdir,writeFile} from 'node:fs/promises';
+const base=process.argv[2];assert.ok(base,'Pass built preview origin');const out='test-results/convergence2b';await mkdir(out,{recursive:true});const browser=await chromium.launch();const results=[];
+try{
+ for(const width of [320,375,390,430]){
+  const context=await browser.newContext({viewport:{width,height:680},reducedMotion:'reduce'}),page=await context.newPage();const errors=[];page.on('pageerror',e=>errors.push(e.message));await page.clock.setFixedTime(new Date('2026-11-26T12:00:00Z'));await page.goto(new URL('foundation2/',base).href);await page.locator('#today h1').waitFor();
+  async function profile(){await page.locator('#preview-tools>summary').click();await page.getByRole('button',{name:'Personalize this demo'}).click();}
+  await profile();await page.getByLabel('Name',{exact:true}).fill('Alex');await page.getByRole('button',{name:'Save local profile',exact:true}).click();await page.reload();assert.equal(await page.locator('.preview-avatar').innerText(),'A');assert.equal(await page.evaluate(()=>localStorage.getItem('rallypoint-today-ui-v1')),null);
+  const conversationBefore=await page.evaluate(()=>localStorage.getItem('rally-one-foundation2-v1:connected:conversation'));
+  await page.getByRole('button',{name:'Ask Rally',exact:true}).click();await page.locator('#member-dialog [data-action=f10-confirm][data-value=serve]').click();assert.match(await page.locator('#member-dialog').innerText(),/Response saved only on this device/);assert.equal(await page.evaluate(()=>localStorage.getItem('rally-one-foundation2-v1:connected:conversation')),conversationBefore);await page.keyboard.press('Escape');await page.waitForFunction(()=>document.activeElement?.id==='ask-rally');
+  assert.equal(await page.locator('[data-command=serve]').count(),0);await page.locator('[data-command=rsvp]').click();assert.equal(await page.locator('#today h1').innerText(),'You’re all set.');await page.reload();assert.equal(await page.locator('#today h1').innerText(),'You’re all set.');
+  const saved=await page.evaluate(()=>localStorage.getItem('rally-one-foundation2-v1:connected:primary'));await page.clock.setFixedTime(new Date('2026-12-04T12:00:00Z'));await page.reload();assert.equal(await page.locator('[data-command=rsvp]').count(),1);assert.equal(await page.locator('[data-command=serve]').count(),1);assert.equal(await page.evaluate(()=>localStorage.getItem('rally-one-foundation2-v1:connected:primary')),saved);
+  await page.evaluate(()=>localStorage.setItem('rallypoint-today-ui-v1',JSON.stringify({name:'Original Demo',campus:'maui',role:'leader',memberships:{group:false,team:false}})));
+  await profile();await page.getByRole('button',{name:'Preview existing local demo profile',exact:true}).click();assert.match(await page.locator('#member-dialog').innerText(),/Original Demo/);
+  if(width===390){const raw=await page.evaluate(()=>localStorage.getItem('rallypoint-today-ui-v1'));await page.evaluate(()=>localStorage.setItem('rallypoint-today-ui-v1',JSON.stringify({name:'Changed',campus:'north'})));await page.getByRole('button',{name:'Use this name and campus',exact:true}).click();assert.match(await page.locator('#member-dialog').innerText(),/Source changed/);assert.equal(await page.locator('.preview-avatar').innerText(),'A');await page.evaluate(raw=>localStorage.setItem('rallypoint-today-ui-v1',raw),raw);await page.getByRole('button',{name:'Preview existing local demo profile',exact:true}).click();}
+  await page.getByRole('button',{name:'Use this name and campus',exact:true}).click();assert.equal(await page.locator('.preview-avatar').innerText(),'O');
+  await profile();await page.getByRole('button',{name:'Undo previous profile change',exact:true}).click();assert.equal(await page.locator('.preview-avatar').innerText(),'A');
+  await page.getByRole('button',{name:'Ask Rally',exact:true}).click();await page.getByRole('textbox',{name:'Your next question'}).fill('What needs my attention?');await page.locator('#member-dialog button[type=submit]').click();assert.match(await page.locator('#member-dialog').innerText(),/Welcome Team/);
+  if(width===320)await page.evaluate(()=>document.documentElement.style.fontSize='200%');assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1));const axe=await new AxeBuilder({page}).analyze();assert.deepEqual(axe.violations,[]);await page.screenshot({path:out+'/ask-'+width+'.png',fullPage:true});await page.keyboard.press('Escape');
+  await page.evaluate(()=>document.documentElement.style.fontSize='');
+  for(const scenario of ['visitor','group','team','leader','connected','unavailable','group-denied']){
+   await page.locator('#preview-tools>summary').click();await page.locator('#scenario').selectOption(scenario);await page.getByRole('button',{name:'Ask Rally',exact:true}).click();
+   if(scenario==='visitor'){await page.getByRole('textbox',{name:'Your next question'}).fill('leader review');await page.locator('#member-dialog button[type=submit]').click();assert.doesNotMatch(await page.locator('#member-dialog').innerText(),/Taylor|Marcus/);assert.equal(await page.locator('#member-dialog [data-action=f10-confirm]').count(),0);}
+   if(scenario==='group-denied')assert.equal(await page.locator('#member-dialog .f10-result-card').count(),0);
+   await page.keyboard.press('Escape');
+  }
+  assert.deepEqual(errors,[]);results.push({width,profile:'passed',sharedActions:'passed',eventRollover:'passed',handoffUndo:'passed',roleMatrix:'passed',axe:'passed'});console.log('CONVERGENCE 2B passed '+width);await context.close();
+ }
+}finally{await writeFile(out+'/results.json',JSON.stringify(results,null,2));await browser.close();}

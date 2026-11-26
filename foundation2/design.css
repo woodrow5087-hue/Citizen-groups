@@ -367,3 +367,13 @@ a{color:inherit}
  margin:0 0 10px;color:var(--ink);font-size:.8125rem;font-weight:800;text-underline-offset:4px;
 }
 .read-games-jump span{color:#f4b1bd}
+
+/* Bounded member entry/companion controls; shared shell and four tabs unchanged. */
+.member-dialog{background:var(--panel);color:var(--ink);border:1px solid var(--line);border-radius:var(--radius);width:min(600px,calc(100% - 32px));max-height:85dvh;overflow:auto;padding:20px}
+.member-dialog::backdrop{background:#0009}
+.member-dialog button,.member-dialog input,.member-dialog select{min-height:44px;max-width:100%;font:inherit}
+.member-dialog input,.member-dialog select{display:block;width:100%;box-sizing:border-box;margin:8px 0 16px}
+.member-dialog button{border:1px solid var(--line);border-radius:10px;background:var(--paper);color:var(--dark);padding:8px 12px;margin:4px 0}
+.member-dialog .f10-result-card{border-top:1px solid var(--line);padding:12px 0}
+.member-dialog a{color:var(--paper)}
+button.member-help{font:inherit;font-weight:800;color:var(--ink);background:transparent;border:1px solid var(--line);padding:0;min-width:44px;min-height:44px;border-radius:50%}
