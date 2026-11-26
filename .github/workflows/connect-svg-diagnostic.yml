@@ -32,7 +32,7 @@ jobs:
           lscpu > test-results/svg-environment/cpu.txt
           dpkg-query -W > test-results/svg-environment/packages.txt
           cp /etc/os-release test-results/svg-environment/os-release
-          env | sort | rg '^(CI|RUNNER_OS|RUNNER_ARCH|ImageOS|ImageVersion|LANG|LC_[A-Za-z_]+|DISPLAY|WAYLAND_DISPLAY|GITHUB_EVENT_NAME|GITHUB_SHA|GITHUB_REF)=' > test-results/svg-environment/context.txt
+          env | sort | grep -E '^(CI|RUNNER_OS|RUNNER_ARCH|ImageOS|ImageVersion|LANG|LC_[A-Za-z_]+|DISPLAY|WAYLAND_DISPLAY|GITHUB_EVENT_NAME|GITHUB_SHA|GITHUB_REF)=' > test-results/svg-environment/context.txt
       - name: Reconstruct immutable reference and exact canonical source
         run: |
           approved="$RUNNER_TEMP/svg-approved"
