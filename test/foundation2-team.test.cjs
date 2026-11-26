@@ -57,8 +57,10 @@ test('Gate 5 Team coverage remains read-only and never fabricates a request or a
  assert.equal(v.coverage,true);
  assert.match(doc.querySelector('.team-coverage').textContent,/coverage request is recorded/);
  assert.match(doc.querySelector('.team-assignment').textContent,/not recorded attendance/);
- assert.equal(doc.querySelectorAll('[data-team-action=coverage]').length,0);
- assert.equal(Team.commandFor('coverage','request'),null);
+ const action=doc.querySelector('[data-team-action="serving-coverage"]');
+ assert.equal(action?.getAttribute('data-value'),'withdraw');
+ assert.match(doc.querySelector('.team-coverage-note').textContent,/No coverage message is delivered/);
+ assert.equal(Team.commandFor('serving-coverage','forged'),null);
 });
 test('Gate 5 Team fail-closed on unknown response and source text escaping',()=>{
  const s=fixture();s.teamStatus='unsupported';
@@ -79,4 +81,45 @@ test('Gate 5 Team leader context is explicit and never inferred from schedule or
  const member=examine(fixture()).team;
  assert.equal(member.authorizedLeader,false);
  assert.equal(dom(Team.render(member)).querySelector('.team-leader-notice'),null);
+});
+
+test('Gate 5C coverage request/withdraw goes through canonical authorization and survives guard reload',()=>{
+ const db=memory(),store=Store.create({storage:db,scenario:'connected',Guard,AppState});
+ let {state,ui:memberUI}=store.read();
+ const attempt=value=>Context.transition({state,ui:memberUI,conversation,
+  command:Team.commandFor('serving-coverage',value),now});
+ assert.equal(attempt('request').ok,false,'cannot request before declining');
+ let change=Context.transition({state,ui:memberUI,conversation,
+  command:Team.commandFor('serving-response','declined'),now});
+ assert.equal(change.ok,true);assert.equal(store.save(change.state,memberUI).ok,true);state=store.read().state;
+ change=attempt('request');
+ assert.equal(change.ok,true);assert.equal(change.state.coverage,true);
+ assert.equal(change.state.teamMessages.filter(m=>m.coverage).length,1);
+ assert.equal(store.save(change.state,memberUI).ok,true);state=Store.create({storage:db,scenario:'connected',Guard,AppState}).read().state;
+ assert.equal(examine(state,memberUI).team.coverage,true);
+ assert.equal(attempt('request').ok,false,'duplicate request denied');
+ change=attempt('withdraw');
+ assert.equal(change.ok,true);assert.equal(change.state.coverage,false);
+ assert.equal(change.state.teamMessages.some(m=>m.coverage),false);
+ assert.equal(store.save(change.state,memberUI).ok,true);state=store.read().state;
+ assert.equal(examine(state,memberUI).team.coverage,false);
+ assert.equal(attempt('withdraw').ok,false,'duplicate withdrawal denied');
+ assert.equal(db.items.has(Guard.PRIMARY_KEY),false);
+});
+test('Gate 5C cannot make coverage requests without team membership or declined shift',()=>{
+ const state=fixture();
+ for(const role of [{...ui,memberships:{group:true,team:false}},ui]){
+  const result=Context.transition({state,ui:role,conversation,
+   command:{type:'serving-coverage',value:'request'},now});
+  assert.equal(result.ok,false);
+ }
+ const declined={...state,teamStatus:'declined'};
+ const noTeam=Context.transition({state:declined,ui:{...ui,memberships:{group:true,team:false}},
+  conversation,command:{type:'serving-coverage',value:'request'},now});
+ assert.equal(noTeam.ok,false);
+ const active={...declined,coverage:true,teamMessages:[{name:'You',text:'demo',time:'Just now',coverage:true}]};
+ const confirmed=Context.transition({state:active,ui,conversation,
+  command:{type:'serving-response',value:'confirmed'},now});
+ assert.equal(confirmed.ok,true);assert.equal(confirmed.state.coverage,false);
+ assert.equal(confirmed.state.teamMessages.some(m=>m.coverage),false);
 });
