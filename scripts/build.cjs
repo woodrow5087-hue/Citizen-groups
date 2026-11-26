@@ -20,6 +20,10 @@ for(const folder of ['core','games','reference'])fs.cpSync(path.join(root,'verse
 fs.mkdirSync(path.join(out,'verseplay','content'),{recursive:true});
 fs.copyFileSync(path.join(root,'verseplay','content','john-15-12.json'),path.join(out,'verseplay','content','john-15-12.json'));
 require('./build-chat-lab.cjs').buildChatDomainBundle(out);
-// Isolated Foundation 2 experiment is available only on deploy previews.
-if(process.env.CONTEXT==='deploy-preview')fs.cpSync(path.join(root,'foundation2'),path.join(out,'foundation2'),{recursive:true});
+// The legacy, protected preview build must remain byte-for-byte identical in
+// GitHub QA. Only the actual Netlify-hosted deploy preview gets the isolated
+// Foundation 2 route; historical screenshot/file guards remain fully enforced.
+if(process.env.NETLIFY==='true'&&process.env.CONTEXT==='deploy-preview'){
+ fs.cpSync(path.join(root,'foundation2'),path.join(out,'foundation2'),{recursive:true});
+}
 console.log('Built the Rally Point preview in dist, including approved references and the unchanged Citizen Connect archive.');
