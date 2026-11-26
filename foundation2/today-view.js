@@ -14,15 +14,17 @@ const arrow='<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="cur
 const chat='<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M6 4h12a3 3 0 0 1 3 3v8a3 3 0 0 1-3 3h-7l-5 3v-3a3 3 0 0 1-3-3V7a3 3 0 0 1 3-3Z"/><circle cx="8.5" cy="11" r=".85" fill="currentColor" stroke="none"/><circle cx="12" cy="11" r=".85" fill="currentColor" stroke="none"/><circle cx="15.5" cy="11" r=".85" fill="currentColor" stroke="none"/></svg>';
 const book='<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 6C9 4 6 4 2 4v15c4 0 7 0 10 2 3-2 6-2 10-2V4c-4 0-7 0-10 2Zm0 0v15"/></svg>';
 const image='<img src="../assets/rally-one/community.webp" alt="" width="440" height="130" decoding="async">';
+const welcomeImage='<img src="../assets/rally-one/title-card.jpg" alt="" width="440" height="260" decoding="async">';
 const faces='<div class="faces" aria-hidden="true"><img src="../assets/rally-one/anna.webp" alt="" width="30" height="30" loading="lazy"><img src="../assets/rally-one/jess.webp" alt="" width="30" height="30" loading="lazy"><img src="../assets/rally-one/marcus.webp" alt="" width="30" height="30" loading="lazy"></div>';
 const dateLabel=d=>d instanceof Date&&Number.isFinite(d.valueOf())?
  d.toLocaleDateString('en-US',{weekday:'short'})+' · '+d.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'}):'';
-function action(item,vm){
+function action(item,vm,compact=false){
  if(item.command==='leader'){
   return '<details class="leader-actions"><summary>Review sample check-ins <span aria-hidden="true">›</span></summary><div class="leader-people">'+
    vm.leaderIds.map(id=>'<button type="button" data-command="leader" data-person="'+esc(id)+'">Mark '+esc(id)+' reviewed</button>').join('')+'</div></details>';
  }
- return '<button type="button" class="action" data-command="'+esc(item.command)+'">'+esc(item.label)+arrow+'</button>';
+ const label=compact&&item.command==='serve'?'Confirm':compact&&item.command==='rsvp'?'RSVP':item.label;
+ return '<button type="button" class="action'+(compact?' action-compact':'')+'" data-command="'+esc(item.command)+'" aria-label="'+esc(item.label)+'">'+esc(label)+arrow+'</button>';
 }
 function render(v,receipt=''){
  const p=v.primary;
@@ -34,12 +36,12 @@ function render(v,receipt=''){
  const settled=!p&&v.calm?'<article class="settled">'+(v.member?'<div class="settled-photo">'+image+'</div>':'')+
   '<div class="settled-copy"><h2>'+(v.member?'Life is better together.':'Small acts. Real impact.')+'</h2>'+
   '<p>'+(v.member?'Take a moment to connect with your people.':'Your serving community is here for you.')+'</p></div></article>':'';
- const welcome=v.guest?'<article class="settled welcome-card"><div class="settled-copy"><h2>There’s room for you.</h2>'+
+ const welcome=v.guest?'<article class="settled welcome-card"><div class="welcome-photo">'+welcomeImage+'</div><div class="settled-copy"><span class="welcome-kicker">RALLY ONE · YOUR COMMUNITY</span><h2>We rally together so no one stands alone.</h2>'+
   '<p>Explore the community in the current Rally One demo. No account or private data is connected here.</p>'+
   '<a href="../index.html">Open the full demo '+arrow+'</a></div></article>':'';
  const secondary=v.secondary.length?'<section class="responsibilities" aria-label="Other responsibilities">'+
   '<div class="section-heading"><h2>Also needs a response</h2><span>'+v.secondary.length+' more</span></div>'+
-  '<div class="responsibility-list">'+v.secondary.map(x=>'<article class="responsibility"><div class="responsibility-copy"><strong>'+esc(x.title)+'</strong><small>'+esc(x.detail)+'</small></div>'+action(x,v)+'</article>').join('')+'</div></section>':'';
+  '<div class="responsibility-list">'+v.secondary.map(x=>'<article class="responsibility"><div class="responsibility-copy"><strong>'+esc(x.title)+'</strong><small>'+esc(x.detail)+'</small></div>'+action(x,v,true)+'</article>').join('')+'</div></section>':'';
  const paused=v.paused.length?'<details class="deferred-panel"><summary>Saved for later <span>'+v.paused.length+'</span></summary>'+
   v.paused.map(x=>'<div class="deferred-item"><strong>'+esc(x.title)+'</strong>'+action(x,v)+'</div>').join('')+'</details>':'';
  const schedule=v.schedule.length?'<section class="coming" aria-label="Coming up"><div class="section-heading"><h2>Coming up</h2><span>Your schedule</span></div>'+
