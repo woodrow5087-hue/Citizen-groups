@@ -6,7 +6,7 @@
 'use strict';
 const root=document.getElementById('today'),select=document.getElementById('scenario'),tabs=document.getElementById('primary-nav');
 let route=FoundationNavigation.resolve(window.location.search);
-let state,ui,store,connect,receipt='',blocked='',chatFeedback='',groupFeedback='';
+let state,ui,store,connect,receipt='',blocked='',chatFeedback='',groupFeedback='',teamFeedback='';
 const scenarioSessionKey='rally-one-foundation2-v1:selected-scenario';
 // The selector represents a synthetic test persona, not app membership state.
 // Keep the selected persona across reloads within this tab only, without
@@ -31,7 +31,7 @@ const conversation=()=>{
  return connect?connect.view():{status:'unavailable',unreadCount:null,messages:[],draft:'',replyTo:null};
 };
 function selectScenario(name){
- receipt='';blocked='';chatFeedback='';groupFeedback='';
+ receipt='';blocked='';chatFeedback='';groupFeedback='';teamFeedback='';
  try{
   store=FoundationStateStore.create({storage:window.localStorage,scenario:name,Guard:RallyStorageGuard,AppState:RallyAppState});
   const loaded=store.read();
@@ -53,6 +53,7 @@ function draw(focus=false){
  root.innerHTML=route==='today'?FoundationView.render(FoundationToday.project(snapshot,now),receipt):
   route==='connect'?FoundationConnectView.render(chat,{thread:inThread(),member:snapshot.context.permissions.group,feedback:chatFeedback}):
   route==='groups'?FoundationGroups.render(FoundationGroups.project(snapshot,chat),{feedback:groupFeedback,blocked:!!blocked}):
+  route==='team'?FoundationTeam.render(FoundationTeam.project(snapshot),{feedback:teamFeedback,blocked:!!blocked}):
   FoundationNavigation.renderRoute(route,snapshot);
  root.setAttribute('aria-label',FoundationNavigation.names[route]);
  tabs.innerHTML=FoundationNavigation.renderTabs(route);
@@ -64,7 +65,7 @@ function draw(focus=false){
   const warning=document.createElement('p');
   warning.className='storage-warning';warning.setAttribute('role','alert');warning.textContent=blocked;
   root.prepend(warning);
-  root.querySelectorAll('button[data-command],button[data-group-action],button[data-chat-open],.chat-send,#chat-draft').forEach(el=>{el.disabled=true;el.setAttribute('aria-disabled','true');});
+  root.querySelectorAll('button[data-command],button[data-group-action],button[data-team-action],button[data-chat-open],.chat-send,#chat-draft').forEach(el=>{el.disabled=true;el.setAttribute('aria-disabled','true');});
  }
  if(focus)root.focus({preventScroll:true});
 }
@@ -76,7 +77,7 @@ function go(next,url){
  history.replaceState({...history.state,scroll:window.scrollY,route},'',window.location.href);
  history.pushState({route:next,scroll:0},'',nextUrl);
  route=next;
- chatFeedback='';groupFeedback='';
+ chatFeedback='';groupFeedback='';teamFeedback='';
  if(inThread()&&!blocked){
   const seen=connect?.markRead();
   if(!seen?.ok)chatFeedback='Conversation could not be marked read. Existing data was preserved.';
@@ -122,6 +123,24 @@ root.addEventListener('click',event=>{
   const result=connect?.reply(null);
   chatFeedback=result?.ok?'Reply cancelled.':'Could not change the saved reply.';
   draw(true);root.querySelector('#chat-draft')?.focus();return;
+ }
+ const teamButton=target.closest('button[data-team-action]');
+ if(teamButton){
+  if(blocked)return;
+  const command=FoundationTeam.commandFor(teamButton.dataset.teamAction,teamButton.dataset.value);
+  if(!command){teamFeedback='This serving action is not available.';draw(true);return;}
+  const result=RallyMemberContext.transition({state,ui,conversation:conversation(),command,now:new Date()});
+  if(!result.ok){teamFeedback='No change: '+result.reason+'.';draw(true);return;}
+  const saved=store?.save(result.state,ui)||{ok:false,reason:'Guarded storage is unavailable'};
+  if(saved.ok){
+   state=result.state;
+   teamFeedback=command.value==='confirmed'?'Fictional serving availability confirmed on this device.':
+    'Fictional serving availability marked unable on this device.';
+  }else{
+   blocked=saved.reason||'Serving response could not be saved safely.';
+   teamFeedback='';
+  }
+  draw(true);return;
  }
  const groupButton=target.closest('button[data-group-action]');
  if(groupButton){
