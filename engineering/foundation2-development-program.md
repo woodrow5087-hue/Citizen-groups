@@ -1,6 +1,43 @@
 # Rally One Foundation 2.0 — Gated Development Program
-Status: Active experimental development. Source branch `rally-one/foundation-2`; draft PR #151 against `rally-one/develop`.
-Last accepted canonical base: `d038fc6adfdbc7c9b5925fc91e475cb1f15c7467`. Original Studio 13 review: draft PR #150; do not merge or rebase from PR #150 without independent authorization.
+Status: CONVERGENCE 2B active candidate; not promoted. One active implementation branch: `rally-one/convergence-2b`.
+Canonical: `9b06795f9087e07e1b8e12b55bfa109d68fc41d1` (PR #152 merge; parents b7bb0687 and accepted 37c4be9).
+
+## Current project recovery record (authoritative over historical gate notes below)
+
+- 2A closed: canonical push QA [45887514510](https://github.com/woodrow5087-hue/Citizen-groups/actions/runs/45887514510) and Foundation [45887514399](https://github.com/woodrow5087-hue/Citizen-groups/actions/runs/45887514399) passed. Canonical immutable preview: https://6b088f41185ab13161bad865--citizen-connect-test.netlify.app/foundation2/ . All 203 files verified; explicit legacy return passed. Production/main, PR150 and recovery refs preserved.
+- Owner accepted 3/3 targeted 2A physical checks and the 72-image technical reference at 37c4be9; manifest SHA256 87418a8d58c72b2e08dd0e485f580cadeb6fe4ab1c3410db36a64f2ede8c57d7. Reference is not a permanent design lock.
+- Owner explicitly deferred the unstable new Foundation zero-pixel comparator to [#153](https://github.com/woodrow5087-hue/Citizen-groups/issues/153). It is unresolved, not a passing gate. Do not reopen it in this block. Established historical/Connect/VersePlay protections remain strict. Archived comparator/evidence SHA256 53ca45c9ea383003a8b9c6beafaf5a0341b44c137d2087fad70e9f02ac2da9e4.
+- Root/default remains legacy. Foundation is opt-in. No production, live integration, destructive migration, real member records or external communications.
+
+## Master roadmap and prioritized backlog
+
+| Sequence | Status | Scope / source-backed gaps | Acceptance gate |
+|---|---|---|---|
+| 2A | Closed/promoted | Controlled preview, CI applicability, fictional dates | Accepted exact source; canonical push and deployment verification complete. |
+| 2B | Active | P1 G04 shared required/optional decision contract; G05 personalized entry; G06 accepted Ask Rally; G15 safe profile handoff/rollback; G22 event-bound fixture responses | Cross-role, privacy, action/read-state, reload/rollover/unknown/concurrency tests; complete applicable regression; exact preview; changed-journey physical acceptance. Separate promotion authorization. |
+| 2C | Planned, not authorized | P1 premium conversation convergence, DM/Room/draft boundaries G07/G12 | Reuse existing domains and UI, authorization/draft/read-cursor gates. |
+| 2D | Planned, not authorized | P1 people/care/leader and Read/game return parity G08/G09/G10; storage feedback G13 | Close agreed parity rows with affected visual/device and full game regression. |
+| 2E | Planned, not authorized | Controlled default cutover only after parity and state/rollback decisions | Explicit cutover approval, provenance, recovery and complete gates. Production excluded. |
+| Deferred | Backlog only | #153 Foundation visual reliability; measured maintenance/performance; governance | Separately scheduled. No weakening existing gates or new infrastructure sprint. |
+
+## Decisions and module ownership
+
+- Preserve the accepted Foundation policy: explicit commitments need a response; messages/Scripture/care opportunities are optional. All Set is not a spiritual/engagement score. Today and Ask must consume the same Foundation commitment projection, not introduce new scoring or change the original protected Focus engine.
+- `RallyMemberContext` / `RallyIntelligence` remain source/permission/intelligence authorities; Foundation adapts their context and existing Today projection. Explicit synthetic scenario owns membership/role; personalization/handoff never grants either.
+- Existing Foundation guarded primary/today records own persisted local fields; conversation repository owns drafts/read cursor; game engines own progress. No new storage keys or bulk migration.
+- Event identities must identify the current dated fictional gathering/shift. Old global responses have no proven event/timestamp and must not be silently assigned to a new event. Preserve them when adding explicit event-bound responses.
+- Reuse accepted welcome through its existing entry route and canonical Ask service. Profile handoff is explicit, previewed, name/campus only, with original keys untouched and a local undo. Full welcome controller extraction and cross-application migration are not implied.
+- Current implementation: one Foundation member-session adapter, guarded personalization and undo, explicit name/campus-only handoff from accepted onboarding, canonical Ask Rally rendering/actions, shared required/optional projection, and dated fixture response records. Legacy unbound values are retained without inferred event/timestamp; unrelated actions do not rewrite them. Current actions: complete final applicable validation, prepare exact-source preview and targeted device checklist. No 2B merge without owner authorization.
+
+### 2B field contracts and validation recovery
+
+`foundation2/member-session.js` adapts the existing intelligence/context and Foundation Today projection. Synthetic identity is namespace-based, not a verified member ID. `eventResponses.version=1` stores `records[fixtureEventId] = {kind, at, value, coverage}` in the existing guarded primary record. IDs identify the current North-campus local fixture and dated gathering/shift, not a Planning Center event. Browser timezone changes can conservatively require a fresh response. Only explicit dated response actions create records. Assignment dates remain visible after decline so coverage is attached to a reviewable dated shift. Prior undated values stay unbound; unrelated actions preserve raw compatibility fields. Original app keys remain untouched.
+
+`state-store.js` owns guarded name/campus updates in the existing today record and a one-step `previousProfile` undo. `member-panel.js` owns only ephemeral dialog/follow-up state and delegates to the canonical PersonalCompanion service and existing navigation/actions. Source-profile handoff is previewed, rejects changed/unknown/malformed sources, copies no authority/progress/conversations and never writes original records. No bulk migration or generalized import is implemented. Ask exposes existing supported actions; direct care-message composition remains in the original full demo and is presented here as reviewable group care, not a fake send.
+
+Focused checks: `node --test test/foundation2-member-session.test.cjs`; existing `node scripts/foundation2-browser-check.mjs`; built-preview `node scripts/convergence2b-browser-check.mjs ORIGIN`. Complete required app, historical visual and VersePlay gates remain mandatory at final integration. Native dialog focus, profile handoff/undo and Ask actions require targeted physical Safari/VoiceOver acceptance on the final candidate; unchanged games do not need redundant physical acceptance.
+
+Historical gate entries below describe their original stages, not current publication or active branches. PR150 remains an unmerged creative reference; do not incorporate it implicitly.
 
 ## Product invariants
 - Mission: **We rally together so no one stands alone.** Companion to ministry, not a ministry replacement.

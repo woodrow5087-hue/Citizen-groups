@@ -355,6 +355,10 @@ try{
    assert.equal(await page.locator('[data-team-action]').count(),0);
   }
   const groupPreview=page.locator('[data-group-preview]');
+  // The fixture clock has advanced beyond the previously answered gathering.
+  // Explicitly answer this current event before testing provider-preview isolation.
+  await change(page,'group');await openTab('groups');
+  await page.locator('[data-group-action=group-rsvp][data-value=going]').click();
   const beforeGroupPreview=await page.evaluate(()=>JSON.stringify(localStorage));
   await openTab('today');
   await change(page,'group-ready');

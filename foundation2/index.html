@@ -16,6 +16,7 @@
     <span>RALLY <em>ONE.</em></span>
    </a>
    <div class="header-actions">
+    <button type="button" class="member-help" id="ask-rally" aria-label="Ask Rally">Ask</button>
     <a class="header-connect" data-route="connect" href="?screen=connect" aria-label="Connect · preview route">
      <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M20 11.5a7.5 7.5 0 0 1-7.5 7.5H9l-4.5 2 1.1-4.5A7.5 7.5 0 0 1 4 11.5V10a7 7 0 0 1 7-7h2a7 7 0 0 1 7 7Z"/></svg>
     </a>
@@ -24,6 +25,7 @@
      <span class="preview-avatar" aria-hidden="true">D</span>
     </summary>
     <div class="preview-tools-panel">
+     <button type="button" id="member-profile-open">Personalize this demo</button>
      <label for="scenario">Demo scenario</label>
      <select id="scenario">
       <option value="connected">Group + team</option>
@@ -58,6 +60,7 @@
    <a href="../index.html">Open the existing Rally One application <span aria-hidden="true">↗</span></a>
   </footer>
  </div>
+ <dialog id="member-dialog" class="member-dialog" aria-label="Member companion and profile"></dialog>
  <script src="../rallypoint-today.js"></script>
  <script src="../rallypoint-companion-decision.js"></script>
  <script src="../rallypoint-smart-dashboard.js"></script>
@@ -87,6 +90,9 @@
  <script src="navigation.js"></script>
  <script src="today-model.js"></script>
  <script src="today-view.js"></script>
+ <script src="../rallypoint-personal-companion.js"></script>
+ <script src="member-session.js"></script>
+ <script src="member-panel.js"></script>
  <script src="app.js"></script>
 </body>
 </html>

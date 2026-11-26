@@ -73,7 +73,18 @@ function create({storage,scenario='connected',Guard,AppState}={}){
   });
   return guard.save({primaryRaw:JSON.stringify(nextState),todayRaw});
  }
- return Object.freeze({read,save,status,scenario,namespace:prefix});
+ function updateProfile(profile,{undo=false}={}){
+  if(!guard.status().ok)return guard.status();
+  const raw=guard.readOriginals(),before=read().ui;
+  let metadata;try{metadata=raw.todayRaw?JSON.parse(raw.todayRaw):{};}catch{return {ok:false,reason:'Malformed profile preserved'};}
+  if(metadata.name!==undefined&&typeof metadata.name!=='string'||metadata.campus!==undefined&&!['north','central','maui','online'].includes(metadata.campus))return {ok:false,reason:'Malformed saved profile preserved; manual review required'};
+  const next=undo?metadata.previousProfile:profile;
+  if(!next||typeof next.name!=='string'||next.name.trim().length>(undo?40:24)||!['north','central','maui','online'].includes(next.campus))return {ok:false,reason:'Invalid local profile'};
+  const value={...metadata,name:next.name.trim()||'Friend',campus:next.campus,
+   previousProfile:{name:before.name,campus:before.campus},onboarding:{version:2,completed:true,connection:'foundation-local-demo'}};
+  return guard.save({primaryRaw:raw.primaryRaw,todayRaw:JSON.stringify(value)});
+ }
+ return Object.freeze({read,save,status,updateProfile,scenario,namespace:prefix});
 }
 return Object.freeze({create,scenarios});
 });

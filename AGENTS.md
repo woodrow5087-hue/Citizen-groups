@@ -18,3 +18,6 @@ Preserve approved Rally One charcoal/red/cream palette, typography, title artwor
 See engineering/s8-foundation.md for this sprint's audit and release gates.
 
 Sprint 8 architecture, source contracts, shared intelligence, validation history and developer commands are in `engineering/s8-architecture.md`, `s8-data-contracts.md`, `s8-intelligence.md`, `s8-progress.md` and `s8-handoff.md`. Keep these internal notes outside the public `docs` build.
+
+## Persistent project coordination
+Read engineering/foundation2-development-program.md for current canonical state, active milestone, master roadmap, decisions and backlog before starting work. Historical gate notes are evidence, not a competing development lane.
