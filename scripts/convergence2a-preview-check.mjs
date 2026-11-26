@@ -25,7 +25,10 @@ try{
  }
  await page.getByLabel('Open demo profile and scenario controls').click();
  const fallback=page.getByRole('link',{name:/Open the existing Rally One application/});
- assert.match(await fallback.getAttribute('href'),/index.html\?rallyOne=1/);
+ const destination=new URL(await fallback.getAttribute('href'),page.url());
+ assert.equal(destination.origin,new URL(base).origin);
+ assert.ok(['/','/index.html'].includes(destination.pathname),'Return must target the legacy root');
+ assert.equal(destination.searchParams.get('rallyOne'),'1');
  await fallback.click();
  await page.waitForURL(/rallyOne=1/);
  assert.ok(await page.locator('body').evaluate(el=>el.classList.contains('rally-one')));
