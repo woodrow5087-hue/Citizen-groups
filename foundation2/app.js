@@ -66,13 +66,13 @@ function selectScenario(selection){
  if(inThread()&&!blocked&&!groupPreviewActive()&&select.value!=='unavailable')connect?.markRead();
  draw();
 }
-function currentSession(){return FoundationMemberSession.derive({state,ui,conversation:conversation(),now:new Date(),owner:store?.scenario});}
+function currentSession(){return FoundationMemberSession.derive({state,ui,conversation:conversation(),now:new Date(),owner:localScenario(select.value)});}
 function memberTransition(options){
  const kind=options.command.type==='group-rsvp'?'group':['serving-response','serving-coverage'].includes(options.command.type)?'team':null;
- return FoundationMemberSession.transition({...options,owner:store?.scenario,command:{...options.command,...(kind?{eventId:options.command.eventId||renderedEvents[kind]}:{})}});
+ return FoundationMemberSession.transition({...options,owner:localScenario(select.value),command:{...options.command,...(kind?{eventId:options.command.eventId||renderedEvents[kind]}:{})}});
 }
 function draw(focus=false){
- const now=new Date(),chat=conversation(),session=FoundationMemberSession.derive({owner:store?.scenario,state,ui,conversation:chat,now}),snapshot=session.snapshot;
+ const now=new Date(),chat=conversation(),session=FoundationMemberSession.derive({owner:localScenario(select.value),state,ui,conversation:chat,now}),snapshot=session.snapshot;
  renderedEvents=session.events;
  const avatar=document.querySelector('.preview-avatar');if(avatar)avatar.textContent=ui.name==='Friend'?'D':ui.name.slice(0,1).toUpperCase();
  memberPanel?.scopeCheck();
@@ -316,7 +316,7 @@ root.addEventListener('submit',event=>{
  if(form.id==='read-reflection-form'||form.id==='read-leader-question'){
   event.preventDefault();
   if(blocked||route!=='read')return;
-  const reading=FoundationRead.project(FoundationMemberSession.derive({owner:store?.scenario,
+  const reading=FoundationRead.project(FoundationMemberSession.derive({owner:localScenario(select.value),
    state,ui,conversation:conversation(),now:new Date()
   }).snapshot,state,RallyMemory,new Date());
   const command=form.id==='read-reflection-form'?
