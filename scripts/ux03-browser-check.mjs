@@ -25,7 +25,12 @@ for(const [width,height,large] of [[320,568,false],[375,667,false],[390,844,fals
   await page.evaluate(async()=>{document.documentElement.getBoundingClientRect();await document.fonts.ready;await Promise.all([...document.images].map(i=>i.decode()));});
   // Capture the uninstrumented UI before axe opens its analysis page.
   let snapshot;
-  if(process.env.UX03_VISUAL_CAPTURE==='1'){await visual.settlePaint(page);await visual.prepareVisualState(page);await visual.settlePaint(page);snapshot=await visual.captureStable(page);}
+  if(process.env.UX03_VISUAL_CAPTURE==='1'){
+   await visual.settlePaint(page);await visual.prepareVisualState(page);await visual.settlePaint(page);
+   const directPose=large&&state==='direct'?await visual.normalizeDirectDraftPose(page):null;
+   snapshot=await visual.captureStable(page);
+   if(directPose)await visual.verifyDirectDraftPose(page,directPose);
+  }
   const audit=await new AxeBuilder({page}).withTags(['wcag2a','wcag2aa','wcag21aa']).analyze();
   if(!historical)assert.deepEqual(audit.violations.map(v=>[v.id,v.nodes.map(n=>n.target)]),[],key+' '+state);
   assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth+1),false,'overflow '+state);

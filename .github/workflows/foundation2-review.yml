@@ -1,0 +1,40 @@
+name: Foundation 2 — isolated mobile review
+on:
+  pull_request:
+    branches: [rally-one/develop]
+    paths:
+      - 'foundation2/**'
+      - 'scripts/foundation2-browser-check.mjs'
+      - '.github/workflows/foundation2-review.yml'
+permissions:
+  contents: read
+concurrency:
+  group: foundation2-visual-review
+  cancel-in-progress: true
+jobs:
+  capture:
+    if: github.head_ref == 'rally-one/foundation-2'
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - name: Check out candidate
+        uses: actions/checkout@v4
+      - name: Node 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Install locked dependencies
+        run: npm ci
+      - name: Install Chromium for focused review
+        run: npx playwright install --with-deps chromium
+      - name: Capture real Foundation 2 views and verify phone/accessibility behavior
+        run: node scripts/foundation2-browser-check.mjs
+      - name: Preserve visual evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: foundation2-phone-review
+          path: test-results/foundation2/
+          retention-days: 7
+          if-no-files-found: warn

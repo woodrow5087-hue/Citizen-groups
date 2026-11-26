@@ -20,4 +20,21 @@ for(const folder of ['core','games','reference'])fs.cpSync(path.join(root,'verse
 fs.mkdirSync(path.join(out,'verseplay','content'),{recursive:true});
 fs.copyFileSync(path.join(root,'verseplay','content','john-15-12.json'),path.join(out,'verseplay','content','john-15-12.json'));
 require('./build-chat-lab.cjs').buildChatDomainBundle(out);
-console.log('Built the Rally Point preview in dist, including approved references and the unchanged Citizen Connect archive.');
+// The legacy, protected preview build must remain byte-for-byte identical in
+// GitHub QA. Only the actual Netlify-hosted deploy preview gets the isolated
+// Foundation 2 route; historical screenshot/file guards remain fully enforced.
+async function buildPreview(){
+ if(process.env.NETLIFY==='true'&&process.env.CONTEXT==='deploy-preview'){
+  fs.cpSync(path.join(root,'foundation2'),path.join(out,'foundation2'),{recursive:true});
+  const {makeServingPreviewBundle}=require('./build-serving-preview.cjs');
+  const {makeGroupPreviewBundle}=require('./build-group-preview.cjs');
+  const time=Date.now();
+  const bundles=await Promise.all([makeServingPreviewBundle(time),makeGroupPreviewBundle(time)]);
+  for(const [index,filename] of ['serving-fixtures.js','group-fixtures.js'].entries()){
+   new vm.Script(bundles[index],{filename});
+   fs.writeFileSync(path.join(out,'foundation2',filename),bundles[index]);
+  }
+ }
+ console.log('Built the Rally Point preview in dist, including approved references and the unchanged Citizen Connect archive.');
+}
+buildPreview().catch(error=>{console.error(error);process.exitCode=1;});

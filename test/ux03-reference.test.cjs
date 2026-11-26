@@ -45,6 +45,13 @@ test('a perpetually unstable native paint fails instead of accepting or relaxing
  let calls=0;await assert.rejects(()=>visual.captureStable({screenshot:async()=>Buffer.from('frame '+(++calls)),evaluate:async()=>{}}),/did not stabilize/);
  assert.equal(calls,8);
 });
+test('direct draft pose permits only native scroll normalization, preserving every fixture property',()=>{
+ const before={value:'Jess draft',selectionStart:10,selectionEnd:10,selectionDirection:'none',focused:true,rootFontSize:'32px',clientHeight:66,scrollHeight:68,clientWidth:200,scrollWidth:200,rect:{x:20,y:767,width:202,height:68},scrollTop:2,scrollLeft:0};
+ const normalized={...before,scrollTop:0};visual.assertDirectDraftPose(normalized,before);
+ for(const changed of [{scrollTop:2},{scrollLeft:1},{value:'different draft'},{selectionStart:0},{selectionEnd:0},{selectionDirection:'backward'},{focused:false},{rootFontSize:'16px'},{clientHeight:68},{scrollHeight:66},{clientWidth:201},{scrollWidth:201},{rect:{...before.rect,y:769}}]){
+  assert.throws(()=>visual.assertDirectDraftPose({...normalized,...changed},before),'must reject '+JSON.stringify(changed));
+ }
+});
 
 test('previous approved Connect manifest and source remain reconstructable without portrait correction',()=>{
  const crypto=require('node:crypto'),hash=bytes=>crypto.createHash('sha256').update(bytes).digest('hex');
