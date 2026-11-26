@@ -38,7 +38,7 @@ function transition({state,ui,conversation,command,now=new Date(),owner='connect
  // An unrelated action must not rewrite unbound legacy response fields.
  if(kind!=='group')next.rsvp=state.rsvp;
  if(kind!=='team'){next.teamStatus=state.teamStatus;next.coverage=state.coverage;}
- if(kind&&!state.eventResponses&&session.unbound)next.unboundPriorResponses={rsvp:state.rsvp,teamStatus:state.teamStatus,coverage:state.coverage};
+ if(kind&&!state.eventResponses)next.unboundPriorResponses={rsvp:state.rsvp,teamStatus:state.teamStatus,coverage:state.coverage};
  if(kind){
   const prior=state.eventResponses?.records||{};
   next.eventResponses={version:1,records:{...prior,[session.events[kind]]:{kind,at:now.toISOString(),value:kind==='group'?next.rsvp:next.teamStatus,coverage:kind==='team'&&!!next.coverage}}};

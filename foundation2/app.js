@@ -343,6 +343,6 @@ selectScenario(select.value);
 memberPanel=FoundationMemberPanel.create({getSession:currentSession,getUI:()=>ui,getStore:()=>store,
  navigate:(next,pane)=>go(next==='groups'&&pane==='chat'?'connect':next,next==='groups'&&pane==='chat'?'?screen=connect&thread=group':null),
  profileChanged:()=>{ui=store.read().ui;draw(true);},
- perform:command=>{if(FoundationGroupPreview.isActive(select.value)||FoundationServing.isActive(select.value))return {ok:false,reason:'Provider samples are read-only'};if(blocked)return {ok:false,reason:blocked};const r=memberTransition({state,ui,conversation:conversation(),command,now:new Date()});if(!r.ok)return r;const saved=store?.save(r.state,ui);if(!saved?.ok)return {ok:false,reason:saved?.reason||'Storage unavailable'};state=r.state;draw();return {ok:true};}});
+ perform:command=>{if(FoundationGroupPreview.isActive(select.value)||FoundationServing.isActive(select.value))return {ok:false,reason:'Provider samples are read-only'};if(blocked)return {ok:false,reason:blocked};const r=memberTransition({state,ui,conversation:conversation(),command,now:new Date()});if(!r.ok){draw();return r;}const saved=store?.save(r.state,ui);if(!saved?.ok){blocked=saved?.reason||'Storage unavailable';draw();return {ok:false,reason:blocked};}state=r.state;draw();return {ok:true};}});
 restorePosition(history.state);
 })();
