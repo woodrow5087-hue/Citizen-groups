@@ -14,7 +14,11 @@
     <img src="../assets/citizen-flag.svg" alt="" width="27" height="27">
     <span>RALLY <em>ONE.</em></span>
    </a>
-   <details class="preview-tools" id="preview-tools">
+   <div class="header-actions">
+    <a class="header-connect" data-route="connect" href="?screen=connect" aria-label="Connect · preview route">
+     <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M20 11.5a7.5 7.5 0 0 1-7.5 7.5H9l-4.5 2 1.1-4.5A7.5 7.5 0 0 1 4 11.5V10a7 7 0 0 1 7-7h2a7 7 0 0 1 7 7Z"/></svg>
+    </a>
+    <details class="preview-tools" id="preview-tools">
     <summary aria-label="Open demo profile and scenario controls" title="Demo profile and scenarios">
      <span class="preview-avatar" aria-hidden="true">D</span>
     </summary>
@@ -30,9 +34,11 @@
      </select>
      <small>Fictional local state resets when you choose a scenario.</small>
     </div>
-   </details>
+    </details>
+   </div>
   </header>
   <main id="today" tabindex="-1" aria-label="Today"></main>
+  <nav id="primary-nav" class="primary-nav" aria-label="Primary navigation"></nav>
   <footer class="preview-footer">
    <span>FOUNDATION 2 · SYNTHETIC PREVIEW · NO LIVE CHURCH DATA</span>
    <a href="../index.html">Open the existing Rally One application <span aria-hidden="true">↗</span></a>
@@ -49,6 +55,7 @@
  <script src="../rallypoint-storage-guard.js"></script>
  <script src="../rally-one-app-state.js"></script>
  <script src="state-store.js"></script>
+ <script src="navigation.js"></script>
  <script src="today-model.js"></script>
  <script src="today-view.js"></script>
  <script src="app.js"></script>
