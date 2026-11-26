@@ -30,20 +30,17 @@ function renderTabs(active){
  return tabs.map(id=>'<a href="'+href(id)+'" data-route="'+id+'"'+(active===id?' aria-current="page"':'')+'>'+glyph(id)+'<span>'+names[id]+'</span></a>').join('');
 }
 function summary(route,snapshot){
+ if(route==='groups'||route==='team')throw new TypeError(route+' has a dedicated Gate 5 presentation owner');
+ if(route!=='read'&&route!=='connect')throw new TypeError('Unknown preview destination');
  const ctx=snapshot.context,model=snapshot.model;
- if(route==='groups'){
-  if(!ctx.permissions.group)return {title:'Find your people.',eyebrow:'GROUPS · PREVIEW',detail:'No fictional group membership is selected for this scenario.',status:'Explore groups in the existing full demo'};
-  return {title:'Your people.',eyebrow:'GROUPS · PREVIEW',detail:'Wednesday Group · '+(ctx.group.rsvp==='going'?'Going':ctx.group.rsvp==='maybe'?'Maybe':'RSVP open'),status:ctx.group.status==='unavailable'?'Conversation data unavailable':ctx.group.unreadCount?ctx.group.unreadCount+' new sample messages':'No unread sample messages'};
- }
- if(route==='team'){
-  if(!ctx.permissions.team)return {title:'Find your team.',eyebrow:'TEAM · PREVIEW',detail:'No fictional serving membership is selected for this scenario.',status:'Explore serving in the existing full demo'};
-  return {title:'Your team.',eyebrow:'TEAM · PREVIEW',detail:'Welcome Team · '+(ctx.team.response==='confirmed'?'Confirmed':ctx.team.response==='declined'?'Declined':ctx.team.response==='pending'?'Availability pending':'Response unavailable'),status:ctx.team.coverage?'Sample coverage requested':'Sunday serving schedule is in the existing full demo'};
- }
- if(route==='read')return {title:'Make space.',eyebrow:'READ · PREVIEW',detail:'Scripture · '+model.passage,status:ctx.reading.readToday?'Sample reading completed':'Sample reading available'};
- return {title:'Stay connected.',eyebrow:'CONNECT · PREVIEW',detail:ctx.permissions.group?'Wednesday Group conversation':'No group conversation is available for this scenario',status:ctx.group.status==='unavailable'?'Sample conversation unavailable':'Messaging will be migrated in Gate 4'};
+ if(route==='read')return {title:'Make space.',eyebrow:'READ · PREVIEW',detail:'Scripture · '+model.passage,
+  status:ctx.reading.readToday?'Sample reading completed':'Sample reading available'};
+ return {title:'Stay connected.',eyebrow:'CONNECT · PREVIEW',
+  detail:ctx.permissions.group?'Wednesday Group conversation':'No group conversation is available for this scenario',
+  status:ctx.group.status==='unavailable'?'Sample conversation unavailable':'Messaging is now integrated in Gate 4'};
 }
 function renderRoute(route,snapshot){
- if(route==='today')throw new TypeError('Today is owned by FoundationView');
+ if(route==='today'||route==='groups'||route==='team'||route==='connect')throw new TypeError(route+' has a dedicated presentation owner');
  const s=summary(route,snapshot);
  return '<section class="route-preview" aria-labelledby="route-title">'+
   '<span class="eyebrow">'+esc(s.eyebrow)+'</span><h1 id="route-title" tabindex="-1">'+esc(s.title)+'</h1>'+
