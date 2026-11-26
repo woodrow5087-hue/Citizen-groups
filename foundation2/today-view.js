@@ -1,0 +1,19 @@
+/* Direct renderer: single markup owner. No legacy DOM rewriting. */
+(function(root,factory){const api=factory();if(typeof module==='object'&&module.exports)module.exports=api;else root.FoundationView=api;})(globalThis,function(){
+'use strict';
+const esc=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const arrow='<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h16m-6-6 6 6-6 6"/></svg>';
+const date=d=>d instanceof Date&&Number.isFinite(d.valueOf())?d.toLocaleDateString('en-US',{weekday:'short'})+' · '+d.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'}):'';
+const image='<img src="../assets/rally-one/community.webp" alt="" width="320" height="120">';
+function action(item,vm){if(item.command==='leader')return '<details class="leader"><summary>Review sample check-ins</summary>'+vm.leaderIds.map(id=>'<button type="button" data-command="leader" data-person="'+esc(id)+'">Mark '+esc(id)+' reviewed</button>').join('')+'</details>';return '<button type="button" class="action" data-command="'+esc(item.command)+'">'+esc(item.label)+arrow+'</button>';}
+function render(v,receipt=''){
+ const p=v.primary;
+ const primary=p?'<article class="priority"><div class="meta"><span>UP NEXT</span><span>'+esc(date(p.date))+'</span></div><div class="priority-body"><div><h2>'+esc(p.title)+'</h2><p>'+esc(p.detail)+'</p></div>'+(p.command==='rsvp'?image:'')+'</div>'+action(p,v)+'</article>':v.calm?'<article class="settled">'+(v.member?image:'')+'<div><h2>'+ (v.member?'Life is better together.':'Small acts. Real impact.')+'</h2><p>'+ (v.member?'Take a moment to connect with your people.':'Your serving community is here for you.')+'</p></div></article>':'';
+ const rows=v.secondary.length?'<section aria-label="Other responsibilities"><h2 class="section-title">Also needs a response</h2>'+v.secondary.map(x=>'<article class="row responsibility"><div><strong>'+esc(x.title)+'</strong><small>'+esc(x.detail)+'</small></div>'+action(x,v)+'</article>').join('')+'</section>':'';
+ const deferred=v.paused.length?'<details class="row"><summary>Saved for later ('+v.paused.length+')</summary>'+v.paused.map(x=>'<div class="deferred"><strong>'+esc(x.title)+'</strong>'+action(x,v)+'</div>').join('')+'</details>':'';
+ const schedule=v.schedule.length?'<section aria-label="Coming up"><h2 class="section-title">Coming up</h2><div class="schedule">'+v.schedule.map(x=>'<div class="event"><div class="day"><small>'+esc(x.date?.toLocaleDateString('en-US',{weekday:'short'})||'—')+'</small><b>'+esc(x.date?.getDate()||'—')+'</b></div><div class="event-copy"><strong>'+esc(x.title)+'</strong><small>'+esc(x.detail)+'</small></div><span class="status '+(x.statusTone==='complete'?'complete':'')+'">'+esc(x.status)+'</span></div>').join('')+'</div></section>':'';
+ const optional=v.unavailable?'<div class="row optional">Conversation data unavailable · review in existing app</div>':v.unread>0?'<div class="row optional">'+esc(v.unread)+' new group '+(v.unread===1?'message':'messages')+'<small>Messaging not migrated to this experiment</small></div>':v.reading?'<div class="row optional">A moment with God<small>'+esc(v.passage)+' · Read not migrated</small></div>':'';
+ return '<div class="greeting"><div class="eyebrow">'+esc(v.date)+(v.campus==='unspecified'?'':' · '+esc(v.campus)+' campus')+'</div><h1>'+esc(v.greeting)+'</h1><p class="summary '+(v.calm?'complete':'')+'">'+esc(v.summary)+'</p></div><p class="receipt" role="status" aria-live="polite">'+esc(receipt)+'</p>'+primary+rows+deferred+schedule+optional;
+}
+return Object.freeze({render});
+});
