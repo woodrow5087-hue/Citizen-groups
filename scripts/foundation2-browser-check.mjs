@@ -1,5 +1,7 @@
 /* Foundation 2 browser acceptance: isolated source server, no approved baseline edits. */
 import assert from 'node:assert/strict';
+import {createHash} from 'node:crypto';
+import {execFileSync} from 'node:child_process';
 import {createServer} from 'node:http';
 import {readFile,mkdir,writeFile} from 'node:fs/promises';
 import {resolve,extname,sep} from 'node:path';
@@ -513,6 +515,19 @@ try{
  assert.deepEqual(report.violations,[]);
  console.log('Foundation 2: '+report.scenes.length+' responsive scenes accepted; zero page errors and axe violations.');
 }finally{
+ // Review evidence only: an unapproved capture must never validate itself as a baseline.
+ const files=execFileSync('git',['ls-files','-z'],{cwd:root,encoding:'utf8'}).split('\0').filter(Boolean);
+ const sources={};
+ for(const file of files)sources[file]=createHash('sha256').update(await readFile(resolve(root,file))).digest('hex');
+ const captures={};
+ for(const scene of report.scenes)captures[scene.name+'.png']=createHash('sha256').update(await readFile(dir+'/'+scene.name+'.png')).digest('hex');
+ await writeFile(dir+'/candidate-manifest.json',JSON.stringify({
+  status:'UNAPPROVED_CANDIDATE_NOT_A_BASELINE',
+  sourceCommit:execFileSync('git',['rev-parse','HEAD'],{cwd:root,encoding:'utf8'}).trim(),
+  sourceStatus:execFileSync('git',['status','--porcelain'],{cwd:root,encoding:'utf8'}),
+  historicalClock:new Date(observedAt).toISOString(),
+  browserVersion:browser?.version(),sources,captures
+ },null,2));
  await writeFile(dir+'/report.json',JSON.stringify(report,null,2));
  if(browser)await browser.close();
  await new Promise(done=>http.close(done));

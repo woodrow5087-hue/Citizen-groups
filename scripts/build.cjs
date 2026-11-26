@@ -21,14 +21,21 @@ fs.mkdirSync(path.join(out,'verseplay','content'),{recursive:true});
 fs.copyFileSync(path.join(root,'verseplay','content','john-15-12.json'),path.join(out,'verseplay','content','john-15-12.json'));
 require('./build-chat-lab.cjs').buildChatDomainBundle(out);
 // The legacy, protected preview build must remain byte-for-byte identical in
-// GitHub QA. Only the actual Netlify-hosted deploy preview gets the isolated
-// Foundation 2 route; historical screenshot/file guards remain fully enforced.
+// GitHub QA. Actual Netlify PR previews and the canonical non-production
+// branch publish an opt-in route; no production/default route change.
 async function buildPreview(){
- if(process.env.NETLIFY==='true'&&process.env.CONTEXT==='deploy-preview'){
+ const prPreview=process.env.NETLIFY==='true'&&process.env.CONTEXT==='deploy-preview';
+ const canonicalPreview=process.env.NETLIFY==='true'&&process.env.CONTEXT==='branch-deploy'&&process.env.BRANCH==='rally-one/develop';
+ if(prPreview||canonicalPreview){
   fs.cpSync(path.join(root,'foundation2'),path.join(out,'foundation2'),{recursive:true});
   const {makeServingPreviewBundle}=require('./build-serving-preview.cjs');
   const {makeGroupPreviewBundle}=require('./build-group-preview.cjs');
-  const time=Date.now();
+  // Fixed fictional executive demonstration snapshot; historical test clocks remain unchanged.
+  const time=Date.parse('2026-12-02T12:00:00.000Z');
+  const entry=path.join(out,'foundation2/index.html');
+  fs.writeFileSync(entry,fs.readFileSync(entry,'utf8')
+   .replace('Sample scenarios use fictional data.','Fictional demonstration · as of December 2, 2026. No live Planning Center observations.')
+   .replace('href="../index.html"','href="../index.html?rallyOne=1"'));
   const bundles=await Promise.all([makeServingPreviewBundle(time),makeGroupPreviewBundle(time)]);
   for(const [index,filename] of ['serving-fixtures.js','group-fixtures.js'].entries()){
    new vm.Script(bundles[index],{filename});
