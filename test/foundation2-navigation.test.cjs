@@ -48,21 +48,12 @@ test('Navigation enforces one presentation owner for Groups, Team and Connect',(
   assert.throws(()=>Route.renderRoute(id,connected),/dedicated presentation owner/);
  }
  assert.throws(()=>Route.renderRoute('connect',connected),/dedicated presentation owner/);
- assert.match(Route.summary('read',connected).detail,/Scripture/);
+ assert.throws(()=>Route.summary('read',connected),/Gate 6 presentation owner/);
  assert.match(Route.summary('connect',connected).detail,/Wednesday Group/);
  assert.match(Route.summary('connect',guest).detail,/No group conversation/);
 });
-test('Unmigrated destination views are explicit and escaped',()=>{
- const snapshot=context();
- for(const route of ['read']){
-  const markup=Route.renderRoute(route,snapshot),doc=new JSDOM(markup).window.document;
-  assert.equal(doc.querySelector('h1#route-title[tabindex="-1"]')?.textContent,Route.summary(route,snapshot).title);
-  assert.match(doc.querySelector('.route-stage-label').textContent,/NOT YET MIGRATED/);
-  assert.equal(doc.querySelector('.route-full-app').getAttribute('href'),'../index.html');
-  assert.equal(doc.querySelectorAll('[data-command]').length,0);
- }
- const input={...snapshot,model:{...snapshot.model,passage:'<img src=x onerror=alert(1)>'}};
- const html=Route.renderRoute('read',input),doc=new JSDOM(html).window.document;
- assert.equal(doc.querySelector('[onerror]'),null);
- assert.match(doc.querySelector('.route-lead').textContent,/img src/);
+test('Gate 6 Read has exactly one presentation owner',()=>{
+ const connected=context();
+ assert.throws(()=>Route.renderRoute('read',connected),/dedicated presentation owner/);
+ assert.throws(()=>Route.summary('read',connected),/Gate 6 presentation owner/);
 });
