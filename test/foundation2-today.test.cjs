@@ -14,3 +14,57 @@ test('Foundation 2 adds no files to the protected GitHub visual build',()=>{
  assert.match(build,/process\.env\.NETLIFY==='true'&&process\.env\.CONTEXT==='deploy-preview'/);
  assert.match(build,/fs\.cpSync\(path\.join\(root,'foundation2'\),path\.join\(out,'foundation2'\)/);
 });
+
+test('Foundation 2 direct Today matches the approved hierarchy without legacy markup transformations',()=>{
+ const {JSDOM}=require('jsdom');
+ const v=project(initial()),doc=new JSDOM('<main>'+View.render(v)+'</main>').window.document;
+ assert.ok(doc.querySelector('.greeting h1'));
+ assert.equal(doc.querySelectorAll('article.priority').length,1);
+ assert.equal(doc.querySelectorAll('.responsibility').length,2);
+ assert.equal(doc.querySelectorAll('.coming .event').length,2);
+ assert.equal(doc.querySelectorAll('[data-command="leader"]').length,2);
+ assert.ok(doc.querySelector('.priority-photo img[src$="/community.webp"]'));
+ assert.equal(doc.querySelectorAll('.faces img').length,3);
+ assert.match(doc.querySelector('.utility strong').textContent,/3 new group messages/);
+ assert.equal(doc.querySelector('[data-command="serve"]').tagName,'BUTTON');
+});
+test('Foundation 2 displays a truthful All Set, guest and unavailable state',()=>{
+ const {JSDOM}=require('jsdom');
+ let s=initial();
+ for(const command of [Model.commandFor('serve'),Model.commandFor('rsvp'),Model.commandFor('leader','marcus'),Model.commandFor('leader','taylor')]){
+  const r=Context.transition({state:s,ui,conversation,command,now});assert.equal(r.ok,true);s=r.state;
+ }
+ const parse=x=>new JSDOM('<main>'+View.render(x)+'</main>').window.document;
+ const calm=parse(project(s));assert.equal(calm.querySelector('h1').textContent,'You’re all set.');
+ assert.ok(calm.querySelector('.settled-photo img'));assert.equal(calm.querySelectorAll('[data-command]').length,0);
+ assert.match(calm.querySelector('.utility').textContent,/Sample activity/);
+ const guest=parse(project(initial(),{...ui,memberships:{group:false,team:false}}));
+ assert.ok(guest.querySelector('.welcome-card a[href="../index.html"]'));
+ assert.equal(guest.querySelector('.priority'),null);
+ const unavailable=parse(project(s,ui,{status:'unavailable'}));
+ assert.match(unavailable.querySelector('[role=status].utility').textContent,/Conversation unavailable/);
+ assert.notEqual(unavailable.querySelector('h1').textContent,'You’re all set.');
+});
+test('Foundation 2 uses a recessed, accessible fixture selector and a single stylesheet',()=>{
+ const fs=require('node:fs'),path=require('node:path'),{JSDOM}=require('jsdom');
+ const root=path.join(__dirname,'..'),doc=new JSDOM(fs.readFileSync(path.join(root,'foundation2/index.html'),'utf8')).window.document;
+ assert.equal(doc.querySelector('#preview-tools').tagName,'DETAILS');
+ assert.equal(doc.querySelector('#preview-tools').hasAttribute('open'),false);
+ assert.ok(doc.querySelector('#preview-tools summary[aria-label]'));
+ assert.ok(doc.querySelector('#scenario option[value="leader"]'));
+ assert.ok(doc.querySelector('.preview-footer a[href="../index.html"]'));
+ assert.equal(doc.querySelectorAll('link[rel=stylesheet]').length,1);
+ const css=fs.readFileSync(path.join(root,'foundation2/design.css'),'utf8');
+ for(const rule of ['.priority-body','.responsibility','.schedule','.settled-photo','@media(max-width:360px)','prefers-reduced-motion:reduce'])assert.ok(css.includes(rule),rule);
+ assert.doesNotMatch(css,/rally-one-studio-today|rallypoint-phase1/);
+});
+test('Foundation 2 escapes source-backed responsibility, status and optional texts',()=>{
+ const {JSDOM}=require('jsdom'),v=project(initial());
+ const corrupted={...v,primary:{...v.primary,title:'<svg onload=alert(1)>',detail:'<img src=x onerror=alert(1)>'},
+  secondary:[{...v.secondary[0],label:'<img src=x onerror=alert(1)>'}],
+  schedule:[{...v.schedule[0],status:'<script>alert(1)</script>'}],passage:'<svg onload=alert(1)>'};
+ const doc=new JSDOM('<main>'+View.render(corrupted)+'</main>').window.document;
+ assert.equal(doc.querySelector('script'),null);
+ assert.equal(doc.querySelector('[onerror],[onload]'),null);
+ assert.match(doc.querySelector('.priority h2').textContent,/svg onload/);
+});
