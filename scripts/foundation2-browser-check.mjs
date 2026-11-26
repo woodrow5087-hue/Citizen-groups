@@ -60,15 +60,44 @@ try{
   assert.equal(await page.locator('.responsibility').count(),2,'leader follow-up missing');
   await check(page,'leader-'+width);
   await change(page,'connected');
+  const canonicalBefore=await page.evaluate(()=>({
+   primary:localStorage.getItem('rallypoint-phase1-2026'),
+   today:localStorage.getItem('rallypoint-today-ui-v1')
+  }));
   await page.locator('[data-command=rsvp]').first().click();
   await page.locator('[data-command=serve]').first().click();
   assert.equal(await page.locator('.greeting h1').innerText(),'You’re all set.');
   assert.match(await page.locator('.utility').innerText(),/3 new group messages/);
   await check(page,'all-set-'+width);
+  await page.reload();
+  await page.locator('.greeting h1').waitFor();
+  assert.equal(await page.locator('.greeting h1').innerText(),'You’re all set.','saved response did not survive reload');
+  assert.equal(await page.locator('[data-command=rsvp],[data-command=serve]').count(),0,'completed action reappeared after reload');
+  const canonicalAfter=await page.evaluate(()=>({
+   primary:localStorage.getItem('rallypoint-phase1-2026'),
+   today:localStorage.getItem('rallypoint-today-ui-v1')
+  }));
+  assert.deepEqual(canonicalAfter,canonicalBefore,'Foundation 2 must not mutate original application storage');
   if(width===390){
+   await change(page,'leader');
+   await page.locator('[data-command=rsvp]').first().click();
+   await page.locator('[data-command=serve]').first().click();
+   await page.locator('.leader-actions>summary').click();
+   await page.locator('[data-command=leader]').first().click();
+   await page.locator('.leader-actions>summary').click();
+   await page.locator('[data-command=leader]').first().click();
+   await page.reload();
+   await change(page,'leader');
+   assert.equal(await page.locator('.greeting h1').innerText(),'You’re all set.','leader review did not survive reload');
    await change(page,'group');await check(page,'group-member-'+width);
+   assert.equal(await page.locator('[data-command=rsvp]').count(),1,'scenario state leaked across membership contexts');
    await change(page,'visitor');assert.equal(await page.locator('.welcome-card').count(),1);await check(page,'visitor-'+width);
    await change(page,'unavailable');assert.equal(await page.locator('.utility[role=status]').count(),1);await check(page,'unavailable-'+width);
+   await page.evaluate(()=>localStorage.setItem('rally-one-foundation2-v1:connected:journal','{"version":1,"before":{},"after":{}}'));
+   await change(page,'connected');
+   assert.equal(await page.locator('.storage-warning[role=alert]').count(),1,'interrupted transaction must block editing');
+   assert.ok(await page.locator('button[data-command]').count()>0,'fixture must remain visible for review');
+   assert.equal(await page.locator('button[data-command]:not([disabled])').count(),0,'blocked transactions must have no enabled command');
   }
   await context.close();
  }
