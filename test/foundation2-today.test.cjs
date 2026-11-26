@@ -77,9 +77,16 @@ test('Foundation 2 visual reconciliation keeps compact actions meaningful and pr
  const current=project(initial()),doc=new JSDOM('<main>'+View.render(current)+'</main>').window.document;
  const compact=doc.querySelector('.responsibility .action-compact');
  assert.ok(compact);
- assert.equal(compact.textContent.trim(),'Confirm');
- assert.equal(compact.getAttribute('aria-label'),'Confirm availability');
- assert.equal(compact.getAttribute('data-command'),'serve');
+ assert.equal(compact.textContent.trim(),'RSVP'); // Sunday serve precedes Wednesday group
+ assert.equal(compact.getAttribute('aria-label'),'RSVP · I’m in');
+ assert.equal(compact.getAttribute('data-command'),'rsvp');
+ const earlier=new Date('2026-11-25T12:00:00Z');
+ const earlyModel=Model.project(Intelligence.derive({state:initial(),ui,conversation,now:earlier}),earlier);
+ const earlyDoc=new JSDOM('<main>'+View.render(earlyModel)+'</main>').window.document;
+ const serveCompact=earlyDoc.querySelector('.responsibility .action-compact');
+ assert.equal(serveCompact.textContent.trim(),'Confirm');
+ assert.equal(serveCompact.getAttribute('aria-label'),'Confirm availability');
+ assert.equal(serveCompact.getAttribute('data-command'),'serve');
  const guest=project(initial(),{...ui,memberships:{group:false,team:false}});
  const guestDoc=new JSDOM('<main>'+View.render(guest)+'</main>').window.document;
  assert.equal(guestDoc.querySelector('.welcome-photo img')?.getAttribute('src'),'../assets/rally-one/community.webp');
