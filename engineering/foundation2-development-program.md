@@ -29,6 +29,14 @@ Canonical: `9b06795f9087e07e1b8e12b55bfa109d68fc41d1` (PR #152 merge; parents b7
 - Reuse accepted welcome through its existing entry route and canonical Ask service. Profile handoff is explicit, previewed, name/campus only, with original keys untouched and a local undo. Full welcome controller extraction and cross-application migration are not implied.
 - Current implementation: one Foundation member-session adapter, guarded personalization and undo, explicit name/campus-only handoff from accepted onboarding, canonical Ask Rally rendering/actions, shared required/optional projection, and dated fixture response records. Legacy unbound values are retained without inferred event/timestamp; unrelated actions do not rewrite them. Current actions: complete final applicable validation, prepare exact-source preview and targeted device checklist. No 2B merge without owner authorization.
 
+### 2B field contracts and validation recovery
+
+`foundation2/member-session.js` adapts the existing intelligence/context and Foundation Today projection. Synthetic identity is namespace-based, not a verified member ID. `eventResponses.version=1` stores `records[fixtureEventId] = {kind, at, value, coverage}` in the existing guarded primary record. IDs identify the current North-campus local fixture and dated gathering/shift, not a Planning Center event. Browser timezone changes can conservatively require a fresh response. Only explicit dated response actions create records. Prior undated values stay unbound; unrelated actions preserve raw compatibility fields. Original app keys remain untouched.
+
+`state-store.js` owns guarded name/campus updates in the existing today record and a one-step `previousProfile` undo. `member-panel.js` owns only ephemeral dialog/follow-up state and delegates to the canonical PersonalCompanion service and existing navigation/actions. Source-profile handoff is previewed, rejects changed/unknown/malformed sources, copies no authority/progress/conversations and never writes original records. No bulk migration or generalized import is implemented.
+
+Focused checks: `node --test test/foundation2-member-session.test.cjs`; existing `node scripts/foundation2-browser-check.mjs`; built-preview `node scripts/convergence2b-browser-check.mjs ORIGIN`. Complete required app, historical visual and VersePlay gates remain mandatory at final integration. Native dialog focus, profile handoff/undo and Ask actions require targeted physical Safari/VoiceOver acceptance on the final candidate; unchanged games do not need redundant physical acceptance.
+
 Historical gate entries below describe their original stages, not current publication or active branches. PR150 remains an unmerged creative reference; do not incorporate it implicitly.
 
 ## Product invariants
