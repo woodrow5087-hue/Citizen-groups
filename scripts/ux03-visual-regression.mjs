@@ -17,10 +17,10 @@ async function serve(directory){
  });
  await new Promise(r=>server.listen(0,'127.0.0.1',r));return {server,url:'http://127.0.0.1:'+server.address().port+'/'};
 }
-async function run(script,url,directory){
+async function run(script,url,directory,kind,scope){
  // Clear generated evidence only: stale frames must never satisfy the inventory gate.
  await rm(directory,{recursive:true,force:true});await mkdir(directory,{recursive:true});
- const env={...process.env,UX03_OUTPUT_DIR:directory,UX03_VISUAL_CAPTURE:'1'};delete env.UX03_HISTORICAL;delete env.BROWSER_PATH;
+ const env={...process.env,UX03_OUTPUT_DIR:directory,UX03_VISUAL_CAPTURE:'1',UX03_DIAGNOSTIC_SIDE:kind,UX03_DIAGNOSTIC_SCOPE:scope,UX03_DIAGNOSTIC_SOURCE:kind==='reference'?visual.reference.source:process.env.UX03_CANONICAL_SOURCE};delete env.UX03_HISTORICAL;delete env.BROWSER_PATH;
  await new Promise((resolveRun,reject)=>{const child=spawn(process.execPath,[script,url],{env,stdio:'inherit'});child.once('error',reject);child.once('exit',code=>code===0?resolveRun():reject(Error(script+' failed with exit '+code)));});
 }
 await mkdir(out,{recursive:true});const servers=[];
@@ -29,7 +29,7 @@ try{
  for(const [kind,root] of [['reference',approved],['candidate',candidate]]){
   const server=await serve(root);servers.push(server);
   for(const [scope,script] of [['standalone','scripts/ux03-browser-check.mjs'],['embedded','scripts/ux03-profile-review.mjs']]){
-   const directory=resolve(out,kind,scope);await run(script,server.url,directory);
+   const directory=resolve(out,kind,scope);await run(script,server.url,directory,kind,scope);
    const inventory=(await readdir(directory)).filter(f=>f.endsWith('.png')).sort();assert.deepEqual(inventory,visual.expectedCaptures(scope),'Missing or unexpected '+kind+' '+scope+' captures');
    if(kind==='candidate')for(const file of inventory){const result=compareScreenshots(await readFile(resolve(out,'reference',scope,file)),await readFile(resolve(directory,file)));report.comparisons.push({scope,file,...result});visual.assertPair(result,scope+'/'+file);}
   }

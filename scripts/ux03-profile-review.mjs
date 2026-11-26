@@ -3,6 +3,7 @@ import {mkdir,writeFile} from 'node:fs/promises';
 import {chromium,webkit} from 'playwright';
 import AxeBuilder from '@axe-core/playwright';
 import visual from '../test/helpers/ux03-visual.cjs';
+import {observeSvg} from './ux03-svg-diagnostics.mjs';
 const base=process.argv[2];assert.ok(base);const out=process.env.UX03_OUTPUT_DIR||'test-results/ux03-refinement';await mkdir(out,{recursive:true});
 const browserType=process.env.UX03_VISUAL_CAPTURE==='1'?{chromium,webkit}[visual.reference.engine]:chromium;
 let browser=await browserType.launch(visual.launchOptions(process.env)),results=[];
@@ -14,6 +15,7 @@ for(const profile of (large||height===500?['group-serving']:['group-member','ser
  // Isolate rounded-image raster caches across visual viewport/profile cases.
  if(process.env.UX03_VISUAL_CAPTURE==='1'&&visualCase++>0){await browser.close();browser=await browserType.launch(visual.launchOptions(process.env));}
  const ctx=await browser.newContext({viewport:{width,height},isMobile:true,hasTouch:true,reducedMotion:'reduce'}),page=await ctx.newPage(),errors=[];page.on('pageerror',e=>errors.push(e.message));
+ const svgDiagnostic=process.env.UX03_SVG_DIAGNOSTICS==='1'&&width===320&&profile==='group-member'?observeSvg(page):null;
  await page.clock.setFixedTime(new Date('2026-11-23T12:00:00Z'));await page.goto(base);
  await page.locator('[data-welcome=login]:visible').click();await page.locator('[data-welcome=demo]:visible').click();await page.locator('#rp-gateway').waitFor({state:'hidden'});
  await page.locator('.profile-avatar').click();await page.locator('[data-action=s7-scenario][data-value='+profile+']').click();await page.locator('#toast').waitFor({state:'hidden'});
@@ -28,6 +30,7 @@ for(const profile of (large||height===500?['group-serving']:['group-member','ser
   // Capture the uninstrumented UI before axe opens its analysis page.
   let snapshot;
   if(process.env.UX03_VISUAL_CAPTURE==='1'){await visual.settlePaint(page);await visual.prepareVisualState(f.locator('body'));await visual.settlePaint(page);snapshot=await visual.captureStable(page);}
+  if(svgDiagnostic&&state==='inbox'&&snapshot)await svgDiagnostic(f,snapshot,out+'/'+key+'-svg-diagnostic.json',{engine:browserType.name(),version:await browser.version(),sourceSide:process.env.UX03_DIAGNOSTIC_SIDE,scope:process.env.UX03_DIAGNOSTIC_SCOPE,key,source:process.env.UX03_DIAGNOSTIC_SOURCE});
   const a=await new AxeBuilder({page}).withTags(['wcag2a','wcag2aa','wcag21aa']).analyze();assert.deepEqual(a.violations.map(v=>[v.id,v.nodes.map(n=>n.target)]),[],key+' '+state);
   assert.equal(await f.locator('html').evaluate(e=>e.scrollWidth<=innerWidth+1),true,'document overflow');
   if(!snapshot)snapshot=await page.screenshot({animations:'disabled'});

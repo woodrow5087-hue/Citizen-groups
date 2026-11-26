@@ -1,0 +1,60 @@
+name: Connect SVG — bounded diagnostic
+on:
+  push:
+    branches: [rally-one/convergence-2c]
+    paths:
+      - .github/workflows/connect-svg-diagnostic.yml
+      - scripts/ux03-svg-diagnostics.mjs
+      - scripts/ux03-profile-review.mjs
+      - scripts/ux03-visual-regression.mjs
+permissions:
+  contents: read
+jobs:
+  diagnostic:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps webkit
+      - name: Record native environment and exact dependency resolution
+        run: |
+          mkdir -p test-results/svg-environment
+          node -p 'JSON.stringify(process.versions,null,2)' > test-results/svg-environment/node.json
+          npm ls --all --json > test-results/svg-environment/npm-tree.json
+          uname -a > test-results/svg-environment/kernel.txt
+          lscpu > test-results/svg-environment/cpu.txt
+          dpkg-query -W > test-results/svg-environment/packages.txt
+          cp /etc/os-release test-results/svg-environment/os-release
+          env | sort | rg '^(CI|RUNNER_OS|RUNNER_ARCH|ImageOS|ImageVersion|LANG|LC_[A-Za-z_]+|DISPLAY|WAYLAND_DISPLAY|GITHUB_EVENT_NAME|GITHUB_SHA|GITHUB_REF)=' > test-results/svg-environment/context.txt
+      - name: Reconstruct immutable reference and exact canonical source
+        run: |
+          approved="$RUNNER_TEMP/svg-approved"
+          canonical="$RUNNER_TEMP/svg-canonical"
+          mkdir -p "$approved" "$canonical"
+          git archive bb8f2446a71221148587f09bdf8192d5bde57d83 | tar -x -C "$approved"
+          git archive 6bdca6a46699b2cc9bca563b1280d49ababb823b | tar -x -C "$canonical"
+          CONTEXT=deploy-preview node "$approved/scripts/build.cjs"
+          CONTEXT=deploy-preview node "$canonical/scripts/build.cjs"
+          git rev-parse HEAD HEAD^{tree} bb8f2446a71221148587f09bdf8192d5bde57d83^{tree} 6bdca6a46699b2cc9bca563b1280d49ababb823b^{tree} > test-results/svg-environment/source-identities.txt
+          find "$approved/dist" "$canonical/dist" -type f -print0 | sort -z | xargs -0 sha256sum > test-results/svg-environment/build-files.sha256
+      - name: Single complete strict Connect comparison with post-capture diagnostics
+        env:
+          UX03_SVG_DIAGNOSTICS: '1'
+          UX03_CANONICAL_SOURCE: 6bdca6a46699b2cc9bca563b1280d49ababb823b
+        run: node scripts/ux03-visual-regression.mjs "$RUNNER_TEMP/svg-approved/dist" "$RUNNER_TEMP/svg-canonical/dist"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: connect-svg-single-diagnostic
+          path: |
+            test-results/ux03-visual/
+            test-results/svg-environment/
+          retention-days: 30
+          if-no-files-found: error
