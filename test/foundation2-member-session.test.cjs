@@ -49,3 +49,8 @@ test('personalization changes display identity, not synthetic member identity or
 test('handoff distinguishes absent, unknown and malformed source data',()=>{
  assert.equal(Session.previewProfile(null).status,'empty');assert.equal(Session.previewProfile('{"name":"Older demo"}').status,'unknown');assert.equal(Session.previewProfile('{"name":[],"campus":"north"}').status,'malformed');
 });
+
+test('declining a shift preserves its dated identity for coverage and explicit review',()=>{
+ const state=act(initial(),'serving-response','declined').state;const session=Session.derive({state,ui,conversation:chat,now});assert.equal(session.snapshot.context.team.response,'declined');assert.ok(session.snapshot.model.serveDate instanceof Date);assert.ok(session.events.team.endsWith(session.snapshot.model.serveDate.toISOString()));
+ const result=act(state,'serving-coverage','request');assert.equal(result.ok,true);assert.equal(Session.derive({state:result.state,ui,conversation:chat,now}).effective.coverage,true);
+});

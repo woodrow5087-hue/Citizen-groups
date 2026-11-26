@@ -18,7 +18,9 @@ function derive({state,ui,conversation,now=new Date(),owner='connected'}={}){
  // Unbound old responses remain preserved; a response to an unknown event is never transferred.
  const group=record('group'),team=record('team');
  const effective={...state,rsvp:group?.kind==='group'?group.value:'',teamStatus:valid?(team?.kind==='team'?team.value:state.teamStatus===undefined||['pending','confirmed','declined'].includes(state.teamStatus)?'pending':'unknown'):'unknown',coverage:team?.kind==='team'&&team.coverage===true};
- const snapshot=Intelligence.derive({state:effective,ui,conversation,now});
+ const derived=Intelligence.derive({state:effective,ui,conversation,now});
+ // Assignment identity is independent of availability; keep its date visible after decline.
+ const snapshot=Object.freeze({...derived,model:Object.freeze({...derived.model,serveDate:first.model.serveDate})});
  return Object.freeze({snapshot,effective,identity:Object.freeze({kind:'synthetic',id:'foundation-demo:'+owner,...snapshot.context.identity}),events:Object.freeze(ids),valid,
   unbound:valid&&((!!state.rsvp&&!group)||(['confirmed','declined'].includes(state.teamStatus)&&!team)||(state.coverage===true&&!team))});
 }
