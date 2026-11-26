@@ -55,7 +55,7 @@ test('Foundation 2 uses a recessed, accessible fixture selector and a single sty
  assert.ok(doc.querySelector('#preview-tools summary[aria-label]'));
  assert.ok(doc.querySelector('#scenario option[value="leader"]'));
  assert.ok(doc.querySelector('.preview-footer a[href="../index.html"]'));
- assert.equal(doc.querySelectorAll('link[rel=stylesheet]').length,1);
+ assert.equal(doc.querySelectorAll('link[rel=stylesheet]').length,2); // Foundation CSS + unchanged VersePlay CSS
  const css=fs.readFileSync(path.join(root,'foundation2/design.css'),'utf8');
  for(const rule of ['.priority-body','.responsibility','.schedule','.settled-photo','@media(max-width:360px)','prefers-reduced-motion:reduce'])assert.ok(css.includes(rule),rule);
  assert.doesNotMatch(css,/rally-one-studio-today|rallypoint-phase1/);
