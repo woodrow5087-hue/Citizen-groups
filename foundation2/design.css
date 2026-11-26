@@ -277,3 +277,31 @@ a{color:inherit}
  .group-conversation button{min-width:98px}
  .group-response-actions{gap:6px}
 }
+
+/* Gate 5B — Team: one functional serving assignment with explicit response.
+   Coverage is read-only until supported by a canonical transition. */
+.team-page{min-width:0;margin:12px 0 20px}
+.team-page>h1{font-size:clamp(2rem,8vw,2.5rem);line-height:1.08;letter-spacing:-.055em;margin:8px 0 16px}
+.team-assignment{background:var(--paper);color:var(--dark);border-radius:var(--feature-radius);padding:16px;margin-bottom:12px}
+.team-assignment h2{margin:7px 0 6px;font-size:1.5rem;letter-spacing:-.045em;line-height:1.2}
+.team-assignment>p{margin:0 0 13px;font-size:.8125rem;color:#555759;line-height:1.5}
+.team-availability{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 0;border-top:1px solid #d2c9be;border-bottom:1px solid #d2c9be}
+.team-availability span{color:#505458;font-size:.8125rem}
+.team-availability strong{color:#a62539;font-size:.8125rem;text-align:right}
+.team-availability strong.is-confirmed{color:#326849}
+.team-assignment .team-disclosure{font-size:.75rem;line-height:1.45;color:#666768;margin:11px 0}
+.team-actions{display:flex;gap:8px;flex-wrap:wrap}
+.team-actions button{min-height:44px;flex:1 1 122px;padding:10px 12px;border-radius:11px;border:1px solid #b8b1a8;background:#faf8f3;color:var(--dark);font-size:.8125rem;font-weight:800;line-height:1.3}
+.team-actions button.is-selected{background:var(--red);color:white;border-color:var(--red)}
+.team-blocked{font-size:.8125rem;color:#93213a!important;font-weight:800}
+.team-identity{display:grid;grid-template-columns:minmax(0,1fr) minmax(100px,36%);overflow:hidden;background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);margin-bottom:12px}
+.team-identity-copy{padding:14px;min-width:0}
+.team-identity h2{font-size:1.125rem;line-height:1.2;letter-spacing:-.03em;margin:6px 0}
+.team-identity p{font-size:.75rem;line-height:1.5;color:var(--muted);margin:0}
+.team-identity img{display:block;width:100%;height:100%;min-height:120px;object-fit:cover;object-position:center}
+.team-coverage{border:1px solid var(--line);border-radius:var(--radius);background:var(--panel);padding:14px;margin-bottom:12px}
+.team-coverage h2{font-size:1rem;line-height:1.3;margin:0 0 8px}
+.team-coverage p{font-size:.8125rem;color:var(--muted);line-height:1.5;margin:0 0 9px}
+.team-coverage .team-coverage-note{font-size:.6875rem;margin-bottom:12px}
+.team-leader-notice{color:var(--muted);font-size:.6875rem;line-height:1.5}
+@media(max-width:360px){.team-identity{grid-template-columns:1fr}.team-identity img{max-height:100px;min-height:85px}}
