@@ -25,7 +25,7 @@ const port=await new Promise(done=>http.listen(0,'127.0.0.1',()=>done(http.addre
 const report={scenes:[],errors:[],violations:[]};
 let browser;
 async function check(page,name){
- await page.locator('.greeting h1').waitFor();
+ await page.locator('#today h1').waitFor();
  await page.evaluate(async()=>{await document.fonts.ready;await Promise.all([...document.images].map(i=>i.decode().catch(()=>null)));});
  const sizing=await page.evaluate(()=>({
   viewport:innerWidth,width:document.documentElement.scrollWidth,
@@ -54,6 +54,24 @@ try{
   await page.clock.setFixedTime(new Date('2026-11-26T00:45:00Z'));
   await page.goto('http://127.0.0.1:'+port+'/foundation2/',{waitUntil:'load'});
   await check(page,'connected-'+width);
+  assert.equal(await page.locator('#primary-nav a[data-route]').count(),4,'four navigation destinations required');
+  assert.equal(await page.locator('#primary-nav [aria-current="page"]').count(),1,'only one current tab');
+  await page.locator('#primary-nav a[data-route=groups]').click();
+  assert.match(page.url(),/screen=groups/,'Groups route did not update URL');
+  assert.equal(await page.locator('#today h1').innerText(),'Your people.');
+  assert.equal(await page.locator('#today [data-command]').count(),0,'unmigrated Groups must be read-only');
+  assert.equal(await page.locator('#primary-nav a[data-route=groups][aria-current=page]').count(),1);
+  assert.equal(await page.evaluate(()=>document.activeElement?.id),'today','route focus was not restored to main landmark');
+  await check(page,'groups-route-'+width);
+  await page.goBack();
+  assert.equal(await page.locator('article.priority').count(),1,'back navigation lost Today');
+  assert.equal(await page.locator('#primary-nav a[data-route=today][aria-current=page]').count(),1);
+  await page.locator('.header-connect').click();
+  assert.equal(await page.locator('#today h1').innerText(),'Stay connected.');
+  assert.equal(await page.locator('.header-connect[aria-current=page]').count(),1);
+  await check(page,'connect-route-'+width);
+  await page.goBack();
+  assert.equal(await page.locator('.greeting').count(),1,'Connect return failed');
   const a=await new AxeBuilder({page}).withTags(['wcag2a','wcag2aa','wcag21aa']).analyze();
   report.violations.push(...a.violations.map(v=>({width,id:v.id,targets:v.nodes.map(n=>n.target)})));
   await change(page,'leader');
@@ -89,6 +107,19 @@ try{
    await page.reload();
    await change(page,'leader');
    assert.equal(await page.locator('.greeting h1').innerText(),'You’re all set.','leader review did not survive reload');
+   // Explicit deep-link route and browser back/forward acceptance.
+   await page.goto('http://127.0.0.1:'+port+'/foundation2/?screen=read');
+   assert.equal(await page.locator('#today h1').innerText(),'Make space.');
+   assert.equal(await page.locator('#primary-nav a[data-route=read][aria-current=page]').count(),1);
+   await check(page,'read-deep-link-'+width);
+   await page.locator('#primary-nav a[data-route=team]').focus();
+   await page.keyboard.press('Enter');
+   assert.equal(await page.locator('#today h1').innerText(),'Your team.');
+   assert.equal(await page.evaluate(()=>document.activeElement?.id),'today','keyboard navigation did not focus route');
+   await check(page,'team-keyboard-route-'+width);
+   await page.goBack();
+   assert.equal(await page.locator('#today h1').innerText(),'Make space.','browser history did not restore Read');
+   await page.goto('http://127.0.0.1:'+port+'/foundation2/');
    await change(page,'group');await check(page,'group-member-'+width);
    assert.equal(await page.locator('[data-command=rsvp]').count(),1,'scenario state leaked across membership contexts');
    await change(page,'visitor');assert.equal(await page.locator('.welcome-card').count(),1);await check(page,'visitor-'+width);
