@@ -6,7 +6,7 @@
 'use strict';
 const root=document.getElementById('today'),select=document.getElementById('scenario'),tabs=document.getElementById('primary-nav');
 let route=FoundationNavigation.resolve(window.location.search);
-let state,ui,store,connect,receipt='',blocked='',chatFeedback='',groupFeedback='',teamFeedback='';
+let state,ui,store,connect,receipt='',blocked='',chatFeedback='',groupFeedback='',teamFeedback='',readFeedback='';
 const scenarioSessionKey='rally-one-foundation2-v1:selected-scenario';
 // The selector represents a synthetic test persona, not app membership state.
 // Keep the selected persona across reloads within this tab only, without
@@ -26,12 +26,24 @@ const fallback=name=>{
  return {state:defaultState,ui:{name:'Friend',campus:'north',memberships:{group:scope.group,team:scope.team}}};
 };
 const inThread=()=>route==='connect'&&new URLSearchParams(window.location.search).get('thread')==='group';
+const inClassic=()=>route==='read'&&new URLSearchParams(window.location.search).get('game')==='classic';
+const safeText=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const gameIcon=name=>'<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">'+
+ (name==='check'?'<path d="m4 12 5 5L20 6"/>':name==='group'?'<circle cx="9" cy="8" r="3"/><path d="M2 21v-3a7 7 0 0 1 14 0v3"/>':'<path d="M4 12h16m-6-6 6 6-6 6"/>')+'</svg>';
+function readMarkup(snapshot){
+ const vm=FoundationRead.project(snapshot,state,RallyMemory,new Date());
+ // The canonical VersePlay presentation normalizes memory game state while
+ // rendering. Give it a copy so a read-only draw cannot mutate persisted data.
+ const visible={...state,memoryGames:{...(state.memoryGames||{})}};
+ const gameHTML=inClassic()?RallyVersePlay.render(visible,safeText,gameIcon):'';
+ return FoundationRead.render(vm,{feedback:readFeedback,mode:inClassic()?'classic':'home',gameHTML});
+}
 const conversation=()=>{
  if(select.value==='unavailable')return {status:'unavailable',unreadCount:null,messages:[],draft:'',replyTo:null};
  return connect?connect.view():{status:'unavailable',unreadCount:null,messages:[],draft:'',replyTo:null};
 };
 function selectScenario(name){
- receipt='';blocked='';chatFeedback='';groupFeedback='';teamFeedback='';
+ receipt='';blocked='';chatFeedback='';groupFeedback='';teamFeedback='';readFeedback='';
  try{
   store=FoundationStateStore.create({storage:window.localStorage,scenario:name,Guard:RallyStorageGuard,AppState:RallyAppState});
   const loaded=store.read();
@@ -54,8 +66,10 @@ function draw(focus=false){
   route==='connect'?FoundationConnectView.render(chat,{thread:inThread(),member:snapshot.context.permissions.group,feedback:chatFeedback}):
   route==='groups'?FoundationGroups.render(FoundationGroups.project(snapshot,chat),{feedback:groupFeedback,blocked:!!blocked}):
   route==='team'?FoundationTeam.render(FoundationTeam.project(snapshot),{feedback:teamFeedback,blocked:!!blocked}):
+  route==='read'?readMarkup(snapshot):
   FoundationNavigation.renderRoute(route,snapshot);
  root.setAttribute('aria-label',FoundationNavigation.names[route]);
+ root.classList.toggle('is-read-v09',route==='read');
  tabs.innerHTML=FoundationNavigation.renderTabs(route);
  const connectLink=document.querySelector('.header-connect');
  if(route==='connect')connectLink?.setAttribute('aria-current','page');
@@ -65,7 +79,7 @@ function draw(focus=false){
   const warning=document.createElement('p');
   warning.className='storage-warning';warning.setAttribute('role','alert');warning.textContent=blocked;
   root.prepend(warning);
-  root.querySelectorAll('button[data-command],button[data-group-action],button[data-team-action],button[data-chat-open],.chat-send,#chat-draft').forEach(el=>{el.disabled=true;el.setAttribute('aria-disabled','true');});
+  root.querySelectorAll('button[data-command],button[data-group-action],button[data-team-action],button[data-read-action],button[data-action^=memory-],button[data-chat-open],.chat-send,#chat-draft,#read-reflection-input,#read-leader-question-text').forEach(el=>{el.disabled=true;el.setAttribute('aria-disabled','true');});
  }
  if(focus)root.focus({preventScroll:true});
 }
@@ -77,7 +91,7 @@ function go(next,url){
  history.replaceState({...history.state,scroll:window.scrollY,route},'',window.location.href);
  history.pushState({route:next,scroll:0},'',nextUrl);
  route=next;
- chatFeedback='';groupFeedback='';teamFeedback='';
+ chatFeedback='';groupFeedback='';teamFeedback='';readFeedback='';
  if(inThread()&&!blocked){
   const seen=connect?.markRead();
   if(!seen?.ok)chatFeedback='Conversation could not be marked read. Existing data was preserved.';
@@ -123,6 +137,42 @@ root.addEventListener('click',event=>{
   const result=connect?.reply(null);
   chatFeedback=result?.ok?'Reply cancelled.':'Could not change the saved reply.';
   draw(true);root.querySelector('#chat-draft')?.focus();return;
+ }
+ const readLink=target.closest('a[data-read-view]');
+ if(readLink){
+  event.preventDefault();
+  go('read',readLink.getAttribute('href'));
+  return;
+ }
+ const classicButton=target.closest('button[data-action^=memory-]');
+ if(classicButton&&route==='read'&&inClassic()){
+  if(blocked)return;
+  const before=state;
+  const next={...before,memoryGames:structuredClone(before.memoryGames||{})};
+  let notice='';
+  RallyMemoryActions.run(classicButton.dataset.action,classicButton.dataset.value,{
+   s:next,M:RallyMemory,render:()=>{},notify:m=>{notice=m;}
+  });
+  const saved=store?.save(next,ui)||{ok:false,reason:'Guarded storage unavailable'};
+  if(saved.ok){
+   state=next;
+   readFeedback=notice||'Your original Classic VersePlay progress is saved locally.';
+  }else{blocked=saved.reason||'Game progress could not be saved safely.';readFeedback='';}
+  draw(true);return;
+ }
+ const readButton=target.closest('button[data-read-action]');
+ if(readButton&&route==='read'){
+  if(blocked)return;
+  const command=FoundationRead.commandFor(readButton.dataset.readAction,readButton.dataset.value);
+  if(!command){readFeedback='Unavailable reading action.';draw(true);return;}
+  const changed=RallyMemberContext.transition({state,ui,conversation:conversation(),command,now:new Date()});
+  if(!changed.ok){readFeedback='No change: '+changed.reason+'.';draw(true);return;}
+  const saved=store?.save(changed.state,ui)||{ok:false,reason:'Guarded storage unavailable'};
+  if(saved.ok){
+   state=changed.state;
+   readFeedback='Your optional reading or reflection state was saved on this device.';
+  }else{blocked=saved.reason||'Reading state could not be saved safely.';readFeedback='';}
+  draw(true);return;
  }
  const teamButton=target.closest('button[data-team-action]');
  if(teamButton){
@@ -196,6 +246,23 @@ root.addEventListener('input',event=>{
  }else{chatFeedback='';input.removeAttribute('aria-invalid');}
 });
 root.addEventListener('submit',event=>{
+ const form=event.target;
+ if(form.id==='read-reflection-form'||form.id==='read-leader-question'){
+  event.preventDefault();
+  if(blocked||route!=='read')return;
+  const reading=FoundationRead.project(RallyIntelligence.derive({
+   state,ui,conversation:conversation(),now:new Date()
+  }),state,RallyMemory,new Date());
+  const command=form.id==='read-reflection-form'?
+   {type:'reflection-save',text:form.elements.reflection.value,passage:reading.passage.reference}:
+   {type:'reading-question-save',text:form.elements.question.value};
+  const changed=RallyMemberContext.transition({state,ui,conversation:conversation(),command,now:new Date()});
+  if(!changed.ok){readFeedback='Unable to save: '+changed.reason+'.';draw(true);return;}
+  const saved=store?.save(changed.state,ui)||{ok:false,reason:'Guarded storage unavailable'};
+  if(saved.ok){state=changed.state;readFeedback='Your sample reflection was saved only on this device.';}
+  else{blocked=saved.reason||'The local reading note could not be saved safely.';readFeedback='';}
+  draw(true);return;
+ }
  if(event.target.id!=='chat-compose')return;
  event.preventDefault();
  if(blocked)return;
