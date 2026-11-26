@@ -93,6 +93,21 @@ function transition({state,ui,conversation,command,now=new Date()}={}){
     }
     break;
   }
+  case 'serving-coverage':{
+    // A coverage request is an explicit fictional scheduling action, NOT a
+    // message, notification, attendance mark or staff approval.
+    if(!ctx.permissions.team)return denied(s,'not-a-team-member');
+    if(ctx.team.response!=='declined')return denied(s,'coverage-requires-declined-shift');
+    if(!['request','withdraw'].includes(cmd.value))return denied(s,'invalid-coverage-action');
+    if(cmd.value==='request'&&ctx.team.coverage)return denied(s,'coverage-already-requested');
+    if(cmd.value==='withdraw'&&!ctx.team.coverage)return denied(s,'no-coverage-request');
+    const active=cmd.value==='request';
+    const prior=Array.isArray(s.teamMessages)?s.teamMessages:[];
+    const other=prior.filter(msg=>!msg?.coverage);
+    next={...s,coverage:active,teamMessages:active?
+      [...other,{name:'You',time:'Just now',text:'Could someone cover my Sunday 9:00 AM shift?',coverage:true}]:other};
+    break;
+  }
   case 'leader-review':{
     if(!ctx.permissions.groupLeader)return denied(s,'not-an-authorized-group-leader');
     if(!leaderIds.includes(cmd.person))return denied(s,'unknown-demo-followup');
