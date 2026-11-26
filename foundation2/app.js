@@ -165,7 +165,7 @@ root.addEventListener('click',event=>{
   if(blocked)return;
   const command=FoundationRead.commandFor(readButton.dataset.readAction,readButton.dataset.value);
   if(!command){readFeedback='Unavailable reading action.';draw(true);return;}
-  const changed=RallyMemberContext.transition({state,ui,conversation:conversation(),command,now:new Date()});
+  const changed=FoundationMemberActions.transition({state,ui,conversation:conversation(),command,now:new Date()});
   if(!changed.ok){readFeedback='No change: '+changed.reason+'.';draw(true);return;}
   const saved=store?.save(changed.state,ui)||{ok:false,reason:'Guarded storage unavailable'};
   if(saved.ok){
@@ -179,7 +179,7 @@ root.addEventListener('click',event=>{
   if(blocked)return;
   const command=FoundationTeam.commandFor(teamButton.dataset.teamAction,teamButton.dataset.value);
   if(!command){teamFeedback='This serving action is not available.';draw(true);return;}
-  const result=RallyMemberContext.transition({state,ui,conversation:conversation(),command,now:new Date()});
+  const result=FoundationMemberActions.transition({state,ui,conversation:conversation(),command,now:new Date()});
   if(!result.ok){teamFeedback='No change: '+result.reason+'.';draw(true);return;}
   const saved=store?.save(result.state,ui)||{ok:false,reason:'Guarded storage is unavailable'};
   if(saved.ok){
@@ -200,7 +200,7 @@ root.addEventListener('click',event=>{
   if(blocked)return;
   const command=FoundationGroups.commandFor(groupButton.dataset.groupAction,groupButton.dataset.value);
   if(!command){groupFeedback='This group action is not available.';draw(true);return;}
-  const result=RallyMemberContext.transition({state,ui,conversation:conversation(),command,now:new Date()});
+  const result=FoundationMemberActions.transition({state,ui,conversation:conversation(),command,now:new Date()});
   if(!result.ok){groupFeedback='No change: '+result.reason+'.';draw(true);return;}
   const saved=store?.save(result.state,ui)||{ok:false,reason:'Guarded storage is unavailable'};
   if(saved.ok){
@@ -218,7 +218,7 @@ root.addEventListener('click',event=>{
  if(!button||blocked)return;
  const command=FoundationToday.commandFor(button.dataset.command,button.dataset.person);
  if(!command)return;
- const result=RallyMemberContext.transition({state,ui,conversation:conversation(),command,now:new Date()});
+ const result=FoundationMemberActions.transition({state,ui,conversation:conversation(),command,now:new Date()});
  if(!result.ok){receipt='No change: '+result.reason+'.';draw(true);return;}
  const saved=store?.save(result.state,ui)||{ok:false,reason:'Guarded storage is unavailable'};
  if(saved.ok){
@@ -256,7 +256,7 @@ root.addEventListener('submit',event=>{
   const command=form.id==='read-reflection-form'?
    {type:'reflection-save',text:form.elements.reflection.value,passage:reading.passage.reference}:
    {type:'reading-question-save',text:form.elements.question.value};
-  const changed=RallyMemberContext.transition({state,ui,conversation:conversation(),command,now:new Date()});
+  const changed=FoundationMemberActions.transition({state,ui,conversation:conversation(),command,now:new Date()});
   if(!changed.ok){readFeedback='Unable to save: '+changed.reason+'.';draw(true);return;}
   const saved=store?.save(changed.state,ui)||{ok:false,reason:'Guarded storage unavailable'};
   if(saved.ok){state=changed.state;readFeedback='Your sample reflection was saved only on this device.';}
