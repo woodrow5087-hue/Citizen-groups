@@ -6,7 +6,7 @@
 'use strict';
 const root=document.getElementById('today'),select=document.getElementById('scenario'),tabs=document.getElementById('primary-nav');
 let route=FoundationNavigation.resolve(window.location.search);
-let state,ui,store,connect,receipt='',blocked='',chatFeedback='';
+let state,ui,store,connect,receipt='',blocked='',chatFeedback='',groupFeedback='';
 const fallback=name=>{
  const scope=FoundationStateStore.scenarios[name],defaultState=RallyAppState.initialize(()=>null,true);
  defaultState.role=scope.role;
@@ -18,7 +18,7 @@ const conversation=()=>{
  return connect?connect.view():{status:'unavailable',unreadCount:null,messages:[],draft:'',replyTo:null};
 };
 function selectScenario(name){
- receipt='';blocked='';chatFeedback='';
+ receipt='';blocked='';chatFeedback='';groupFeedback='';
  try{
   store=FoundationStateStore.create({storage:window.localStorage,scenario:name,Guard:RallyStorageGuard,AppState:RallyAppState});
   const loaded=store.read();
@@ -39,6 +39,7 @@ function draw(focus=false){
  const now=new Date(),chat=conversation(),snapshot=RallyIntelligence.derive({state,ui,conversation:chat,now});
  root.innerHTML=route==='today'?FoundationView.render(FoundationToday.project(snapshot,now),receipt):
   route==='connect'?FoundationConnectView.render(chat,{thread:inThread(),member:snapshot.context.permissions.group,feedback:chatFeedback}):
+  route==='groups'?FoundationGroups.render(FoundationGroups.project(snapshot,chat),{feedback:groupFeedback,blocked:!!blocked}):
   FoundationNavigation.renderRoute(route,snapshot);
  root.setAttribute('aria-label',FoundationNavigation.names[route]);
  tabs.innerHTML=FoundationNavigation.renderTabs(route);
@@ -50,7 +51,7 @@ function draw(focus=false){
   const warning=document.createElement('p');
   warning.className='storage-warning';warning.setAttribute('role','alert');warning.textContent=blocked;
   root.prepend(warning);
-  root.querySelectorAll('button[data-command],.chat-send,#chat-draft').forEach(el=>{el.disabled=true;el.setAttribute('aria-disabled','true');});
+  root.querySelectorAll('button[data-command],button[data-group-action],button[data-chat-open],.chat-send,#chat-draft').forEach(el=>{el.disabled=true;el.setAttribute('aria-disabled','true');});
  }
  if(focus)root.focus({preventScroll:true});
 }
@@ -62,7 +63,7 @@ function go(next,url){
  history.replaceState({...history.state,scroll:window.scrollY,route},'',window.location.href);
  history.pushState({route:next,scroll:0},'',nextUrl);
  route=next;
- chatFeedback='';
+ chatFeedback='';groupFeedback='';
  if(inThread()&&!blocked){
   const seen=connect?.markRead();
   if(!seen?.ok)chatFeedback='Conversation could not be marked read. Existing data was preserved.';
@@ -107,6 +108,25 @@ root.addEventListener('click',event=>{
   const result=connect?.reply(null);
   chatFeedback=result?.ok?'Reply cancelled.':'Could not change the saved reply.';
   draw(true);root.querySelector('#chat-draft')?.focus();return;
+ }
+ const groupButton=target.closest('button[data-group-action]');
+ if(groupButton){
+  if(blocked)return;
+  const command=FoundationGroups.commandFor(groupButton.dataset.groupAction,groupButton.dataset.value);
+  if(!command){groupFeedback='This group action is not available.';draw(true);return;}
+  const result=RallyMemberContext.transition({state,ui,conversation:conversation(),command,now:new Date()});
+  if(!result.ok){groupFeedback='No change: '+result.reason+'.';draw(true);return;}
+  const saved=store?.save(result.state,ui)||{ok:false,reason:'Guarded storage is unavailable'};
+  if(saved.ok){
+   state=result.state;
+   groupFeedback=command.type==='group-rsvp'?'Gathering response saved on this device.':
+    command.type==='leader-review'?'Sample leader follow-up saved on this device.':
+    'Fictional prayer response saved on this device.';
+  }else{
+   blocked=saved.reason||'Stored group response could not be saved safely.';
+   groupFeedback='';
+  }
+  draw(true);return;
  }
  const button=target.closest('button[data-command]');
  if(!button||blocked)return;
