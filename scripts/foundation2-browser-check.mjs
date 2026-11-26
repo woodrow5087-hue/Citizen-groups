@@ -49,7 +49,12 @@ async function check(page,name){
 }
 async function change(page,value){
  await page.locator('#preview-tools>summary').click();
- await page.locator('#scenario').selectOption(value);
+ // Selecting the same saved scenario does not fire a change event.
+ if(await page.locator('#scenario').inputValue()===value){
+  await page.locator('#preview-tools>summary').click();
+ }else{
+  await page.locator('#scenario').selectOption(value);
+ }
  assert.equal(await page.locator('#preview-tools[open]').count(),0);
 }
 try{
@@ -174,6 +179,7 @@ try{
    await page.locator('[data-group-action=group-rsvp][data-value=maybe]').click();
    assert.equal(await page.locator('.group-response-status strong').innerText(),'Maybe');
    await page.reload();
+   assert.equal(await page.locator('#scenario').inputValue(),'group','Synthetic scenario did not survive reload');
    assert.equal(await page.locator('.group-response-status strong').innerText(),'Maybe','Group RSVP did not survive reload');
    await page.locator('#primary-nav a[data-route=today]').click();
    assert.match(await page.locator('.schedule').innerText(),/Maybe/,'Today did not share Groups RSVP');
