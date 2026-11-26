@@ -104,6 +104,45 @@ try{
   }));
   assert.deepEqual(canonicalAfter,canonicalBefore,'Foundation 2 must not mutate original application storage');
   if(width===390){
+   // Gate 4: true F-02 group conversation, not an imitation chat widget.
+   // The inbox must preserve browser history, drafts, read receipts, and
+   // storage isolation before later Groups and Team migrations.
+   await page.locator('.header-connect').click();
+   assert.equal(await page.locator('.connect-thread-entry').count(),1,'group inbox missing');
+   assert.match(await page.locator('.chat-unread').innerText(),/3 new/);
+   await check(page,'connect-inbox-'+width);
+   await page.locator('[data-chat-open=group]').click();
+   assert.match(page.url(),/thread=group/);
+   assert.equal(await page.locator('.chat-message').count(),4);
+   assert.equal(await page.locator('#chat-compose').count(),1);
+   await check(page,'connect-thread-'+width);
+   const threadAxe=await new AxeBuilder({page}).withTags(['wcag2a','wcag2aa','wcag21aa']).analyze();
+   report.violations.push(...threadAxe.violations.map(v=>({width,id:v.id,targets:v.nodes.map(n=>n.target)})));
+   await page.locator('#chat-draft').fill('Draft survives a browser reload');
+   await page.reload();
+   assert.equal(await page.locator('#chat-draft').inputValue(),'Draft survives a browser reload');
+   await page.locator('#chat-compose button[type=submit]').click();
+   assert.equal(await page.locator('.chat-message').count(),5);
+   assert.equal(await page.locator('#chat-draft').inputValue(),'');
+   assert.match(await page.locator('.chat-message').last().innerText(),/Draft survives a browser reload/);
+   await page.locator('.chat-message').first().locator('[data-chat-reply]').click();
+   await page.locator('#chat-draft').fill('An explicitly saved sample reply');
+   await page.locator('#chat-compose button[type=submit]').click();
+   assert.match(await page.locator('.chat-quote').last().innerText(),/Jess W/);
+   assert.equal(await page.locator('.chat-message').count(),6);
+   await check(page,'connect-sent-'+width);
+   await page.goBack();
+   assert.equal(await page.locator('.connect-thread-entry').count(),1,'thread-to-inbox back failed');
+   assert.equal(await page.locator('.chat-unread').count(),0,'read cursor failed to persist');
+   await page.goBack();
+   assert.equal(await page.locator('.greeting').count(),1,'inbox-to-Today back failed');
+   const originalAfterChat=await page.evaluate(()=>({
+    primary:localStorage.getItem('rallypoint-phase1-2026'),
+    today:localStorage.getItem('rallypoint-today-ui-v1'),
+    originalChat:localStorage.getItem('rallypoint-wednesday-chat-lab-v1')
+   }));
+   assert.deepEqual([originalAfterChat.primary,originalAfterChat.today],[canonicalBefore.primary,canonicalBefore.today]);
+   assert.equal(originalAfterChat.originalChat,null,'Foundation 2 contaminated the original Connect key');
    await change(page,'leader');
    await page.locator('[data-command=rsvp]').first().click();
    await page.locator('[data-command=serve]').first().click();
