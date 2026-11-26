@@ -4,6 +4,7 @@ const Intelligence=require('../rally-one-intelligence.js');
 const Team=require('../foundation2/team.js');
 const Today=require('../foundation2/today-model.js');
 const Context=require('../rally-one-member-context.js');
+const Actions=require('../foundation2/member-actions.js');
 const Guard=require('../rallypoint-storage-guard.js'),AppState=require('../rally-one-app-state.js'),Store=require('../foundation2/state-store.js');
 const now=new Date('2026-11-25T12:00:00Z');
 const conversation={status:'ok',unreadCount:3};
@@ -30,7 +31,7 @@ test('Gate 5 Team confirms and declines through canonical transitions, shares st
  const db=memory(),store=Store.create({storage:db,scenario:'connected',Guard,AppState});
  const {ui:memberUI}=store.read();let s=store.read().state;
  for(const [value,label] of [['confirmed','Confirmed'],['declined','Unable to serve'],['confirmed','Confirmed']]){
-  const change=Context.transition({state:s,ui:memberUI,conversation,command:Team.commandFor('serving-response',value),now});
+  const change=Actions.transition({state:s,ui:memberUI,conversation,command:Team.commandFor('serving-response',value),now});
   assert.equal(change.ok,true);
   assert.equal(store.save(change.state,memberUI).ok,true);
   s=Store.create({storage:db,scenario:'connected',Guard,AppState}).read().state;
@@ -51,11 +52,11 @@ test('Gate 5 Team availability actions remain 44px-target commands with truthful
  const confirmed=examine({...fixture(),teamStatus:'confirmed'}).team;
  assert.equal(dom(Team.render(confirmed)).querySelector('[data-value=confirmed]').getAttribute('aria-pressed'),'true');
 });
-test('Gate 5 Team coverage remains read-only and never fabricates a request or attendance',()=>{
+test('Gate 5C coverage actions remain fictional and attendance is never inferred',()=>{
  const s=fixture();s.teamStatus='declined';s.coverage=true;
  const v=examine(s).team,doc=dom(Team.render(v));
  assert.equal(v.coverage,true);
- assert.match(doc.querySelector('.team-coverage').textContent,/coverage request is recorded/);
+ assert.match(doc.querySelector('.team-coverage').textContent,/fictional local coverage request saved/);
  assert.match(doc.querySelector('.team-assignment').textContent,/not recorded attendance/);
  const action=doc.querySelector('[data-team-action="serving-coverage"]');
  assert.equal(action?.getAttribute('data-value'),'withdraw');
@@ -86,10 +87,10 @@ test('Gate 5 Team leader context is explicit and never inferred from schedule or
 test('Gate 5C coverage request/withdraw goes through canonical authorization and survives guard reload',()=>{
  const db=memory(),store=Store.create({storage:db,scenario:'connected',Guard,AppState});
  let {state,ui:memberUI}=store.read();
- const attempt=value=>Context.transition({state,ui:memberUI,conversation,
+ const attempt=value=>Actions.transition({state,ui:memberUI,conversation,
   command:Team.commandFor('serving-coverage',value),now});
  assert.equal(attempt('request').ok,false,'cannot request before declining');
- let change=Context.transition({state,ui:memberUI,conversation,
+ let change=Actions.transition({state,ui:memberUI,conversation,
   command:Team.commandFor('serving-response','declined'),now});
  assert.equal(change.ok,true);assert.equal(store.save(change.state,memberUI).ok,true);state=store.read().state;
  change=attempt('request');
@@ -109,16 +110,16 @@ test('Gate 5C coverage request/withdraw goes through canonical authorization and
 test('Gate 5C cannot make coverage requests without team membership or declined shift',()=>{
  const state=fixture();
  for(const role of [{...ui,memberships:{group:true,team:false}},ui]){
-  const result=Context.transition({state,ui:role,conversation,
+  const result=Actions.transition({state,ui:role,conversation,
    command:{type:'serving-coverage',value:'request'},now});
   assert.equal(result.ok,false);
  }
  const declined={...state,teamStatus:'declined'};
- const noTeam=Context.transition({state:declined,ui:{...ui,memberships:{group:true,team:false}},
+ const noTeam=Actions.transition({state:declined,ui:{...ui,memberships:{group:true,team:false}},
   conversation,command:{type:'serving-coverage',value:'request'},now});
  assert.equal(noTeam.ok,false);
  const active={...declined,coverage:true,teamMessages:[{name:'You',text:'demo',time:'Just now',coverage:true}]};
- const confirmed=Context.transition({state:active,ui,conversation,
+ const confirmed=Actions.transition({state:active,ui,conversation,
   command:{type:'serving-response',value:'confirmed'},now});
  assert.equal(confirmed.ok,true);assert.equal(confirmed.state.coverage,false);
  assert.equal(confirmed.state.teamMessages.some(m=>m.coverage),false);
