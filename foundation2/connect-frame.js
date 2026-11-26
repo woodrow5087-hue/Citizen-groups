@@ -33,7 +33,15 @@ member.setup=()=>{setup();$('.chat-caption').textContent='Fictional group conver
  $('#thread-input').addEventListener('input',failure);document.addEventListener('click',failure);};
 const show=member.show;
 member.show=function(next,name){
+ const priorScreen=screen,priorPerson=person;
  screen=next;person=name||'';show(next,name);context();
+ if(next==='inbox')requestAnimationFrame(()=>requestAnimationFrame(()=>{
+  if(!window.frameElement?.isConnected||screen!=='inbox')return;
+  const active=document.activeElement;
+  if(active!==document.body&&active?.isConnected&&!active.closest('[hidden]'))return;
+  const selector=priorScreen==='direct'?'.conversation-row[data-person="'+priorPerson+'"]':priorScreen==='thread'||priorScreen==='room'?'.conversation-row[data-open="'+priorScreen+'"]':'#screen-inbox h2';
+  const target=$(selector)||(priorScreen==='direct'?$('.people-rail [data-person="'+priorPerson+'"]'):null);if(target&&!target.closest('[hidden]')){if(target.tagName==='H2')target.tabIndex=-1;target.focus({preventScroll:true});target.scrollIntoView({block:'nearest'});}
+ }));
  if(next==='direct'||next==='room'){
   const input=$(next==='direct'?'#direct-input':'#room-input'),key=draftKey(next,person);
   if(!failed.has(key)){input.value=host.draft(next,person);sync(input);}
