@@ -31,16 +31,15 @@ function renderTabs(active){
 }
 function summary(route,snapshot){
  if(route==='groups'||route==='team')throw new TypeError(route+' has a dedicated Gate 5 presentation owner');
- if(route!=='read'&&route!=='connect')throw new TypeError('Unknown preview destination');
+ if(route==='read')throw new TypeError('Read has a dedicated Gate 6 presentation owner');
+ if(route!=='connect')throw new TypeError('Unknown preview destination');
  const ctx=snapshot.context,model=snapshot.model;
- if(route==='read')return {title:'Make space.',eyebrow:'READ · PREVIEW',detail:'Scripture · '+model.passage,
-  status:ctx.reading.readToday?'Sample reading completed':'Sample reading available'};
  return {title:'Stay connected.',eyebrow:'CONNECT · PREVIEW',
   detail:ctx.permissions.group?'Wednesday Group conversation':'No group conversation is available for this scenario',
   status:ctx.group.status==='unavailable'?'Sample conversation unavailable':'Messaging is now integrated in Gate 4'};
 }
 function renderRoute(route,snapshot){
- if(route==='today'||route==='groups'||route==='team'||route==='connect')throw new TypeError(route+' has a dedicated presentation owner');
+ if(route==='today'||route==='groups'||route==='team'||route==='connect'||route==='read')throw new TypeError(route+' has a dedicated presentation owner');
  const s=summary(route,snapshot);
  return '<section class="route-preview" aria-labelledby="route-title">'+
   '<span class="eyebrow">'+esc(s.eyebrow)+'</span><h1 id="route-title" tabindex="-1">'+esc(s.title)+'</h1>'+
