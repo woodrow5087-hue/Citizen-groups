@@ -14,7 +14,7 @@ function draw(focus=false){
  root.innerHTML=FoundationView.render(FoundationToday.project(snapshot,now),receipt);
  if(focus)root.focus({preventScroll:true});
 }
-select.addEventListener('change',()=>{reset(select.value);draw();});
+select.addEventListener('change',()=>{reset(select.value);draw();document.getElementById('preview-tools')?.removeAttribute('open');});
 root.addEventListener('click',event=>{
  const button=event.target.closest('button[data-command]');if(!button||!root.contains(button))return;
  const command=FoundationToday.commandFor(button.dataset.command,button.dataset.person);if(!command)return;
