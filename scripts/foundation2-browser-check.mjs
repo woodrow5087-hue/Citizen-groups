@@ -30,10 +30,12 @@ async function check(page,name){
  const sizing=await page.evaluate(()=>({
   viewport:innerWidth,width:document.documentElement.scrollWidth,
   controls:[...document.querySelectorAll('button[data-command]')].map(b=>[b.getBoundingClientRect().width,b.getBoundingClientRect().height]),
-  photos:[...document.querySelectorAll('.priority-photo img,.settled-photo img')].map(i=>i.naturalWidth)
+  compactButtons:[...document.querySelectorAll('.action-compact')].map(b=>b.getBoundingClientRect().width),
+  photos:[...document.querySelectorAll('.priority-photo img,.settled-photo img,.welcome-photo img')].map(i=>i.naturalWidth)
  }));
  assert.ok(sizing.width<=sizing.viewport+1,name+' horizontally overflows');
  assert.ok(sizing.controls.every(([w,h])=>w>=43&&h>=43),name+' has undersized response buttons');
+ assert.ok(sizing.compactButtons.every(w=>w<=121),name+' has oversized secondary action');
  assert.ok(sizing.photos.every(n=>n>0),name+' failed to display approved photograph');
  await page.screenshot({path:dir+'/'+name+'.png',fullPage:true,animations:'disabled'});
  report.scenes.push({name,sizing});
