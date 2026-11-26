@@ -6,6 +6,7 @@ const Actions=require('../rally-one-memory-actions.js');
 const Read=require('../foundation2/read.js');
 const Intelligence=require('../rally-one-intelligence.js');
 const Context=require('../rally-one-member-context.js');
+const MemberActions=require('../foundation2/member-actions.js');
 const Guard=require('../rallypoint-storage-guard.js'),AppState=require('../rally-one-app-state.js'),Store=require('../foundation2/state-store.js');
 const now=new Date('2026-11-25T12:00:00Z'),conversation={status:'ok',unreadCount:3};
 const ui={name:'Friend',campus:'north',memberships:{group:true,team:true}};
@@ -33,49 +34,49 @@ test('Read and optional prayer use existing guarded local transitions and surviv
  const mem=storage(),store=Store.create({storage:mem,scenario:'connected',Guard,AppState});
  let {state,ui:memberUI}=store.read();
  for(const command of [Read.commandFor('read','true'),Read.commandFor('pray','true')]){
-  const result=Context.transition({state,ui:memberUI,conversation,command,now});
+  const result=MemberActions.transition({state,ui:memberUI,conversation,command,now});
   assert.equal(result.ok,true);assert.equal(store.save(result.state,memberUI).ok,true);
   state=Store.create({storage:mem,scenario:'connected',Guard,AppState}).read().state;
  }
  assert.equal(model(state).read,true);assert.equal(model(state).prayed,true);
  assert.equal(doc(Read.render(model(state))).querySelector('button[data-read-action=read]').getAttribute('aria-pressed'),'true');
- assert.equal(Context.transition({state,ui:memberUI,conversation,command:Read.commandFor('read','true'),now}).ok,false);
+ assert.equal(MemberActions.transition({state,ui:memberUI,conversation,command:Read.commandFor('read','true'),now}).ok,false);
  assert.equal(mem.items.has(Guard.PRIMARY_KEY),false);
  assert.equal(mem.items.has(Guard.TODAY_KEY),false);
 });
 test('Reflection is optional, bounded, saved and may be completed/deferred only when due',()=>{
  const state=initial(),text='Send an encouraging note to a friend.';
  const command={type:'reflection-save',text,passage:Memory.library.sermon.reference};
- const saved=Context.transition({state,ui,conversation,command,now});
+ const saved=MemberActions.transition({state,ui,conversation,command,now});
  assert.equal(saved.ok,true);
  const next=saved.state;
  assert.equal(next.rhythm.text,text);
  assert.equal(next.rhythm.passage,Memory.library.sermon.reference);
  assert.equal(model(next).due,false);
- assert.equal(Context.transition({state:next,ui,conversation,command:{type:'reflection-complete'},now}).ok,false);
+ assert.equal(MemberActions.transition({state:next,ui,conversation,command:{type:'reflection-complete'},now}).ok,false);
  const tomorrow=new Date('2026-11-27T12:00:00Z');
  assert.equal(model(next,ui,tomorrow).due,true);
- const postponed=Context.transition({state:next,ui,conversation,command:{type:'reflection-defer'},now:tomorrow});
+ const postponed=MemberActions.transition({state:next,ui,conversation,command:{type:'reflection-defer'},now:tomorrow});
  assert.equal(postponed.ok,true);assert.equal(model(postponed.state,ui,tomorrow).due,false);
- const complete=Context.transition({state:next,ui,conversation,command:{type:'reflection-complete'},now:tomorrow});
+ const complete=MemberActions.transition({state:next,ui,conversation,command:{type:'reflection-complete'},now:tomorrow});
  assert.equal(complete.ok,true);assert.equal(model(complete.state,ui,tomorrow).completed,true);
- assert.equal(Context.transition({state:complete.state,ui,conversation,command:{type:'reflection-complete'},now:tomorrow}).ok,false);
- assert.equal(Context.transition({state,ui,conversation,command:{...command,text:'x'.repeat(161)},now}).ok,false);
- const cleared=Context.transition({state:next,ui,conversation,command:{type:'reflection-clear'},now});
+ assert.equal(MemberActions.transition({state:complete.state,ui,conversation,command:{type:'reflection-complete'},now:tomorrow}).ok,false);
+ assert.equal(MemberActions.transition({state,ui,conversation,command:{...command,text:'x'.repeat(161)},now}).ok,false);
+ const cleared=MemberActions.transition({state:next,ui,conversation,command:{type:'reflection-clear'},now});
  assert.equal(cleared.ok,true);assert.deepEqual(cleared.state.rhythm,{});
 });
 test('Leader changes of reading pathway and questions require explicit verified demo role',()=>{
- const guest=initial();assert.equal(Context.transition({state:guest,ui,conversation,
+ const guest=initial();assert.equal(MemberActions.transition({state:guest,ui,conversation,
   command:{type:'reading-plan-select',value:'study'},now}).ok,false);
  const leader={...guest,role:'leader'};
- const changed=Context.transition({state:leader,ui,conversation,command:{type:'reading-plan-select',value:'study'},now});
+ const changed=MemberActions.transition({state:leader,ui,conversation,command:{type:'reading-plan-select',value:'study'},now});
  assert.equal(changed.ok,true);assert.equal(model(changed.state).passage.reference,Memory.library.study.reference);
- const question=Context.transition({state:changed.state,ui,conversation,command:{
+ const question=MemberActions.transition({state:changed.state,ui,conversation,command:{
   type:'reading-question-save',text:'What does doing the word look like?'},now});
  assert.equal(question.ok,true);
  assert.match(Read.render(model(question.state)),/doing the word/);
- assert.equal(Context.transition({state:leader,ui,conversation,command:{type:'reading-plan-select',value:'forged'},now}).ok,false);
- assert.equal(Context.transition({state:leader,ui,conversation,command:{type:'reading-question-save',text:'x'.repeat(401)},now}).ok,false);
+ assert.equal(MemberActions.transition({state:leader,ui,conversation,command:{type:'reading-plan-select',value:'forged'},now}).ok,false);
+ assert.equal(MemberActions.transition({state:leader,ui,conversation,command:{type:'reading-question-save',text:'x'.repeat(401)},now}).ok,false);
  const read=doc(Read.render(model(guest)));assert.equal(read.querySelector('.read-leader'),null);
  const leaderDOM=doc(Read.render(model(leader)));assert.ok(leaderDOM.querySelector('.read-leader'));
 });
