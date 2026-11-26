@@ -7,3 +7,14 @@ const project=(state,u=ui,c=conversation)=>Model.project(Intelligence.derive({st
 test('Foundation 2 shows every leader responsibility and chronological dates',()=>{const v=project(initial());assert.equal(v.primary.id,'serve-response');assert.deepEqual(v.secondary.map(x=>x.id),['group-rsvp','leader-checkins']);assert.deepEqual(v.schedule.map(x=>x.id),['serve','group']);assert.match(View.render(v),/data-command="leader"/);});
 test('Foundation 2 uses canonical transitions and preserves optional unread activity',()=>{let s=initial();const original=s;for(const command of [Model.commandFor('serve'),Model.commandFor('rsvp'),Model.commandFor('leader','marcus'),Model.commandFor('leader','taylor')]){const r=Context.transition({state:s,ui,conversation,command,now});assert.equal(r.ok,true);s=r.state;}const v=project(s);assert.equal(v.calm,true);assert.equal(v.unread,3);assert.equal(original.rsvp,'');assert.equal(original.teamStatus,'pending');assert.equal(project(s,ui,{status:'unavailable'}).calm,false);});
 test('Foundation 2 guest cannot perform member actions; escaped direct markup',()=>{const guest={...ui,memberships:{group:false,team:false}},s=initial();const v=project(s,guest);assert.equal(v.guest,true);assert.equal(v.primary,null);assert.equal(Context.transition({state:s,ui:guest,conversation,command:Model.commandFor('rsvp'),now}).ok,false);assert.doesNotMatch(View.render({...v,greeting:'<img onerror=x>'}),/<img onerror=x>/);});
+test('Foundation 2 adds no files to the protected GitHub visual build',()=>{
+ const fs=require('node:fs'),path=require('node:path'),os=require('node:os'),{spawnSync}=require('node:child_process');
+ const tmp=fs.mkdtempSync(path.join(os.tmpdir(),'rally-f2-build-'));
+ try {
+  // Source-level check protects the release build contract while Netlify retains
+  // the independent /foundation2/ review route.
+  const build=fs.readFileSync(path.join(__dirname,'../scripts/build.cjs'),'utf8');
+  assert.match(build,/process\.env\.NETLIFY==='true'&&process\.env\.CONTEXT==='deploy-preview'/);
+  assert.match(build,/fs\.cpSync\(path\.join\(root,'foundation2'\),path\.join\(out,'foundation2'\)/);
+ } finally {fs.rmSync(tmp,{recursive:true,force:true});}
+});
