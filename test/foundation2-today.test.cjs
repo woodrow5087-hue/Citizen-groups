@@ -39,9 +39,9 @@ test('Foundation 2 displays a truthful All Set, guest and unavailable state',()=
  const parse=x=>new JSDOM('<main>'+View.render(x)+'</main>').window.document;
  const calm=parse(project(s));assert.equal(calm.querySelector('h1').textContent,'You’re all set.');
  assert.ok(calm.querySelector('.settled-photo img'));assert.equal(calm.querySelectorAll('[data-command]').length,0);
- assert.match(calm.querySelector('.utility').textContent,/Sample activity/);
+ assert.equal(calm.querySelector('.utility a, a.utility').getAttribute('href'),'?screen=connect');
  const guest=parse(project(initial(),{...ui,memberships:{group:false,team:false}}));
- assert.ok(guest.querySelector('.welcome-card a[href="../index.html"]'));
+ assert.ok(guest.querySelector('.welcome-card a[href="?screen=groups"][data-route="groups"]'));
  assert.equal(guest.querySelector('.priority'),null);
  const unavailable=parse(project(s,ui,{status:'unavailable'}));
  assert.match(unavailable.querySelector('[role=status].utility').textContent,/Conversation unavailable/);

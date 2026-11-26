@@ -409,6 +409,105 @@ try{
    assert.equal(await page.locator('[data-group-action]').count(),0);
   }
   await context.close();
+
+  const journeyContext=await browser.newContext({
+   viewport:{width,height},isMobile:true,hasTouch:true,deviceScaleFactor:1,timezoneId:'America/Denver',reducedMotion:'reduce'
+  });
+  const journey=await journeyContext.newPage();
+  journey.on('pageerror',e=>report.errors.push({width,message:e.message}));
+  await journey.clock.setFixedTime(new Date(observedAt));
+  await journey.goto('http://127.0.0.1:'+port+'/foundation2/');
+  const primary=route=>journey.locator('#primary-nav [data-route='+route+']');
+  const currentFocus=()=>journey.evaluate(()=>document.activeElement?.dataset.returnFocus??document.activeElement?.id);
+  const scroll=()=>journey.evaluate(()=>window.scrollY);
+  async function auditJourney(mode){
+   if(width!==390)return;
+   const audit=await new AxeBuilder({page:journey}).withTags(['wcag2a','wcag2aa','wcag21aa']).analyze();
+   report.violations.push(...audit.violations.map(v=>({width,mode,id:v.id,targets:v.nodes.map(n=>n.target)})));
+  }
+  await change(journey,'visitor');
+  assert.equal(await journey.locator('[data-command]').count(),0);
+  await journey.getByRole('link',{name:'Explore groups'}).click();
+  assert.equal(await journey.locator('#today h1').innerText(),'Find your people.');
+  assert.equal(await currentFocus(),'today');
+  await check(journey,'gate8-visitor-groups-'+width);
+  await auditJourney('gate8-visitor');
+  await journey.goBack();
+  assert.equal(await currentFocus(),'today-groups');
+  await journey.locator('.utility[data-route=read]').click();
+  await journey.getByRole('link',{name:'Jump to VersePlay'}).click();
+  assert.equal(await currentFocus(),'read-games-title');
+  assert.ok(await scroll()>100,'VersePlay jump must scroll within Read');
+  const launch=journey.locator('a[data-read-view=classic]');
+  await launch.scrollIntoViewIfNeeded();
+  const beforeGame=await scroll();
+  await launch.click();
+  assert.equal(await currentFocus(),'today');
+  await journey.getByRole('link',{name:/Back to Read/}).click();
+  await launch.waitFor();
+  assert.equal(await currentFocus(),'classic-launch');
+  assert.ok(Math.abs(await scroll()-beforeGame)<3,'Closing Classic must restore the Read position');
+  await check(journey,'gate8-read-return-'+width);
+  await journey.goForward();
+  assert.equal(await journey.locator('#today h1').innerText(),'Classic VersePlay');
+  await journey.goBack();
+  assert.equal(await currentFocus(),'classic-launch','Browser Back must restore the game link too');
+  await journey.goBack();
+  assert.equal(await currentFocus(),'today-read');
+
+  await change(journey,'group');
+  assert.equal(await journey.locator('[data-command=rsvp]').count(),1);
+  assert.equal(await journey.locator('[data-command=serve]').count(),0);
+  await journey.locator('.utility[data-route=connect]').click();
+  assert.equal(await journey.locator('.connect-thread-entry').count(),1);
+  await journey.goBack();
+  assert.equal(await currentFocus(),'today-connect');
+  await primary('groups').click();
+  const groupConversation=journey.locator('[data-return-focus=groups-conversation]');
+  await groupConversation.scrollIntoViewIfNeeded();
+  const beforeThread=await scroll();
+  await groupConversation.click();
+  await journey.getByRole('link',{name:/Back to Groups/}).click();
+  await groupConversation.waitFor();
+  assert.ok(Math.abs(await scroll()-beforeThread)<3,'Closing the thread must restore the Groups position');
+  assert.equal(await currentFocus(),'groups-conversation');
+  await check(journey,'gate8-group-conversation-return-'+width);
+  await auditJourney('gate8-group');
+  await journey.locator('[data-group-action=group-rsvp][data-value=maybe]').click();
+  await primary('today').click();
+  assert.match(await journey.locator('.schedule').innerText(),/Maybe/);
+
+  await change(journey,'team');
+  assert.equal(await journey.locator('[data-command=serve]').count(),1);
+  assert.equal(await journey.locator('[data-command=rsvp]').count(),0);
+  await primary('team').click();
+  await journey.getByRole('button',{name:'Can’t make it'}).click();
+  assert.equal(await journey.locator('.team-assignment + .team-coverage').count(),1);
+  await journey.getByRole('button',{name:'Request sample coverage'}).click();
+  assert.match(await journey.locator('.team-coverage').innerText(),/coverage request saved/);
+  await check(journey,'gate8-volunteer-coverage-'+width);
+  await auditJourney('gate8-volunteer');
+  await primary('today').click();
+  assert.equal(await journey.locator('.greeting h1').innerText(),'You’re all set.');
+  assert.equal(await journey.locator('[data-command=serve]').count(),0);
+  await primary('team').click();
+  assert.match(await journey.locator('.team-coverage').innerText(),/coverage request saved/);
+
+  if(width===390){
+   await primary('read').click();
+   await journey.evaluate(()=>{document.documentElement.style.fontSize='200%';});
+   await journey.getByRole('link',{name:'Jump to VersePlay'}).click();
+   await check(journey,'gate8-read-enlarged-text-'+width);
+   const metrics=await journey.evaluate(()=>{
+    const nav=document.querySelector('#primary-nav').getBoundingClientRect();
+    const title=document.querySelector('#read-games-title').getBoundingClientRect();
+    return {navTop:nav.top,titleBottom:title.bottom,animation:getComputedStyle(document.querySelector('.read-games-jump')).transitionDuration};
+   });
+   assert.ok(metrics.titleBottom<metrics.navTop,'Jump target must be visible above fixed navigation');
+   assert.equal(metrics.animation,'0s','Reduced motion must disable transitions');
+   await auditJourney('gate8-read-enlarged');
+  }
+  await journeyContext.close();
  }
  assert.deepEqual(report.errors,[]);
  assert.deepEqual(report.violations,[]);

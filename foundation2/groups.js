@@ -63,7 +63,7 @@ function render(vm,{feedback='',blocked=false,groupPreview=''}={}){
  const conversation='<section class="group-conversation" aria-label="Group conversation"><div>'+
   '<strong>Stay connected</strong><p>'+esc(msgStatus)+'</p>'+
   (vm.lastMessage?'<small>'+esc(vm.lastMessage.author+': '+vm.lastMessage.body.slice(0,110))+'</small>':'')+
-  '</div><button type="button" data-chat-open="group"'+(vm.conversationStatus!=='ok'?' disabled':'')+'>Open conversation <span aria-hidden="true">›</span></button></section>';
+  '</div><button type="button" data-chat-open="group" data-return-focus="groups-conversation"'+(vm.conversationStatus!=='ok'?' disabled':'')+'>Open conversation <span aria-hidden="true">›</span></button></section>';
  let care='';
  if(vm.care){
   const m=vm.care;
@@ -75,7 +75,7 @@ function render(vm,{feedback='',blocked=false,groupPreview=''}={}){
    '<div class="group-care-actions">'+(m.stage==='ready'?'<button type="button" data-group-action="group-care-prayed">I prayed</button>':
    m.stage==='paused'?'<button type="button" data-group-action="group-care-resume">Revisit this request</button>':
    '<span class="group-care-status">'+(done?'Follow-up recorded in the existing fixture':'Prayer marked on this device')+'</span>')+
-   '<button type="button" data-chat-open="group"'+(vm.conversationStatus!=='ok'?' disabled':'')+'>Open group conversation</button></div>'+
+   '<button type="button" data-chat-open="group" data-return-focus="groups-care-conversation"'+(vm.conversationStatus!=='ok'?' disabled':'')+'>Open group conversation</button></div>'+
    '<small>Fictional care · no automated outreach</small></section>';
  }
  const leaders=vm.leader&&vm.leaderIds.length?'<section class="group-leader" aria-labelledby="leader-title">'+

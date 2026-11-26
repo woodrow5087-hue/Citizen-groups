@@ -6,6 +6,8 @@
 'use strict';
 const root=document.getElementById('today'),select=document.getElementById('scenario'),tabs=document.getElementById('primary-nav');
 let route=FoundationNavigation.resolve(window.location.search);
+let scrollTimer;
+history.scrollRestoration='manual';
 let state,ui,store,connect,receipt='',blocked='',chatFeedback='',groupFeedback='',teamFeedback='',readFeedback='';
 const groupPreviewActive=()=>FoundationGroupPreview.isActive(select.value);
 const localScenario=selection=>FoundationGroupPreview.isActive(selection)?'group':FoundationServing.localScenario(selection);
@@ -70,7 +72,7 @@ function draw(focus=false){
  const group=FoundationGroupPreview.project(select.value,snapshot.context,window.FoundationGroupFixtures);
  const groupPreview=FoundationGroupPreview.render(group);
  root.innerHTML=route==='today'?FoundationView.render(FoundationToday.project(snapshot,now,serving?.state,group?.state),receipt,servingPreview+groupPreview):
-  route==='connect'?FoundationConnectView.render(chat,{thread:inThread(),member:!groupPreviewActive()&&snapshot.context.permissions.group,feedback:chatFeedback}):
+  route==='connect'?FoundationConnectView.render(chat,{thread:inThread(),member:!groupPreviewActive()&&snapshot.context.permissions.group,feedback:chatFeedback,returnToGroups:history.state?.returnRoute==='groups'}):
   route==='groups'?FoundationGroups.render(FoundationGroups.project(snapshot,chat),{feedback:groupFeedback,blocked:!!blocked,groupPreview}):
   route==='team'?FoundationTeam.render(FoundationTeam.project(snapshot),{feedback:teamFeedback,blocked:!!blocked,servingPreview}):
   route==='read'?readMarkup(snapshot):
@@ -90,13 +92,23 @@ function draw(focus=false){
  }
  if(focus)root.focus({preventScroll:true});
 }
-function go(next,url){
+function rememberPosition(focusId=history.state?.focusId){
+ const entry=history.state,scroll=window.scrollY;
+ if(entry?.route!==route||entry.scroll!==scroll||entry.focusId!==focusId){
+  history.replaceState({...entry,route,scroll,focusId},'');
+ }
+}
+function restorePosition(entry){
+ window.scrollTo(0,Math.max(0,Number(entry?.scroll)||0));
+}
+function go(next,url,origin){
  const nextUrl=url||FoundationNavigation.href(next);
- if(next===route&&window.location.search===new URL(nextUrl,window.location.href).search){
+ if(new URL(nextUrl,window.location.href).href===window.location.href){
   root.focus({preventScroll:true});return;
  }
- history.replaceState({...history.state,scroll:window.scrollY,route},'',window.location.href);
- history.pushState({route:next,scroll:0},'',nextUrl);
+ clearTimeout(scrollTimer);
+ rememberPosition(origin?.dataset.returnFocus??null);
+ history.pushState({route:next,scroll:0,returnRoute:route},'',nextUrl);
  route=next;
  chatFeedback='';groupFeedback='';teamFeedback='';readFeedback='';
  if(inThread()&&!blocked&&!groupPreviewActive()){
@@ -104,36 +116,63 @@ function go(next,url){
   if(!seen?.ok)chatFeedback='Conversation could not be marked read. Existing data was preserved.';
  }
  draw(true);
- window.scrollTo(0,0);
+ restorePosition(history.state);
+}
+function returnTo(fallback){
+ if(history.state?.returnRoute===fallback){
+  clearTimeout(scrollTimer);
+  rememberPosition();
+  history.back();
+ }else{
+  go(fallback);
+ }
+}
+function isPlainClick(event){
+ return !event.defaultPrevented&&event.button===0&&!event.metaKey&&!event.ctrlKey&&!event.shiftKey&&!event.altKey;
 }
 select.addEventListener('change',()=>{
  rememberScenario(select.value);
  selectScenario(select.value);
  document.getElementById('preview-tools')?.removeAttribute('open');
- if(FoundationServing.isActive(select.value)||groupPreviewActive())root.focus({preventScroll:true});
+ root.focus({preventScroll:true});
 });
 document.addEventListener('click',event=>{
  const link=event.target.closest('a[data-route]');
- if(!link||!document.contains(link))return;
+ if(!link||!isPlainClick(event))return;
  const next=link.dataset.route;
  if(!Object.hasOwn(FoundationNavigation.names,next))return;
- event.preventDefault();go(next);
+ event.preventDefault();go(next,link.getAttribute('href'),link);
 });
+window.addEventListener('scroll',()=>{
+ clearTimeout(scrollTimer);
+ scrollTimer=setTimeout(()=>rememberPosition(),200);
+},{passive:true});
 window.addEventListener('popstate',event=>{
+ clearTimeout(scrollTimer);
  route=FoundationNavigation.resolve(window.location.search);
- chatFeedback='';
- draw(true);
- window.scrollTo(0,Math.max(0,Number(event.state?.scroll)||0));
+ chatFeedback='';groupFeedback='';teamFeedback='';readFeedback='';
+ draw();
+ const control=event.state?.focusId&&root.querySelector('[data-return-focus="'+CSS.escape(event.state.focusId)+'"]');
+ (control||root).focus({preventScroll:true});
+ restorePosition(event.state);
 });
+if(typeof ResizeObserver==='function'){
+ new ResizeObserver(()=>{
+  document.documentElement.style.setProperty('--nav-clearance',Math.ceil(tabs.getBoundingClientRect().height+12)+'px');
+ }).observe(tabs);
+}
 root.addEventListener('click',event=>{
  const target=event.target;
  const open=target.closest('[data-chat-open]');
  if(open){
   if(blocked||conversation().status!=='ok')return;
-  go('connect','?screen=connect&thread=group');return;
+  go('connect','?screen=connect&thread=group',open);return;
  }
  const back=target.closest('a[data-thread=inbox]');
- if(back){event.preventDefault();go('connect','?screen=connect');return;}
+ if(back&&isPlainClick(event)){
+  event.preventDefault();
+  returnTo(history.state?.returnRoute==='groups'?'groups':'connect');return;
+ }
  const reply=target.closest('button[data-chat-reply]');
  if(reply){
   const result=connect?.reply(reply.dataset.chatReply);
@@ -147,9 +186,18 @@ root.addEventListener('click',event=>{
   draw(true);root.querySelector('#chat-draft')?.focus();return;
  }
  const readLink=target.closest('a[data-read-view]');
- if(readLink){
+ if(readLink&&isPlainClick(event)){
   event.preventDefault();
-  go('read',readLink.getAttribute('href'));
+  if(readLink.dataset.readView==='home')returnTo('read');
+  else go('read',readLink.getAttribute('href'),readLink);
+  return;
+ }
+ const gamesJump=target.closest('.read-games-jump');
+ if(gamesJump&&isPlainClick(event)){
+  event.preventDefault();
+  const heading=root.querySelector('#read-games-title');
+  heading?.focus({preventScroll:true});
+  heading?.scrollIntoView({block:'start'});
   return;
  }
  const classicButton=target.closest('button[data-action^=memory-]');
@@ -282,4 +330,5 @@ root.addEventListener('submit',event=>{
 });
 restoreScenario();
 selectScenario(select.value);
+restorePosition(history.state);
 })();

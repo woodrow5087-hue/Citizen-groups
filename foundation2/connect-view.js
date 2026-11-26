@@ -10,7 +10,7 @@
 'use strict';
 const esc=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const body=(tag,text)=>'<'+tag+'>'+esc(text)+'</'+tag+'>';
-function render(chat,{thread=false,member=false,feedback=''}={}){
+function render(chat,{thread=false,member=false,feedback='',returnToGroups=false}={}){
  const head='<section class="connect-page" aria-labelledby="route-title"><span class="eyebrow">CONNECT · FICTIONAL LOCAL MESSAGING</span>'+
   '<h1 id="route-title" tabindex="-1">'+(thread?'Wednesday Group':'Stay connected.')+'</h1>';
  const notice='<p class="connect-disclaimer">Synthetic conversation stored only in this preview. No messages are delivered to real people.</p>';
@@ -28,7 +28,7 @@ function render(chat,{thread=false,member=false,feedback=''}={}){
   const last=chat.lastMessage,preview=last?last.author+': '+last.body:'Start a conversation';
   const unread=chat.unreadCount>0?'<span class="chat-unread" aria-label="'+chat.unreadCount+' unread messages">'+chat.unreadCount+' new</span>':'';
   return head+'<p class="route-lead">Your conversations</p>'+status+
-   '<button type="button" class="connect-thread-entry" data-chat-open="group">'+
+   '<button type="button" class="connect-thread-entry" data-chat-open="group" data-return-focus="connect-thread">'+
    '<span class="connect-thread-avatar" aria-hidden="true">W</span>'+
    '<span class="connect-thread-copy"><strong>Wednesday Group</strong><small>'+esc(preview)+'</small></span>'+unread+
    '<span aria-hidden="true">›</span></button>'+
@@ -49,7 +49,10 @@ function render(chat,{thread=false,member=false,feedback=''}={}){
  const reply=chat.replyTo?chat.messages.find(m=>m.id===chat.replyTo):null;
  const context=reply?'<div class="chat-reply-context"><span>Replying to '+esc(reply.author)+': '+esc(reply.body.slice(0,90))+'</span>'+
   '<button type="button" data-chat-reply-cancel aria-label="Cancel reply">×</button></div>':'';
- return head+'<a class="chat-inbox-back" href="?screen=connect" data-thread="inbox">‹ Back to inbox</a>'+
+ const back=returnToGroups?
+  '<a class="chat-inbox-back" href="?screen=groups" data-thread="inbox">‹ Back to Groups</a>':
+  '<a class="chat-inbox-back" href="?screen=connect" data-thread="inbox">‹ Back to inbox</a>';
+ return head+back+
   '<p class="route-lead">Wednesday Group · Fictional local conversation</p>'+status+
   '<ol class="chat-messages" aria-label="Wednesday Group messages">'+messages+'</ol>'+
   '<form id="chat-compose" class="chat-compose" aria-label="Write a sample group message">'+context+

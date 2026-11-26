@@ -26,7 +26,7 @@ function action(item,vm,compact=false){
  const label=compact&&item.command==='serve'?'Confirm':compact&&item.command==='rsvp'?'RSVP':item.label;
  return '<button type="button" class="action'+(compact?' action-compact':'')+'" data-command="'+esc(item.command)+'" aria-label="'+esc(item.label)+'">'+esc(label)+arrow+'</button>';
 }
-function render(v,receipt='',servingPreview=''){
+function render(v,receipt='',schedulePreview=''){
  const p=v.primary;
  const meta=p?'<div class="priority-meta"><span class="kicker">UP NEXT</span><span>'+esc(dateLabel(p.date))+'</span></div>':'';
  const main=p?'<article class="priority" aria-label="Next responsibility">'+meta+
@@ -37,8 +37,8 @@ function render(v,receipt='',servingPreview=''){
   '<div class="settled-copy"><h2>'+(v.member?'Life is better together.':'Small acts. Real impact.')+'</h2>'+
   '<p>'+(v.member?'Take a moment to connect with your people.':'Your serving community is here for you.')+'</p></div></article>':'';
  const welcome=v.guest?'<article class="settled welcome-card"><div class="welcome-photo">'+welcomeImage+'</div><div class="settled-copy"><span class="welcome-kicker">RALLY ONE · YOUR COMMUNITY</span><h2>We rally together so no one stands alone.</h2>'+
-  '<p>Explore the community in the current Rally One demo. No account or private data is connected here.</p>'+
-  '<a href="../index.html">Open the full demo '+arrow+'</a></div></article>':'';
+  '<p>Find a place to connect at your own pace.</p>'+
+  '<a href="?screen=groups" data-route="groups" data-return-focus="today-groups">Explore groups '+arrow+'</a></div></article>':'';
  const secondary=v.secondary.length?'<section class="responsibilities" aria-label="Other responsibilities">'+
   '<div class="section-heading"><h2>Also needs a response</h2><span>'+v.secondary.length+' more</span></div>'+
   '<div class="responsibility-list">'+v.secondary.map(x=>'<article class="responsibility"><div class="responsibility-copy"><strong>'+esc(x.title)+'</strong><small>'+esc(x.detail)+'</small></div>'+action(x,v,true)+'</article>').join('')+'</div></section>':'';
@@ -51,12 +51,12 @@ function render(v,receipt='',servingPreview=''){
  let optional='';
  if(v.unavailable)optional='<aside class="utility" role="status"><span class="utility-icon">'+chat+'</span><div><strong>Conversation unavailable</strong><small>Saved messages could not be read in this preview.</small></div></aside>';
  else if(v.unknownTeam)optional='<aside class="utility" role="status"><span class="utility-icon">'+book+'</span><div><strong>Serving response unavailable</strong><small>Review the saved schedule in the full application.</small></div></aside>';
- else if(v.unread>0)optional='<aside class="utility"><span class="utility-icon">'+chat+'</span><div><strong>'+esc(v.unread)+' new group '+(v.unread===1?'message':'messages')+'</strong><small>Sample activity · conversations remain in the full app</small></div></aside>';
- else if(v.reading)optional='<aside class="utility"><span class="utility-icon">'+book+'</span><div><strong>A moment with God</strong><small>'+esc(v.passage)+' · Scripture and prayer</small></div></aside>';
+ else if(v.unread>0)optional='<a class="utility utility-link" href="?screen=connect" data-route="connect" data-return-focus="today-connect"><span class="utility-icon">'+chat+'</span><div><strong>'+esc(v.unread)+' new group '+(v.unread===1?'message':'messages')+'</strong><small>Open Connect</small></div>'+arrow+'</a>';
+ else if(v.reading)optional='<a class="utility utility-link" href="?screen=read" data-route="read" data-return-focus="today-read"><span class="utility-icon">'+book+'</span><div><strong>A moment with God</strong><small>'+esc(v.passage)+' · Scripture and prayer</small></div>'+arrow+'</a>';
  const heading='<header class="greeting"><div class="eyebrow">'+esc(v.date)+(v.campus==='unspecified'?'':' · '+esc(v.campus)+' campus')+'</div>'+
   '<h1>'+esc(v.greeting)+'</h1><p class="summary '+(v.calm?'complete':'')+'">'+esc(v.summary)+'</p></header>';
  return heading+'<p class="receipt" role="status" aria-live="polite">'+esc(receipt)+'</p>'+
-  main+settled+welcome+secondary+paused+schedule+servingPreview+optional;
+  main+settled+welcome+secondary+paused+schedule+schedulePreview+optional;
 }
 return Object.freeze({render});
 });

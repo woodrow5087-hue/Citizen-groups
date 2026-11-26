@@ -69,7 +69,7 @@ function render(vm,{feedback='',blocked=false,servingPreview=''}={}){
   '<a class="route-full-app" href="../index.html">Open serving tools in the existing full demo <span aria-hidden="true">↗</span></a></section>';
  const leader=vm.authorizedLeader?'<p class="team-leader-notice">Authorized team-leader scenario · no attendance inferred from confirmations.</p>':'';
  return header+(feedback?'<p class="group-feedback" role="status">'+esc(feedback)+'</p>':'')+
-  text+image+coverage+leader+'</section>';
+  text+(vm.response==='declined'?coverage+image:image+coverage)+leader+'</section>';
 }
 return Object.freeze({project,commandFor,render});
 });
