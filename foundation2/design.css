@@ -154,3 +154,39 @@ a{color:inherit}
 @media(prefers-reduced-motion:reduce){
  *,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
 }
+
+/* Gate 3 — one application shell. Route destinations remain explicitly
+   read-only until their functional engines are integrated at later gates. */
+.shell{padding-bottom:84px}
+.header-actions{display:flex;align-items:center;gap:4px}
+.header-connect{box-sizing:border-box;width:44px;height:44px;display:grid;place-items:center;border-radius:12px;color:var(--paper);text-decoration:none}
+.header-connect svg{width:23px;height:23px;display:block}
+.header-connect[aria-current="page"]{background:var(--paper);color:var(--dark)}
+.primary-nav{
+ position:fixed;left:50%;bottom:0;transform:translateX(-50%);
+ width:min(100%,460px);display:grid;grid-template-columns:repeat(4,minmax(0,1fr));
+ gap:4px;padding:8px 12px max(8px,env(safe-area-inset-bottom));
+ background:#202223;border-top:1px solid var(--line);z-index:8;
+}
+.primary-nav a{
+ display:grid;justify-items:center;align-content:center;gap:2px;
+ min-width:0;min-height:56px;padding:6px 2px;border-radius:12px;
+ text-align:center;text-decoration:none;color:var(--muted);font-size:.6875rem;font-weight:750;line-height:1.3;
+}
+.primary-nav a svg{width:23px;height:23px;display:block}
+.primary-nav a[aria-current="page"]{background:var(--paper);color:var(--dark)}
+.preview-footer{padding-bottom:18px}
+.route-preview{min-width:0;margin:20px 0 24px}
+.route-preview>h1{font-size:clamp(2rem,8vw,2.45rem);letter-spacing:-.06em;line-height:1.08;margin:8px 0}
+.route-preview .route-lead{margin:0 0 18px;color:var(--muted);font-size:.875rem;line-height:1.5}
+.route-preview-card{display:grid;gap:10px;padding:18px 16px;background:var(--panel);border:1px solid var(--line);border-radius:var(--feature-radius)}
+.route-stage-label{font-size:.625rem;letter-spacing:.09em;color:#f4b1bd;font-weight:800}
+.route-preview-card p{margin:0;font-size:.875rem;line-height:1.5;color:var(--paper)}
+.route-preview-card p+p{font-size:.75rem;color:var(--muted)}
+.route-full-app{display:flex;justify-content:space-between;align-items:center;gap:9px;padding:12px;border-radius:11px;min-height:44px;background:var(--paper);color:var(--dark);font-size:.8125rem;font-weight:800;text-decoration:none;line-height:1.35}
+.storage-warning{padding:11px 13px;border:1px solid #dd9b9b;border-radius:10px;background:#452e30;color:#ffe1e1;font-size:.8125rem;line-height:1.4}
+@media(max-width:360px){
+ .primary-nav{padding-inline:6px;gap:2px}
+ .primary-nav a{font-size:.625rem}
+ .header-actions{gap:0}
+}
