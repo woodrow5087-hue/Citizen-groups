@@ -73,3 +73,9 @@ Last accepted canonical base: `d038fc6adfdbc7c9b5925fc91e475cb1f15c7467`. Origin
 - **Accessibility:** corrected overline contrast on dark panels, sized fixed-navigation clearance from the bar's measured height, and verified reduced motion and 200% text sizing in the mobile browser suite.
 - **Local evidence:** 928 application tests, 172 VersePlay tests and 72 responsive browser scenes passed with zero page errors and axe violations. The ordinary and protected preview builds matched the accepted checkpoint byte for byte. The three journeys exercised matching saved state, correct destination, Back focus and scroll restoration at 320, 390, and 430 px.
 - **Acceptance:** verify exact-head protected workflows and Netlify provenance, then run the three journeys on iPhone Safari before recording Gate 8 acceptance.
+
+### Gate 8 fixture-only acceptance reconciliation
+
+- The owner authorized a deterministic scroll-pose correction for the protected legacy Connect doubled-text direct-message fixture, preserving `e7a6e752a07eede2052b2ae4082b420277bd0f9a` under `rally-one/checkpoints/2026-11-26-f2-gate8-pre-correction`.
+- Application source, historical references, inventories and zero-pixel assertions remain protected. See [root cause, controlled evidence and official journey reconciliation](foundation2-gate8-fixture-reconciliation.md).
+- The owner reports 13/13 physical Safari/VoiceOver checks passed; the fixture-only change introduces no new runtime behavior to repeat. Individual checklist/device details remain unverified. Final Gate 8 acceptance and separately authorized canonical promotion remain on HOLD pending consolidated validation and human review.

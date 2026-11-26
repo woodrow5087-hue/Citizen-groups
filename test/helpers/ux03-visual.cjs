@@ -43,6 +43,33 @@ async function prepareVisualState(target){
   document.documentElement.getBoundingClientRect();
  });
 }
+async function directDraftPose(page){
+ return page.locator('#direct-input').evaluate(e=>({
+  value:e.value,selectionStart:e.selectionStart,selectionEnd:e.selectionEnd,selectionDirection:e.selectionDirection,
+  focused:e===document.activeElement,rootFontSize:getComputedStyle(document.documentElement).fontSize,
+  clientHeight:e.clientHeight,scrollHeight:e.scrollHeight,clientWidth:e.clientWidth,scrollWidth:e.scrollWidth,
+  rect:e.getBoundingClientRect().toJSON(),scrollTop:e.scrollTop,scrollLeft:e.scrollLeft
+ }));
+}
+function assertDirectDraftPose(actual,before){
+ const {scrollTop,scrollLeft,...unchanged}=actual;
+ const {scrollTop:previousTop,scrollLeft:previousLeft,...expected}=before;
+ assert.equal(scrollTop,0,'Doubled-text direct draft vertical scroll pose drifted');
+ assert.equal(scrollLeft,0,'Doubled-text direct draft horizontal scroll pose drifted');
+ assert.deepEqual(unchanged,expected,'Direct draft content, selection, focus or geometry changed during visual capture');
+}
+async function verifyDirectDraftPose(page,before){assertDirectDraftPose(await directDraftPose(page),before);}
+async function normalizeDirectDraftPose(page){
+ const before=await directDraftPose(page);
+ assert.equal(before.value,'Jess draft','Unexpected direct-message visual fixture');
+ assert.equal(before.rootFontSize,'32px','Scroll normalization is only for the doubled-text fixture');
+ assert.equal(before.focused,true,'Preserve the focused draft fixture');
+ // Native WebKit caret/autosize may retain either 0 or 2px here. Normalize only
+ // this known single-line visual fixture; do not blur, resize or edit the draft.
+ await page.locator('#direct-input').evaluate(e=>{e.scrollTop=0;e.scrollLeft=0;});
+ await settlePaint(page);await verifyDirectDraftPose(page,before);
+ return before;
+}
 async function captureStable(page){
  let previous;
  for(let frame=0;frame<8;frame++){
@@ -52,4 +79,4 @@ async function captureStable(page){
  }
  throw Error('Connect native paint did not stabilize');
 }
-module.exports={reference,launchOptions,expectedCaptures,protectSource,assertPair,settlePaint,prepareVisualState,captureStable};
+module.exports={reference,launchOptions,expectedCaptures,protectSource,assertPair,settlePaint,prepareVisualState,assertDirectDraftPose,normalizeDirectDraftPose,verifyDirectDraftPose,captureStable};
