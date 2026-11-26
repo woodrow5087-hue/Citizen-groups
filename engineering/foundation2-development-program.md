@@ -55,3 +55,11 @@ Last accepted canonical base: `d038fc6adfdbc7c9b5925fc91e475cb1f15c7467`. Origin
 - Foundation 2.0 is available only at `/foundation2/` on draft PR #151's Netlify deploy-preview. The root `/` stays the original canonical application.
 - Presentation and routing are isolated in `foundation2/`. `RallyIntelligence`, `RallyMemberContext`, `RallyStorageGuard`, `RallyAppState`, the existing messaging domain and VersePlay engines remain the only respective functional authorities.
 - There is no production deployment, live church data, credential use, original-app storage migration, release approval or merge authorization.
+
+## F2-07 second slice — synthetic Groups read
+
+- **Starting source:** `11757e483cd0bdb4c07ca4ebf8c6cc6c251dcbef`, accepted for the serving slice after protected QA and the owner's physical iPhone check. [Acceptance record](https://github.com/woodrow5087-hue/Citizen-groups/pull/151#issuecomment-7182486597).
+- **Files:** this record, `scripts/build-group-preview.cjs`, `scripts/build.cjs`, `foundation2/group-preview.js`, `foundation2/app.js`, `foundation2/index.html`, `foundation2/groups.js`, `foundation2/today-model.js`, `scripts/foundation2-browser-check.mjs`, and `test/foundation2-group-preview.test.cjs`.
+- **Contract:** the existing Sprint 11 synthetic consent, session, Groups reader, resilience transport and minimized member view run in the preview build. The build publishes fictional group name, next gathering title and time, or a restricted/unavailable result. A successful empty calendar is distinct from an outage or stale data. Today and Groups share the read-only projection. The regular Group member scenario remains the owner of local RSVP, conversation and prayer state.
+- **Acceptance:** check the complete, empty, denied, outage and stale states, isolation from the local group fixture, protected QA, exact preview provenance and physical iPhone behavior on this candidate.
+- **Local evidence:** 928 application tests, 172 VersePlay tests and 59 responsive browser scenes passed. Browser review reported zero page errors and axe violations. The standard and protected preview builds match the accepted source byte for byte.

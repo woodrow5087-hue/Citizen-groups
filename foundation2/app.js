@@ -7,6 +7,8 @@
 const root=document.getElementById('today'),select=document.getElementById('scenario'),tabs=document.getElementById('primary-nav');
 let route=FoundationNavigation.resolve(window.location.search);
 let state,ui,store,connect,receipt='',blocked='',chatFeedback='',groupFeedback='',teamFeedback='',readFeedback='';
+const groupPreviewActive=()=>FoundationGroupPreview.isActive(select.value);
+const localScenario=selection=>FoundationGroupPreview.isActive(selection)?'group':FoundationServing.localScenario(selection);
 const scenarioSessionKey='rally-one-foundation2-v1:selected-scenario';
 // The selector represents a synthetic test persona, not app membership state.
 // Keep the selected persona across reloads within this tab only, without
@@ -14,7 +16,7 @@ const scenarioSessionKey='rally-one-foundation2-v1:selected-scenario';
 function restoreScenario(){
  try{
   const saved=window.sessionStorage.getItem(scenarioSessionKey);
-  if(saved&&Object.hasOwn(FoundationStateStore.scenarios,FoundationServing.localScenario(saved)))select.value=saved;
+  if(saved&&Object.hasOwn(FoundationStateStore.scenarios,localScenario(saved)))select.value=saved;
  }catch(_){/* private-mode fallback: default scenario */ }
 }
 function rememberScenario(value){
@@ -43,7 +45,7 @@ const conversation=()=>{
  return connect?connect.view():{status:'unavailable',unreadCount:null,messages:[],draft:'',replyTo:null};
 };
 function selectScenario(selection){
- const name=FoundationServing.localScenario(selection);
+ const name=localScenario(selection);
  receipt='';blocked='';chatFeedback='';groupFeedback='';teamFeedback='';readFeedback='';
  try{
   store=FoundationStateStore.create({storage:window.localStorage,scenario:name,Guard:RallyStorageGuard,AppState:RallyAppState});
@@ -55,19 +57,21 @@ function selectScenario(selection){
   blocked='This preview could not safely access local storage. Responses are disabled; nothing will be overwritten.';
  }
  try{
-  connect=FoundationConnect.create({storage:window.localStorage,scenario:name,Read:RallyConversationRead,
+  connect=groupPreviewActive()?null:FoundationConnect.create({storage:window.localStorage,scenario:name,Read:RallyConversationRead,
    Domain:RallyChatDomain,isMember:()=>ui.memberships.group===true&&select.value!=='unavailable'});
  }catch(_){connect=null;}
- if(inThread()&&!blocked&&select.value!=='unavailable')connect?.markRead();
+ if(inThread()&&!blocked&&!groupPreviewActive()&&select.value!=='unavailable')connect?.markRead();
  draw();
 }
 function draw(focus=false){
  const now=new Date(),chat=conversation(),snapshot=RallyIntelligence.derive({state,ui,conversation:chat,now});
  const serving=FoundationServing.project(select.value,snapshot.context,window.FoundationServingFixtures);
  const servingPreview=FoundationServing.render(serving);
- root.innerHTML=route==='today'?FoundationView.render(FoundationToday.project(snapshot,now,serving?.state),receipt,servingPreview):
-  route==='connect'?FoundationConnectView.render(chat,{thread:inThread(),member:snapshot.context.permissions.group,feedback:chatFeedback}):
-  route==='groups'?FoundationGroups.render(FoundationGroups.project(snapshot,chat),{feedback:groupFeedback,blocked:!!blocked}):
+ const group=FoundationGroupPreview.project(select.value,snapshot.context,window.FoundationGroupFixtures);
+ const groupPreview=FoundationGroupPreview.render(group);
+ root.innerHTML=route==='today'?FoundationView.render(FoundationToday.project(snapshot,now,serving?.state,group?.state),receipt,servingPreview+groupPreview):
+  route==='connect'?FoundationConnectView.render(chat,{thread:inThread(),member:!groupPreviewActive()&&snapshot.context.permissions.group,feedback:chatFeedback}):
+  route==='groups'?FoundationGroups.render(FoundationGroups.project(snapshot,chat),{feedback:groupFeedback,blocked:!!blocked,groupPreview}):
   route==='team'?FoundationTeam.render(FoundationTeam.project(snapshot),{feedback:teamFeedback,blocked:!!blocked,servingPreview}):
   route==='read'?readMarkup(snapshot):
   FoundationNavigation.renderRoute(route,snapshot);
@@ -95,7 +99,7 @@ function go(next,url){
  history.pushState({route:next,scroll:0},'',nextUrl);
  route=next;
  chatFeedback='';groupFeedback='';teamFeedback='';readFeedback='';
- if(inThread()&&!blocked){
+ if(inThread()&&!blocked&&!groupPreviewActive()){
   const seen=connect?.markRead();
   if(!seen?.ok)chatFeedback='Conversation could not be marked read. Existing data was preserved.';
  }
@@ -106,7 +110,7 @@ select.addEventListener('change',()=>{
  rememberScenario(select.value);
  selectScenario(select.value);
  document.getElementById('preview-tools')?.removeAttribute('open');
- if(FoundationServing.isActive(select.value))root.focus({preventScroll:true});
+ if(FoundationServing.isActive(select.value)||groupPreviewActive())root.focus({preventScroll:true});
 });
 document.addEventListener('click',event=>{
  const link=event.target.closest('a[data-route]');
@@ -200,8 +204,8 @@ root.addEventListener('click',event=>{
   draw(true);return;
  }
  const groupButton=target.closest('button[data-group-action]');
- if(groupButton){
-  if(blocked)return;
+ if(groupButton&&route==='groups'){
+  if(blocked||groupPreviewActive())return;
   const command=FoundationGroups.commandFor(groupButton.dataset.groupAction,groupButton.dataset.value);
   if(!command){groupFeedback='This group action is not available.';draw(true);return;}
   const result=FoundationMemberActions.transition({state,ui,conversation:conversation(),command,now:new Date()});
@@ -221,7 +225,7 @@ root.addEventListener('click',event=>{
  const button=target.closest('button[data-command]');
  if(!button||blocked||route!=='today')return;
  const command=FoundationToday.commandFor(button.dataset.command,button.dataset.person);
- if(!command||(command.type==='serving-response'&&FoundationServing.isActive(select.value)))return;
+ if(!command||groupPreviewActive()||(command.type==='serving-response'&&FoundationServing.isActive(select.value)))return;
  const result=FoundationMemberActions.transition({state,ui,conversation:conversation(),command,now:new Date()});
  if(!result.ok){receipt='No change: '+result.reason+'.';draw(true);return;}
  const saved=store?.save(result.state,ui)||{ok:false,reason:'Guarded storage is unavailable'};

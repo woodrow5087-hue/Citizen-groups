@@ -11,7 +11,12 @@ const root=resolve(fileURLToPath(new URL('../',import.meta.url)));
 const {makeChatDomainBundle}=createRequire(import.meta.url)('./build-chat-lab.cjs');
 const canonicalChatBundle=makeChatDomainBundle();
 const {makeServingPreviewBundle}=createRequire(import.meta.url)('./build-serving-preview.cjs');
-const servingBundle=await makeServingPreviewBundle(Date.parse('2026-11-26T00:45:00Z'));
+const {makeGroupPreviewBundle}=createRequire(import.meta.url)('./build-group-preview.cjs');
+const observedAt=Date.parse('2026-11-26T00:45:00Z');
+const bundles=new Map([
+ ['foundation2/serving-fixtures.js',await makeServingPreviewBundle(observedAt)],
+ ['foundation2/group-fixtures.js',await makeGroupPreviewBundle(observedAt)]
+]);
 const dir=resolve(root,'test-results/foundation2');
 const types={'.html':'text/html','.js':'text/javascript','.css':'text/css','.svg':'image/svg+xml','.webp':'image/webp','.jpg':'image/jpeg','.ttf':'font/ttf'};
 await mkdir(dir,{recursive:true});
@@ -23,9 +28,9 @@ const http=createServer(async(req,res)=>{
    res.writeHead(200,{'Content-Type':'text/javascript','Cache-Control':'no-store'});
    res.end(canonicalChatBundle);return;
   }
-  if(rel==='foundation2/serving-fixtures.js'){
+  if(bundles.has(rel)){
    res.writeHead(200,{'Content-Type':'text/javascript','Cache-Control':'no-store'});
-   res.end(servingBundle);return;
+   res.end(bundles.get(rel));return;
   }
   const filename=resolve(root,rel);
   if(!filename.startsWith(root+sep)){res.writeHead(403);res.end();return;}
@@ -346,6 +351,62 @@ try{
    await change(page,'visitor');
    assert.equal(await serving.count(),0,'Visitor must not see the prior volunteer assignment');
    assert.equal(await page.locator('[data-team-action]').count(),0);
+  }
+  const groupPreview=page.locator('[data-group-preview]');
+  const beforeGroupPreview=await page.evaluate(()=>JSON.stringify(localStorage));
+  await openTab('today');
+  await change(page,'group-ready');
+  assert.equal(await page.evaluate(()=>document.activeElement?.id),'today');
+  assert.equal(await groupPreview.getAttribute('data-group-preview'),'ready');
+  assert.match(await groupPreview.innerText(),/North Campus Group[\s\S]*Community gathering/);
+  assert.equal(await page.locator('[data-command=rsvp],.schedule .event').count(),0);
+  const groupReady=await groupPreview.innerText();
+  await check(page,'group-preview-ready-today-'+width);
+  await openTab('groups');
+  assert.equal(await groupPreview.innerText(),groupReady);
+  assert.equal(await page.locator('[data-group-action],[data-chat-open]').count(),0);
+  await check(page,'group-preview-ready-groups-'+width);
+  if(width===390){
+   await page.reload();
+   assert.equal(await page.locator('#scenario').inputValue(),'group-ready');
+   assert.equal(await groupPreview.innerText(),groupReady);
+   for(const [mode,state,message] of [
+    ['empty','empty',/No upcoming gathering is scheduled/],
+    ['denied','restricted',/sample group is restricted/],
+    ['outage','unavailable',/schedule is unavailable.*gathering is unknown/],
+    ['stale','unavailable',/schedule is unavailable.*gathering is unknown/]
+   ]){
+    await change(page,'group-'+mode);
+    assert.equal(await groupPreview.getAttribute('data-group-preview'),state);
+    assert.match(await groupPreview.getByRole('status').innerText(),message);
+    assert.equal(await page.locator('main time,[data-group-action],[data-chat-open]').count(),0);
+    const groupOutcome=await groupPreview.innerText();
+    await check(page,'group-preview-'+mode+'-groups-'+width);
+    await openTab('today');
+    assert.equal(await groupPreview.innerText(),groupOutcome);
+    assert.equal(await page.locator('main time,[data-command=rsvp],.settled').count(),0);
+    await check(page,'group-preview-'+mode+'-today-'+width);
+    const result=await new AxeBuilder({page}).withTags(['wcag2a','wcag2aa','wcag21aa']).analyze();
+    report.violations.push(...result.violations.map(v=>({width,mode:'group-'+mode,id:v.id,targets:v.nodes.map(n=>n.target)})));
+    await openTab('groups');
+   }
+   await change(page,'group-ready');
+   assert.equal(await groupPreview.innerText(),groupReady);
+   const groupsAxe=await new AxeBuilder({page}).withTags(['wcag2a','wcag2aa','wcag21aa']).analyze();
+   report.violations.push(...groupsAxe.violations.map(v=>({width,mode:'group-ready',id:v.id,targets:v.nodes.map(n=>n.target)})));
+   await page.evaluate(()=>{document.documentElement.style.fontSize='200%';});
+   await check(page,'group-preview-groups-enlarged-text-'+width);
+   await page.evaluate(()=>{document.documentElement.style.removeProperty('font-size');});
+   await page.locator('.header-connect').click();
+   assert.equal(await page.locator('.connect-thread-entry').count(),0,'Read-only group preview must not expose local chat');
+   await openTab('groups');
+   assert.equal(await page.evaluate(()=>JSON.stringify(localStorage)),beforeGroupPreview);
+   await change(page,'group');
+   assert.equal(await groupPreview.count(),0);
+   assert.equal(await page.locator('.group-response-status strong').innerText(),'Going');
+   await change(page,'visitor');
+   assert.equal(await groupPreview.count(),0);
+   assert.equal(await page.locator('[data-group-action]').count(),0);
   }
   await context.close();
  }

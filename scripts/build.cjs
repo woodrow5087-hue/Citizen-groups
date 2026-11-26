@@ -27,9 +27,13 @@ async function buildPreview(){
  if(process.env.NETLIFY==='true'&&process.env.CONTEXT==='deploy-preview'){
   fs.cpSync(path.join(root,'foundation2'),path.join(out,'foundation2'),{recursive:true});
   const {makeServingPreviewBundle}=require('./build-serving-preview.cjs');
-  const bundle=await makeServingPreviewBundle();
-  new vm.Script(bundle,{filename:'serving-fixtures.js'});
-  fs.writeFileSync(path.join(out,'foundation2','serving-fixtures.js'),bundle);
+  const {makeGroupPreviewBundle}=require('./build-group-preview.cjs');
+  const time=Date.now();
+  const bundles=await Promise.all([makeServingPreviewBundle(time),makeGroupPreviewBundle(time)]);
+  for(const [index,filename] of ['serving-fixtures.js','group-fixtures.js'].entries()){
+   new vm.Script(bundles[index],{filename});
+   fs.writeFileSync(path.join(out,'foundation2',filename),bundles[index]);
+  }
  }
  console.log('Built the Rally Point preview in dist, including approved references and the unchanged Citizen Connect archive.');
 }

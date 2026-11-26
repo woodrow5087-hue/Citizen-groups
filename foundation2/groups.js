@@ -40,9 +40,10 @@ function response(vm){
   '<button type="button" class="'+(vm.rsvp==='maybe'?'is-selected':'')+'" data-group-action="group-rsvp" data-value="maybe"'+(vm.rsvp==='maybe'?' aria-pressed="true"':' aria-pressed="false"')+'>Maybe</button>'+
   (vm.rsvp?'<button type="button" data-group-action="group-rsvp" data-value="clear">Clear response</button>':'')+'</div></div>';
 }
-function render(vm,{feedback='',blocked=false}={}){
+function render(vm,{feedback='',blocked=false,groupPreview=''}={}){
  const heading='<section class="group-page" aria-labelledby="route-title">'+
   '<span class="eyebrow">GROUPS · YOUR COMMUNITY</span><h1 id="route-title" tabindex="-1">'+(vm.member?'Your people.':'Find your people.')+'</h1>';
+ if(groupPreview)return heading+groupPreview+'</section>';
  if(!vm.member)return heading+'<p class="route-lead">You are not part of a fictional small group in this scenario.</p>'+
   '<div class="route-preview-card"><span class="route-stage-label">NO GROUP MEMBERSHIP</span>'+
   '<p>Explore available groups in the existing full demo. No membership or personal information is created from browsing.</p>'+
