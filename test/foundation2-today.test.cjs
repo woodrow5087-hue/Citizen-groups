@@ -82,7 +82,8 @@ test('Foundation 2 visual reconciliation keeps compact actions meaningful and pr
  assert.equal(compact.getAttribute('data-command'),'serve');
  const guest=project(initial(),{...ui,memberships:{group:false,team:false}});
  const guestDoc=new JSDOM('<main>'+View.render(guest)+'</main>').window.document;
- assert.equal(guestDoc.querySelector('.welcome-photo img')?.getAttribute('src'),'../assets/rally-one/title-card.jpg');
+ assert.equal(guestDoc.querySelector('.welcome-photo img')?.getAttribute('src'),'../assets/rally-one/community.webp');
+ assert.notEqual(guestDoc.querySelector('.welcome-photo img')?.getAttribute('src'),'../assets/rally-one/title-card.jpg');
  assert.match(guestDoc.querySelector('.welcome-card h2').textContent,/no one stands alone/);
  const fs=require('node:fs'),path=require('node:path');
  const markup=new JSDOM(fs.readFileSync(path.join(__dirname,'../foundation2/index.html'),'utf8')).window.document;
