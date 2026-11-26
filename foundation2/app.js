@@ -4,7 +4,8 @@
  */
 (function(){
 'use strict';
-const root=document.getElementById('today'),select=document.getElementById('scenario');
+const root=document.getElementById('today'),select=document.getElementById('scenario'),tabs=document.getElementById('primary-nav');
+let route=FoundationNavigation.resolve(window.location.search);
 let state,ui,conversation,store,receipt='',blocked='';
 const fallback=name=>{
  const scope=FoundationStateStore.scenarios[name];
@@ -32,7 +33,14 @@ function selectScenario(name){
 }
 function draw(focus=false){
  const now=new Date(),snapshot=RallyIntelligence.derive({state,ui,conversation,now});
- root.innerHTML=FoundationView.render(FoundationToday.project(snapshot,now),receipt);
+ root.innerHTML=route==='today'?FoundationView.render(FoundationToday.project(snapshot,now),receipt):
+  FoundationNavigation.renderRoute(route,snapshot);
+ root.setAttribute('aria-label',FoundationNavigation.names[route]);
+ tabs.innerHTML=FoundationNavigation.renderTabs(route);
+ const connectLink=document.querySelector('.header-connect');
+ if(route==='connect')connectLink?.setAttribute('aria-current','page');
+ else connectLink?.removeAttribute('aria-current');
+ document.title='Rally One · '+FoundationNavigation.names[route]+' · Foundation 2';
  if(blocked){
   const warning=document.createElement('p');
   warning.className='storage-warning';warning.setAttribute('role','alert');warning.textContent=blocked;
@@ -45,6 +53,27 @@ select.addEventListener('change',()=>{
  selectScenario(select.value);
  document.getElementById('preview-tools')?.removeAttribute('open');
 });
+// Route transitions are URL-owned and read-only. Back/forward never commits
+// application state, and every destination receives an explicit accessible name.
+document.addEventListener('click',event=>{
+ const link=event.target.closest('a[data-route]');
+ if(!link||!document.contains(link))return;
+ const next=link.dataset.route;
+ if(!Object.hasOwn(FoundationNavigation.names,next))return;
+ event.preventDefault();
+ if(next===route){root.focus({preventScroll:true});return;}
+ history.replaceState({...history.state,scroll:window.scrollY,route},'',window.location.href);
+ history.pushState({route:next,scroll:0},'',FoundationNavigation.href(next));
+ route=next;
+ draw(true);
+ window.scrollTo(0,0);
+});
+window.addEventListener('popstate',event=>{
+ route=FoundationNavigation.resolve(window.location.search);
+ draw(true);
+ window.scrollTo(0,Math.max(0,Number(event.state?.scroll)||0));
+});
+
 root.addEventListener('click',event=>{
  const button=event.target.closest('button[data-command]');
  if(!button||!root.contains(button)||blocked)return;
