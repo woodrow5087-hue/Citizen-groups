@@ -134,7 +134,10 @@ root.addEventListener('click',event=>{
   const saved=store?.save(result.state,ui)||{ok:false,reason:'Guarded storage is unavailable'};
   if(saved.ok){
    state=result.state;
-   teamFeedback=command.value==='confirmed'?'Fictional serving availability confirmed on this device.':
+   teamFeedback=command.type==='serving-coverage'?
+    (command.value==='request'?'Fictional coverage request saved only on this device. Nobody was notified.':
+     'Fictional coverage request withdrawn on this device. Nobody was notified.'):
+    command.value==='confirmed'?'Fictional serving availability confirmed on this device.':
     'Fictional serving availability marked unable on this device.';
   }else{
    blocked=saved.reason||'Serving response could not be saved safely.';
