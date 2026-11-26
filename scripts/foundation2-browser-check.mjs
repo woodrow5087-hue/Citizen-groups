@@ -196,6 +196,24 @@ try{
    await check(page,'group-rsvp-shared-'+width);
    await page.locator('#primary-nav a[data-route=today]').click();
    assert.match(await page.locator('.schedule').innerText(),/Going/,'Today did not share Groups confirmation');
+   // Gate 5B: Team availability uses the same guarded response as Today.
+   await change(page,'team');
+   await page.locator('#primary-nav a[data-route=team]').click();
+   assert.equal(await page.locator('.team-assignment').count(),1);
+   assert.equal(await page.locator('[data-team-action=serving-response]').count(),2);
+   await check(page,'team-member-'+width);
+   await page.locator('[data-team-action=serving-response][data-value=confirmed]').click();
+   assert.equal(await page.locator('.team-availability strong').innerText(),'Confirmed');
+   await page.reload();
+   assert.equal(await page.locator('#scenario').inputValue(),'team','Team scenario changed on reload');
+   assert.equal(await page.locator('.team-availability strong').innerText(),'Confirmed','Serving confirmation lost after reload');
+   await page.locator('[data-team-action=serving-response][data-value=declined]').click();
+   assert.equal(await page.locator('.team-availability strong').innerText(),'Unable to serve');
+   await page.reload();
+   assert.equal(await page.locator('.team-availability strong').innerText(),'Unable to serve','Declined serving response lost');
+   assert.equal(await page.locator('[data-team-action=coverage]').count(),0,'Unsafe coverage request action added');
+   await check(page,'team-response-shared-'+width);
+   await page.locator('#primary-nav a[data-route=today]').click();
    await change(page,'visitor');assert.equal(await page.locator('.welcome-card').count(),1);await check(page,'visitor-'+width);
    await change(page,'unavailable');assert.equal(await page.locator('.utility[role=status]').count(),1);await check(page,'unavailable-'+width);
    await page.evaluate(()=>localStorage.setItem('rally-one-foundation2-v1:connected:journal','{"version":1,"before":{},"after":{}}'));
