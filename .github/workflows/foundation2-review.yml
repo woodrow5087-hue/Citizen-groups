@@ -38,6 +38,7 @@ jobs:
           curl --silent --fail --retry 5 --retry-connrefused http://127.0.0.1:8527/ -o /dev/null
           node scripts/convergence2a-preview-check.mjs http://127.0.0.1:8527/
           node scripts/convergence2b-browser-check.mjs http://127.0.0.1:8527/
+          node scripts/convergence2c-browser-check.mjs http://127.0.0.1:8527/
       - name: Preserve visual evidence
         if: always()
         uses: actions/upload-artifact@v4
@@ -46,5 +47,6 @@ jobs:
           path: |
             test-results/foundation2/
             test-results/convergence2b/
+            test-results/convergence2c/
           retention-days: 30
           if-no-files-found: warn

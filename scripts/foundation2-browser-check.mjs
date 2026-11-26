@@ -46,6 +46,7 @@ const report={scenes:[],errors:[],violations:[]};
 let browser;
 async function check(page,name){
  await page.locator('#today h1').waitFor();
+ if(await page.locator('#premium-connect').count())await page.frameLocator('#premium-connect').locator('body.connect-member').waitFor();
  await page.evaluate(async()=>{await document.fonts.ready;await Promise.all([...document.images].map(i=>i.decode().catch(()=>null)));});
  const sizing=await page.evaluate(()=>({
   viewport:innerWidth,width:document.documentElement.scrollWidth,
@@ -132,32 +133,35 @@ try{
    // The inbox must preserve browser history, drafts, read receipts, and
    // storage isolation before later Groups and Team migrations.
    await page.locator('.header-connect').click();
-   assert.equal(await page.locator('.connect-thread-entry').count(),1,'group inbox missing');
-   assert.match(await page.locator('.chat-unread').innerText(),/3 new/);
+   const premium=page.frameLocator('#premium-connect');
+   await premium.locator('body.connect-member').waitFor();
+   assert.equal(await premium.locator('.conversation-row[data-open=thread]:visible').count(),1,'group inbox missing');
+   assert.equal(await premium.locator('.conversation-row[data-open=thread] .unread').innerText(),'3');
    await check(page,'connect-inbox-'+width);
-   await page.locator('[data-chat-open=group]').click();
+   await premium.locator('.conversation-row[data-open=thread]').click();
    assert.match(page.url(),/thread=group/);
-   assert.equal(await page.locator('.chat-message').count(),4);
-   assert.equal(await page.locator('#chat-compose').count(),1);
+   assert.equal(await premium.locator('#thread-new-messages .message').count(),4);
+   assert.equal(await premium.locator('#thread-form').count(),1);
    await check(page,'connect-thread-'+width);
    const threadAxe=await new AxeBuilder({page}).withTags(['wcag2a','wcag2aa','wcag21aa']).analyze();
    report.violations.push(...threadAxe.violations.map(v=>({width,id:v.id,targets:v.nodes.map(n=>n.target)})));
-   await page.locator('#chat-draft').fill('Draft survives a browser reload');
+   await premium.locator('#thread-input').fill('Draft survives a browser reload');
    await page.reload();
-   assert.equal(await page.locator('#chat-draft').inputValue(),'Draft survives a browser reload');
-   await page.locator('#chat-compose button[type=submit]').click();
-   assert.equal(await page.locator('.chat-message').count(),5);
-   assert.equal(await page.locator('#chat-draft').inputValue(),'');
-   assert.match(await page.locator('.chat-message').last().innerText(),/Draft survives a browser reload/);
-   await page.locator('.chat-message').first().locator('[data-chat-reply]').click();
-   await page.locator('#chat-draft').fill('An explicitly saved sample reply');
-   await page.locator('#chat-compose button[type=submit]').click();
-   assert.match(await page.locator('.chat-quote').last().innerText(),/Jess W/);
-   assert.equal(await page.locator('.chat-message').count(),6);
+   assert.equal(await premium.locator('#thread-input').inputValue(),'Draft survives a browser reload');
+   await premium.locator('#thread-form button[type=submit]').click();
+   assert.equal(await premium.locator('#thread-new-messages .message').count(),5);
+   assert.equal(await premium.locator('#thread-input').inputValue(),'');
+   assert.match(await premium.locator('#thread-new-messages .message').last().innerText(),/Draft survives a browser reload/);
+   await premium.locator('#thread-new-messages .message').first().locator('.message-reply-action').click();
+   await premium.locator('#thread-input').fill('An explicitly saved sample reply');
+   await premium.locator('#thread-form button[type=submit]').click();
+   assert.match(await premium.locator('.message-reply').last().innerText(),/Jess W/);
+   assert.equal(await premium.locator('#thread-new-messages .message').count(),6);
    await check(page,'connect-sent-'+width);
    await page.goBack();
-   assert.equal(await page.locator('.connect-thread-entry').count(),1,'thread-to-inbox back failed');
-   assert.equal(await page.locator('.chat-unread').count(),0,'read cursor failed to persist');
+   await premium.locator('#screen-inbox:not([hidden])').waitFor();
+   assert.equal(await premium.locator('.conversation-row[data-open=thread]:visible').count(),1,'thread-to-inbox back failed');
+   assert.equal(await premium.locator('.conversation-row[data-open=thread] .unread:visible').count(),0,'read cursor failed to persist');
    await page.goBack();
    assert.equal(await page.locator('.greeting').count(),1,'inbox-to-Today back failed');
    const originalAfterChat=await page.evaluate(()=>({
@@ -209,7 +213,8 @@ try{
    await page.locator('[data-group-action=group-care-prayed]').click();
    assert.match(await page.locator('.group-care').innerText(),/Prayer marked on this device/);
    await page.locator('.group-conversation [data-chat-open=group]').click();
-   assert.equal(await page.locator('.chat-message').count(),4,'Group must open the canonical F-02 thread');
+   await page.frameLocator('#premium-connect').locator('#thread-new-messages .message').first().waitFor();
+   assert.equal(await page.frameLocator('#premium-connect').locator('#thread-new-messages .message').count(),4,'Group must open the canonical F-02 thread');
    await page.goBack();
    assert.equal(await page.locator('.group-conversation').count(),1,'thread return must restore Groups');
    await check(page,'group-rsvp-shared-'+width);
@@ -404,7 +409,8 @@ try{
    await check(page,'group-preview-groups-enlarged-text-'+width);
    await page.evaluate(()=>{document.documentElement.style.removeProperty('font-size');});
    await page.locator('.header-connect').click();
-   assert.equal(await page.locator('.connect-thread-entry').count(),0,'Read-only group preview must not expose local chat');
+   assert.equal(await page.locator('#premium-connect').count(),0,'Read-only group preview must not expose local chat');
+   assert.equal(await page.locator('[data-chat-open]').count(),0);
    await openTab('groups');
    assert.equal(await page.evaluate(()=>JSON.stringify(localStorage)),beforeGroupPreview);
    await change(page,'group');
@@ -465,7 +471,8 @@ try{
   assert.equal(await journey.locator('[data-command=rsvp]').count(),1);
   assert.equal(await journey.locator('[data-command=serve]').count(),0);
   await journey.locator('.utility[data-route=connect]').click();
-  assert.equal(await journey.locator('.connect-thread-entry').count(),1);
+  await journey.frameLocator('#premium-connect').locator('body.connect-member').waitFor();
+  assert.equal(await journey.frameLocator('#premium-connect').locator('.conversation-row[data-open=thread]:visible').count(),1);
   await journey.goBack();
   assert.equal(await currentFocus(),'today-connect');
   await primary('groups').click();
@@ -473,7 +480,7 @@ try{
   await groupConversation.scrollIntoViewIfNeeded();
   const beforeThread=await scroll();
   await groupConversation.click();
-  await journey.getByRole('link',{name:/Back to Groups/}).click();
+  await journey.locator('.connect-return').click();
   await groupConversation.waitFor();
   assert.ok(Math.abs(await scroll()-beforeThread)<3,'Closing the thread must restore the Groups position');
   assert.equal(await currentFocus(),'groups-conversation');

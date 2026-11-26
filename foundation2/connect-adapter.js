@@ -89,7 +89,32 @@ function create({storage,scenario,Read,Domain,isMember}={}){
    fields.replyTo=id;
   });
  }
- return Object.freeze({view,markRead,saveDraft,send,reply,namespace:key});
+ // Give the unchanged premium UI a capability-limited storage port. Each
+ // frame gets its own read-before-write baseline; foreign keys and removals
+ // are never forwarded to browser storage. Parent views use the same owner.
+ function presentationStorage(){
+  let expected,read=false;
+  function requireKey(k){if(k!==Read.STORAGE_KEY)throw Error('Unexpected conversation key');if(!permitted())throw Error('no-access');}
+  function validateRaw(raw){
+   const saved=Read.readSaved({getItem:k=>{if(k!==Read.STORAGE_KEY)throw Error('Unexpected conversation key');return raw;}},Domain);
+   if(saved?.replyTo&&!saved.snapshot.messages.some(m=>m.id===saved.replyTo&&m.conversationId===Read.CONVERSATION&&m.deliveryStatus==='sent'))throw Error('Unknown saved reply');
+   return saved;
+  }
+  return Object.freeze({
+   getItem(k){requireKey(k);const raw=adapter.getItem(k);validateRaw(raw);expected=raw;read=true;return raw;},
+   setItem(k,value){
+    requireKey(k);if(!read||typeof value!=='string')throw Error('Conversation must be read before editing');
+    validateRaw(value);
+    const raw=adapter.getItem(k);validateRaw(raw);
+    if(raw!==expected)throw Error('concurrent-change');
+    if(value!==raw)adapter.setItem(k,value);
+    expected=value;
+   },
+   removeItem(){throw Error('Conversation removal is not authorized');},
+   clear(){throw Error('Conversation removal is not authorized');}
+  });
+ }
+ return Object.freeze({view,markRead,saveDraft,send,reply,presentationStorage,namespace:key});
 }
 return Object.freeze({create});
 });
