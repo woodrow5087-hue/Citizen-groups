@@ -272,6 +272,7 @@ try{
    assert.equal(await page.locator('[data-read-action=reflection-complete]').count(),1,'Due reflection unavailable');
    await page.locator('[data-read-action=reflection-complete]').click();
    assert.match(await page.locator('.read-saved-note').innerText(),/Marked complete/);
+   await page.locator('#primary-nav a[data-route=today]').click();
    await change(page,'visitor');assert.equal(await page.locator('.welcome-card').count(),1);await check(page,'visitor-'+width);
    await change(page,'unavailable');assert.equal(await page.locator('.utility[role=status]').count(),1);await check(page,'unavailable-'+width);
    await page.evaluate(()=>localStorage.setItem('rally-one-foundation2-v1:connected:journal','{"version":1,"before":{},"after":{}}'));
