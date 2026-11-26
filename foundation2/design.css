@@ -305,3 +305,7 @@ a{color:inherit}
 .team-coverage .team-coverage-note{font-size:.6875rem;margin-bottom:12px}
 .team-leader-notice{color:var(--muted);font-size:.6875rem;line-height:1.5}
 @media(max-width:360px){.team-identity{grid-template-columns:1fr}.team-identity img{max-height:100px;min-height:85px}}
+
+/* Gate 5C: authorized local coverage interaction. */
+.team-coverage-action{display:block;width:100%;min-height:44px;padding:10px 12px;margin:0 0 10px;background:var(--paper);color:var(--dark);border:1px solid var(--paper);border-radius:10px;font-weight:800;font-size:.8125rem;line-height:1.4}
+.team-coverage-action:focus-visible{outline:2px solid var(--paper);outline-offset:3px}
