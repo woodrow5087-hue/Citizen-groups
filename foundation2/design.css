@@ -496,8 +496,8 @@ button.member-help{font:inherit;font-weight:800;color:var(--ink);background:tran
 @keyframes rally-panel-enter{from{opacity:.94;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
 @media(prefers-reduced-motion:no-preference){
  .member-dialog[open],.relational-dialog[open]{animation:rally-panel-enter 160ms cubic-bezier(.2,.7,.2,1)}
- .group-page button,.team-page button,.read-page:not(.is-classic) button,.read-game-link,.read-games-jump,.connect-return,.relational-actions button,.group-contact,.primary-nav a,.header-actions a,.header-actions button{transition:transform 120ms ease,border-color 140ms ease}
- .group-page button:active,.team-page button:active,.read-page:not(.is-classic) button:active,.read-game-link:active,.read-games-jump:active,.connect-return:active,.relational-actions button:active,.group-contact:active,.primary-nav a:active,.header-actions a:active,.header-actions button:active{transform:scale(.985)}
+ .group-page button,.team-page button,.read-page :is(.read-scripture,.read-reflection,.read-prayer,.read-leader) button,.read-game-link,.read-games-jump,.connect-return,.relational-actions button,.group-contact,.primary-nav a,.header-actions a,.header-actions button{transition:transform 120ms ease,border-color 140ms ease}
+ .group-page button:active,.team-page button:active,.read-page :is(.read-scripture,.read-reflection,.read-prayer,.read-leader) button:active,.read-game-link:active,.read-games-jump:active,.connect-return:active,.relational-actions button:active,.group-contact:active,.primary-nav a:active,.header-actions a:active,.header-actions button:active{transform:scale(.985)}
 }
 @media(prefers-reduced-motion:reduce){
  .member-dialog[open],.relational-dialog[open]{animation:none!important}

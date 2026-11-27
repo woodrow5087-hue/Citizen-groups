@@ -99,9 +99,11 @@ try{
    assert.equal(await page.locator('.read-game-link').count(),3);
    assert.equal(await page.locator('.read-leader').count(),persona==='leader'?1:0);
    await capture(page,width+'-read-'+persona);
+   await page.emulateMedia({reducedMotion:'no-preference'});
    await page.locator('.read-games-jump').click();await page.locator('[data-return-focus=classic-launch]').click();
    await page.locator('[data-action=memory-pick]').first().waitFor();
-   await page.locator('[data-read-view=home]').click();
+   assert.deepEqual(await page.locator('[data-action=memory-pick]').first().evaluate(e=>({property:getComputedStyle(e).transitionProperty,duration:getComputedStyle(e).transitionDuration})),{property:'transform, box-shadow',duration:'0.14s, 0.14s'},'Read press polish must not change Classic game tile motion');
+   await page.locator('[data-read-view=home]').click();await page.emulateMedia({reducedMotion:'reduce'});
    assert.equal(await page.locator('[data-return-focus=classic-launch]').evaluate(e=>e===document.activeElement),true,'Classic return focus');
    await page.evaluate(()=>document.documentElement.style.fontSize='200%');await frames(page);
    assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),'Read at 200% text must not overflow');
