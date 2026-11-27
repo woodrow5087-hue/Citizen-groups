@@ -35,7 +35,8 @@ function create(api){
   if(b.dataset.rel==='close'){close();return;}if(!current()){close();return;}
   if(b.dataset.action==='gv2-profile'){photo(b.dataset.person);return;}
   if(b.dataset.go==='group'){close();api.navigate('connect','?screen=connect&thread=group',opener);return;}
-  if(b.dataset.action==='pane'||b.dataset.action==='gv2-back-discovery'){people();return;}
+  if(b.dataset.action==='gv2-back-discovery'){discovery();return;}
+  if(b.dataset.action==='pane'){people();return;}
   const action=b.dataset.rel;
   if(action==='people')people();if(action==='contact')contact(b.dataset.id);if(action==='message')direct();if(action==='discovery')discovery();if(action==='prayer')prayer();if(action==='leader')leader();
   if(action==='review-care'){close();api.navigate('groups',null,opener);}
