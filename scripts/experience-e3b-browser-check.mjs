@@ -36,8 +36,16 @@ try{
    assert.equal(await page.locator('#premium-connect').getAttribute('aria-hidden'),'true','Unbound static controls must not be exposed before controller/permission setup');
    assert.equal(await page.locator('#premium-connect').evaluate(e=>e.inert),true);
   }
+  const movedFocus=width===390;
+  if(movedFocus)await page.getByRole('button',{name:'Ask Rally',exact:true}).focus();
   releaseController();await page.unroute('**/connect-design-lab.js');
-  const f=page.frameLocator('#premium-connect');await f.locator('.people-rail [data-person=Jess]').click();
+  const f=page.frameLocator('#premium-connect');
+  await page.waitForFunction(()=>{const f=document.querySelector('#premium-connect');return f&&getComputedStyle(f).visibility!=='hidden';});
+  if(!baseline){
+   if(movedFocus)assert.equal(await page.getByRole('button',{name:'Ask Rally',exact:true}).evaluate(e=>e===document.activeElement),true,'Readiness must not steal focus after the user moved elsewhere');
+   else assert.equal(await f.locator('#screen-inbox .inbox-headline h2').evaluate(e=>e===document.activeElement),true,'Ready conversation entry restores the controller heading focus');
+  }
+  await f.locator('.people-rail [data-person=Jess]').click();
   releaseImage();await page.waitForFunction(()=>document.querySelector('#premium-connect')?.contentDocument?.readyState==='complete');
   await frames(page);
   if(!baseline)assert.equal(await f.locator('#screen-direct').isVisible(),true,'Late iframe load must preserve the contact selected while images were loading');
