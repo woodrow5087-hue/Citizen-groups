@@ -24,8 +24,16 @@ try{
   await page.goto(new URL('/foundation2/',base).href);await page.locator('.greeting h1').waitFor();
   const keys=['rallypoint-phase1-2026','rallypoint-today-ui-v1','rallypoint-wednesday-chat-lab-v1','rallypoint-blank-battle-v1'];
   const originals=await page.evaluate(keys=>keys.map(k=>localStorage.getItem(k)),keys);
+  // Hold an inbox image through an early contact click. Scripts are usable
+  // before iframe load; late assets must not restore the original inbox URL.
+  let releaseImage;const heldImage=new Promise(resolve=>{releaseImage=resolve;});
+  await page.route('**/assets/today-priority/anna.webp',async request=>{await heldImage;await request.continue();});
   await page.locator('.header-connect').click();
   const f=page.frameLocator('#premium-connect');await f.locator('.people-rail [data-person=Jess]').click();
+  releaseImage();await page.waitForFunction(()=>document.querySelector('#premium-connect')?.contentDocument?.readyState==='complete');
+  await frames(page);
+  if(!baseline)assert.equal(await f.locator('#screen-direct').isVisible(),true,'Late iframe load must preserve the contact selected while images were loading');
+  await page.unroute('**/assets/today-priority/anna.webp');
   for(let i=0;i<12;i++){
    await f.locator('#direct-input').fill('Local scroll rehearsal '+i+'. A fictional conversation retained on this device. '.repeat(3));
    await f.locator('#direct-form .send-btn').click();

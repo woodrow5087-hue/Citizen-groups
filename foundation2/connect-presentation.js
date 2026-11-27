@@ -12,7 +12,11 @@ function mount({container,host,storage,key,search,onScreen,onReturn}){
  const controller=new AbortController();let disposed=false,restoring=false,loaded=false;
  let desired=view(search);const notice=document.querySelector('.connect-host-notice');
  const report=message=>{if(notice){notice.textContent=message;notice.setAttribute('role',message?'alert':'status');}};
- frame.connectMember={...host,...desired,storage,report,screenChanged(screen,person){if(!restoring&&!disposed)onScreen(screen,person);}};
+ frame.connectMember={...host,...desired,storage,report,screenChanged(screen,person){if(!restoring&&!disposed){
+  // A visible conversation can be opened before the iframe's images finish
+  // loading. Final load reconciliation must retain that actual user choice.
+  desired={screen,person:person||''};onScreen(screen,person);
+ }}};
  // Small viewport units stay fixed as Safari's address bar moves. This hidden
  // layout ruler is not a scroll area and never participates in focus or state.
  const ruler=document.createElement('div');ruler.setAttribute('aria-hidden','true');
