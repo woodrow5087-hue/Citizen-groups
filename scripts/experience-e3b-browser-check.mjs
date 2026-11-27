@@ -28,7 +28,15 @@ try{
   // before iframe load; late assets must not restore the original inbox URL.
   let releaseImage;const heldImage=new Promise(resolve=>{releaseImage=resolve;});
   await page.route('**/assets/today-priority/anna.webp',async request=>{await heldImage;await request.continue();});
+  let releaseController;const heldController=new Promise(resolve=>{releaseController=resolve;});
+  await page.route('**/connect-design-lab.js',async request=>{await heldController;await request.continue();});
   await page.locator('.header-connect').click();
+  await page.waitForFunction(()=>document.querySelector('#premium-connect')?.contentDocument?.querySelector('.people-rail'));
+  if(!baseline){
+   assert.equal(await page.locator('#premium-connect').getAttribute('aria-hidden'),'true','Unbound static controls must not be exposed before controller/permission setup');
+   assert.equal(await page.locator('#premium-connect').evaluate(e=>e.inert),true);
+  }
+  releaseController();await page.unroute('**/connect-design-lab.js');
   const f=page.frameLocator('#premium-connect');await f.locator('.people-rail [data-person=Jess]').click();
   releaseImage();await page.waitForFunction(()=>document.querySelector('#premium-connect')?.contentDocument?.readyState==='complete');
   await frames(page);

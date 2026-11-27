@@ -68,4 +68,9 @@ window.FoundationConnectFrame={navigate(next){
  else if(next.screen==='direct')$('.people-rail [data-person="'+next.person+'"]')?.click();
  else $('.conversation-row[data-open="'+next.screen+'"]')?.click();
 }};
+// Deferred controller scripts complete before DOMContentLoaded; images may
+// still be loading. Expose only the bound, permission-filtered message UI.
+document.addEventListener('DOMContentLoaded',()=>{
+ if(document.body.classList.contains('connect-member'))host.ready?.();
+},{once:true});
 })();
