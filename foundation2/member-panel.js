@@ -4,8 +4,9 @@
 const esc=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 function create({getSession,getUI,getStore,profileChanged,perform,navigate}){
  const dialog=document.getElementById('member-dialog');let prior={},scope=RallyPersonalCompanion.conversationScope(getSession().snapshot.model),lastQuery='',eventIds={},previewRaw=null,returnFocus=null;
- const close=()=>{dialog.close();returnFocus?.focus({preventScroll:true});};
- dialog.addEventListener('close',()=>returnFocus?.focus({preventScroll:true}));
+ const restoreFocus=()=>{const target=returnFocus?.isConnected?returnFocus:document.querySelector('[data-return-focus="'+(returnFocus?.dataset.returnFocus||'none')+'"]');target?.focus({preventScroll:true});};
+ const close=()=>{dialog.close();restoreFocus();};
+ dialog.addEventListener('close',restoreFocus);
  function scopeCheck(){const next=RallyPersonalCompanion.conversationScope(getSession().snapshot.model);if(next!==scope){scope=next;prior={};lastQuery='';dialog.close();dialog.innerHTML='';}}
  function shell(title,content){dialog.innerHTML='<button type="button" data-member-close aria-label="Close '+title+'">Close</button><h2 tabindex="-1">'+title+'</h2>'+content;if(!dialog.open)dialog.showModal();dialog.querySelector('h2').focus();}
  function profile(notice=''){
@@ -27,6 +28,7 @@ function create({getSession,getUI,getStore,profileChanged,perform,navigate}){
   shell('Ask Rally', '<p>Commitments need a response. Messages, care opportunities and Scripture remain optional.</p>'+RallyPersonalCompanion.render(supported,query,notice,[],turn.suggestions));
  }
  document.getElementById('ask-rally').addEventListener('click',()=>{returnFocus=document.getElementById('ask-rally');ask();});
+ document.addEventListener('click',e=>{const button=e.target.closest('[data-profile-entry]');if(button){returnFocus=button;profile();}});
  document.getElementById('member-profile-open').addEventListener('click',()=>{returnFocus=document.querySelector('#preview-tools>summary');document.getElementById('preview-tools').removeAttribute('open');profile();});
  dialog.addEventListener('click',e=>{
   const b=e.target.closest('button');if(!b)return;
