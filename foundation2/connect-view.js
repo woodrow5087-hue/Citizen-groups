@@ -17,7 +17,7 @@ function render(chat,{thread=false,member=false,feedback='',returnToGroups=false
  if(!member||chat.status==='no-access'){
   return head+'<p class="route-lead">Join a group to access group conversations.</p>'+
    '<div class="route-preview-card"><p>Group messaging is unavailable for this demo scenario.</p>'+
-   '<p>Direct messaging and serving-team conversations have not yet been migrated. No member data is accessible.</p></div>'+notice+'</section>';
+   '<p>Only conversations permitted by this demo profile are available. No member data is accessible.</p></div>'+notice+'</section>';
  }
  if(chat.status!=='ok'){
   return head+'<p class="connect-alert" role="alert">Saved conversation unavailable. Existing data has been preserved; messaging is disabled until the source is recovered.</p>'+

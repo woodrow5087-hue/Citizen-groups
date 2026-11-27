@@ -379,3 +379,13 @@ a{color:inherit}
 button.member-help{font:inherit;font-weight:800;color:var(--ink);background:transparent;border:1px solid var(--line);padding:0;min-width:44px;min-height:44px;border-radius:50%}
 
 .member-dialog .f10-question span{display:block;color:var(--muted);font-size:.875em}
+
+/* Frame sizing and host return only; premium typography/artwork/styles are reused. */
+.connect-sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+.connect-toolbar{display:flex;flex-wrap:wrap;align-items:center;gap:12px;margin-bottom:8px}
+.connect-return{flex-shrink:0;min-height:44px;border:1px solid #8b8176;border-radius:22px;background:#191a1c;color:#f3e9d8;padding:6px 12px;font:inherit;font-weight:700;cursor:pointer}
+.connect-toolbar p{font-size:.75rem;line-height:1.4;color:#c9bfb3;margin:0}
+.connect-host-notice:empty{display:none}
+.connect-host-notice{font-size:.85rem;color:#f3e9d8;line-height:1.5}
+#premium-connect{display:block;width:100%;min-height:360px;border:0;background:#17181a;border-radius:16px}
+@media(max-width:360px){.connect-toolbar{align-items:flex-start;gap:8px}.connect-toolbar p{font-size:.6875rem}}

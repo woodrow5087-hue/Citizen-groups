@@ -5,7 +5,7 @@
 (function(){
 'use strict';
 const root=document.getElementById('today'),select=document.getElementById('scenario'),tabs=document.getElementById('primary-nav');
-let memberPanel,renderedEvents={};
+let memberPanel,premium=null,renderedEvents={};
 let route=FoundationNavigation.resolve(window.location.search);
 let scrollTimer;
 history.scrollRestoration='manual';
@@ -60,16 +60,47 @@ function selectScenario(selection){
   blocked='This preview could not safely access local storage. Responses are disabled; nothing will be overwritten.';
  }
  try{
+  const selectedOwner=select.value,selectedStore=store;
   connect=groupPreviewActive()?null:FoundationConnect.create({storage:window.localStorage,scenario:name,Read:RallyConversationRead,
-   Domain:RallyChatDomain,isMember:()=>ui.memberships.group===true&&select.value!=='unavailable'});
+   Domain:RallyChatDomain,isMember:()=>!blocked&&select.value===selectedOwner&&store===selectedStore&&ui.memberships.group===true&&select.value!=='unavailable'});
  }catch(_){connect=null;}
- if(inThread()&&!blocked&&!groupPreviewActive()&&select.value!=='unavailable')connect?.markRead();
  draw();
 }
 function currentSession(){return FoundationMemberSession.derive({state,ui,conversation:conversation(),now:new Date(),owner:localScenario(select.value)});}
 function memberTransition(options){
  const kind=options.command.type==='group-rsvp'?'group':['serving-response','serving-coverage'].includes(options.command.type)?'team':null;
  return FoundationMemberSession.transition({...options,owner:localScenario(select.value),command:{...options.command,...(kind?{eventId:options.command.eventId||renderedEvents[kind]}:{})}});
+}
+function saveConversation(next){
+ if(blocked)return {ok:false,reason:blocked};
+ const result=store?.save(next,ui)||{ok:false,reason:'Storage unavailable'};
+ if(result.ok)state=next;else blocked=result.reason||'Storage unavailable; earlier state is preserved.';
+ return result;
+}
+function connectMarkup(chat,snapshot){
+ if(blocked||groupPreviewActive()||FoundationServing.isActive(select.value)||chat.status==='unavailable')return FoundationConnectView.render(chat,{member:!groupPreviewActive()&&snapshot.context.permissions.group});
+ return FoundationConnectPresentation.render(history.state?.connectOrigin||history.state?.returnRoute||'today');
+}
+function mountConnect(){
+ const container=root.querySelector('#premium-connect-mount');if(!container)return;
+ const owner=select.value,selectedStore=store;
+ const host=FoundationConversationHost.create({getState:()=>state,getSession:currentSession,save:saveConversation,
+  isCurrent:()=>route==='connect'&&select.value===owner&&store===selectedStore&&!blocked,
+  conversation,storage:connect.presentationStorage(),Read:RallyConversationRead,Domain:RallyChatDomain,
+  markPrayer:()=>{const next=memberTransition({state,ui,conversation:conversation(),command:{type:'care-mark-prayed'},now:new Date()});return next.ok?saveConversation(next.state):next;}});
+ if(!host.status().ok){container.innerHTML='<p role="alert">Saved messaging state needs review. Existing messages and drafts are preserved.</p>';return;}
+ const origin=history.state?.connectOrigin||history.state?.returnRoute||'today';
+ premium=FoundationConnectPresentation.mount({container,host,storage:host.storage,key:owner,search:location.search,
+  onReturn:()=>{const entry=history.state;if(entry?.connectOrigin)history.go(-((entry.connectDepth||0)+1));else go(origin==='connect'?'today':origin);},
+  onScreen:(screen,person)=>{
+   const url=FoundationConnectPresentation.href(screen,person);if(new URL(url,location.href).href===location.href)return;
+   const entry=history.state||{};
+   if(screen==='inbox'){
+    if(entry.connectDepth>0){history.back();return;}
+    history.replaceState({...entry,route:'connect'},'',url);return;
+   }
+   history.pushState({...entry,route:'connect',returnRoute:'connect',connectOrigin:entry.connectOrigin||origin,connectDepth:(entry.connectDepth||0)+1},'',url);
+  }});
 }
 function draw(focus=false){
  const now=new Date(),chat=conversation(),session=FoundationMemberSession.derive({owner:localScenario(select.value),state,ui,conversation:chat,now}),snapshot=session.snapshot;
@@ -80,12 +111,15 @@ function draw(focus=false){
  const servingPreview=FoundationServing.render(serving);
  const group=FoundationGroupPreview.project(select.value,snapshot.context,window.FoundationGroupFixtures);
  const groupPreview=FoundationGroupPreview.render(group);
- root.innerHTML=route==='today'?FoundationView.render(FoundationMemberSession.decision(session,now,serving?.state,group?.state).view,receipt,servingPreview+groupPreview):
-  route==='connect'?FoundationConnectView.render(chat,{thread:inThread(),member:!groupPreviewActive()&&snapshot.context.permissions.group,feedback:chatFeedback,returnToGroups:history.state?.returnRoute==='groups'}):
+ const reuse=route==='connect'&&!blocked&&premium?.key===select.value&&premium.frame.isConnected;
+ if(!reuse){premium?.dispose();premium=null;}
+ if(!reuse)root.innerHTML=route==='today'?FoundationView.render(FoundationMemberSession.decision(session,now,serving?.state,group?.state).view,receipt,servingPreview+groupPreview):
+  route==='connect'?connectMarkup(chat,snapshot):
   route==='groups'?FoundationGroups.render(FoundationGroups.project(snapshot,chat),{feedback:groupFeedback,blocked:!!blocked,groupPreview}):
   route==='team'?FoundationTeam.render(FoundationTeam.project(snapshot),{feedback:teamFeedback,blocked:!!blocked,servingPreview}):
   route==='read'?readMarkup(snapshot):
   FoundationNavigation.renderRoute(route,snapshot);
+ if(route==='connect'){if(reuse)premium.restore(location.search);else mountConnect();}
  root.setAttribute('aria-label',FoundationNavigation.names[route]);
  root.classList.toggle('is-read-v09',route==='read');
  tabs.innerHTML=FoundationNavigation.renderTabs(route);
@@ -100,7 +134,7 @@ function draw(focus=false){
   root.prepend(warning);
   root.querySelectorAll('button[data-command],button[data-group-action],button[data-team-action],button[data-read-action],button[data-action^=memory-],button[data-chat-open],.chat-send,#chat-draft,#read-reflection-input,#read-leader-question-text').forEach(el=>{el.disabled=true;el.setAttribute('aria-disabled','true');});
  }
- if(focus)root.focus({preventScroll:true});
+ if(focus&&!reuse)root.focus({preventScroll:true});
 }
 function rememberPosition(focusId=history.state?.focusId){
  const entry=history.state,scroll=window.scrollY;
@@ -118,13 +152,9 @@ function go(next,url,origin){
  }
  clearTimeout(scrollTimer);
  rememberPosition(origin?.dataset.returnFocus??null);
- history.pushState({route:next,scroll:0,returnRoute:route},'',nextUrl);
+ history.pushState({route:next,scroll:0,returnRoute:route,...(next==='connect'?{connectOrigin:route,connectDepth:0}:{})},'',nextUrl);
  route=next;
  chatFeedback='';groupFeedback='';teamFeedback='';readFeedback='';
- if(inThread()&&!blocked&&!groupPreviewActive()){
-  const seen=connect?.markRead();
-  if(!seen?.ok)chatFeedback='Conversation could not be marked read. Existing data was preserved.';
- }
  draw(true);
  restorePosition(history.state);
 }
@@ -162,8 +192,8 @@ window.addEventListener('popstate',event=>{
  route=FoundationNavigation.resolve(window.location.search);
  chatFeedback='';groupFeedback='';teamFeedback='';readFeedback='';
  draw();
- const control=event.state?.focusId&&root.querySelector('[data-return-focus="'+CSS.escape(event.state.focusId)+'"]');
- (control||root).focus({preventScroll:true});
+ const control=event.state?.focusId&&document.querySelector('[data-return-focus="'+CSS.escape(event.state.focusId)+'"]');
+ if(route!=='connect'||!premium)(control||root).focus({preventScroll:true});
  restorePosition(event.state);
 });
 if(typeof ResizeObserver==='function'){

@@ -121,3 +121,30 @@ test('Connect UI presents owned messages and local-only status with escaped cont
  assert.match(unsafeDoc.querySelector('.chat-bubble').textContent,/img onerror/);
  assert.equal(new JSDOM(View.render(chat.view(),{member:false})).window.document.querySelector('#chat-compose'),null);
 });
+
+test('premium presentation storage reuses scoped canonical owner and preserves cursor/reply/draft',()=>{
+ const store=memory({[Read.STORAGE_KEY]:'original untouched'}),chat=create(store),port=chat.presentationStorage();
+ assert.equal(Read.peek({storage:port,domain:Domain,member:true}).unreadCount,3);assert.equal(store.writes.length,0);
+ assert.equal(Read.markRead({storage:port,domain:Domain,member:true}),true);
+ assert.equal(chat.view().unreadCount,0);assert.equal(chat.saveDraft('owned').ok,true);assert.equal(chat.reply('seed_jess').ok,true);
+ const saved=Read.readSaved(port,Domain);assert.equal(saved.draft,'owned');assert.equal(saved.replyTo,'seed_jess');
+ port.setItem(Read.STORAGE_KEY,JSON.stringify({...saved,draft:'premium draft'}));
+ assert.equal(chat.view().draft,'premium draft');assert.equal(chat.view().replyTo,'seed_jess');assert.equal(store.map.get(Read.STORAGE_KEY),'original untouched');
+ assert.throws(()=>port.getItem('rallypoint-phase1-2026'));assert.throws(()=>port.setItem('foreign','x'));assert.throws(()=>port.removeItem(Read.STORAGE_KEY));assert.throws(()=>port.clear());
+});
+test('presentation storage enforces read-before-write, current membership and raw concurrency',()=>{
+ const store=memory();let member=true;const chat=Connect.create({storage:store,scenario:'connected',Read,Domain,isMember:()=>member}),port=chat.presentationStorage();
+ const value=JSON.stringify({schemaVersion:1,snapshot:Read.fixture(Domain),draft:'',replyTo:null});
+ assert.throws(()=>port.setItem(Read.STORAGE_KEY,value),/read before/);
+ assert.equal(port.getItem(Read.STORAGE_KEY),null);store.map.set(key,value);assert.throws(()=>port.setItem(Read.STORAGE_KEY,value),/concurrent/);
+ port.getItem(Read.STORAGE_KEY);member=false;assert.throws(()=>port.getItem(Read.STORAGE_KEY),/no-access/);assert.throws(()=>port.setItem(Read.STORAGE_KEY,value),/no-access/);
+});
+test('presentation storage validates source and proposed actor/org/reply/schema before write',()=>{
+ const store=memory(),port=create(store).presentationStorage();
+ assert.equal(port.getItem(Read.STORAGE_KEY),null);
+ const saved={schemaVersion:1,snapshot:Read.fixture(Domain),draft:'',replyTo:null};
+ for(const change of [x=>{x.schemaVersion=2;},x=>{x.snapshot.conversations[0].organizationId='wrong';},x=>{x.snapshot.memberships=x.snapshot.memberships.filter(m=>m.userId!==Read.SELF);},x=>{x.replyTo='missing';},x=>{x.draft='x'.repeat(701);}]){
+  const value=structuredClone(saved);change(value);assert.throws(()=>port.setItem(Read.STORAGE_KEY,JSON.stringify(value)));assert.equal(store.writes.length,0);
+ }
+ store.map.set(key,'{"bad":"source"}');assert.throws(()=>port.getItem(Read.STORAGE_KEY));assert.equal(store.map.get(key),'{"bad":"source"}');
+});

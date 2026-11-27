@@ -66,6 +66,7 @@ function render(vm,{feedback='',blocked=false,servingPreview=''}={}){
   (vm.response==='declined'&&!blocked?'<button type="button" class="team-coverage-action" data-team-action="serving-coverage" data-value="'+(vm.coverage?'withdraw':'request')+'">'+
     (vm.coverage?'Withdraw sample coverage request':'Request sample coverage')+'</button>':'')+
   '<p class="team-coverage-note">This is only a local scheduling fixture. No coverage message is delivered to teammates or church staff.</p>'+
+  '<a class="route-full-app" data-route="connect" data-return-focus="team-connect" href="?screen=connect&channel=room">Open team conversation</a>'+
   '<a class="route-full-app" href="../index.html">Open serving tools in the existing full demo <span aria-hidden="true">↗</span></a></section>';
  const leader=vm.authorizedLeader?'<p class="team-leader-notice">Authorized team-leader scenario · no attendance inferred from confirmations.</p>':'';
  return header+(feedback?'<p class="group-feedback" role="status">'+esc(feedback)+'</p>':'')+
