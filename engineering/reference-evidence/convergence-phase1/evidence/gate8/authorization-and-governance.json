@@ -1,0 +1,12 @@
+{
+  "observedAtUTC": "2026-11-26T17:05:43.928755+00:00",
+  "ownerAuthorizedFinalGate8Acceptance": true,
+  "ownerAuthorizedMergeHead": "3838aa87f6e8217c2b779bfcfa5976dda72dcb56",
+  "authorizedTargetOnly": "rally-one/develop",
+  "administratorAttestation": "Owner inspected GitHub Branch protection rules settings and confirms no existing classic branch-protection rules.",
+  "activeRulesForMainAndDevelop": [],
+  "governanceLimitation": "No server-enforced classic branch protection or applicable active ruleset on main/develop; an acknowledged governance limitation, not an engineering validation failure.",
+  "protectionSettingsChangesAuthorized": false,
+  "productionChangesAuthorized": false,
+  "physicalSmokeChecks": "Owner-confirmed 13/13 carried forward via runtime equivalence; no redundant device run required."
+}

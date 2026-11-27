@@ -1,0 +1,200 @@
+[
+  {
+    "id": "G01",
+    "priority": "P0 before default cutover",
+    "classification": "Verified intentional publication/mode boundary",
+    "verifiedEvidence": "Canonical branch build omits Foundation; branch root defaults board without defaultExperience=rally-one. S38/S63; accepted canonical route 404.",
+    "impact": "Wrong demo/default entry; source promotion is not experience cutover.",
+    "proposedRemediation": "2A: additive opt-in Foundation publication for non-production previews, explicit entry/provenance/runbook; keep legacy root and flags unchanged.",
+    "acceptanceGate": "Build-context table, exact deploy provenance, legacy byte/pixel parity; no production change."
+  },
+  {
+    "id": "G02",
+    "priority": "P0 for December 2 current-data claims",
+    "classification": "Verified time-bound fixture limitation",
+    "verifiedEvidence": "Accepted immutable provider bundles contain Nov28 group and Nov29 serving dates. Freshness is checked at build; UI projectors have no now/freshness check. S34–S38.",
+    "impact": "Past events could appear ready in a December2 presentation; not a new Gate8 regression.",
+    "proposedRemediation": "2A: record as-of/build identity, retain quality distinctions and guard past/future/freshness presentation; or demo current accepted data explicitly as historical sample.",
+    "acceptanceGate": "New date-boundary cases only after authorization; preserve minimized payload/privacy and denied/empty/stale/outage behavior."
+  },
+  {
+    "id": "G03",
+    "priority": "P0 before new Foundation implementation branches",
+    "classification": "Verified validation applicability gap",
+    "verifiedEvidence": "Foundation workflow hardcodes head_ref and has narrow path filters; independent VersePlay PR/path-only. S47/S48.",
+    "impact": "A new branch/shared change can miss mandatory Foundation acceptance.",
+    "proposedRemediation": "2A: make relevant acceptance applicable to the new branch/dependency graph; report omissions/skips explicitly.",
+    "acceptanceGate": "Negative coverage checks for shared dependencies/new branch; Tier3 workflow/build validation; unchanged historical guards."
+  },
+  {
+    "id": "G04",
+    "priority": "P1; default decision blocker",
+    "classification": "Verified accepted policy divergence; product decision",
+    "verifiedEvidence": "Foundation date-sorts three commitment kinds and allows All Set with unread; UnifiedFocus caps two and can prioritize unread/care/due intention. S03/S06/S51.",
+    "impact": "Today/Ask Rally could tell different stories after integration.",
+    "proposedRemediation": "2B: owner approves mandatory/optional semantics, then use one shared context/decision contract and explainable presentation adapter.",
+    "acceptanceGate": "Member/volunteer/leader/overlap/visitor/completed/deferred/unknown scenarios; no silent ranking or All Set change."
+  },
+  {
+    "id": "G05",
+    "priority": "P1; default parity blocker",
+    "classification": "Verified entry/context gap",
+    "verifiedEvidence": "No full Foundation onboarding/profile editor; per-scenario Friend/north context intentionally isolated. S01/S08/S21.",
+    "impact": "A default flip could lose apparent personalization or misrepresent memberships.",
+    "proposedRemediation": "2B: reuse accepted welcome/preferences and explicit context adapter; preserve old records and fixture authority.",
+    "acceptanceGate": "Existing-session/first-run/campus/guest/role/reload/blocked-storage cases; permission and rollback gates."
+  },
+  {
+    "id": "G06",
+    "priority": "P1; default parity blocker",
+    "classification": "Verified unmigrated capability",
+    "verifiedEvidence": "Foundation does not load or expose PersonalCompanion Ask Rally. S01/S02/S23. Original activity/attention entry is also not reproduced by Foundation inline receipts; S75/S01.",
+    "impact": "Core intelligent-companion access absent from new default.",
+    "proposedRemediation": "2B: reuse deterministic service and explicit action handlers over current shared context.",
+    "acceptanceGate": "Today/Ask consistency, no implicit confirmations or unread mutation; privacy and focus parity."
+  },
+  {
+    "id": "G07",
+    "priority": "P1; default parity blocker",
+    "classification": "Verified partial messaging parity",
+    "verifiedEvidence": "Foundation only supports one group inbox/thread; no DM/Room/search/reaction/retry UI. Legacy channels have different persistence owners. S11–S15.",
+    "impact": "A blanket inbox replacement removes accepted behavior or duplicates message state.",
+    "proposedRemediation": "2C: reuse premium presentation, modern group repo and explicit legacy host adapters; inventory DM/Room policies before extension.",
+    "acceptanceGate": "Group/team/overlap/visitor, send/reply/reaction/draft/RSVP/denied/unavailable/keyboard/focus; immutable unaffected comparisons."
+  },
+  {
+    "id": "G08",
+    "priority": "P1; default parity blocker",
+    "classification": "Verified people/discovery parity gap",
+    "verifiedEvidence": "Foundation decorative faces/no full profiles/directory; guest discovery is introductory route/fallback. S04/S17/S22.",
+    "impact": "Loses people-first interactions and complete discovery.",
+    "proposedRemediation": "2D: reuse accepted profiles/IDs, directory/discovery and authorized action contracts.",
+    "acceptanceGate": "Profile origins/return focus, guest restrictions, genuine approved imagery and safe fallbacks."
+  },
+  {
+    "id": "G09",
+    "priority": "P1; default parity blocker",
+    "classification": "Verified partial care/leader/team tools",
+    "verifiedEvidence": "Foundation exposes narrower prayer/review/Team leader scope than legacy posting, private follow-up, attendance and coordination. S17/S18/S20; root leader views.",
+    "impact": "Incomplete human follow-up or false completion claims if inferred from generic actions.",
+    "proposedRemediation": "2D: preserve existing explicit actions and distinctions; no score, distress inference, automatic outreach or new pastoral scope.",
+    "acceptanceGate": "Role revocation/guest/leader, explicit follow-up and no attendance inference; existing privacy contracts."
+  },
+  {
+    "id": "G10",
+    "priority": "P1 before converged journey cutover",
+    "classification": "Verified return-target boundary; broader keyboard parity unverified",
+    "verifiedEvidence": "Standalone game return links target legacy root; Foundation launches do not encode origin; Classic internal return is accepted. S19/S45/S46.",
+    "impact": "Round-trip leaves Foundation/Read context; does not imply game engine regression.",
+    "proposedRemediation": "2D: origin-aware navigation/fallback adapter preserving game engines/stores; retain accepted labels and focus.",
+    "acceptanceGate": "Direct entry, reload, gameplay, saved progress, keyboard/VoiceOver return tests only for changed journeys."
+  },
+  {
+    "id": "G11",
+    "priority": "P2; demo/cutover planning",
+    "classification": "Verified platform/context boundary",
+    "verifiedEvidence": "Immutable deploy, PR alias, canonical branch alias and production are distinct origins; namespaces also differ.",
+    "impact": "Same code does not transport saved local data across hosts; demo state can appear reset.",
+    "proposedRemediation": "2A runbook selects exact stable origin; later cutover explicitly defines export/import or fresh demo state.",
+    "acceptanceGate": "Document URL/origin and key ownership; no blanket cross-origin migration or real records."
+  },
+  {
+    "id": "G12",
+    "priority": "P2",
+    "classification": "Verified legacy draft durability limit",
+    "verifiedEvidence": "Premium direct drafts live in a Map; iframe is removed on close; host persists messages but not those draft fields. S14/S15.",
+    "impact": "Do not promise all-channel draft reload/close persistence.",
+    "proposedRemediation": "2C: decide desired durability and use one canonical per-conversation owner; characterize preserved behavior before extension.",
+    "acceptanceGate": "Same-person/different-person/close/reload/failed-save cases; no cross-recipient draft leakage."
+  },
+  {
+    "id": "G13",
+    "priority": "P2",
+    "classification": "Verified existing storage feedback limit",
+    "verifiedEvidence": "Blank Battle catches storage errors and keeps session playable without an explicit save-error notice in that path. S41.",
+    "impact": "A user may expect persistence when storage is blocked.",
+    "proposedRemediation": "2D targeted improvement if authorized; preserve engine/key/gameplay and original bytes.",
+    "acceptanceGate": "Blocked/quota/malformed feedback and reload behavior; unchanged game visuals except separately approved notice."
+  },
+  {
+    "id": "G14",
+    "priority": "P1 before new default visual reference",
+    "classification": "Verified Foundation visual-coverage limitation; accepted designs differ",
+    "verifiedEvidence": "Foundation captures geometry/axe/screens but has no immutable pixel baseline comparison; existing 64+86 protect legacy, not Foundation. S47/S50/S51/S52/S53.",
+    "impact": "Future Foundation visual drift can pass legacy guards.",
+    "proposedRemediation": "2A onward: retain legacy comparisons and obtain explicit owner approval before establishing a separate scoped Foundation reference.",
+    "acceptanceGate": "Fixed input/clock/font/viewport, complete inventory, strict comparisons/negative controls; never repin to conceal differences."
+  },
+  {
+    "id": "G15",
+    "priority": "P1; state migration/default blocker",
+    "classification": "Verified isolation; migration scope requires decision",
+    "verifiedEvidence": "F2 namespaces intentionally separate; planner is raw-source/in-memory rehearsal only, not general browser migration. S08/S11/S28.",
+    "impact": "Silent merge/copy can lose drafts/progress, invent timestamps or grant wrong roles.",
+    "proposedRemediation": "2B–2E: field/source map and versioned opt-in import proposal; reuse guard/contracts; retain same-origin old data for rollback.",
+    "acceptanceGate": "Exact backups, identity/schema bounds, idempotence, dry run, concurrency/interruption/rollback; no actual migration until separately authorized."
+  },
+  {
+    "id": "G16",
+    "priority": "P0 for live/production claims; P2 for synthetic demo",
+    "classification": "Verified contract-only integration scope",
+    "verifiedEvidence": "Group runs full synthetic auth/consent/Groups chain; serving has narrower synthetic grant/transport; F-03 denies direct_thread/minors. S29–S37/S65.",
+    "impact": "Neither role selector nor schema support constitutes live security/provider/DM authorization.",
+    "proposedRemediation": "Keep demo synthetic. Separate leadership/security authorization for real identity, purpose/consent/retention, Services/DM policies, credentials and operations.",
+    "acceptanceGate": "Independent security/live staging acceptance in a later authorized program; excluded from December2 claims."
+  },
+  {
+    "id": "G17",
+    "priority": "P1 for new image publication",
+    "classification": "Verified handoff restriction",
+    "verifiedEvidence": "Studio supplied photos/private HTML lack usage/hosting clearance; ALIVE stock examples are fictional. Private handoff and S56.",
+    "impact": "Uncleared assets or implied real member identity could be published.",
+    "proposedRemediation": "Reuse already-approved canonical demo assets or neutral alternatives; obtain rights before new hosting.",
+    "acceptanceGate": "Asset/source/license record, explicit owner visual acceptance; no supplied photo publication in this audit."
+  },
+  {
+    "id": "G18",
+    "priority": "P2",
+    "classification": "Verified maintenance pressure; performance impact unmeasured",
+    "verifiedEvidence": "Legacy controller ~1168 logical lines; 31 script/27 CSS entry dependencies; Foundation ~334 controller lines, 30 scripts/2 CSS.",
+    "impact": "Global load order/private host seams and cascade coupling complicate safe reuse.",
+    "proposedRemediation": "Extract only a proven reuse seam when needed, retaining behavior/guards; no framework or wholesale rewrite.",
+    "acceptanceGate": "Characterization and affected dependency coverage; measure runtime cost before optimization."
+  },
+  {
+    "id": "G19",
+    "priority": "P2",
+    "classification": "Verified documentation drift",
+    "verifiedEvidence": "Programme retains pre-acceptance draft/HOLD text; conversation/build headers say main app does not use a bundle that current entries load. S60/S25 and script builder.",
+    "impact": "Future sessions may repeat closed gates or trust obsolete architecture claims.",
+    "proposedRemediation": "2A: append current architecture/acceptance/deploy manifest and mark historical statements in context, preserving history.",
+    "acceptanceGate": "Source-linked documentation and exact canonical/provenance references; no accepted test rerun solely for docs."
+  },
+  {
+    "id": "G20",
+    "priority": "P3",
+    "classification": "Proposed optimization; baseline evidence only",
+    "verifiedEvidence": "Gate8 canonical QA job measured 995s; static module counts are not latency results. Existing Actions runtime-deprecation annotation.",
+    "impact": "Speculative optimization could reduce confidence or consume scope.",
+    "proposedRemediation": "After parity: measure comparable workloads and update tooling carefully; retain tests/thresholds.",
+    "acceptanceGate": "Comparable exact-source/config/environment timings, no fabricated savings, Tier3 infrastructure gate."
+  },
+  {
+    "id": "G21",
+    "priority": "P0 governance, separate admin decision",
+    "classification": "Confirmed governance limitation, not engineering failure",
+    "verifiedEvidence": "Administrator found no classic branch rules; effective main/develop active rulesets are empty; existing legacy rule is narrowly scoped. Accepted closeout.",
+    "impact": "Manual acceptance is not server-enforced protection of merges, pushes or recovery refs.",
+    "proposedRemediation": "Separately authorize main/develop and frozen recovery branch/tag protections; no setting change in this phase.",
+    "acceptanceGate": "Admin read-only verification of effective targets/check apps/reviews/bypass/update/delete rules; retain authorized break-glass procedure."
+  },
+  {
+    "id": "G22",
+    "priority": "P1 before real multi-event/default scheduling claims",
+    "classification": "Verified accepted fixture-model limit; not a new regression",
+    "verifiedEvidence": "Local next-event dates roll with browser time; saved rsvp/teamStatus/coverage are global fixture fields, not keyed to event/shift IDs. S07/S10/S74. Action schema has shiftId-bound responses/coverage but no operational gathering-RSVP repository. S26.",
+    "impact": "An older sample response can appear against a later displayed week; it cannot be silently treated as a real response to that future event.",
+    "proposedRemediation": "2A demo framing remains truthful; 2B/2D define current event/source identity and reuse existing shift-response/source-reference contracts. Specify any gathering-response extension under explicit approval; no automatic legacy response migration.",
+    "acceptanceGate": "Week/date rollover, past/future events, event change and response isolation; preserve old raw fields and backup. Do not fabricate timestamps or infer attendance."
+  }
+]

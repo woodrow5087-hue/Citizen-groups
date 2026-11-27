@@ -1,0 +1,11 @@
+{
+  "canonicalMergeCommit": "b7bb0687a498f2ba9ab1f2a244b187013ceea339",
+  "parents": [
+    "d038fc6adfdbc7c9b5925fc91e475cb1f15c7467",
+    "3838aa87f6e8217c2b779bfcfa5976dda72dcb56"
+  ],
+  "acceptedHead": "3838aa87f6e8217c2b779bfcfa5976dda72dcb56",
+  "canonicalTree": "d43e2b8d32396b9ea9f6710b3a1d93c02d171fa6",
+  "acceptedTree": "d43e2b8d32396b9ea9f6710b3a1d93c02d171fa6",
+  "exactTreeEquality": true
+}

@@ -1,0 +1,12 @@
+{
+  "run": 45915612056,
+  "artifact": 15162582360,
+  "providerRun": "https://github.com/woodrow5087-hue/Citizen-groups/actions/runs/45915612056",
+  "originalArtifactZIPBytes": 44098302,
+  "originalArtifactZIPSHA256": "0c6869a98d2f86a187b03d924557f94bbac2bcfdfe63a2290756813da426bb44",
+  "preservedEntries": [
+    "ux03-visual/candidate/embedded/320-568-group-member-inbox.png",
+    "ux03-visual/reference/embedded/320-568-group-member-inbox.png"
+  ],
+  "limitation": "Only exact failing candidate/reference images selected. Entire43MB original artifact is not duplicated; provider artifacts may expire. No root cause or common cause is claimed."
+}
