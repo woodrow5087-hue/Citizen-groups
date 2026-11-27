@@ -46,7 +46,7 @@ function render(vm,{feedback='',blocked=false,groupPreview=''}={}){
  if(groupPreview)return heading+groupPreview+'</section>';
  if(!vm.member)return heading+'<p class="route-lead">You are not part of a fictional small group in this scenario.</p>'+
   '<div class="route-preview-card"><span class="route-stage-label">NO GROUP MEMBERSHIP</span>'+
-  '<p>Explore available groups in the existing full demo. No membership or personal information is created from browsing.</p>'+
+  '<p>Find a place to connect at your own pace. Explore fictional groups here; browsing and interest never create membership or contact anyone.</p><button type="button" class="experience-discover" data-rel-entry="discovery" data-return-focus="visitor-discovery">Explore sample groups</button>'+
   '<a class="route-full-app" href="../index.html">Explore the existing demo <span aria-hidden="true">↗</span></a></div></section>';
  const calendar=vm.date?vm.date.toLocaleDateString('en-US',{weekday:'long',month:'short',day:'numeric'})+' · '+vm.date.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'}):'Next gathering date unavailable';
  const state=feedback?'<p class="group-feedback" role="status">'+esc(feedback)+'</p>':'';
