@@ -5,7 +5,7 @@
 (function(){
 'use strict';
 const root=document.getElementById('today'),select=document.getElementById('scenario'),tabs=document.getElementById('primary-nav');
-let memberPanel,premium=null,renderedEvents={};
+let relations,memberPanel,premium=null,standalone=null,renderedEvents={};
 let route=FoundationNavigation.resolve(window.location.search);
 let scrollTimer;
 history.scrollRestoration='manual';
@@ -31,11 +31,13 @@ const fallback=name=>{
  return {state:defaultState,ui:{name:'Friend',campus:'north',memberships:{group:scope.group,team:scope.team}}};
 };
 const inThread=()=>route==='connect'&&new URLSearchParams(window.location.search).get('thread')==='group';
+const standaloneKind=()=>route==='read'&&['blank','circuit'].includes(new URLSearchParams(location.search).get('game'))?new URLSearchParams(location.search).get('game'):null;
 const inClassic=()=>route==='read'&&new URLSearchParams(window.location.search).get('game')==='classic';
 const safeText=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const gameIcon=name=>'<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">'+
  (name==='check'?'<path d="m4 12 5 5L20 6"/>':name==='group'?'<circle cx="9" cy="8" r="3"/><path d="M2 21v-3a7 7 0 0 1 14 0v3"/>':'<path d="M4 12h16m-6-6 6 6-6 6"/>')+'</svg>';
 function readMarkup(snapshot){
+ if(standaloneKind())return '<section class="read-standalone"><h1 id="route-title" tabindex="-1">'+(standaloneKind()==='blank'?'Blank Battle':'Verse Circuit')+'</h1><div id="standalone-mount"></div></section>';
  const vm=FoundationRead.project(snapshot,state,RallyMemory,new Date());
  // The canonical VersePlay presentation normalizes memory game state while
  // rendering. Give it a copy so a read-only draw cannot mutate persisted data.
@@ -111,6 +113,7 @@ function draw(focus=false){
  const servingPreview=FoundationServing.render(serving);
  const group=FoundationGroupPreview.project(select.value,snapshot.context,window.FoundationGroupFixtures);
  const groupPreview=FoundationGroupPreview.render(group);
+ standalone?.dispose();standalone=null;
  const reuse=route==='connect'&&!blocked&&premium?.key===select.value&&premium.frame.isConnected;
  if(!reuse){premium?.dispose();premium=null;}
  if(!reuse)root.innerHTML=route==='today'?FoundationView.render(FoundationMemberSession.decision(session,now,serving?.state,group?.state).view,receipt,servingPreview+groupPreview):
@@ -119,6 +122,7 @@ function draw(focus=false){
   route==='team'?FoundationTeam.render(FoundationTeam.project(snapshot),{feedback:teamFeedback,blocked:!!blocked,servingPreview}):
   route==='read'?readMarkup(snapshot):
   FoundationNavigation.renderRoute(route,snapshot);
+ if(standaloneKind())standalone=FoundationGameHost.mount(root.querySelector('#standalone-mount'),standaloneKind(),()=>returnTo('read'));
  if(route==='connect'){if(reuse)premium.restore(location.search);else mountConnect();}
  root.setAttribute('aria-label',FoundationNavigation.names[route]);
  root.classList.toggle('is-read-v09',route==='read');
@@ -134,6 +138,7 @@ function draw(focus=false){
   root.prepend(warning);
   root.querySelectorAll('button[data-command],button[data-group-action],button[data-team-action],button[data-read-action],button[data-action^=memory-],button[data-chat-open],.chat-send,#chat-draft,#read-reflection-input,#read-leader-question-text').forEach(el=>{el.disabled=true;el.setAttribute('aria-disabled','true');});
  }
+ relations?.enhance();
  if(focus&&!reuse)root.focus({preventScroll:true});
 }
 function rememberPosition(focusId=history.state?.focusId){
@@ -203,6 +208,7 @@ if(typeof ResizeObserver==='function'){
 }
 root.addEventListener('click',event=>{
  const target=event.target;
+ const game=target.closest('a[data-game]');if(game&&isPlainClick(event)){event.preventDefault();go('read','?screen=read&game='+game.dataset.game,game);return;}
  const open=target.closest('[data-chat-open]');
  if(open){
   if(blocked||conversation().status!=='ok')return;
@@ -374,5 +380,9 @@ memberPanel=FoundationMemberPanel.create({getSession:currentSession,getUI:()=>ui
  navigate:(next,pane)=>go(next==='groups'&&pane==='chat'?'connect':next,next==='groups'&&pane==='chat'?'?screen=connect&thread=group':null),
  profileChanged:()=>{ui=store.read().ui;draw(true);},
  perform:command=>{if(FoundationGroupPreview.isActive(select.value)||FoundationServing.isActive(select.value))return {ok:false,reason:'Provider samples are read-only'};if(blocked)return {ok:false,reason:blocked};const r=memberTransition({state,ui,conversation:conversation(),command,now:new Date()});if(!r.ok){draw();return r;}const saved=store?.save(r.state,ui);if(!saved?.ok){blocked=saved?.reason||'Storage unavailable';draw();return {ok:false,reason:blocked};}state=r.state;draw();return {ok:true};}});
+relations=FoundationRelational.create({root,state:()=>state,session:currentSession,owner:()=>select.value,route:()=>route,blocked:()=>!!blocked,local:()=>!groupPreviewActive()&&!FoundationServing.isActive(select.value)&&select.value!=='unavailable',
+ navigate:go,host:()=>FoundationConversationHost.create({getState:()=>state,getSession:currentSession,save:saveConversation,isCurrent:()=>!blocked&&select.value!=='unavailable'&&!groupPreviewActive()&&!FoundationServing.isActive(select.value)}),
+ perform:command=>{if(blocked||select.value==='unavailable'||groupPreviewActive()||FoundationServing.isActive(select.value))return {ok:false,reason:'Source is read-only or unavailable'};const r=FoundationRelationalDomain.change({state,session:currentSession(),command});if(!r.ok)return r;const saved=saveConversation(r.state);if(saved.ok)draw();return saved;}});
+relations.enhance();
 restorePosition(history.state);
 })();
