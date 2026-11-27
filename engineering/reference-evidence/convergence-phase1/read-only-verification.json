@@ -1,0 +1,23 @@
+{
+  "completedAtUTC": "2026-11-26T18:14:20.553792+00:00",
+  "canonicalSource": "b7bb0687a498f2ba9ab1f2a244b187013ceea339",
+  "canonicalTree": "d43e2b8d32396b9ea9f6710b3a1d93c02d171fa6",
+  "untouchedWorkingCheckout": "3838aa87f6e8217c2b779bfcfa5976dda72dcb56",
+  "workingTreeEqualsCanonicalTree": true,
+  "repositoryClean": true,
+  "remoteOpeningClosingRefsIdentical": true,
+  "unchangedRecoveryReferenceEntries": 18,
+  "mainUnchanged": true,
+  "pr150HeadUnchanged": true,
+  "applicationChanges": 0,
+  "newBranches": 0,
+  "buildOrTestSuiteExecutions": 0,
+  "acceptedPhysicalOrVisualReruns": 0,
+  "mergesMigrationsDeploymentsProtectionChanges": 0,
+  "sourceAnchors": 76,
+  "canonicalFilesByteVerified": 71,
+  "capabilityRows": 38,
+  "stateStorageOwners": 16,
+  "prioritizedFindings": 22,
+  "observations": "Read-only source/evidence inspection, one private reference-image inspection, static dependency/key extraction and two GETs of existing fictional fixture JS. Only external audit deliverables written."
+}

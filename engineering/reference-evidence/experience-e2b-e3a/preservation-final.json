@@ -1,0 +1,76 @@
+{
+  "protectedRefs": {
+    "refs/heads/main": "32bed048a18d7bdd7e1ebb8b420736664a2521b2",
+    "refs/heads/rally-one/checkpoints/2026-11-22-connect-alive-v1": "5ef463824bd248184505d6d9f2734812213231a2",
+    "refs/heads/rally-one/checkpoints/2026-11-23-approved-demo-119": "5aa88c93c3d4cd22902ef98af98c09b74ca436ce",
+    "refs/heads/rally-one/checkpoints/2026-11-23-evening-showcase-qa-passed": "9a0f878a3ad13f099cb8ca5e0bf9bb94f3ecf635",
+    "refs/heads/rally-one/checkpoints/2026-11-23-groups-companion-review-baseline": "7c9bee93b5a5c73ac36f6702112b69376444d852",
+    "refs/heads/rally-one/checkpoints/2026-11-23-m5-mobile-approved-baseline": "6b540c941dc053857b9835271f75afa98497a07a",
+    "refs/heads/rally-one/checkpoints/2026-11-23-m5-qa-passed-review": "5cca8905b918025b829e226640dd82685799e7e0",
+    "refs/heads/rally-one/checkpoints/2026-11-23-m6-accepted-baseline": "5eaf7a59820f3827e1441c041539f0a9d4bdb9cd",
+    "refs/heads/rally-one/checkpoints/2026-11-23-m6-connected-qa-passed": "5eaf7a59820f3827e1441c041539f0a9d4bdb9cd",
+    "refs/heads/rally-one/checkpoints/2026-11-23-s7-qa-passed": "59dc849f91fcb428cbb3372fe2f184613eb968d2",
+    "refs/heads/rally-one/checkpoints/2026-11-23-s9br-accepted": "d7ad874f5c2d7ca4b90c94e74bc6d747854f4697",
+    "refs/heads/rally-one/checkpoints/2026-11-24-s12a-accepted": "f4f81936eb937f36eb9f5229057ecad27bd873ed",
+    "refs/tags/rally-one/checkpoints/2026-11-24-s8-automated": "83981c707f3bb1b5c456a9bbf68cf090b7daa99e",
+    "refs/tags/rally-one/checkpoints/2026-11-24-s8-automated^{}": "90d291f835f6e213620a273569e5c9d2f4e75f26",
+    "refs/tags/rally-one/checkpoints/2026-11-25-ux03-accepted": "b02ca780b453495eef77af0760e86fa8895d2cb1",
+    "refs/tags/rally-one/checkpoints/2026-11-25-ux03-accepted^{}": "d038fc6adfdbc7c9b5925fc91e475cb1f15c7467",
+    "refs/tags/rally-one/checkpoints/2026-11-26-f2-gate8-pre-correction": "d36340c095b4888c3a57526de110981c8138c69b",
+    "refs/tags/rally-one/checkpoints/2026-11-26-f2-gate8-pre-correction^{}": "e7a6e752a07eede2052b2ae4082b420277bd0f9a",
+    "refs/heads/rally-one/develop": "076a3393eef013304e715c6bc283031af4040df1",
+    "refs/heads/rally-one/convergence-2d": "08e33bf1ab043c8225e0e687de8371ed53c6298f",
+    "refs/heads/rally-one/experience-e1-e2": "1fe72f3eea5eb31ad63493d87043e1d5a9751478",
+    "refs/tags/rally-one/checkpoints/2026-11-27-convergence-2d-accepted": "7fa31f48438a2363ddc6b9bc7b0979a9c95c9bae",
+    "refs/tags/rally-one/checkpoints/2026-11-27-convergence-2d-accepted^{}": "08e33bf1ab043c8225e0e687de8371ed53c6298f"
+  },
+  "acceptedE1E2Tag": {
+    "ref": "refs/tags/rally-one/checkpoints/2026-11-27-experience-e1-e2-accepted",
+    "object": "c9695c42a4a19c707035c7cd1edc74658cf4d592",
+    "target": "1fe72f3eea5eb31ad63493d87043e1d5a9751478"
+  },
+  "pullRequests": {
+    "150": {
+      "state": "open",
+      "draft": true,
+      "merged": false,
+      "mergeable": true,
+      "mergeable_state": "unstable",
+      "head": "57409b8ceb573d092545906ca6738d6e19428ae3",
+      "base": "rally-one/develop"
+    },
+    "156": {
+      "state": "open",
+      "draft": true,
+      "merged": false,
+      "mergeable": true,
+      "mergeable_state": "unstable",
+      "head": "08e33bf1ab043c8225e0e687de8371ed53c6298f",
+      "base": "rally-one/develop"
+    },
+    "157": {
+      "state": "open",
+      "draft": true,
+      "merged": false,
+      "mergeable": true,
+      "mergeable_state": "clean",
+      "head": "1fe72f3eea5eb31ad63493d87043e1d5a9751478",
+      "base": "rally-one/develop"
+    },
+    "158": {
+      "state": "open",
+      "draft": true,
+      "merged": false,
+      "mergeable": true,
+      "mergeable_state": "unstable",
+      "head": "bb34cb02122357b3b6e5aa5cf484d0b35c900ff1",
+      "base": "rally-one/develop"
+    }
+  },
+  "productionDeploy": "6b00560bc816d49907a2911e",
+  "candidate": "bb34cb02122357b3b6e5aa5cf484d0b35c900ff1",
+  "directParent": "1fe72f3eea5eb31ad63493d87043e1d5a9751478",
+  "workingTreeClean": true,
+  "verifiedAtUTC": "2026-11-27T04:12:43.232608+00:00",
+  "allCandidateChecksPassing": true
+}
