@@ -4,13 +4,16 @@
  */
 (function(root,factory){
  'use strict';
- const api=factory();
+ const api=factory(typeof module==='object'&&module.exports?require('./widgets.js'):root.FoundationWidgets,
+  typeof module==='object'&&module.exports?require('./relational-domain.js'):root.FoundationRelationalDomain);
  if(typeof module==='object'&&module.exports)module.exports=api;
  if(root)root.FoundationGroups=api;
-})(typeof window!=='undefined'?window:null,function(){
+})(typeof window!=='undefined'?window:null,function(Widgets,RelationalDomain){
 'use strict';
 const esc=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const allowed=new Set(['going','maybe','clear']);
+const contactIds=new Set(['anna','jess','marcus','taylor']);
+const chatIcon=Widgets.icon('chat'),peopleIcon=Widgets.icon('people'),arrow=Widgets.icon('arrow');
 function project(snapshot,chat){
  const ctx=snapshot.context,model=snapshot.model;
  const member=ctx.permissions.group,leader=ctx.permissions.groupLeader;
@@ -40,6 +43,13 @@ function response(vm){
   '<button type="button" class="'+(vm.rsvp==='maybe'?'is-selected':'')+'" data-group-action="group-rsvp" data-value="maybe"'+(vm.rsvp==='maybe'?' aria-pressed="true"':' aria-pressed="false"')+'>Maybe</button>'+
   (vm.rsvp?'<button type="button" data-group-action="group-rsvp" data-value="clear">Clear response</button>':'')+'</div></div>';
 }
+function contacts(blocked){
+ const people=RelationalDomain.contacts.filter(person=>contactIds.has(person.id));
+ return '<section class="group-contacts" aria-label="Fictional group contacts">'+Widgets.heading('Around the table','Your group')+
+  '<div class="group-contact-rail">'+people.map(person=>'<button type="button" class="group-contact" data-rel-contact="'+esc(person.id)+'" data-return-focus="groups-contact-'+esc(person.id)+'" aria-label="Open '+esc(person.name)+' profile"'+(blocked?' disabled':'')+'>'+
+   '<img src="../assets/rally-one/'+esc(person.photo)+'.webp" alt="" width="56" height="56" loading="lazy" decoding="async"><span>'+esc(person.name)+'</span></button>').join('')+'</div>'+
+  '<p class="group-contact-note">Fictional group contacts · no live presence</p></section>';
+}
 function render(vm,{feedback='',blocked=false,groupPreview=''}={}){
  const heading='<section class="group-page" aria-labelledby="route-title">'+
   '<span class="eyebrow">GROUPS · YOUR COMMUNITY</span><h1 id="route-title" tabindex="-1">'+(vm.member?'Your people.':'Find your people.')+'</h1>';
@@ -50,8 +60,8 @@ function render(vm,{feedback='',blocked=false,groupPreview=''}={}){
   '<a class="route-full-app" href="../index.html">Explore the existing demo <span aria-hidden="true">↗</span></a></div></section>';
  const calendar=vm.date?vm.date.toLocaleDateString('en-US',{weekday:'long',month:'short',day:'numeric'})+' · '+vm.date.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'}):'Next gathering date unavailable';
  const state=feedback?'<p class="group-feedback" role="status">'+esc(feedback)+'</p>':'';
- const top='<article class="group-feature"><img src="../assets/rally-one/community.webp" alt="" width="440" height="180" decoding="async">'+
-  '<div class="group-feature-copy"><strong>'+esc(vm.groupName)+'</strong><small>Fictional Wednesday Group · '+esc(vm.campus)+' campus</small></div></article>';
+ const top='<article class="group-feature"><img src="../assets/rally-one/community.webp" alt="" width="88" height="76" decoding="async">'+
+  '<div class="group-feature-copy"><span class="group-identity-label">'+peopleIcon+'<span>YOUR SMALL GROUP</span></span><strong>'+esc(vm.groupName)+'</strong><small>Fictional Wednesday Group · '+esc(vm.campus)+' campus</small></div></article>';
  const gather='<section class="group-gathering" aria-labelledby="group-gathering-title">'+
   '<div class="group-overline">NEXT GATHERING</div><h2 id="group-gathering-title">Life together.</h2>'+
   '<p>'+esc(calendar)+' · '+esc(vm.location)+'</p>'+
@@ -60,15 +70,15 @@ function render(vm,{feedback='',blocked=false,groupPreview=''}={}){
   vm.unread===null?'Conversation state is unknown.':
   vm.unread>0?vm.unread+' new group '+(vm.unread===1?'message':'messages'):
   'You are up to date in the fictional group conversation.';
- const conversation='<section class="group-conversation" aria-label="Group conversation"><div>'+
+ const conversation='<section class="group-conversation" aria-label="Group conversation"><span class="group-widget-icon">'+chatIcon+'</span><div>'+
   '<strong>Stay connected</strong><p>'+esc(msgStatus)+'</p>'+
   (vm.lastMessage?'<small>'+esc(vm.lastMessage.author+': '+vm.lastMessage.body.slice(0,110))+'</small>':'')+
-  '</div><button type="button" data-chat-open="group" data-return-focus="groups-conversation"'+(vm.conversationStatus!=='ok'?' disabled':'')+'>Open conversation <span aria-hidden="true">›</span></button></section>';
+  '</div><button type="button" data-chat-open="group" data-return-focus="groups-conversation"'+(vm.conversationStatus!=='ok'?' disabled':'')+'>Open conversation <span aria-hidden="true">'+arrow+'</span></button></section>';
  let care='';
  if(vm.care){
   const m=vm.care;
   const done=m.stage==='followed-up';
-  care='<section class="group-care" aria-label="Optional group care"><div class="group-care-heading"><span class="group-overline">PRAY FOR ONE ANOTHER</span>'+
+  care='<section class="group-care" aria-label="Optional group care"><div class="group-care-heading"><span class="group-overline">PRAY FOR ONE ANOTHER</span><span class="group-optional">Optional</span>'+
    '<h2>A small moment of care.</h2></div>'+
    '<blockquote><strong>'+esc(m.person)+'</strong><p>'+esc(m.request)+'</p></blockquote>'+
    '<p class="group-care-note">'+esc(m.guidance)+'</p>'+
@@ -79,9 +89,9 @@ function render(vm,{feedback='',blocked=false,groupPreview=''}={}){
    '<small>Fictional care · no automated outreach</small></section>';
  }
  const leaders=vm.leader&&vm.leaderIds.length?'<section class="group-leader" aria-labelledby="leader-title">'+
-  '<h2 id="leader-title">Leader follow-ups</h2><p>Only available in the explicitly authorized leader scenario.</p>'+
+  '<span class="group-overline">HUMAN-LED CARE</span><h2 id="leader-title">Leader follow-ups</h2><p>Only available in the explicitly authorized leader scenario.</p>'+
   vm.leaderIds.map(id=>'<button type="button" data-group-action="group-leader" data-value="'+esc(id)+'">Mark '+esc(id)+' reviewed</button>').join('')+'</section>':'';
- return heading+state+top+gather+conversation+care+leaders+'</section>';
+ return heading+state+top+gather+contacts(blocked)+conversation+care+leaders+'</section>';
 }
 return Object.freeze({project,commandFor,render});
 });

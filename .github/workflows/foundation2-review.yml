@@ -41,6 +41,7 @@ jobs:
           node scripts/convergence2c-browser-check.mjs http://127.0.0.1:8527/
           node scripts/convergence2d-browser-check.mjs http://127.0.0.1:8527/
           node scripts/experience-e1-e2-browser-check.mjs http://127.0.0.1:8527/
+          node scripts/experience-e2b-e3a-browser-check.mjs http://127.0.0.1:8527/
       - name: Preserve visual evidence
         if: always()
         uses: actions/upload-artifact@v4
@@ -52,5 +53,6 @@ jobs:
             test-results/convergence2c/
             test-results/convergence2d/
             test-results/experience-e1-e2/
+            test-results/experience-e2b-e3a/
           retention-days: 30
           if-no-files-found: warn
