@@ -90,8 +90,8 @@ function render(vm,{feedback='',mode='home',gameHTML=''}={}){
  const games='<section class="read-games" aria-labelledby="read-games-title">'+
   '<span class="group-overline">VERSEPLAY · ORIGINAL GAMES</span><h2 id="read-games-title" tabindex="-1">Make it stick.</h2>'+
   '<p>Choose a Scripture memory game.</p>'+
-  '<a class="read-game-link" href="../verse-circuit-playground.html" data-game="circuit"><strong>Verse Circuit</strong><span>Trace · Link · Echo</span><b>Play ↗</b></a>'+
-  '<a class="read-game-link" href="../blank-battle.html" data-game="blank"><strong>Blank Battle</strong><span>Full original Scripture puzzle</span><b>Play ↗</b></a>'+
+  '<a class="read-game-link" href="../verse-circuit-playground.html" data-game="circuit" data-return-focus="circuit-launch"><strong>Verse Circuit</strong><span>Trace · Link · Echo</span><b>Play ↗</b></a>'+
+  '<a class="read-game-link" href="../blank-battle.html" data-game="blank" data-return-focus="blank-launch"><strong>Blank Battle</strong><span>Full original Scripture puzzle</span><b>Play ↗</b></a>'+
   '<a class="read-game-link" href="?screen=read&game=classic" data-read-view="classic" data-return-focus="classic-launch"><strong>Classic VersePlay</strong><span>Solo · two-player Pass & Play</span><b>Play ›</b></a>'+
   '<small>Standalone games retain their own existing independent browser progress. Classic VersePlay uses the Foundation 2.0 guarded preview state.</small></section>';
  return head+'<p class="route-lead">Read. Reflect. Remember. At your own pace.</p><a class="read-games-jump" href="#read-games-title">Jump to VersePlay <span aria-hidden="true">↓</span></a>'+reply+

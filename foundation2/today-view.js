@@ -2,17 +2,15 @@
  * All display text is derived from the read-only presentation model.
  */
 (function(root,factory){
- const api=factory();
+ const api=factory(typeof module==='object'&&module.exports?require('./widgets.js'):root.FoundationWidgets);
  if(typeof module==='object'&&module.exports)module.exports=api;
  else root.FoundationView=api;
-})(globalThis,function(){
+})(globalThis,function(Widgets){
 'use strict';
 const esc=value=>String(value??'').replace(/[&<>"']/g,ch=>({
  '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
 }[ch]));
-const arrow='<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h16m-6-6 6 6-6 6"/></svg>';
-const chat='<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M6 4h12a3 3 0 0 1 3 3v8a3 3 0 0 1-3 3h-7l-5 3v-3a3 3 0 0 1-3-3V7a3 3 0 0 1 3-3Z"/><circle cx="8.5" cy="11" r=".85" fill="currentColor" stroke="none"/><circle cx="12" cy="11" r=".85" fill="currentColor" stroke="none"/><circle cx="15.5" cy="11" r=".85" fill="currentColor" stroke="none"/></svg>';
-const book='<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 6C9 4 6 4 2 4v15c4 0 7 0 10 2 3-2 6-2 10-2V4c-4 0-7 0-10 2Zm0 0v15"/></svg>';
+const arrow=Widgets.icon('arrow'),chat=Widgets.icon('chat'),book=Widgets.icon('book');
 const image='<img src="../assets/rally-one/community.webp" alt="" width="440" height="130" decoding="async">';
 const welcomeImage='<img src="../assets/rally-one/community.webp" alt="" width="440" height="220" decoding="async">';
 const faces='<div class="faces" aria-hidden="true"><img src="../assets/rally-one/anna.webp" alt="" width="30" height="30" loading="lazy"><img src="../assets/rally-one/jess.webp" alt="" width="30" height="30" loading="lazy"><img src="../assets/rally-one/marcus.webp" alt="" width="30" height="30" loading="lazy"></div>';
@@ -40,21 +38,21 @@ function render(v,receipt='',schedulePreview=''){
   '<p>Find a place to connect at your own pace.</p>'+
   '<a href="?screen=groups" data-route="groups" data-return-focus="today-groups">Explore groups '+arrow+'</a></div></article>':'';
  const secondary=v.secondary.length?'<section class="responsibilities" aria-label="Other responsibilities">'+
-  '<div class="section-heading"><h2>Also needs a response</h2><span>'+v.secondary.length+' more</span></div>'+
+  Widgets.heading('Also needs a response',v.secondary.length+' more')+
   '<div class="responsibility-list">'+v.secondary.map(x=>'<article class="responsibility"><div class="responsibility-copy"><strong>'+esc(x.title)+'</strong><small>'+esc(x.detail)+'</small></div>'+action(x,v,true)+'</article>').join('')+'</div></section>':'';
  const paused=v.paused.length?'<details class="deferred-panel"><summary>Saved for later <span>'+v.paused.length+'</span></summary>'+
   v.paused.map(x=>'<div class="deferred-item"><strong>'+esc(x.title)+'</strong>'+action(x,v)+'</div>').join('')+'</details>':'';
- const schedule=v.schedule.length?'<section class="coming" aria-label="Coming up"><div class="section-heading"><h2>Coming up</h2><span>Your schedule</span></div>'+
-  '<div class="schedule">'+v.schedule.map(x=>'<div class="event"><div class="day" aria-hidden="true"><small>'+esc(x.date?.toLocaleDateString('en-US',{weekday:'short'})||'—')+'</small><b>'+esc(x.date?.getDate()||'—')+'</b></div>'+
+ const schedule=v.schedule.length?'<section class="coming" aria-label="Coming up">'+Widgets.heading('Coming up','Your schedule')+
+  '<div class="schedule">'+v.schedule.map(x=>'<a class="event" href="?screen='+ (x.id==='group'?'groups':'team') +'" data-route="'+(x.id==='group'?'groups':'team')+'" data-return-focus="agenda-'+x.id+'"><div class="day" aria-hidden="true"><small>'+esc(x.date?.toLocaleDateString('en-US',{weekday:'short'})||'—')+'</small><b>'+esc(x.date?.getDate()||'—')+'</b></div>'+
   '<div class="event-copy"><strong>'+esc(x.title)+'</strong><small>'+esc(x.detail)+'</small></div>'+
-  '<span class="event-status '+(x.statusTone==='complete'?'complete':'')+'">'+esc(x.status)+'</span></div>').join('')+'</div></section>':'';
+  '<span class="event-status '+(x.statusTone==='complete'?'complete':'')+'">'+esc(x.status)+'</span></a>').join('')+'</div></section>':'';
  let optional='';
- if(v.unavailable)optional='<aside class="utility" role="status"><span class="utility-icon">'+chat+'</span><div><strong>Conversation unavailable</strong><small>Saved messages could not be read in this preview.</small></div></aside>';
- else if(v.unknownTeam)optional='<aside class="utility" role="status"><span class="utility-icon">'+book+'</span><div><strong>Serving response unavailable</strong><small>Review the saved schedule in the full application.</small></div></aside>';
- else if(v.unread>0)optional='<a class="utility utility-link" href="?screen=connect" data-route="connect" data-return-focus="today-connect"><span class="utility-icon">'+chat+'</span><div><strong>'+esc(v.unread)+' new group '+(v.unread===1?'message':'messages')+'</strong><small>Open Connect</small></div>'+arrow+'</a>';
- else if(v.reading)optional='<a class="utility utility-link" href="?screen=read" data-route="read" data-return-focus="today-read"><span class="utility-icon">'+book+'</span><div><strong>A moment with God</strong><small>'+esc(v.passage)+' · Scripture and prayer</small></div>'+arrow+'</a>';
+ if(v.unavailable)optional='<aside class="utility" role="status"><span class="utility-icon">'+chat+'</span><div><strong>Conversation unavailable</strong><small>Your saved messages are not assumed read. <a data-route="connect" data-return-focus="today-unavailable" href="?screen=connect">Review Connect</a></small></div></aside>';
+ else if(v.unknownTeam)optional='<aside class="utility" role="status"><span class="utility-icon">'+book+'</span><div><strong>Serving response unavailable</strong><small>No response inferred. <a data-route="team" data-return-focus="today-unknown-team" href="?screen=team">Review your schedule</a></small></div></aside>';
+ else if(v.unread>0)optional=Widgets.utility({title:v.unread+' new group '+(v.unread===1?'message':'messages'),detail:'Optional · Open Connect',icon:'chat',href:'?screen=connect',route:'connect',focusId:'today-connect'});
+ else if(v.reading)optional=Widgets.utility({title:'A moment with God',detail:v.passage+' · Optional Scripture and prayer',icon:'book',href:'?screen=read',route:'read',focusId:'today-read'});
  const heading='<header class="greeting"><div class="eyebrow">'+esc(v.date)+(v.campus==='unspecified'?'':' · '+esc(v.campus)+' campus')+'</div>'+
-  '<h1>'+esc(v.greeting)+'</h1><p class="summary '+(v.calm?'complete':'')+'">'+esc(v.summary)+'</p></header>';
+  '<h1>'+esc(v.greeting)+'</h1><div class="member-context"><button type="button" data-profile-entry data-return-focus="today-profile" aria-label="Edit profile for '+esc(v.name||'Friend')+'">'+esc(v.name||'Friend')+'</button><span>'+esc(v.involvement||'')+'</span></div><p class="summary '+(v.calm?'complete':'')+'">'+esc(v.summary)+'</p></header>';
  return heading+'<p class="receipt" role="status" aria-live="polite">'+esc(receipt)+'</p>'+
   main+settled+welcome+secondary+paused+schedule+schedulePreview+optional;
 }
