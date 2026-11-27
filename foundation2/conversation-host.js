@@ -9,7 +9,7 @@
  if(root)root.FoundationConversationHost=api;
 })(typeof window!=='undefined'?window:null,function(){
 'use strict';
-const ids=Object.freeze({Jess:'jess',Anna:'anna','Alex Morgan':'connect-alex'});
+const ids=Object.freeze({Jess:'jess',Anna:'anna','Alex Morgan':'connect-alex','Marcus C.':'marcus','Taylor D.':'taylor'});
 const knownIds=Object.freeze(Object.values(ids));
 const object=x=>!!x&&typeof x==='object'&&!Array.isArray(x);
 const text=x=>typeof x==='string'&&x.length<=700;
@@ -84,7 +84,13 @@ function create({getState,getSession,save,isCurrent,conversation,storage,Read,Do
     care:p.group&&snapshot.care?{...snapshot.care}:null};
   }catch{return {name:'Friend',groupName:null,teamName:null,teamLocation:null,care:null};}
  }
- return Object.freeze({access,messages,room,praying,write,draft,saveDraft,metadata,status,
+ function followup(value){
+  try{const {state,session}=current(),care=session.snapshot.care;if(!access().group||!care||care.paused||care.completed||!text(value)||!value.trim())return false;
+   const d=drafts(state);d.direct.marcus='';const flags={...state.companionCare?.marcus,completedAt:new Date().toISOString()};delete flags.snoozedUntil;
+   return commit({...state,directMessages:{...state.directMessages,marcus:[...(state.directMessages?.marcus||[]),{name:'You',time:'Just now',text:value}]},connectDrafts:d,companionCare:{...state.companionCare,marcus:flags}});
+  }catch{return false;}
+ }
+ return Object.freeze({followup,access,messages,room,praying,write,draft,saveDraft,metadata,status,
   conversation:typeof conversation==='function'?conversation:()=>({status:'unavailable',unreadCount:null}),
   storage,readModel:Read,domain:Domain});
 }

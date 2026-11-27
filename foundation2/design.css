@@ -1,3 +1,4 @@
+@import url("../rally-one-groups-v2.css");
 /* Rally One · Foundation 2
    Deliberately single-owner design system for the Today vertical slice.
    No legacy styles, global override stack or framework dependency. */
@@ -389,3 +390,12 @@ button.member-help{font:inherit;font-weight:800;color:var(--ink);background:tran
 .connect-host-notice{font-size:.85rem;color:#f3e9d8;line-height:1.5}
 #premium-connect{display:block;width:100%;min-height:360px;border:0;background:#17181a;border-radius:16px}
 @media(max-width:360px){.connect-toolbar{align-items:flex-start;gap:8px}.connect-toolbar p{font-size:.6875rem}}
+
+.relational-actions{margin:22px 0}.relational-actions button,.relational-dialog button{min-height:44px;padding:10px 14px;margin:4px;border:1px solid #77716a;border-radius:14px;background:#292c2f;color:#f4eee3;font:inherit}.relational-dialog{width:min(440px,calc(100vw - 20px));max-height:90dvh;overflow:auto;background:#181a1b;color:#f4eee3;border:1px solid #77716a;border-radius:18px;padding:18px}.relational-dialog::backdrop{background:#000a}.relational-dialog textarea{width:100%;font:inherit;min-height:90px;background:#292c2f;color:#f4eee3}.rel-portrait{width:40px;height:40px;border-radius:50%;vertical-align:middle;margin-right:8px}.rel-profile{width:110px;height:110px;border-radius:50%}.rel-direct .message{padding:12px;border-bottom:1px solid #555}.rel-direct .message p{overflow-wrap:anywhere}.rel-status{line-height:1.5}.relational-dialog fieldset{margin:12px 0;min-width:0}
+
+.read-standalone #foundation-game{display:block;width:100%;border:0;background:#151515}.read-standalone{margin-inline:-18px}.read-standalone>h1,.read-standalone #standalone-mount>button,.read-standalone #standalone-mount>p{margin-inline:18px}
+.relational-dialog fieldset{min-inline-size:0}.relational-dialog button{max-width:100%;overflow-wrap:anywhere;white-space:normal}.relational-dialog legend{overflow-wrap:anywhere}
+.relational-dialog{overflow-wrap:anywhere}.relational-dialog h2{font-size:1.5rem;line-height:1.2}
+
+.faces .rel-circle{display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;border:0;border-radius:50%;padding:0;background:transparent}.faces .rel-circle img{margin:0}.rel-circle:focus-visible{outline:2px solid #f4eee3;outline-offset:2px}
+.faces:has(.rel-circle){height:44px;padding-left:0}
