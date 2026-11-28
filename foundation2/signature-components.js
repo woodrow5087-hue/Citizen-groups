@@ -73,5 +73,19 @@
   if(complete===true&&remaining!==null&&remaining!==0)throw new TypeError('Completion contradicts remaining responses');
   return '<div class="sig-completion'+(complete===true?' sig-completion--complete':'')+'"><span class="sig-completion-mark" aria-hidden="true">'+(complete===true?icon('check'):'<span class="sig-completion-count">'+(remaining===null?'—':String(remaining))+'</span>')+'</span><div class="sig-completion-copy"><strong class="sig-serif">'+esc(title)+'</strong>'+(detail?'<p>'+esc(detail)+'</p>':'')+'</div></div>';
  }
- return Object.freeze({icon,heading,action,stack,dateBadge,completion});
+ function timeline({items=[],label='Event timeline'}={}){
+  if(!Array.isArray(items))throw new TypeError('Signature timeline requires source-provided items');
+  return '<ol class="sig-timeline" aria-label="'+esc(label)+'">'+items.map(item=>{
+   if(!item||typeof item!=='object'||Array.isArray(item))throw new TypeError('Signature timeline requires source-provided event objects');
+   const validDate=item.date instanceof Date&&Number.isFinite(item.date.valueOf());
+   const temporal=validDate?'<time class="sig-timeline-time" datetime="'+esc(item.date.toISOString())+'"><span class="sig-timeline-day">'+esc(item.date.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'}))+'</span><span class="sig-timeline-clock">'+esc(item.date.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'}))+'</span></time>':
+    '<span class="sig-timeline-time sig-timeline-time--unknown">Date unavailable</span>';
+   const interactive=item.attrs!==null&&item.attrs!==undefined;
+   const tag=interactive?'button':'div';
+   const type=interactive&&!Object.hasOwn(item.attrs,'type')?' type="button"':'';
+   return '<li class="sig-timeline-item'+(item.selected===true?' is-selected':'')+'"><span class="sig-timeline-dot" aria-hidden="true"></span><'+tag+type+' class="sig-timeline-control"'+(interactive?attributes(item.attrs):'')+'>'+temporal+
+    '<span class="sig-timeline-copy"><strong>'+esc(item.title)+'</strong>'+(item.detail?'<span class="sig-timeline-detail">'+esc(item.detail)+'</span>':'')+'</span></'+tag+'></li>';
+  }).join('')+'</ol>';
+ }
+ return Object.freeze({icon,heading,action,stack,dateBadge,completion,timeline});
 });

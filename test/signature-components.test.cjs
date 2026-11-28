@@ -84,6 +84,33 @@ test('Signature completion cannot contradict remaining responses or turn an unkn
  assert.equal(done.querySelector('.sig-completion-mark').getAttribute('aria-hidden'),'true');
 });
 
+test('Signature timeline escapes supplied events, preserves source order and dates, and has no rendering side effects',()=>{
+ const later=new Date('2026-12-06T16:00:00Z'),earlier=new Date('2026-12-05T18:00:00Z'),unknown=new Date('invalid');
+ const payload='<svg onload=bad()>\" <script>bad()</script>';
+ const items=Object.freeze([
+  Object.freeze({date:later,title:payload,detail:payload,selected:true,attrs:Object.freeze({'data-sig-action':'event-detail','data-sig-value':payload,'aria-label':payload})}),
+  Object.freeze({date:earlier,title:'Earlier supplied second',detail:'Source order is deliberate.'}),
+  Object.freeze({date:unknown,title:'Unknown date',attrs:Object.freeze({'data-sig-action':'event-detail'})})
+ ]);
+ const before=JSON.stringify(items),laterISO=later.toISOString(),earlierISO=earlier.toISOString();
+ const html=Signature.timeline({items,label:payload}),page=doc(html),list=page.querySelector('ol.sig-timeline');
+ assert.equal(list.getAttribute('aria-label'),payload);
+ assert.deepEqual([...list.querySelectorAll('.sig-timeline-copy>strong')].map(n=>n.textContent),[payload,'Earlier supplied second','Unknown date']);
+ assert.deepEqual([...list.querySelectorAll('time')].map(n=>n.getAttribute('datetime')),[laterISO,earlierISO]);
+ assert.equal(list.querySelector('.sig-timeline-detail').textContent,payload);
+ assert.match(list.querySelector('.sig-timeline-time--unknown').textContent,/Date unavailable/);
+ assert.equal(list.querySelectorAll('.sig-timeline-item.is-selected').length,1);
+ assert.equal(list.querySelector('button.sig-timeline-control').type,'button');
+ assert.equal(list.querySelector('button.sig-timeline-control').getAttribute('data-sig-value'),payload);
+ assert.equal(list.querySelectorAll('button.sig-timeline-control').length,2,'Only source-provided action attributes create controls');
+ assert.equal(list.querySelector('[onload],script,svg'),null);
+ assert.equal(list.querySelectorAll('[aria-current],[aria-pressed]').length,0,'A selected date does not imply attendance or completion');
+ assert.equal(JSON.stringify(items),before);
+ assert.equal(later.toISOString(),laterISO);assert.equal(earlier.toISOString(),earlierISO);
+ assert.equal(Signature.timeline({items,label:payload}),html,'Rendering depends only on its supplied projection');
+ assert.throws(()=>Signature.timeline({items:[{title:'Unsafe',attrs:{onclick:'bad()'}}]}),TypeError);
+});
+
 test('Signature Today remains a read-only projection of canonical commitments, dates and actions',()=>{
  const state=AppState.initialize(()=>null,true);state.role='leader';
  const vm=model(state),before=JSON.stringify({state,vm});

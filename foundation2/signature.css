@@ -79,6 +79,21 @@
 .signature-surface .sig-agenda-row strong{font-size:.9375rem;line-height:1.25;font-weight:800;letter-spacing:-.035em}
 .signature-surface .sig-agenda-row small{display:block;font-size:.75rem;line-height:1.4;color:var(--sig-muted);margin-top:3px}
 .signature-surface .sig-agenda-row .sig-utility{margin-left:auto;flex:none;width:36px;height:36px;min-height:36px;pointer-events:none}
+.signature-surface .sig-timeline{list-style:none;margin:0;padding:0;min-width:0;color:var(--sig-ink)}
+.signature-surface .sig-timeline-item{position:relative;min-width:0;padding:0 0 0 25px}
+.signature-surface .sig-timeline-item:not(:last-child)::before{content:"";position:absolute;left:6px;top:calc(14px + .3rem + 6px);bottom:calc(-14px - .3rem - 6px);width:1px;background:var(--sig-line);pointer-events:none}
+.signature-surface .sig-timeline-dot{position:absolute;left:0;top:calc(14px + .3rem);width:13px;height:13px;border:3px solid var(--sig-line);border-radius:50%;background:var(--sig-paper);pointer-events:none}
+.signature-surface .sig-timeline-item.is-selected>.sig-timeline-dot{background:var(--sig-red);border-color:var(--sig-red)}
+.signature-surface .sig-timeline-control{display:flex;align-items:baseline;flex-wrap:wrap;gap:5px 12px;width:100%;min-width:0;min-height:64px;margin:0;padding:14px 0;border:0;border-bottom:1px solid var(--sig-line);border-radius:0;background:transparent;color:inherit;font:inherit;text-align:left}
+.signature-surface button.sig-timeline-control{cursor:pointer}
+.signature-surface .sig-timeline-item:last-child>.sig-timeline-control{border-bottom:0}
+.signature-surface .sig-timeline-time{display:grid;align-content:start;gap:2px;flex:0 0 5.8rem;max-width:100%;min-width:0;color:var(--sig-muted);font-style:normal}
+.signature-surface .sig-timeline-day{font-size:.6875rem;line-height:1.4;font-weight:750;letter-spacing:.035em;text-transform:uppercase}
+.signature-surface .sig-timeline-clock{font-size:.875rem;line-height:1.35;font-weight:800;color:var(--sig-ink)}
+.signature-surface .sig-timeline-time--unknown{font-size:.75rem;line-height:1.4;font-weight:650}
+.signature-surface .sig-timeline-copy{flex:1 1 10rem;min-width:0}
+.signature-surface .sig-timeline-copy>strong{display:block;font-size:.9375rem;line-height:1.35;font-weight:800;letter-spacing:-.035em;overflow-wrap:anywhere}
+.signature-surface .sig-timeline-detail{display:block;margin-top:3px;font-size:.8125rem;line-height:1.45;color:var(--sig-muted);overflow-wrap:anywhere}
 .signature-surface .sig-utility{display:inline-grid;place-items:center;flex:none;width:48px;height:48px;min-height:var(--sig-touch);border:1px solid #e2d6c8;border-radius:50%;background:var(--sig-paper);color:var(--sig-ink);box-shadow:0 3px 9px #3622190c;text-decoration:none;cursor:pointer;padding:0}
 .signature-surface .sig-utility--red{background:var(--sig-red);border-color:var(--sig-red);color:#fff}
 .signature-surface .sig-utility--ink{background:var(--sig-charcoal);border-color:var(--sig-charcoal);color:var(--sig-paper)}

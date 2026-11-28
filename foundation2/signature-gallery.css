@@ -218,3 +218,5 @@ body.signature-gallery{margin:0;background:#f7f1e8;color:#201f1d;font-family:Man
  .gallery-agenda article{grid-template-columns:44px minmax(0,1fr) 44px;gap:8px}
  .gallery-agenda p{font-size:.75rem}
 }
+
+.gallery-timeline-title{font-size:.6875rem;letter-spacing:.15em;text-transform:uppercase;color:#605c56;margin:24px 0 10px}

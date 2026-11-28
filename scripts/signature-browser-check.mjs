@@ -147,6 +147,11 @@ try{
   const gallery=await galleryContext.newPage(),galleryErrors=[];gallery.on('pageerror',error=>galleryErrors.push(error.message));
   await gallery.goto(new URL('/foundation2/signature-gallery.html',base).href);await gallery.locator('[data-sig-action=stack-next]').waitFor();
   await overflow(gallery,'Gallery '+width);await axe(gallery,'Gallery '+width);await capture(gallery,width+'-gallery');
+  assert.equal(await gallery.locator('.sig-timeline-item').count(),2);
+  assert.equal(await gallery.locator('.sig-timeline-item.is-selected').count(),1,'Timeline highlights only the selected specimen date');
+  await gallery.locator('.sig-timeline-control').first().focus();await gallery.keyboard.press('Enter');
+  await gallery.locator('#gallery-dialog[open]').waitFor();await gallery.keyboard.press('Escape');
+  assert.equal(await gallery.locator('.sig-timeline-control').first().evaluate(e=>e===document.activeElement),true,'Timeline detail restores its native keyboard origin');
   await gallery.locator('[data-sig-action=stack-next]').focus();await gallery.keyboard.press('Enter');
   assert.match(await gallery.locator('#stack-caption').innerText(),/Specimen 2 of 3/);
   assert.equal(await gallery.locator('[data-sig-action=stack-next]').evaluate(e=>e===document.activeElement),true);
@@ -160,9 +165,11 @@ try{
   assert.equal(await gallery.locator('[data-sig-action=person]').first().evaluate(e=>e===document.activeElement),true);
   await gallery.locator('[data-sig-action=week-next]').click();
   assert.equal(await gallery.locator('.gallery-empty-agenda').count(),1);
+  assert.equal(await gallery.locator('.sig-timeline-item').count(),0,'Empty week cannot fabricate timeline events');
   await gallery.locator('[data-sig-action=week-prev]').click();
   assert.equal(await gallery.locator('.gallery-agenda article').count(),2);
   await gallery.locator('[data-sig-action=date]').first().click();assert.equal(await gallery.locator('[data-sig-action=date][aria-pressed=true]').count(),1);
+  assert.equal(await gallery.locator('.sig-timeline-item.is-selected').count(),0,'A date without specimen events does not fabricate a current event');
   assert.equal(await gallery.locator('#completion-output .sig-completion--complete').count(),0);
   await gallery.locator('[data-sig-action=rsvp][data-sig-value=going]').click();await gallery.locator('[data-sig-action=commitment]').click();
   assert.equal(await gallery.locator('#completion-output .sig-completion--complete').count(),1);
