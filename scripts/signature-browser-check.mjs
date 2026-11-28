@@ -62,6 +62,11 @@ try{
   assert.ok(await page.locator('.sig-stack-layer').count()>=2);
   assert.ok(await page.locator('.sig-stack-layer').evaluateAll(layers=>layers.every(e=>e.getAttribute('aria-hidden')==='true')));
   await overflow(page,'Today '+width);await axe(page,'Today '+width);await capture(page,width+'-today-pending');
+  await page.evaluate(()=>document.documentElement.style.fontSize='200%');await nextFrames(page);
+  await overflow(page,'Pending Today 200% '+width);await axe(page,'Pending Today 200% '+width);
+  assert.equal(await page.locator('.priority h2').evaluate(e=>{const word=e.firstChild;const range=document.createRange();range.setStart(word,0);range.setEnd(word,'Welcome'.length);return range.getClientRects().length;}),1,'Enlarged primary keeps Welcome whole by giving copy the available space');
+  await capture(page,width+'-today-pending-enlarged');
+  await page.evaluate(()=>document.documentElement.style.fontSize='');
   // Canonical responses must be acknowledged and event-bound. Optional unread
   // data is deliberately left untouched through the real Today actions.
   for(const command of ['serve','rsvp'])await page.locator('[data-command='+command+']').click();

@@ -43,7 +43,8 @@ body.signature-mode{background:#f5eee3;color:#1d1e1e;color-scheme:light}
 .signature-today .priority-meta>span:last-child{text-align:right}
 .signature-today .priority-meta .kicker{color:var(--sig-paper);font-size:.625rem;letter-spacing:.1em}
 .signature-today .priority-meta .kicker::before{height:13px;width:5px;border-radius:0;transform:skew(-18deg)}
-.signature-today .priority-body{grid-template-columns:minmax(0,1fr) 92px;gap:12px;min-height:76px;margin:12px 0 16px}
+.signature-today .priority-body{--sig-photo-column:92px;--sig-photo-gap:12px;grid-template-columns:minmax(min(100%,9rem),1fr) minmax(0,var(--sig-photo-column));gap:0;min-height:76px;margin:12px 0 16px}
+.signature-today .priority-copy{box-sizing:border-box;padding-right:var(--sig-photo-gap)}
 .signature-today .priority-body:not(:has(.priority-photo)){grid-template-columns:1fr}
 .signature-today .priority h2{font-family:var(--sig-serif);font-variation-settings:"SOFT" 25,"WONK" 1;font-size:1.9375rem;line-height:1;letter-spacing:-.05em;font-weight:650;margin:0 0 8px}
 .signature-today .priority p{font-size:.8125rem;color:#e1d7c9;line-height:1.45}
@@ -115,7 +116,7 @@ body.signature-mode{background:#f5eee3;color:#1d1e1e;color-scheme:light}
 @media(max-width:360px){
  .signature-shell .brand{font-size:19px}
  .signature-shell .header-actions{gap:2px}
- .signature-today .priority-body{grid-template-columns:minmax(0,1fr) 68px;gap:8px}
+ .signature-today .priority-body{--sig-photo-column:68px;--sig-photo-gap:8px}
  .signature-today .priority h2{font-size:1.6875rem}
  .signature-today .event-copy strong{overflow-wrap:anywhere;font-size:.8125rem}
 }
