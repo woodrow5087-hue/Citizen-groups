@@ -10,7 +10,7 @@
  src:url("../assets/fonts/Manrope.ttf") format("truetype");
  font-style:normal;font-weight:200 800;font-display:swap;
 }
-.signature-surface,.signature-shell{
+.signature-surface,.signature-shell,.signature-destinations{
  --sig-ivory:#f5eee3;--sig-paper:#fff9f0;--sig-ink:#1d1e1e;--sig-charcoal:#242525;
  --sig-red:#df272b;--sig-muted:#605c56;--sig-line:#d7cbbd;--sig-stone:#b5a493;
  --sig-serif:"Rally Signature Serif",Georgia,serif;

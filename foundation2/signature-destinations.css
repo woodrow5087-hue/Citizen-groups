@@ -1,0 +1,84 @@
+:root:has(body.signature-destination-mode){--sig-safe-bottom:env(safe-area-inset-bottom);scroll-padding-block-end:calc(var(--nav-clearance) + var(--sig-safe-bottom))}
+body.signature-destination-mode{background:#f5eee3;color:#1d1e1e;color-scheme:light}
+.shell.signature-destinations{--sig-shell-inset:18px;padding-inline:var(--sig-shell-inset);background:var(--sig-ivory);color:var(--sig-ink);--paper:var(--sig-ivory);--ink:var(--sig-ink);--panel:var(--sig-paper);--muted:var(--sig-muted);--line:var(--sig-line);--dark:var(--sig-ink);--brand:var(--sig-red);padding-top:0;padding-bottom:calc(var(--nav-clearance) + var(--sig-safe-bottom))}
+.signature-destinations :is(a,button,summary,select):focus-visible{outline:2px solid var(--sig-red);outline-offset:3px;box-shadow:0 0 0 2px var(--sig-paper)}
+.signature-destinations .header{min-height:calc(60px + env(safe-area-inset-top));padding:env(safe-area-inset-top) var(--sig-shell-inset) 0;margin-inline:calc(-1 * var(--sig-shell-inset));background:var(--sig-charcoal);color:var(--sig-paper);gap:6px}
+.signature-destinations .brand{font-size:21px;letter-spacing:-.06em;gap:5px;color:var(--sig-paper)}
+.signature-destinations .brand img{width:25px;height:25px}
+.signature-destinations .header-actions{gap:4px}
+.signature-destinations button.member-help{font-size:.75rem;width:auto;padding:0 8px;border-radius:999px}
+.signature-destinations .header-actions :is(button,a),.signature-destinations .preview-tools>summary{color:var(--sig-paper);border-color:#79766f;background:transparent}
+.signature-destinations .preview-avatar{background:var(--sig-paper);color:var(--sig-ink)}
+.signature-destinations .preview-tools-panel{background:var(--sig-paper);color:var(--sig-ink);border-color:var(--sig-line);box-shadow:0 8px 20px #211a1614}
+.signature-destinations .preview-tools-panel select{background:var(--sig-paper);color:var(--sig-ink);border-color:var(--sig-stone)}
+.signature-destinations .preview-tools-panel button{background:var(--sig-charcoal);color:var(--sig-paper);border:0;border-radius:10px;padding:10px}
+.signature-destinations .primary-nav{grid-template-columns:repeat(auto-fit,minmax(min(4rem,100%),1fr));width:calc(100% - 32px);max-width:420px;left:50%;right:auto;bottom:calc(8px + var(--sig-safe-bottom));transform:translateX(-50%);padding:5px 6px;gap:4px;border:1px solid #3b3c3a;border-radius:32px;background:var(--sig-charcoal);box-shadow:0 4px 12px #211a1612}
+.signature-destinations .primary-nav a{min-height:56px;border-radius:26px;font-size:.75rem;color:var(--sig-ivory);padding:7px 3px;gap:3px}
+.signature-destinations .primary-nav a svg{width:22px;height:22px}
+.signature-destinations .primary-nav a[aria-current=page]{background:var(--sig-red);color:white}
+.signature-destinations .primary-nav a[aria-current=page] svg{padding:0;background:transparent;color:white;box-sizing:border-box;border-radius:0}
+.signature-destinations .primary-nav a>span{min-width:0;max-width:100%;overflow-wrap:normal;white-space:nowrap}
+.signature-destinations .preview-footer{color:var(--sig-muted);padding-top:14px;font-size:.625rem;line-height:1.6}
+
+/* S4 bounded convergence. Existing renderers, commands and inner game/chat
+   documents remain authoritative. No selectors reach Connected Day. */
+.shell.signature-app.signature-destinations{--good:#326849;--overline-ink:#8f2125;color-scheme:light}
+.shell.signature-app.signature-destinations :is(.group-page,.team-page,.read-page,.connect-page){margin-top:20px;min-width:0}
+.shell.signature-app.signature-destinations :is(.group-page,.team-page,.read-page,.connect-page)>h1{font-family:var(--sig-serif);font-weight:650;font-size:2.5rem;line-height:1.05;letter-spacing:-.055em;margin:6px 0 14px}
+.shell.signature-app.signature-destinations :is(.eyebrow,.group-overline){color:var(--sig-muted)}
+.shell.signature-app.signature-destinations :is(.section-heading,.group-care-heading) h2::before{content:"";display:inline-block;width:7px;height:17px;margin-right:7px;background:var(--sig-red);transform:skew(-22deg)}
+.shell.signature-app.signature-destinations :is(.route-preview-card,.group-care,.group-leader,.team-coverage,.team-leader-panel,.read-games){background:var(--sig-paper);color:var(--sig-ink);border-color:var(--sig-line);box-shadow:none}
+.shell.signature-app.signature-destinations :is(.group-feature,.team-identity){background:var(--sig-charcoal);color:var(--sig-paper);border:0;border-radius:20px 20px 4px 20px}
+.shell.signature-app.signature-destinations :is(.group-feature-copy,.team-identity-copy) :is(small,p,.group-identity-label){color:#e1d7c9}
+.shell.signature-app.signature-destinations .group-identity-label svg{color:var(--sig-paper)}
+.shell.signature-app.signature-destinations :is(.group-feature-copy strong,.team-identity h2){font-family:var(--sig-serif);font-size:1.75rem;font-weight:650;line-height:1.08}
+.shell.signature-app.signature-destinations .group-feature>img{clip-path:polygon(18% 0,100% 0,100% 100%,0 100%);width:100%;height:100%;object-fit:cover}
+.shell.signature-app.signature-destinations :is(.group-gathering,.team-assignment,.read-scripture){border:1px solid var(--sig-line);border-radius:4px 20px 20px 20px;background:var(--sig-paper);box-shadow:0 4px 0 #e7dccd}
+.shell.signature-app.signature-destinations :is(.group-gathering,.team-assignment,.read-scripture) h2{font-family:var(--sig-serif);font-weight:650;font-size:1.75rem;line-height:1.12}
+.shell.signature-app.signature-destinations .team-date-mark b{font-family:var(--sig-serif);font-size:2.4rem;font-weight:650;color:#b01f25}
+.shell.signature-app.signature-destinations .group-contact{color:var(--sig-ink);padding-block:7px}
+.shell.signature-app.signature-destinations .group-contact img{width:58px;border:3px solid var(--sig-paper);box-shadow:0 0 0 1px var(--sig-line)}
+.shell.signature-app.signature-destinations .group-contact:first-child img{box-shadow:0 0 0 1.5px var(--sig-red)}
+.shell.signature-app.signature-destinations .group-conversation{background:var(--sig-charcoal);color:var(--sig-paper);border-color:var(--sig-charcoal);border-radius:18px 4px 18px 18px}
+.shell.signature-app.signature-destinations .group-conversation :is(p,small){color:#e1d7c9}
+.shell.signature-app.signature-destinations .group-conversation button{color:var(--sig-paper);border-color:#77736c}
+.shell.signature-app.signature-destinations .group-widget-icon{border-radius:50%;background:var(--sig-red);color:white}
+.shell.signature-app.signature-destinations .group-care blockquote{background:var(--sig-ivory);color:var(--sig-ink)}
+.shell.signature-app.signature-destinations :is(.group-care-actions button[data-chat-open],.group-leader button,.group-care-actions button,.team-coverage-action,.route-full-app:not(.team-room-link),.read-reflection button,.read-prayer button,.read-leader button){background:var(--sig-paper);color:var(--sig-ink);border:1px solid var(--sig-stone)}
+.shell.signature-app.signature-destinations :is(.group-response-actions>button[data-value=going],.team-actions.is-pending button:first-child,.read-scripture>button:not([aria-pressed=true]),.experience-discover){border-radius:16px 5px 16px 5px;background:var(--sig-red);border-color:var(--sig-red);color:white}
+.shell.signature-app.signature-destinations :is(.group-response-actions>button.is-selected,.team-actions button.is-selected){background:var(--sig-charcoal);color:var(--sig-paper);border-color:var(--sig-charcoal)}
+.shell.signature-app.signature-destinations .team-coverage-kicker{color:#8f2125}
+.shell.signature-app.signature-destinations .team-room-link{background:var(--sig-charcoal);color:var(--sig-paper);border-color:var(--sig-charcoal);border-radius:16px 4px 16px 16px}
+.shell.signature-app.signature-destinations .team-room-link small{color:#e1d7c9}
+.shell.signature-app.signature-destinations .team-coverage .team-room-link{background:var(--sig-charcoal);color:var(--sig-paper);border-color:var(--sig-charcoal)}
+.shell.signature-app.signature-destinations .team-identity-copy .group-overline{color:#e1d7c9}
+.shell.signature-app.signature-destinations .team-room-link .utility-icon{background:var(--sig-red);color:white;border-radius:50%}
+.shell.signature-app.signature-destinations :is(.team-leader-icon,.team-empty-icon,.read-games-heading .utility-icon){background:var(--sig-charcoal);color:var(--sig-paper);border-radius:50%}
+.shell.signature-app.signature-destinations .read-scripture blockquote{font-family:var(--sig-serif);font-size:1.375rem;line-height:1.55;font-weight:450;letter-spacing:-.02em}
+.shell.signature-app.signature-destinations .read-games{background:var(--sig-charcoal);color:var(--sig-paper);border-color:var(--sig-charcoal);border-radius:20px 4px 20px 20px}
+.shell.signature-app.signature-destinations .read-games :is(p,small,.group-overline,.read-game-link span){color:#e1d7c9}
+.shell.signature-app.signature-destinations .read-game-link,.shell.signature-app.signature-destinations .read-game-link b{color:var(--sig-paper)}
+.shell.signature-app.signature-destinations .read-games-heading .utility-icon{background:var(--sig-red);color:white}
+.shell.signature-app.signature-destinations .read-games-jump{color:var(--sig-ink);border-color:var(--sig-line)}
+.shell.signature-app.signature-destinations .read-games-jump span{color:#b01f25}
+.shell.signature-app.signature-destinations :is(.read-reflection,.read-leader) textarea{background:var(--sig-paper);color:var(--sig-ink);border-color:var(--sig-stone)}
+.shell.signature-app.signature-destinations .read-saved-note{background:var(--sig-paper);color:var(--sig-ink)}
+.shell.signature-app.signature-destinations .read-path-options button{background:var(--sig-paper);color:var(--sig-ink)}
+.shell.signature-app.signature-destinations .read-path-options button[aria-pressed=true]{background:var(--sig-charcoal);color:var(--sig-paper)}
+.shell.signature-app.signature-destinations .read-feedback{background:#e3eddf;color:#214e30}
+.shell.signature-app.signature-destinations :is(.connect-toolbar p,.connect-host-notice){color:var(--sig-muted)}
+.shell.signature-app.signature-destinations .connect-toolbar{padding-top:12px}
+.shell.signature-app.signature-destinations .connect-return{background:var(--sig-paper);color:var(--sig-ink);border-color:var(--sig-stone);border-radius:22px}
+.shell.signature-app.signature-destinations #premium-connect{border-radius:18px 18px 4px 4px}
+.shell.signature-app.signature-destinations :is(.group-page,.team-page,.read-page,.connect-toolbar) :focus-visible{outline:2px solid var(--sig-red);outline-offset:3px;box-shadow:0 0 0 2px var(--sig-paper)}
+@media(hover:hover){.shell.signature-app.signature-destinations .read-game-link:hover{background:#383936}.shell.signature-app.signature-destinations .route-full-app:hover{background:#eadfce}}
+@media(max-width:360px){.shell.signature-app.signature-destinations .group-contact img{width:50px}}
+
+@media(max-width:360px){.shell.signature-destinations{--sig-shell-inset:14px}.signature-destinations .brand{font-size:19px}.signature-destinations .header-actions{gap:2px}}
+.shell.signature-app.signature-destinations .route-stage-label{color:#8f2125}
+.shell.signature-app.signature-destinations .route-preview-card :is(p,time){color:var(--sig-muted)}
+.shell.signature-app.signature-destinations .read-games-heading>div{min-width:0;overflow-wrap:anywhere}
+/* Existing Wednesday heading exceeded320px in WebKit at200% on both S3
+   and S4. Whole content reflows; Connected Day geometry remains unchanged. */
+.signature-app .signature-today .priority h2{overflow-wrap:anywhere}
+.shell.signature-app.signature-destinations :is(h1,h2,blockquote){overflow-wrap:anywhere}

@@ -1,6 +1,26 @@
 # Rally One Foundation 2.0 — Gated Development Program
-Status: Rally Signature S3 Composition & Craftsmanship explicitly authorized from unaccepted S1/S2 review905f7da/PR160; sole active successor lane `rally-one/signature-s3`. Two distinct gallery compositions must precede selection/integration. Stop for S3 owner creative approval. S1/S2 creative, E3B physical and historical promotion gates remain open; no destination rollout/merge/default cutover/production.
+Status: S4 bounded visual rollout/demo stabilization authorized from PR161 exact7544f48; sole successor `rally-one/signature-s4`. Existing Signature direction approved for continued isolated development, not final demonstration or physical acceptance. Stop and freeze for owner demonstration acceptance after this block.
 Canonical: `076a3393eef013304e715c6bc283031af4040df1` (authorized PR155 merge; accepted2C tree unchanged).
+
+## Rally Signature S4 — bounded rollout and demonstration freeze
+
+Owner authorization November28: extend existing Signature tokens/type/actions/widgets/navigation into Groups, Team, Read; harmonize Connect selectively; preserve current Connected Day unchanged. One coordinated block targeting60–90 active implementation minutes excluding validation/deployment waits; prioritize meaningful convergence. No creative exploration/alternative concepts, Today redesign, new features/component families, architecture refactoring, speculative functionality, infrastructure, standalone historical discrepancies or issue153 work.
+
+Base PR161 remains frozen at `7544f48b6fec09f6d6039975d0de0255bd7ab488`. Its Foundation46162121287 passed; fullQA46162121299 failed at the preserved Connect embedded320 inbox395raw/114nonAA/281AA blocker. Reuse accepted/previous evidence; no startup reruns or historical investigation. Canonical076a3393/main32bed048 and all existing recovery refs remain unchanged.
+
+Scope fixed before implementation: presentation-only destination CSS, shared Signature shell scope in app draw, additive route/browser acceptance evidence if needed. Existing Groups/Team/Read renderers and all authoritative state/permission/persistence/game/messaging owners remain. Harmonize Connect host chrome without changing protected iframe documents/controllers. Today renderer/styles/composition stay frozen. No new engine/store/router/component family. Existing E3B four-role showcase fixtures/journeys are reused.
+
+Final gate: all four primary destinations recognizable as Signature; Connect accessible and functional; member/leader journeys intact; no known new material functionality/accessibility regression; applicable established candidate validation once complete, correct introduced regressions without weakening assertions/references/thresholds. Verify immutable metadata/served bytes, document four-role rehearsal and exact-head checks in PR/closeout. S3 targeted physical and E3B message-scroll physical checks remain outstanding. Earlier canonical/2D failures and deferred153 remain promotion blockers regardless of later passes. Original PNG reference comparison remains owner-deferred, private Studio13 originals excluded.
+
+Freeze feature/cosmetic development after candidate preparation. Owner demonstration acceptance required for December2. No canonical merge, production deployment, live data, external communication, destructive migration or default cutover. No further cosmetic sprint proposed.
+
+### S4 implementation checkpoint / demonstration freeze
+
+Existing Signature tokens and shell presentation now cover Groups/Team/Read and the Connect host. Ivory/charcoal editorial surfaces, selective serif, red response actions, circle portraits, Scripture hierarchy and floating navigation reuse established families. Protected Connect iframe/engines and all Groups/Team/Read state/render/action owners are unchanged. Today renderer/composition/motion remain unchanged; a whole-word wrapping safeguard corrects the reproduced inherited Wednesday-heading overflow at320/200% in WebKit, not a redesign. Scripture long words also reflow.
+
+Development checks caught and corrected destination-specific contrast precedence, provider/visitor light-surface copy, and enlarged-text wrapping. Raw failure evidence is retained.1004 units and72 Foundation scenes pass; the existing connected/leader December2 saved-message, RSVP/coverage, Room, Classic and focus-return rehearsal passes. Eight normal Today/S3 pairs have zero raw differing pixels. Additive S4 four-role/size/motion/native-nav/axe/last-content validation and normal exact-head full workflows complete in final PR/closeout; prior tests/inventories/references/thresholds remain unchanged. No acceptance is implied.
+
+Recovery tag `rally-one/checkpoints/2026-11-28-signature-s3-demo-base` preserves exact7544 as a review base, not owner physical/demonstration acceptance. Four-role rehearsal and physical requirements: `engineering/rally-signature-s4-demo.md`. After validation and immutable preview preparation, feature/cosmetic development is frozen for owner demonstration acceptance. Historical protected failures and E3B/S3/S4 physical gates remain outstanding. No further cosmetic sprint or promotion is authorized.
 
 ## Rally Signature S3 — November28 composition/craftsmanship authorization
 

@@ -111,7 +111,10 @@ function draw(focus=false){
  presentationMotion.cancel();
  presentationMotion.capture(root);
  document.querySelector('.shell').classList.toggle('signature-shell',route==='today');
+ document.querySelector('.shell').classList.add('signature-app');
+ document.querySelector('.shell').classList.toggle('signature-destinations',route!=='today');
  document.body.classList.toggle('signature-mode',route==='today');
+ document.body.classList.toggle('signature-destination-mode',route!=='today');
  const now=new Date(),chat=conversation(),session=FoundationMemberSession.derive({owner:localScenario(select.value),state,ui,conversation:chat,now}),snapshot=session.snapshot;
  renderedEvents=session.events;
  const avatar=document.querySelector('.preview-avatar');if(avatar)avatar.textContent=ui.name==='Friend'?'D':ui.name.slice(0,1).toUpperCase();
