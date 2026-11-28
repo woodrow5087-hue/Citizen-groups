@@ -12,24 +12,48 @@ function mount({container,host,storage,key,search,onScreen,onReturn}){
  const controller=new AbortController();let disposed=false,restoring=false,loaded=false;
  let desired=view(search);const notice=document.querySelector('.connect-host-notice');
  const report=message=>{if(notice){notice.textContent=message;notice.setAttribute('role',message?'alert':'status');}};
- frame.connectMember={...host,...desired,storage,report,screenChanged(screen,person){if(!restoring&&!disposed)onScreen(screen,person);}};
- container.replaceChildren(frame);
+ frame.connectMember={...host,...desired,storage,report,screenChanged(screen,person){if(!restoring&&!disposed){
+  // A visible conversation can be opened before the iframe's images finish
+  // loading. Final load reconciliation must retain that actual user choice.
+  desired={screen,person:person||''};onScreen(screen,person);
+ }}};
+ // Small viewport units stay fixed as Safari's address bar moves. This hidden
+ // layout ruler is not a scroll area and never participates in focus or state.
+ const ruler=document.createElement('div');ruler.setAttribute('aria-hidden','true');
+ ruler.style.cssText='position:fixed;top:0;left:0;width:0;height:100svh;visibility:hidden;pointer-events:none';
+ // Do not expose static sample controls before the real permission/controller
+ // setup has bound them. DOM readiness must not wait for slow photographs.
+ const opening=document.createElement('p');opening.setAttribute('role','status');opening.textContent='Opening Connect…';
+ frame.inert=true;frame.style.visibility='hidden';frame.setAttribute('aria-hidden','true');
+ container.replaceChildren(opening,frame,ruler);
+ frame.connectMember.ready=()=>{
+  if(disposed||loaded)return;
+  loaded=true;opening.remove();frame.inert=false;frame.style.visibility='';frame.removeAttribute('aria-hidden');fit();
+  restoring=true;try{frame.contentWindow.FoundationConnectFrame.navigate(desired);}finally{restoring=false;}
+ };
  const back=document.querySelector('.connect-return');back.onclick=onReturn;
  const fit=()=>{
   if(disposed)return;
-  const viewport=window.visualViewport,top=frame.getBoundingClientRect().top;
-  const bottom=Math.min(window.innerHeight,viewport?viewport.offsetTop+viewport.height:window.innerHeight);
+  const viewport=window.visualViewport;
+  // Document coordinates are invariant under page scroll/pan. Using the
+  // viewport-relative top here fed parent scrolling back into iframe height.
+  const top=frame.getBoundingClientRect().top+window.scrollY;
+  const stableHeight=ruler.getBoundingClientRect().height||window.innerHeight;
+  // The visual viewport still shrinks for the software keyboard. Its offset
+  // is a pan, not extra height; do not turn keyboard panning into a resize.
+  const bottom=Math.min(stableHeight,viewport?viewport.height:window.innerHeight);
   const nav=document.getElementById('primary-nav').getBoundingClientRect().height;
   // Keep a readable inner message viewport below the accepted fixed chat chrome.
   // Short screens/larger text can scroll the parent; never collapse messages.
   const fontSize=parseFloat(getComputedStyle(document.documentElement).fontSize)||16;
-  frame.style.height=Math.max(360*Math.max(1,fontSize/16),Math.floor(bottom-top-nav-14))+'px';
+  const height=Math.max(360*Math.max(1,fontSize/16),Math.floor(bottom-top-nav-14))+'px';
+  if(frame.style.height!==height)frame.style.height=height;
   try{if(loaded)frame.contentDocument.documentElement.style.fontSize=getComputedStyle(document.documentElement).fontSize;}catch(_){/* disposed frame */}
  };
- const observer=new ResizeObserver(fit);observer.observe(document.querySelector('.connect-toolbar'));observer.observe(document.getElementById('primary-nav'));
+ const observer=new ResizeObserver(fit);observer.observe(document.querySelector('.connect-toolbar'));observer.observe(document.getElementById('primary-nav'));if(notice)observer.observe(notice);
  const mutation=new MutationObserver(fit);mutation.observe(document.documentElement,{attributes:true,attributeFilter:['style','class']});
- window.addEventListener('resize',fit);window.visualViewport?.addEventListener('resize',fit);window.visualViewport?.addEventListener('scroll',fit);
- frame.addEventListener('load',()=>{loaded=!!frame.contentWindow.FoundationConnectFrame;fit();if(loaded){restoring=true;try{frame.contentWindow.FoundationConnectFrame.navigate(desired);}finally{restoring=false;}}});
+ window.addEventListener('resize',fit);window.visualViewport?.addEventListener('resize',fit);
+ frame.addEventListener('load',()=>{if(frame.contentDocument?.URL==='about:blank')return;fit();if(!loaded){opening.remove();report('Connect could not open. Saved conversations are preserved. Return and try again.');}});
  const base=new URL('../',window.location.href).href;
  fetch(new URL('connect-design-lab.html',base),{signal:controller.signal}).then(r=>{if(!r.ok)throw Error('Connect entry unavailable');return r.text();}).then(html=>{
   if(disposed)return;
@@ -39,9 +63,9 @@ function mount({container,host,storage,key,search,onScreen,onReturn}){
   // execute. This is a narrow port, not access to the original app's records.
   const port='<base href="'+esc(base)+'"><script>Object.defineProperty(window,"localStorage",{value:window.frameElement.connectMember.storage});<\/script>';
   frame.srcdoc=html.replace('<head>','<head>'+port).replace(marker,'<script src="foundation2/connect-frame.js" defer></script>'+marker);
- }).catch(error=>{if(!disposed){frame.remove();report('Connect could not open. Saved conversations are preserved. Return and try again.');}});
+ }).catch(error=>{if(!disposed){opening.remove();frame.remove();report('Connect could not open. Saved conversations are preserved. Return and try again.');}});
  fit();
- return {key,frame,restore(nextSearch){desired=view(nextSearch);Object.assign(frame.connectMember,desired);if(!loaded)return;restoring=true;try{frame.contentWindow.FoundationConnectFrame?.navigate(desired);}finally{restoring=false;}},dispose(){disposed=true;controller.abort();observer.disconnect();mutation.disconnect();window.removeEventListener('resize',fit);window.visualViewport?.removeEventListener('resize',fit);window.visualViewport?.removeEventListener('scroll',fit);frame.remove();}};
+ return {key,frame,restore(nextSearch){desired=view(nextSearch);Object.assign(frame.connectMember,desired);if(!loaded)return;restoring=true;try{frame.contentWindow.FoundationConnectFrame?.navigate(desired);}finally{restoring=false;}},dispose(){disposed=true;controller.abort();observer.disconnect();mutation.disconnect();window.removeEventListener('resize',fit);window.visualViewport?.removeEventListener('resize',fit);opening.remove();frame.remove();ruler.remove();}};
 }
 root.FoundationConnectPresentation=Object.freeze({view,href,render,mount});
 })(globalThis);

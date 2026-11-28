@@ -5,10 +5,10 @@
  */
 (function(root,factory){
  'use strict';
- const api=factory();
+ const api=factory(typeof module==='object'&&module.exports?require('./widgets.js'):root.FoundationWidgets);
  if(typeof module==='object'&&module.exports)module.exports=api;
  if(root)root.FoundationRead=api;
-})(typeof window!=='undefined'?window:null,function(){
+})(typeof window!=='undefined'?window:null,function(Widgets){
 'use strict';
 const esc=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const paths=Object.freeze(['sermon','study','year']);
@@ -54,13 +54,13 @@ function render(vm,{feedback='',mode='home',gameHTML=''}={}){
    reply+'<div class="read-game-host">'+gameHTML+'</div>'+disclaimer+'</section>';
  }
  const scripture='<article class="read-scripture" aria-labelledby="read-scripture-title">'+
-  '<span class="group-overline">SCRIPTURE · '+esc(vm.passage.translation)+'</span>'+
+  '<div class="read-source"><span class="group-overline">SCRIPTURE</span><span>'+esc(vm.passage.translation)+'</span></div>'+
   '<h2 id="read-scripture-title">'+esc(vm.passage.title)+'</h2>'+
   '<strong class="read-reference">'+esc(vm.passage.reference)+'</strong>'+
   '<blockquote>“'+esc(vm.passage.text)+'”</blockquote>'+
   '<button type="button" data-read-action="read" data-value="'+(vm.read?'false':'true')+'" aria-pressed="'+String(vm.read)+'">'+
   (vm.read?'✓ Reading marked · undo':'Mark reading complete')+'</button>'+
-  '<p>Not an assigned reading calendar. A sample passage for reflection.</p></article>';
+  '<p>A sample passage for reflection, at your own pace.</p></article>';
  const reflection='<section class="read-reflection" aria-labelledby="read-reflection-title">'+
   '<span class="group-overline">REFLECT</span><h2 id="read-reflection-title">Take it with you.</h2>'+
   '<p>'+esc(vm.question)+'</p>'+
@@ -88,14 +88,14 @@ function render(vm,{feedback='',mode='home',gameHTML=''}={}){
   '<button type="submit">Save local discussion question</button></form>'+
   '<small>No publishing to live groups or church accounts.</small></details>':'';
  const games='<section class="read-games" aria-labelledby="read-games-title">'+
-  '<span class="group-overline">VERSEPLAY · ORIGINAL GAMES</span><h2 id="read-games-title" tabindex="-1">Make it stick.</h2>'+
-  '<p>Choose a Scripture memory game.</p>'+
-  '<a class="read-game-link" href="../verse-circuit-playground.html" data-game="circuit"><strong>Verse Circuit</strong><span>Trace · Link · Echo</span><b>Play ↗</b></a>'+
-  '<a class="read-game-link" href="../blank-battle.html" data-game="blank"><strong>Blank Battle</strong><span>Full original Scripture puzzle</span><b>Play ↗</b></a>'+
-  '<a class="read-game-link" href="?screen=read&game=classic" data-read-view="classic" data-return-focus="classic-launch"><strong>Classic VersePlay</strong><span>Solo · two-player Pass & Play</span><b>Play ›</b></a>'+
+  '<div class="read-games-heading"><span class="utility-icon">'+Widgets.icon('book')+'</span><div><span class="group-overline">SCRIPTURE MEMORY</span><h2 id="read-games-title" tabindex="-1">VersePlay</h2></div></div>'+
+  '<p>Make it stick. Three ways to spend time with Scripture.</p>'+
+  '<a class="read-game-link" href="../verse-circuit-playground.html" data-game="circuit" data-return-focus="circuit-launch"><strong>Verse Circuit</strong><span>Trace · Link · Echo</span><b>Play '+Widgets.icon('arrow')+'</b></a>'+
+  '<a class="read-game-link" href="../blank-battle.html" data-game="blank" data-return-focus="blank-launch"><strong>Blank Battle</strong><span>Full original Scripture puzzle</span><b>Play '+Widgets.icon('arrow')+'</b></a>'+
+  '<a class="read-game-link" href="?screen=read&game=classic" data-read-view="classic" data-return-focus="classic-launch"><strong>Classic VersePlay</strong><span>Solo · two-player Pass & Play</span><b>Play '+Widgets.icon('arrow')+'</b></a>'+
   '<small>Standalone games retain their own existing independent browser progress. Classic VersePlay uses the Foundation 2.0 guarded preview state.</small></section>';
  return head+'<p class="route-lead">Read. Reflect. Remember. At your own pace.</p><a class="read-games-jump" href="#read-games-title">Jump to VersePlay <span aria-hidden="true">↓</span></a>'+reply+
-  scripture+reflection+prayer+leader+games+disclaimer+'</section>';
+  scripture+games+reflection+prayer+leader+disclaimer+'</section>';
 }
 return Object.freeze({project,commandFor,render});
 });

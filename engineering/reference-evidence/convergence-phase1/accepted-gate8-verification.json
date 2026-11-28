@@ -1,0 +1,31 @@
+{
+  "observedAtUTC": "2026-11-26T17:24:16.053076+00:00",
+  "canonicalCommit": "b7bb0687a498f2ba9ab1f2a244b187013ceea339",
+  "postmergeCI": {
+    "run": 45864800091,
+    "conclusion": "success",
+    "attempt": 1,
+    "allStepsPassed": 21,
+    "durationSeconds": 995
+  },
+  "refChanges": [
+    {
+      "ref": "refs/heads/rally-one/develop",
+      "before": "d038fc6adfdbc7c9b5925fc91e475cb1f15c7467",
+      "after": "b7bb0687a498f2ba9ab1f2a244b187013ceea339"
+    },
+    {
+      "ref": "refs/pull/151/merge",
+      "before": "c1d2be6469689ed5079b9443ab504641face9f28",
+      "after": null
+    }
+  ],
+  "allRecoveryReferenceEntriesUnchanged": 18,
+  "productionDeploymentUnchanged": true,
+  "pr150HeadStateUnchanged": true,
+  "canonicalDeploymentReady": true,
+  "canonicalDeployedFilesVerified": 186,
+  "foundationAcceptedPreviewReady": true,
+  "remainingEngineeringBlockers": [],
+  "governanceLimitation": "No classic branch-protection rules (administrator-confirmed); no applicable active rulesets on main/develop (API-verified). No protection settings changed."
+}

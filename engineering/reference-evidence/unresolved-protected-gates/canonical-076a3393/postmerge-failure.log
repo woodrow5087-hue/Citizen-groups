@@ -1,0 +1,66 @@
+preview-qa	Validate Connect behavior and compare owner-approved immutable reference	﻿2026-11-27T00:24:39.0894373Z ##[group]Run connect_reference_dir="$RUNNER_TEMP/rally-one-approved-ux03"
+preview-qa	Validate Connect behavior and compare owner-approved immutable reference	2026-11-27T00:24:39.0894850Z [36;1mconnect_reference_dir="$RUNNER_TEMP/rally-one-approved-ux03"[0m
+preview-qa	Validate Connect behavior and compare owner-approved immutable reference	2026-11-27T00:24:39.0895173Z [36;1mmkdir -p "$connect_reference_dir"[0m
+preview-qa	Validate Connect behavior and compare owner-approved immutable reference	2026-11-27T00:24:39.0895489Z [36;1mgit fetch --depth=1 origin bb8f2446a71221148587f09bdf8192d5bde57d83[0m
+preview-qa	Validate Connect behavior and compare owner-approved immutable reference	2026-11-27T00:24:39.0895934Z [36;1mgit archive bb8f2446a71221148587f09bdf8192d5bde57d83 | tar -x -C "$connect_reference_dir"[0m
+preview-qa	Validate Connect behavior and compare owner-approved immutable reference	2026-11-27T00:24:39.0896397Z [36;1mCONTEXT=deploy-preview node "$connect_reference_dir/scripts/build.cjs"[0m
+preview-qa	Validate Connect behavior and compare owner-approved immutable reference	2026-11-27T00:24:39.0896808Z [36;1mnode scripts/ux03-visual-regression.mjs "$connect_reference_dir/dist"[0m
+preview-qa	Validate Connect behavior and compare owner-approved immutable reference	2026-11-27T00:24:39.0925621Z shell: /usr/bin/bash -e {0}
+preview-qa	Validate Connect behavior and compare owner-approved immutable reference	2026-11-27T00:24:39.0925853Z ##[endgroup]
+preview-qa	Validate Connect behavior and compare owner-approved immutable reference	2026-11-27T00:24:39.4890907Z From https://github.com/woodrow5087-hue/Citizen-groups
+preview-qa	Validate Connect behavior and compare owner-approved immutable reference	2026-11-27T00:24:39.4891574Z  * branch            bb8f2446a71221148587f09bdf8192d5bde57d83 -> FETCH_HEAD
+preview-qa	Validate Connect behavior and compare owner-approved immutable reference	2026-11-27T00:24:39.5930403Z Built the Rally Point preview in dist, including approved references and the unchanged Citizen Connect archive.
+preview-qa	Validate Connect behavior and compare owner-approved immutable reference	2026-11-27T00:24:40.5944337Z Strict Connect engine: webkit 27.2
+preview-qa	Validate Connect behavior and compare owner-approved immutable reference	2026-11-27T00:25:11.9046386Z [{"width":320,"height":568,"large":false,"states":7,"axe":"passed","focus":"passed"},{"width":375,"height":667,"large":false,"states":7,"axe":"passed","focus":"passed"},{"width":390,"height":844,"large":false,"states":7,"axe":"passed","focus":"passed"},{"width":430,"height":932,"large":false,"states":7,"axe":"passed","focus":"passed"},{"width":390,"height":500,"large":false,"states":7,"axe":"passed","focus":"passed"},{"width":390,"height":844,"large":true,"states":7,"axe":"passed","focus":"passed"}]
+preview-qa	Validate Connect behavior and compare owner-approved immutable reference	2026-11-27T00:25:12.4397670Z Strict Connect engine: webkit 27.2
+preview-qa	Validate Connect behavior and compare owner-approved immutable reference	2026-11-27T00:25:19.2674356Z UX03 profile passed 320-568-group-member
+preview-qa	Validate Connect behavior and compare owner-approved immutable reference	2026-11-27T00:25:23.9912814Z UX03 profile passed 320-568-serving
+preview-qa	Validate Connect behavior and compare owner-approved immutable reference	2026-11-27T00:25:36.8620228Z UX03 profile passed 320-568-group-serving
+preview-qa	Validate Connect behavior and compare owner-approved immutable reference	2026-11-27T00:25:41.8625635Z UX03 profile passed 375-667-group-member
+preview-qa	Validate Connect behavior and compare owner-approved immutable reference	2026-11-27T00:25:46.6039429Z UX03 profile passed 375-667-serving
+preview-qa	Validate Connect behavior and compare owner-approved immutable reference	2026-11-27T00:25:59.2647221Z UX03 profile passed 375-667-group-serving
+preview-qa	Validate Connect behavior and compare owner-approved immutable reference	2026-11-27T00:26:04.2295842Z UX03 profile passed 390-844-group-member
+preview-qa	Validate Connect behavior and compare owner-approved immutable reference	2026-11-27T00:26:08.9012854Z UX03 profile passed 390-844-serving
+preview-qa	Validate Connect behavior and compare owner-approved immutable reference	2026-11-27T00:26:21.6942844Z UX03 profile passed 390-844-group-serving
+preview-qa	Validate Connect behavior and compare owner-approved immutable reference	2026-11-27T00:26:26.5476512Z UX03 profile passed 430-932-group-member
+preview-qa	Validate Connect behavior and compare owner-approved immutable reference	2026-11-27T00:26:31.4486411Z UX03 profile passed 430-932-serving
+preview-qa	Validate Connect behavior and compare owner-approved immutable reference	2026-11-27T00:26:44.5398837Z UX03 profile passed 430-932-group-serving
+preview-qa	Validate Connect behavior and compare owner-approved immutable reference	2026-11-27T00:26:57.1967743Z UX03 profile passed 390-500-group-serving
+preview-qa	Validate Connect behavior and compare owner-approved immutable reference	2026-11-27T00:27:10.1820238Z UX03 profile passed 390-844-large-group-serving
+preview-qa	Validate Connect behavior and compare owner-approved immutable reference	2026-11-27T00:27:11.0963228Z Strict Connect engine: webkit 27.2
+preview-qa	Validate Connect behavior and compare owner-approved immutable reference	2026-11-27T00:27:38.7789922Z [{"width":320,"height":568,"large":false,"states":7,"axe":"passed","focus":"passed"},{"width":375,"height":667,"large":false,"states":7,"axe":"passed","focus":"passed"},{"width":390,"height":844,"large":false,"states":7,"axe":"passed","focus":"passed"},{"width":430,"height":932,"large":false,"states":7,"axe":"passed","focus":"passed"},{"width":390,"height":500,"large":false,"states":7,"axe":"passed","focus":"passed"},{"width":390,"height":844,"large":true,"states":7,"axe":"passed","focus":"passed"}]
+preview-qa	Validate Connect behavior and compare owner-approved immutable reference	2026-11-27T00:27:39.8688999Z Strict Connect engine: webkit 27.2
+preview-qa	Validate Connect behavior and compare owner-approved immutable reference	2026-11-27T00:27:44.8589929Z UX03 profile passed 320-568-group-member
+preview-qa	Validate Connect behavior and compare owner-approved immutable reference	2026-11-27T00:27:49.7607916Z UX03 profile passed 320-568-serving
+preview-qa	Validate Connect behavior and compare owner-approved immutable reference	2026-11-27T00:28:02.4965462Z UX03 profile passed 320-568-group-serving
+preview-qa	Validate Connect behavior and compare owner-approved immutable reference	2026-11-27T00:28:07.2746585Z UX03 profile passed 375-667-group-member
+preview-qa	Validate Connect behavior and compare owner-approved immutable reference	2026-11-27T00:28:11.9429689Z UX03 profile passed 375-667-serving
+preview-qa	Validate Connect behavior and compare owner-approved immutable reference	2026-11-27T00:28:24.7558486Z UX03 profile passed 375-667-group-serving
+preview-qa	Validate Connect behavior and compare owner-approved immutable reference	2026-11-27T00:28:29.5368602Z UX03 profile passed 390-844-group-member
+preview-qa	Validate Connect behavior and compare owner-approved immutable reference	2026-11-27T00:28:34.3707635Z UX03 profile passed 390-844-serving
+preview-qa	Validate Connect behavior and compare owner-approved immutable reference	2026-11-27T00:28:47.1965295Z UX03 profile passed 390-844-group-serving
+preview-qa	Validate Connect behavior and compare owner-approved immutable reference	2026-11-27T00:28:52.1933646Z UX03 profile passed 430-932-group-member
+preview-qa	Validate Connect behavior and compare owner-approved immutable reference	2026-11-27T00:28:56.8914625Z UX03 profile passed 430-932-serving
+preview-qa	Validate Connect behavior and compare owner-approved immutable reference	2026-11-27T00:29:09.8463476Z UX03 profile passed 430-932-group-serving
+preview-qa	Validate Connect behavior and compare owner-approved immutable reference	2026-11-27T00:29:22.5099999Z UX03 profile passed 390-500-group-serving
+preview-qa	Validate Connect behavior and compare owner-approved immutable reference	2026-11-27T00:29:35.4608754Z UX03 profile passed 390-844-large-group-serving
+preview-qa	Validate Connect behavior and compare owner-approved immutable reference	2026-11-27T00:29:36.0026111Z node:internal/modules/run_main:123
+preview-qa	Validate Connect behavior and compare owner-approved immutable reference	2026-11-27T00:29:36.0027092Z     triggerUncaughtException(
+preview-qa	Validate Connect behavior and compare owner-approved immutable reference	2026-11-27T00:29:36.0028677Z     ^
+preview-qa	Validate Connect behavior and compare owner-approved immutable reference	2026-11-27T00:29:36.0029091Z 
+preview-qa	Validate Connect behavior and compare owner-approved immutable reference	2026-11-27T00:29:36.0030649Z AssertionError [ERR_ASSERTION]: Connect raw pixel regression: embedded/320-568-group-member-inbox.png {"equal":false,"byteIdentical":false,"sameDimensions":true,"width":320,"height":568,"rawDifferentPixels":395,"differentPixels":114,"antiAliasPixels":281,"comparison":{"threshold":0,"includeAA":false}}
+preview-qa	Validate Connect behavior and compare owner-approved immutable reference	2026-11-27T00:29:36.0031514Z 
+preview-qa	Validate Connect behavior and compare owner-approved immutable reference	2026-11-27T00:29:36.0031600Z 395 !== 0
+preview-qa	Validate Connect behavior and compare owner-approved immutable reference	2026-11-27T00:29:36.0031704Z 
+preview-qa	Validate Connect behavior and compare owner-approved immutable reference	2026-11-27T00:29:36.0032179Z     at Object.assertPair (/home/runner/work/Citizen-groups/Citizen-groups/test/helpers/ux03-visual.cjs:32:9)
+preview-qa	Validate Connect behavior and compare owner-approved immutable reference	2026-11-27T00:29:36.0032854Z     at file:///home/runner/work/Citizen-groups/Citizen-groups/scripts/ux03-visual-regression.mjs:34:235 {
+preview-qa	Validate Connect behavior and compare owner-approved immutable reference	2026-11-27T00:29:36.0033249Z   generatedMessage: false,
+preview-qa	Validate Connect behavior and compare owner-approved immutable reference	2026-11-27T00:29:36.0033460Z   code: 'ERR_ASSERTION',
+preview-qa	Validate Connect behavior and compare owner-approved immutable reference	2026-11-27T00:29:36.0033678Z   actual: 395,
+preview-qa	Validate Connect behavior and compare owner-approved immutable reference	2026-11-27T00:29:36.0033851Z   expected: 0,
+preview-qa	Validate Connect behavior and compare owner-approved immutable reference	2026-11-27T00:29:36.0034027Z   operator: 'strictEqual',
+preview-qa	Validate Connect behavior and compare owner-approved immutable reference	2026-11-27T00:29:36.0034212Z   diff: 'simple'
+preview-qa	Validate Connect behavior and compare owner-approved immutable reference	2026-11-27T00:29:36.0034390Z }
+preview-qa	Validate Connect behavior and compare owner-approved immutable reference	2026-11-27T00:29:36.0034480Z 
+preview-qa	Validate Connect behavior and compare owner-approved immutable reference	2026-11-27T00:29:36.0034555Z Node.js v22.23.5
+preview-qa	Validate Connect behavior and compare owner-approved immutable reference	2026-11-27T00:29:36.0164301Z ##[error]Process completed with exit code 1.
