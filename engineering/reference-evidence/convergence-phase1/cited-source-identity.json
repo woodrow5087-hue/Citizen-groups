@@ -1,0 +1,428 @@
+[
+  {
+    "path": ".github/workflows/foundation2-review.yml",
+    "sourceBytesMatchCanonical": true,
+    "sha256": "d3fbe5c40e4ee05bba93407921ec69c102964860364dd369b964256b0484becd",
+    "lines": 40
+  },
+  {
+    "path": ".github/workflows/rally-point-preview-qa.yml",
+    "sourceBytesMatchCanonical": true,
+    "sha256": "12787620a2ffa4bf43b329904a59047a22d446b3daa16167375a1e56f31a28e5",
+    "lines": 104
+  },
+  {
+    "path": ".github/workflows/verseplay.yml",
+    "sourceBytesMatchCanonical": true,
+    "sha256": "935724ca72efd2bc9a24089cb71351012cfa35f4cd114795196037c623dc44a6",
+    "lines": 40
+  },
+  {
+    "path": "blank-battle.html",
+    "sourceBytesMatchCanonical": true,
+    "sha256": "dc7bccc86393698d897dffb67c9976b8162af2b55de7fb3d0d684e2bf784ed3e",
+    "lines": 32
+  },
+  {
+    "path": "blank-battle.js",
+    "sourceBytesMatchCanonical": true,
+    "sha256": "ea47561098944d91f09a2c074611c81a391d4a05630e860a75beff842f481fa3",
+    "lines": 232
+  },
+  {
+    "path": "connect-design-lab.js",
+    "sourceBytesMatchCanonical": true,
+    "sha256": "ad5e7b0ec6704b5c3d87754ad93abf892c8afab9024a385aa0e313f3fe6e7ce7",
+    "lines": 230
+  },
+  {
+    "path": "connect-member.js",
+    "sourceBytesMatchCanonical": true,
+    "sha256": "bad0b5901f1e769a41e04c1a09adef162cb068b9f3535a3fa713df152103d331",
+    "lines": 211
+  },
+  {
+    "path": "docs/PREMIUM_ALIVE_HYBRID_V01_IMPLEMENTATION.md",
+    "sourceBytesMatchCanonical": true,
+    "sha256": "2c62242528bf9514a90a3420360fe07c7bdd1e3b9f4eba7dce49dc07fba43b2a",
+    "lines": 36
+  },
+  {
+    "path": "docs/rally-one/m2/CONNECT-ALIVE-V1.md",
+    "sourceBytesMatchCanonical": true,
+    "sha256": "73e70947263613ab87a5031afd4222faf22203c7bd3a7b75a5249fee9143952e",
+    "lines": 23
+  },
+  {
+    "path": "engineering/foundation2-development-program.md",
+    "sourceBytesMatchCanonical": true,
+    "sha256": "77a741f71a7e29dc8f1e5b7b28cf31e61e5e099b3696c7ee172f300b952ac5bc",
+    "lines": 81
+  },
+  {
+    "path": "engineering/s11e-restricted-pilot-readiness.md",
+    "sourceBytesMatchCanonical": true,
+    "sha256": "120334b7a6369b09766996f27af02d5c1101758199a4d87fdfcad1f5af986872",
+    "lines": 40
+  },
+  {
+    "path": "engineering/s8-data-contracts.md",
+    "sourceBytesMatchCanonical": true,
+    "sha256": "0b1130cf46cfd96f9c578d24a59b744dcc16b4ec4568f2daa1bdfcbafb5a5090",
+    "lines": 88
+  },
+  {
+    "path": "foundation2/app.js",
+    "sourceBytesMatchCanonical": true,
+    "sha256": "09c8f5a8284bbb4fa6e4353c4bf7870a6cf440ef6b8bb8831ce32d3981058705",
+    "lines": 334
+  },
+  {
+    "path": "foundation2/connect-adapter.js",
+    "sourceBytesMatchCanonical": true,
+    "sha256": "02ef6954879b937a0c3afdcbffa589caa8e70be307c0cdf2cfa2764ff8e4ac48",
+    "lines": 95
+  },
+  {
+    "path": "foundation2/connect-view.js",
+    "sourceBytesMatchCanonical": true,
+    "sha256": "3a06a7666db72de25dd2f668c39d59c58e31c1ed3106fdd99efab8392c7f4fcf",
+    "lines": 65
+  },
+  {
+    "path": "foundation2/design.css",
+    "sourceBytesMatchCanonical": true,
+    "sha256": "1e594e2770cd402bfb669c38e06237bbc86f762ba1bcd7169e5888dd51786b6b",
+    "lines": 369
+  },
+  {
+    "path": "foundation2/group-preview.js",
+    "sourceBytesMatchCanonical": true,
+    "sha256": "63a49e58462ad3a0c2160b063c98d283b4f0dc21e96276b329a3f75385e7cc73",
+    "lines": 46
+  },
+  {
+    "path": "foundation2/groups.js",
+    "sourceBytesMatchCanonical": true,
+    "sha256": "d897188e1be17b1aedf5e815318f19d4830f438074082a0c8099e69b15228e26",
+    "lines": 87
+  },
+  {
+    "path": "foundation2/index.html",
+    "sourceBytesMatchCanonical": true,
+    "sha256": "8249a3ced655aedea3755fa0e171bafbb9a9a8b19662762b08bbab63211aa63a",
+    "lines": 92
+  },
+  {
+    "path": "foundation2/member-actions.js",
+    "sourceBytesMatchCanonical": true,
+    "sha256": "f3471bc1edf2d40e772a245ddac7cb51fd00d439efb0da518de4b4b34ac11d2d",
+    "lines": 103
+  },
+  {
+    "path": "foundation2/navigation.js",
+    "sourceBytesMatchCanonical": true,
+    "sha256": "aba8a48ad43bbdb601dbbf5b16e439759088b3aeac4a414a53acf6d6f0146d72",
+    "lines": 53
+  },
+  {
+    "path": "foundation2/read.js",
+    "sourceBytesMatchCanonical": true,
+    "sha256": "d84806d784675fc085d2e87bb43c32b998e73ae1d2c14914d1ba9616747d0fb8",
+    "lines": 101
+  },
+  {
+    "path": "foundation2/serving-preview.js",
+    "sourceBytesMatchCanonical": true,
+    "sha256": "408faa64cd16533ac7b07d83bad2a1521f26752cfec552c775e887ad20e7fb19",
+    "lines": 50
+  },
+  {
+    "path": "foundation2/state-store.js",
+    "sourceBytesMatchCanonical": true,
+    "sha256": "4a188f38e62e67695a829294aabe32098a53d1f4391edad9a8836897bd7f9ae5",
+    "lines": 79
+  },
+  {
+    "path": "foundation2/team.js",
+    "sourceBytesMatchCanonical": true,
+    "sha256": "8399a337f7730223ad6f3e9684b6948e7e1b45e2451d6cede4c443b316caa3eb",
+    "lines": 75
+  },
+  {
+    "path": "foundation2/today-model.js",
+    "sourceBytesMatchCanonical": true,
+    "sha256": "7c4925e2cdf57fcb81d15a8e6d0212e34115c8e8519565824a2a748644eee137",
+    "lines": 29
+  },
+  {
+    "path": "foundation2/today-view.js",
+    "sourceBytesMatchCanonical": true,
+    "sha256": "d1fd4e45ffab8bd47f5bb7fe5bfc38cfb5af01e4094f1d5158868b427f42befb",
+    "lines": 62
+  },
+  {
+    "path": "index.html",
+    "sourceBytesMatchCanonical": true,
+    "sha256": "06bb872bb6dd33fcaad1eab511e474d9bf9d6758b5fb8f088fb1bc3717ba0a6e",
+    "lines": 128
+  },
+  {
+    "path": "lib/action-contracts.cjs",
+    "sourceBytesMatchCanonical": true,
+    "sha256": "352ed2dce01c354b72e3bb7eee009dbbfc82631a9e06751faf8df14487ce464a",
+    "lines": 140
+  },
+  {
+    "path": "lib/conversation-contracts.cjs",
+    "sourceBytesMatchCanonical": true,
+    "sha256": "744bc47e35ccd4ef08f641ca7f32041d026c0152d630103f36540d47b53d2a96",
+    "lines": 139
+  },
+  {
+    "path": "lib/member-context-contract.cjs",
+    "sourceBytesMatchCanonical": true,
+    "sha256": "07b6b0a5859b379279fe73e9eb03f6a97acc3ec83bb697125c310bffcd7a4d11",
+    "lines": 101
+  },
+  {
+    "path": "lib/migration-rehearsal.cjs",
+    "sourceBytesMatchCanonical": true,
+    "sha256": "3298ebd189b1801113176561b139d8db4c30a8e4e3938dfde4c7fd789aa7eac6",
+    "lines": 144
+  },
+  {
+    "path": "lib/mock-access-policy.cjs",
+    "sourceBytesMatchCanonical": true,
+    "sha256": "0d1b60cd1e08b0b65fa029a5be4494acbab29635baf1e86c9a0e15efdcef5de3",
+    "lines": 101
+  },
+  {
+    "path": "lib/mock-conversation-repository.cjs",
+    "sourceBytesMatchCanonical": true,
+    "sha256": "e6c2669bde869e4f17e2b92f3a6c197816345bbb6d62eeaa7be2ef779b3623d1",
+    "lines": 205
+  },
+  {
+    "path": "package.json",
+    "sourceBytesMatchCanonical": true,
+    "sha256": "4aa1371dc1676bf71ed49bee362aeb55c4105cfd5a8db18052c1b53c321f20c5",
+    "lines": 28
+  },
+  {
+    "path": "pilot/f2-synthetic-serving.cjs",
+    "sourceBytesMatchCanonical": true,
+    "sha256": "72cfade0fa705bacb4106a40db7f347a7a451fdd081e37be4e97a3895ee709ad",
+    "lines": 64
+  },
+  {
+    "path": "pilot/s11a-synthetic-auth.cjs",
+    "sourceBytesMatchCanonical": true,
+    "sha256": "dee3060193343b6ebf7e575937a347c03070c6c5ee8c1bba08770533b207add1",
+    "lines": 170
+  },
+  {
+    "path": "pilot/s11b-synthetic-planning-center.cjs",
+    "sourceBytesMatchCanonical": true,
+    "sha256": "d39fd0ef0c6c5b39368fbfbd3419bd10752bf999d0357a6607d22b6f2322e104",
+    "lines": 108
+  },
+  {
+    "path": "pilot/s11c-synthetic-privacy.cjs",
+    "sourceBytesMatchCanonical": true,
+    "sha256": "24396f188f18ae0b01507f6e8b209cdc999bb6a32f67e2a18711d2668a0e56ff",
+    "lines": 130
+  },
+  {
+    "path": "pilot/s11d-resilient-transport.cjs",
+    "sourceBytesMatchCanonical": true,
+    "sha256": "717be687f998f3ffdded20133c6ffae3ed1584fb5c688bc8071bfbce680f2cc7",
+    "lines": 53
+  },
+  {
+    "path": "pilot/s11e-local-review.cjs",
+    "sourceBytesMatchCanonical": true,
+    "sha256": "1ed8956365ab54f80a7825230dd5f3e500725418771b8a1c4fd13cf9293d0733",
+    "lines": 132
+  },
+  {
+    "path": "rally-one-app-state.js",
+    "sourceBytesMatchCanonical": true,
+    "sha256": "afc3af39faec31f61e416c8089268744912cc5f2111e3a0e9703f2f41975aef1",
+    "lines": 40
+  },
+  {
+    "path": "rally-one-care-flow.js",
+    "sourceBytesMatchCanonical": true,
+    "sha256": "ee9b8b7c485a2b81fd5c8eca4ca34b3bbbc4a47f65baa41ca44bd843dbfb2b88",
+    "lines": 79
+  },
+  {
+    "path": "rally-one-groups-v2.js",
+    "sourceBytesMatchCanonical": true,
+    "sha256": "e0dd4bd875b055e382d3d044a433b7d6c67eed6f3a7c1639ecb4e1112bab5dc1",
+    "lines": 97
+  },
+  {
+    "path": "rally-one-intelligence.js",
+    "sourceBytesMatchCanonical": true,
+    "sha256": "7582fd7bdfec25c46f08d8473ef53248b9c494191bb73f7ac35ad6355363f1bb",
+    "lines": 36
+  },
+  {
+    "path": "rally-one-launch-mode.js",
+    "sourceBytesMatchCanonical": true,
+    "sha256": "a30126c88f458bcc3db462b9cb49dc793d0e1fc78a39776fd6926b0a5d323768",
+    "lines": 20
+  },
+  {
+    "path": "rally-one-member-context.js",
+    "sourceBytesMatchCanonical": true,
+    "sha256": "25daec60dc98014d87186b3750f853ae099ae7c66662cdd8bba83c09e260f477",
+    "lines": 123
+  },
+  {
+    "path": "rally-one-memory-actions.js",
+    "sourceBytesMatchCanonical": true,
+    "sha256": "5a2e2a759604f4b9a009c0180a474fd073a23a67a5db26f5b5aeeacd5f853999",
+    "lines": 57
+  },
+  {
+    "path": "rally-one-navigation.js",
+    "sourceBytesMatchCanonical": true,
+    "sha256": "3fd93b87dcb9cffdfbb69ad694660e046d19336a2e36f5045d50fc1cde53d167",
+    "lines": 29
+  },
+  {
+    "path": "rally-one-unified-focus.js",
+    "sourceBytesMatchCanonical": true,
+    "sha256": "67e0b8526d4c82701983e5f7b1d4eec37bdc7fc92c66f41e8c94a86b28b42580",
+    "lines": 148
+  },
+  {
+    "path": "rally-one-widgets.js",
+    "sourceBytesMatchCanonical": true,
+    "sha256": "afbcf9205c610783eeb340a09c9f3f42eb7f8f07eb9d8ef30ca510da1529f04e",
+    "lines": 36
+  },
+  {
+    "path": "rallypoint-conversation-read-model.js",
+    "sourceBytesMatchCanonical": true,
+    "sha256": "9afbd55c66893df20a8fa783ae0c9c22f3edf3a6ff8bcccd16bca51076c5ce10",
+    "lines": 113
+  },
+  {
+    "path": "rallypoint-memorize.js",
+    "sourceBytesMatchCanonical": true,
+    "sha256": "f240d95497c386f4b2d946c3c653e119e9150d7b877f903527caa00b58909911",
+    "lines": 119
+  },
+  {
+    "path": "rallypoint-personal-companion.js",
+    "sourceBytesMatchCanonical": true,
+    "sha256": "f3e1e3f62d9221eb55710eeb7e88a9ca1a158ebf5c912fd0acc3df433c6acb56",
+    "lines": 624
+  },
+  {
+    "path": "rallypoint-storage-guard.js",
+    "sourceBytesMatchCanonical": true,
+    "sha256": "0f955ac57cd230ec6d432a637430539bbca9e823b9b43ebb8e4c5ee60c860b40",
+    "lines": 148
+  },
+  {
+    "path": "rallypoint-today.js",
+    "sourceBytesMatchCanonical": true,
+    "sha256": "cd070377dff3545eba8fda7bda78a9e428ae0e32bbaafd0b2af1b8e1cb2a1d40",
+    "lines": 33
+  },
+  {
+    "path": "rallypoint-verseplay-ui.js",
+    "sourceBytesMatchCanonical": true,
+    "sha256": "b38e87823e005b1942a3dbe1f73a3defd09fd39abb2907d460cba1bfba5229c8",
+    "lines": 66
+  },
+  {
+    "path": "rallypoint-welcome.js",
+    "sourceBytesMatchCanonical": true,
+    "sha256": "f5522eea519bdd233d4b806d45b2d09a571bf544775238c217d8fb42971882ff",
+    "lines": 151
+  },
+  {
+    "path": "rallypoint.js",
+    "sourceBytesMatchCanonical": true,
+    "sha256": "2fb24c6fdaef290296190c1ce6a9a9ecaea1069b011808e54ca8a54984406816",
+    "lines": 1168
+  },
+  {
+    "path": "scripts/build-chat-lab.cjs",
+    "sourceBytesMatchCanonical": true,
+    "sha256": "b75e4d9e71b6ea38b5ebb985b94442b79e47c64a56df09837caa7f65eda6818b",
+    "lines": 55
+  },
+  {
+    "path": "scripts/build-group-preview.cjs",
+    "sourceBytesMatchCanonical": true,
+    "sha256": "93d7820d48fefaa2d5d57a9b32f2937aa2eafcfa19a3ac29d72edebe08b2a9e0",
+    "lines": 79
+  },
+  {
+    "path": "scripts/build.cjs",
+    "sourceBytesMatchCanonical": true,
+    "sha256": "3ba47027747a04f22f6f19fb17437409ed1fff7b5a3ff2d06fc5e96e5b875d6c",
+    "lines": 40
+  },
+  {
+    "path": "scripts/foundation2-browser-check.mjs",
+    "sourceBytesMatchCanonical": true,
+    "sha256": "01ef34d575b1836c3fece01a9eca10e774f29d55efa1feba3f509841d6dde1b7",
+    "lines": 519
+  },
+  {
+    "path": "scripts/s8-visual-regression.mjs",
+    "sourceBytesMatchCanonical": true,
+    "sha256": "45da5269ffcf66c953e7f185e0ee00acfc41380e86ffe359884e78c3ec5c498e",
+    "lines": 180
+  },
+  {
+    "path": "test/foundation2-today.test.cjs",
+    "sourceBytesMatchCanonical": true,
+    "sha256": "f56264232e8f408fa5a6237d482cef6cd1407c727a6c22993442052b6cca4342",
+    "lines": 103
+  },
+  {
+    "path": "test/helpers/ux03-visual.cjs",
+    "sourceBytesMatchCanonical": true,
+    "sha256": "3113c1dbdf44bc746232136b1d6a5458345d75c565b24507ec21639d92b9cb7a",
+    "lines": 82
+  },
+  {
+    "path": "verse-circuit-playground.html",
+    "sourceBytesMatchCanonical": true,
+    "sha256": "5193ef489585fb519cd172e83ec1b7a67b7c560d073ae7052e9e254eb2dee0c2",
+    "lines": 22
+  },
+  {
+    "path": "verseplay/core/circuit-engine.js",
+    "sourceBytesMatchCanonical": true,
+    "sha256": "75ce8e88793e065f45e0505dbd92dac3c5ab4c99c490a90479e838d5a65ee199",
+    "lines": 101
+  },
+  {
+    "path": "verseplay/core/storage.js",
+    "sourceBytesMatchCanonical": true,
+    "sha256": "ea9710a97c2d5e903fdfcd726f3d8639ff130a79bf60c032935ddf5d219f9a96",
+    "lines": 94
+  },
+  {
+    "path": "verseplay/games/verse-circuit/controller.js",
+    "sourceBytesMatchCanonical": true,
+    "sha256": "f4c798abcb51832cfcd9ce0c3e13fd3ef543e118ddbd8e98a89b9496cb80549c",
+    "lines": 201
+  },
+  {
+    "path": "wednesday-chat-lab.js",
+    "sourceBytesMatchCanonical": true,
+    "sha256": "a915c824b5c66862287eaf05b7697a34d0d1995a717d57bf144b32fc5804c6bf",
+    "lines": 203
+  }
+]

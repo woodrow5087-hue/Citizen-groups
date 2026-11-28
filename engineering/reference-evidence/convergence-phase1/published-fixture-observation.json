@@ -1,0 +1,51 @@
+{
+  "sourceURL": "https://6b084f8d62492b74b209f1c5--citizen-connect-test.netlify.app/foundation2/",
+  "acceptedSource": "3838aa87f6e8217c2b779bfcfa5976dda72dcb56",
+  "canonicalTreeEquivalentTo": "b7bb0687a498f2ba9ab1f2a244b187013ceea339",
+  "method": "Static fixture read only; no browser interaction or regression test execution",
+  "payloads": {
+    "serving-fixtures.js": {
+      "ready": {
+        "state": "ready",
+        "assignment": {
+          "title": "Welcome Team",
+          "startsAt": "2026-11-29T16:00:00.000Z",
+          "campus": "north"
+        }
+      },
+      "denied": {
+        "state": "restricted"
+      },
+      "outage": {
+        "state": "unavailable"
+      },
+      "stale": {
+        "state": "stale"
+      }
+    },
+    "group-fixtures.js": {
+      "ready": {
+        "state": "ready",
+        "name": "North Campus Group",
+        "nextGathering": {
+          "title": "Community gathering",
+          "startsAt": "2026-11-28T18:00:00.000Z"
+        }
+      },
+      "empty": {
+        "state": "ready",
+        "name": "North Campus Group",
+        "nextGathering": null
+      },
+      "denied": {
+        "state": "restricted"
+      },
+      "outage": {
+        "state": "unavailable"
+      },
+      "stale": {
+        "state": "unavailable"
+      }
+    }
+  }
+}

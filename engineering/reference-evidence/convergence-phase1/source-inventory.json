@@ -1,0 +1,467 @@
+{
+  "canonical": "b7bb0687a498f2ba9ab1f2a244b187013ceea339",
+  "tree": "d43e2b8d32396b9ea9f6710b3a1d93c02d171fa6",
+  "entries": {
+    "index.html": {
+      "scripts": [
+        "rallypoint-today.js",
+        "rallypoint-ui.js",
+        "rallypoint-memorize.js",
+        "rallypoint-verseplay-ui.js",
+        "blank-battle.js",
+        "rallypoint-companion-decision.js",
+        "rallypoint-premium-alive.js",
+        "rallypoint-smart-dashboard.js",
+        "rallypoint-priority-board.js",
+        "rallypoint-personal-companion.js",
+        "rallypoint-group-view.js",
+        "rallypoint-group-experience.js",
+        "rally-one-groups-v2.js",
+        "rally-one-care-flow.js",
+        "rally-one-unified-focus.js",
+        "rally-one-member-context.js",
+        "rally-one-intelligence.js",
+        "rally-one-s7-demo.js",
+        "rallypoint-storage-guard.js",
+        "rallypoint-chat-domain.browser.js",
+        "rallypoint-conversation-read-model.js",
+        "wednesday-chat-lab.js",
+        "rally-one-launch-mode.js",
+        "rally-one-app-state.js",
+        "rally-one-navigation.js",
+        "rally-one-dialog-lifecycle.js",
+        "rally-one-memory-actions.js",
+        "rally-one-widgets.js",
+        "rallypoint.js",
+        "rally-one-verse-circuit-entry.js",
+        "rallypoint-welcome.js"
+      ],
+      "stylesheets": [
+        "rallypoint.css",
+        "rallypoint-phase1.css",
+        "rallypoint-welcome.css",
+        "rallypoint-today-fluid.css",
+        "rallypoint-dashboard-v06.css",
+        "rallypoint-groups-v07.css",
+        "rallypoint-team-v08.css",
+        "rallypoint-read-v09.css",
+        "rallypoint-verseplay.css",
+        "rallypoint-studio-finish-v07.css",
+        "rallypoint-unified-v08.css",
+        "rallypoint-premium-alive.css",
+        "rallypoint-wednesday-integrated.css",
+        "rallypoint-smart-dashboard.css",
+        "rallypoint-priority-board.css",
+        "rallypoint-personal-companion.css",
+        "rallypoint-visual-unification.css",
+        "rallypoint-team-unification.css",
+        "rallypoint-read-unification.css",
+        "rally-one.css",
+        "rally-one-graphite-parity.css",
+        "rally-one-connect-alive-shell.css",
+        "rally-one-connect-usability-shell.css",
+        "rally-one-groups-v2.css",
+        "rally-one-care-flow.css",
+        "rally-one-m5-mobile-parity.css",
+        "rally-one-s7-demo.css"
+      ]
+    },
+    "foundation2/index.html": {
+      "scripts": [
+        "../rallypoint-today.js",
+        "../rallypoint-companion-decision.js",
+        "../rallypoint-smart-dashboard.js",
+        "../rally-one-member-context.js",
+        "member-actions.js",
+        "../rally-one-unified-focus.js",
+        "../rallypoint-priority-board.js",
+        "../rally-one-care-flow.js",
+        "../rally-one-intelligence.js",
+        "../rallypoint-storage-guard.js",
+        "../rally-one-app-state.js",
+        "../rallypoint-memorize.js",
+        "../rally-one-memory-actions.js",
+        "../rallypoint-verseplay-ui.js",
+        "../rallypoint-chat-domain.browser.js",
+        "../rallypoint-conversation-read-model.js",
+        "state-store.js",
+        "connect-adapter.js",
+        "connect-view.js",
+        "groups.js",
+        "group-preview.js",
+        "group-fixtures.js",
+        "team.js",
+        "serving-preview.js",
+        "serving-fixtures.js",
+        "read.js",
+        "navigation.js",
+        "today-model.js",
+        "today-view.js",
+        "app.js"
+      ],
+      "stylesheets": [
+        "design.css",
+        "../rallypoint-verseplay.css"
+      ]
+    },
+    "connect-design-lab.html": {
+      "scripts": [
+        "connect-member.js",
+        "connect-design-lab.js",
+        "connect-alive.js"
+      ],
+      "stylesheets": [
+        "connect-design-lab.css",
+        "connect-graphite-parity.css",
+        "connect-alive.css",
+        "connect-usability.css"
+      ]
+    },
+    "blank-battle.html": {
+      "scripts": [
+        "rallypoint-memorize.js",
+        "blank-battle.js"
+      ],
+      "stylesheets": [
+        "blank-battle.css"
+      ]
+    },
+    "verse-circuit-playground.html": {
+      "scripts": [
+        "verseplay/games/verse-circuit/controller.js"
+      ],
+      "stylesheets": [
+        "https://fonts.googleapis.com/css2?family=Oxanium:wght@500;600;700;800&family=Manrope:wght@400;500;600;700;800&display=swap",
+        "verseplay/games/verse-circuit/verse-circuit.css"
+      ]
+    }
+  },
+  "sourceMetrics": [
+    {
+      "file": "rallypoint.js",
+      "lines": 1168,
+      "bytes": 86143,
+      "sha256": "2fb24c6fdaef290296190c1ce6a9a9ecaea1069b011808e54ca8a54984406816",
+      "requires": []
+    },
+    {
+      "file": "rallypoint-ui.js",
+      "lines": 27,
+      "bytes": 3273,
+      "sha256": "ffa54d758d578b8efdfe1fc235d1cc7157d154de5ee0de8bda3cc402ab244f0b",
+      "requires": []
+    },
+    {
+      "file": "rallypoint-personal-companion.js",
+      "lines": 624,
+      "bytes": 48374,
+      "sha256": "f3e1e3f62d9221eb55710eeb7e88a9ca1a158ebf5c912fd0acc3df433c6acb56",
+      "requires": []
+    },
+    {
+      "file": "rallypoint-smart-dashboard.js",
+      "lines": 229,
+      "bytes": 15228,
+      "sha256": "3eca69e5713485c0d329412cefd908b2c00dfa526c3e02a99c392c794b5b6c81",
+      "requires": []
+    },
+    {
+      "file": "rallypoint-memorize.js",
+      "lines": 119,
+      "bytes": 6024,
+      "sha256": "f240d95497c386f4b2d946c3c653e119e9150d7b877f903527caa00b58909911",
+      "requires": []
+    },
+    {
+      "file": "rallypoint-priority-board.js",
+      "lines": 265,
+      "bytes": 17249,
+      "sha256": "caf4eb26d7954eb861be1d33f2bd665d0e93db336e58f3c0e2d275da64b26d81",
+      "requires": [
+        "./rally-one-unified-focus.js"
+      ]
+    },
+    {
+      "file": "rally-one-unified-focus.js",
+      "lines": 148,
+      "bytes": 7359,
+      "sha256": "67e0b8526d4c82701983e5f7b1d4eec37bdc7fc92c66f41e8c94a86b28b42580",
+      "requires": []
+    },
+    {
+      "file": "rally-one-intelligence.js",
+      "lines": 36,
+      "bytes": 2462,
+      "sha256": "7582fd7bdfec25c46f08d8473ef53248b9c494191bb73f7ac35ad6355363f1bb",
+      "requires": [
+        "./rally-one-member-context.js",
+        "./rallypoint-smart-dashboard.js",
+        "./rallypoint-priority-board.js",
+        "./rally-one-unified-focus.js",
+        "./rally-one-care-flow.js",
+        "./rallypoint-today.js",
+        "./rallypoint-companion-decision.js"
+      ]
+    },
+    {
+      "file": "rally-one-member-context.js",
+      "lines": 123,
+      "bytes": 6582,
+      "sha256": "25daec60dc98014d87186b3750f853ae099ae7c66662cdd8bba83c09e260f477",
+      "requires": []
+    },
+    {
+      "file": "rallypoint-storage-guard.js",
+      "lines": 148,
+      "bytes": 7703,
+      "sha256": "0f955ac57cd230ec6d432a637430539bbca9e823b9b43ebb8e4c5ee60c860b40",
+      "requires": []
+    },
+    {
+      "file": "foundation2/index.html",
+      "lines": 92,
+      "bytes": 4346,
+      "sha256": "8249a3ced655aedea3755fa0e171bafbb9a9a8b19662762b08bbab63211aa63a",
+      "requires": []
+    },
+    {
+      "file": "foundation2/navigation.js",
+      "lines": 53,
+      "bytes": 3597,
+      "sha256": "aba8a48ad43bbdb601dbbf5b16e439759088b3aeac4a414a53acf6d6f0146d72",
+      "requires": []
+    },
+    {
+      "file": "foundation2/connect-adapter.js",
+      "lines": 95,
+      "bytes": 4708,
+      "sha256": "02ef6954879b937a0c3afdcbffa589caa8e70be307c0cdf2cfa2764ff8e4ac48",
+      "requires": []
+    },
+    {
+      "file": "foundation2/state-store.js",
+      "lines": 79,
+      "bytes": 3574,
+      "sha256": "4a188f38e62e67695a829294aabe32098a53d1f4391edad9a8836897bd7f9ae5",
+      "requires": []
+    },
+    {
+      "file": "foundation2/connect-view.js",
+      "lines": 65,
+      "bytes": 4742,
+      "sha256": "3a06a7666db72de25dd2f668c39d59c58e31c1ed3106fdd99efab8392c7f4fcf",
+      "requires": []
+    },
+    {
+      "file": "foundation2/group-preview.js",
+      "lines": 46,
+      "bytes": 2479,
+      "sha256": "63a49e58462ad3a0c2160b063c98d283b4f0dc21e96276b329a3f75385e7cc73",
+      "requires": []
+    },
+    {
+      "file": "foundation2/groups.js",
+      "lines": 87,
+      "bytes": 6847,
+      "sha256": "d897188e1be17b1aedf5e815318f19d4830f438074082a0c8099e69b15228e26",
+      "requires": []
+    },
+    {
+      "file": "foundation2/team.js",
+      "lines": 75,
+      "bytes": 5687,
+      "sha256": "8399a337f7730223ad6f3e9684b6948e7e1b45e2451d6cede4c443b316caa3eb",
+      "requires": []
+    },
+    {
+      "file": "foundation2/read.js",
+      "lines": 101,
+      "bytes": 8182,
+      "sha256": "d84806d784675fc085d2e87bb43c32b998e73ae1d2c14914d1ba9616747d0fb8",
+      "requires": []
+    },
+    {
+      "file": "foundation2/today-view.js",
+      "lines": 62,
+      "bytes": 7078,
+      "sha256": "d1fd4e45ffab8bd47f5bb7fe5bfc38cfb5af01e4094f1d5158868b427f42befb",
+      "requires": []
+    },
+    {
+      "file": "foundation2/serving-preview.js",
+      "lines": 50,
+      "bytes": 2517,
+      "sha256": "408faa64cd16533ac7b07d83bad2a1521f26752cfec552c775e887ad20e7fb19",
+      "requires": []
+    },
+    {
+      "file": "foundation2/today-model.js",
+      "lines": 29,
+      "bytes": 3513,
+      "sha256": "7c4925e2cdf57fcb81d15a8e6d0212e34115c8e8519565824a2a748644eee137",
+      "requires": []
+    },
+    {
+      "file": "foundation2/design.css",
+      "lines": 369,
+      "bytes": 30462,
+      "sha256": "1e594e2770cd402bfb669c38e06237bbc86f762ba1bcd7169e5888dd51786b6b",
+      "requires": []
+    },
+    {
+      "file": "foundation2/app.js",
+      "lines": 334,
+      "bytes": 17423,
+      "sha256": "09c8f5a8284bbb4fa6e4353c4bf7870a6cf440ef6b8bb8831ce32d3981058705",
+      "requires": []
+    },
+    {
+      "file": "foundation2/member-actions.js",
+      "lines": 103,
+      "bytes": 5428,
+      "sha256": "f3471bc1edf2d40e772a245ddac7cb51fd00d439efb0da518de4b4b34ac11d2d",
+      "requires": [
+        "../rally-one-member-context.js"
+      ]
+    },
+    {
+      "file": "lib/action-contracts.cjs",
+      "lines": 140,
+      "bytes": 6762,
+      "sha256": "352ed2dce01c354b72e3bb7eee009dbbfc82631a9e06751faf8df14487ce464a",
+      "requires": []
+    },
+    {
+      "file": "lib/mock-access-policy.cjs",
+      "lines": 101,
+      "bytes": 5736,
+      "sha256": "0d1b60cd1e08b0b65fa029a5be4494acbab29635baf1e86c9a0e15efdcef5de3",
+      "requires": []
+    },
+    {
+      "file": "lib/mock-conversation-repository.cjs",
+      "lines": 205,
+      "bytes": 8608,
+      "sha256": "e6c2669bde869e4f17e2b92f3a6c197816345bbb6d62eeaa7be2ef779b3623d1",
+      "requires": [
+        "./conversation-contracts.cjs"
+      ]
+    },
+    {
+      "file": "lib/legacy-fixture-migration.cjs",
+      "lines": 160,
+      "bytes": 8085,
+      "sha256": "a55c7ec0f42f3f089fc39cb981ed5446b09dddbdb337be64419a0fa5193cc70f",
+      "requires": [
+        "node:crypto"
+      ]
+    },
+    {
+      "file": "lib/conversation-contracts.cjs",
+      "lines": 139,
+      "bytes": 6619,
+      "sha256": "744bc47e35ccd4ef08f641ca7f32041d026c0152d630103f36540d47b53d2a96",
+      "requires": []
+    },
+    {
+      "file": "lib/migration-rehearsal.cjs",
+      "lines": 144,
+      "bytes": 6097,
+      "sha256": "3298ebd189b1801113176561b139d8db4c30a8e4e3938dfde4c7fd789aa7eac6",
+      "requires": [
+        "./legacy-fixture-migration.cjs",
+        "./domain-bundle.cjs"
+      ]
+    },
+    {
+      "file": "lib/domain-bundle.cjs",
+      "lines": 104,
+      "bytes": 4167,
+      "sha256": "55f938778c70b873a45bf8ff23b7a75cad045e5ef44e34bb37d0e3e1ae40b370",
+      "requires": [
+        "./conversation-contracts.cjs",
+        "./action-contracts.cjs"
+      ]
+    },
+    {
+      "file": "lib/member-context-contract.cjs",
+      "lines": 101,
+      "bytes": 8106,
+      "sha256": "07b6b0a5859b379279fe73e9eb03f6a97acc3ec83bb697125c310bffcd7a4d11",
+      "requires": [
+        "../rally-one-member-context.js"
+      ]
+    },
+    {
+      "file": "pilot/s11a-synthetic-auth.cjs",
+      "lines": 170,
+      "bytes": 11089,
+      "sha256": "dee3060193343b6ebf7e575937a347c03070c6c5ee8c1bba08770533b207add1",
+      "requires": [
+        "node:crypto",
+        "./s7-readonly-member-contract.cjs"
+      ]
+    },
+    {
+      "file": "pilot/s11b-synthetic-planning-center.cjs",
+      "lines": 108,
+      "bytes": 7775,
+      "sha256": "d39fd0ef0c6c5b39368fbfbd3419bd10752bf999d0357a6607d22b6f2322e104",
+      "requires": []
+    },
+    {
+      "file": "pilot/s11d-resilient-transport.cjs",
+      "lines": 53,
+      "bytes": 2636,
+      "sha256": "717be687f998f3ffdded20133c6ffae3ed1584fb5c688bc8071bfbce680f2cc7",
+      "requires": []
+    },
+    {
+      "file": "pilot/s7-readonly-member-contract.cjs",
+      "lines": 60,
+      "bytes": 3488,
+      "sha256": "5601e160c88a5e67c64491976dbaac6338f9983b87c1a429a50296cc81f8bbd0",
+      "requires": []
+    },
+    {
+      "file": "pilot/s11e-local-review.cjs",
+      "lines": 132,
+      "bytes": 9269,
+      "sha256": "1ed8956365ab54f80a7825230dd5f3e500725418771b8a1c4fd13cf9293d0733",
+      "requires": [
+        "node:http",
+        "node:crypto",
+        "./s11c-synthetic-privacy.cjs",
+        "./s11e-pilot-view.cjs"
+      ]
+    },
+    {
+      "file": "pilot/s11c-synthetic-privacy.cjs",
+      "lines": 130,
+      "bytes": 8551,
+      "sha256": "24396f188f18ae0b01507f6e8b209cdc999bb6a32f67e2a18711d2668a0e56ff",
+      "requires": [
+        "node:crypto",
+        "./s11a-synthetic-auth.cjs",
+        "./s11b-synthetic-planning-center.cjs",
+        "./s11d-resilient-transport.cjs"
+      ]
+    },
+    {
+      "file": "pilot/f2-synthetic-serving.cjs",
+      "lines": 64,
+      "bytes": 3143,
+      "sha256": "72cfade0fa705bacb4106a40db7f347a7a451fdd081e37be4e97a3895ee709ad",
+      "requires": [
+        "./s11d-resilient-transport.cjs"
+      ]
+    },
+    {
+      "file": "pilot/s11e-pilot-view.cjs",
+      "lines": 17,
+      "bytes": 4798,
+      "sha256": "5fd6b4732dd186929c2865158dd65085d49478f91f38a029a8ac349d17554194",
+      "requires": []
+    }
+  ]
+}

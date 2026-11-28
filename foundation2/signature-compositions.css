@@ -1,0 +1,159 @@
+/* Pure S3 composition layouts. No application state, router or motion policy.
+   .sig-composition--brief and --connected can be reused by a direct renderer. */
+.signature-surface .sig-composition{--sig-comp-inset:18px;min-width:0;color:var(--sig-ink);background:var(--sig-ivory);font-family:var(--sig-sans);line-height:1.35}
+.sig-composition :is(h3,h4,p){margin:0}
+.sig-composition :is(button,a){font:inherit}
+.sig-composition button{cursor:pointer}
+.sig-composition button:focus-visible{position:relative;z-index:5;outline:2px solid var(--sig-red);outline-offset:3px;box-shadow:0 0 0 2px var(--sig-paper)}
+.sig-composition .sig-comp-header{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:6px 10px;min-height:62px;padding:9px var(--sig-comp-inset)}
+.sig-comp-header>div{display:flex;align-items:center;gap:6px;margin-left:auto}
+.sig-comp-brand{display:flex;align-items:center;gap:5px;min-width:0;color:var(--sig-ink)}
+.sig-comp-brand>img{display:block;width:25px;height:25px;object-fit:contain;flex:none}
+.sig-comp-brand>strong{font-size:1.2rem;line-height:1.1;letter-spacing:-.065em;white-space:nowrap;font-weight:800}
+.sig-comp-brand>strong>span{color:var(--sig-red)}
+.sig-composition .sig-comp-header .sig-utility{width:44px;height:44px;min-height:44px;box-shadow:none}
+.sig-comp-avatar{display:grid;place-items:center;width:44px;height:44px;min-height:44px;flex:none;border:0;border-radius:50%;background:var(--sig-charcoal);color:var(--sig-paper);font-size:.875rem!important;font-weight:800!important}
+.sig-comp-masthead,.sig-comp-cover{position:relative;isolation:isolate;min-width:0}
+.sig-comp-dateline{font-size:.625rem;font-weight:800;line-height:1.4;letter-spacing:.055em;color:var(--sig-muted)}
+.sig-composition .sig-comp-masthead h3,.sig-composition .sig-comp-cover h3{font-size:2.5rem;line-height:1.04;font-weight:650;letter-spacing:-.06em;margin:3px 0 3px}
+.sig-comp-masthead h3>span,.sig-comp-cover h3>span{color:var(--sig-red)}
+.sig-comp-greeting{font-size:.875rem;line-height:1.35;font-weight:650}
+.sig-comp-greeting>button{display:inline;min-height:44px;padding:4px 0;margin:-5px 0;border:0;border-bottom:1px solid var(--sig-line);border-radius:0;background:transparent;color:inherit;font-weight:800!important}
+.sig-composition--brief .sig-comp-masthead{display:grid;grid-template-columns:minmax(min(100%,12rem),1fr) minmax(0,91px);gap:6px;margin:0 var(--sig-comp-inset) 12px;padding:5px 0 8px;border-bottom:1px solid var(--sig-line)}
+.sig-comp-masthead>div{position:relative;z-index:1;min-width:0}
+.sig-comp-masthead>img{width:100%;height:100%;min-height:90px;object-fit:cover;object-position:center;clip-path:polygon(19% 0,100% 0,100% 85%,81% 100%,0 100%)}
+.sig-comp-day-sheet{min-width:0;margin-inline:var(--sig-comp-inset)}
+.sig-comp-section-line{display:flex;align-items:baseline;justify-content:space-between;gap:8px;min-width:0;margin:0 0 7px}
+.sig-comp-section-line>h4{position:relative;padding-left:13px;font-size:1rem;line-height:1.25;font-weight:800;letter-spacing:-.035em}
+.sig-comp-section-line>h4::before{content:'';position:absolute;left:2px;top:1px;width:6px;height:17px;background:var(--sig-red);transform:skew(-20deg)}
+.sig-comp-section-line>span{font-size:.625rem;line-height:1.4;color:var(--sig-muted);font-weight:750;text-align:right}
+.sig-comp-folds{position:relative;min-width:0;isolation:isolate}
+.sig-comp-primary{position:relative;isolation:isolate;min-width:0;padding:15px 17px;color:var(--sig-paper)}
+.sig-comp-primary::before{content:'';position:absolute;z-index:-2;inset:0;background:var(--sig-charcoal);border:1px solid #454444;border-radius:19px 7px 22px 8px;clip-path:polygon(0 0,100% 0,100% calc(100% - 18px),calc(100% - 18px) 100%,0 100%)}
+.sig-comp-priority-meta{position:relative;display:flex;align-items:flex-start;justify-content:space-between;gap:8px;z-index:1;min-width:0;margin:0 0 7px;font-size:.625rem;line-height:1.4}
+.sig-comp-priority-meta>time{background:var(--sig-charcoal);padding:2px 4px;border-radius:3px;text-align:right}
+.sig-comp-priority-kicker{display:block;font-size:.625rem;line-height:1.4;font-weight:800;letter-spacing:.1em}
+.sig-comp-priority-copy{position:relative;z-index:1;min-width:0;max-width:calc(100% - 40px);width:max-content;padding-right:6px;background:var(--sig-charcoal)}
+.sig-composition .sig-comp-priority-copy>h4{font-size:1.9375rem;line-height:1.02;letter-spacing:-.05em;font-weight:650;overflow-wrap:normal}
+.sig-comp-priority-copy>p{margin-top:4px;font-size:.75rem;color:#e1d7c9;line-height:1.4}
+.sig-comp-priority-photo{position:absolute;z-index:-1;inset:0 0 auto auto;width:42%;height:calc(100% - 61px);object-fit:cover;clip-path:polygon(28% 0,100% 0,100% 100%,0 100%);border-radius:0 7px 0 0}
+.signature-surface .sig-composition .sig-comp-response-action{width:100%;min-height:44px;margin-top:12px;padding:9px 14px;font-size:.8125rem;font-weight:800;line-height:1.35}
+.sig-composition .sig-comp-response-action .sig-action-icon{width:28px;height:28px}
+.sig-composition .sig-comp-response-action .sig-action-icon .sig-icon{width:18px;height:18px}
+.sig-comp-secondary{position:relative;z-index:-1;isolation:isolate;display:flex;align-items:center;justify-content:space-between;gap:10px;min-width:0;min-height:60px;margin:-5px 4px 0;padding:11px 12px 7px 15px;color:var(--sig-ink)}
+.sig-comp-secondary::before{content:'';position:absolute;z-index:-1;inset:0;background:var(--sig-paper);border:1px solid var(--sig-line);border-radius:0 5px 14px 5px;clip-path:polygon(9px 0,100% 0,calc(100% - 9px) 100%,0 100%);box-shadow:0 5px 0 #e5d7c5}
+.sig-comp-secondary>div{min-width:0;flex:1 1 auto}
+.sig-comp-secondary h4{font-size:.8125rem;line-height:1.3;font-weight:800;letter-spacing:-.02em}
+.sig-comp-secondary p{margin-top:2px;font-size:.6875rem;line-height:1.35;color:var(--sig-muted)}
+.signature-surface .sig-composition .sig-comp-response-action--compact{flex:0 0 auto;width:auto;max-width:46%;min-width:70px;margin:0;padding-inline:11px;font-size:.75rem;color:var(--sig-ink)}
+.sig-comp-response-action--compact::before{background:#eee3d4!important}
+.sig-comp-agenda{min-width:0;margin-top:13px}
+.sig-comp-agenda .sig-comp-section-line{margin-bottom:1px}
+.sig-comp-agenda-list{min-width:0;border-top:1px solid var(--sig-line)}
+.sig-comp-event{display:grid;grid-template-columns:2.375rem minmax(0,1fr) auto;align-items:center;gap:9px;width:100%;min-width:0;min-height:55px;padding:6px 0;border:0;border-bottom:1px solid var(--sig-line);border-radius:0;background:transparent;color:var(--sig-ink);text-align:left}
+.sig-comp-event-date{display:grid;justify-items:center;align-content:center;gap:1px;padding-right:9px;border-right:1px solid var(--sig-line);font-style:normal}
+.sig-comp-event-date>span{font-size:.5625rem;line-height:1.3;letter-spacing:.06em;text-transform:uppercase;font-weight:800}
+.sig-comp-event-date>strong{font-family:var(--sig-serif);font-size:1.75rem;line-height:.95;font-weight:650;letter-spacing:-.05em;color:var(--sig-red)}
+.sig-comp-event-copy{display:block;min-width:0}
+.sig-comp-event-copy>strong{display:block;font-size:.8125rem;line-height:1.25;letter-spacing:-.025em;font-weight:800}
+.sig-comp-event-copy>small{display:block;font-size:.625rem;line-height:1.45;color:var(--sig-muted);margin-top:3px}
+.sig-comp-event-state{max-width:62px;font-size:.625rem;line-height:1.35;font-weight:750;color:var(--sig-muted);text-align:right}
+.sig-comp-event-state.is-saved{display:flex;align-items:center;justify-content:flex-end;gap:3px;color:var(--sig-ink)}
+.sig-comp-event-state .sig-icon{width:14px!important;height:14px!important}
+.sig-comp-people{min-width:0;margin:11px var(--sig-comp-inset) 0}
+.sig-comp-people-main{display:flex;flex-wrap:wrap;gap:9px;align-items:center;min-width:0;min-height:76px}
+.sig-composition .sig-comp-portraits{min-width:0;max-width:100%;flex:0 0 auto;padding:4px 0}
+.sig-composition .sig-comp-portraits>button{position:relative;width:50px;height:50px;min-height:44px;min-width:44px;flex:none;padding:0;border:3px solid var(--sig-ivory);border-radius:50%;background:var(--sig-paper)}
+.sig-composition .sig-comp-portraits>button+button{margin-left:-15px}
+.sig-comp-portraits>button:first-child{box-shadow:0 0 0 1.5px var(--sig-red);z-index:2}
+.sig-comp-portraits>button:nth-child(2){z-index:1}
+.sig-comp-portraits>button:focus-visible{z-index:5}
+.sig-comp-group{min-width:0;flex:1 1 7rem}
+.sig-comp-group>strong{display:block;font-size:.8125rem;line-height:1.25;font-weight:800;letter-spacing:-.035em}
+.sig-comp-unread{display:flex;align-items:center;gap:4px;min-height:44px;min-width:44px;padding:4px 0 0;border:0;background:transparent;color:var(--sig-muted);font-size:.625rem!important;line-height:1.35!important;text-align:left}
+.sig-comp-unread-dot{flex:none;width:5px;height:5px;border-radius:50%;background:var(--sig-red)}
+.sig-composition .sig-comp-people-control{width:44px;height:44px;min-height:44px;box-shadow:none;margin-left:auto}
+.sig-comp-footer{margin:0 var(--sig-comp-inset) 0;min-width:0}
+.signature-surface .sig-composition .sig-comp-ask{width:100%;min-height:48px;padding:10px 17px;margin:0;font-size:1.375rem;font-family:var(--sig-serif);font-weight:650;letter-spacing:-.04em}
+.sig-comp-ask .sig-action-icon{width:29px!important;height:29px!important}
+.sig-composition .sig-comp-nav{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(4.2rem,100%),1fr));margin:12px 10px 10px;gap:3px;padding:5px;border-color:#3b3c3a;box-shadow:0 4px 10px #211a1612}
+.sig-composition .sig-comp-nav>button{position:relative;isolation:isolate;min-width:0;min-height:53px;font-size:.6875rem;line-height:1.25;padding:6px 3px;gap:4px;border-radius:0;background:transparent}
+.sig-comp-nav>button::before{content:'';position:absolute;z-index:-1;inset:0;border-radius:23px;background:transparent;pointer-events:none}
+.sig-composition .sig-comp-nav>button[aria-current=page]{background:transparent}
+.sig-comp-nav>button[aria-current=page]::before{background:var(--sig-red)}
+.sig-composition .sig-comp-nav>button>.sig-icon{width:21px;height:21px}
+.sig-comp-nav>button>span{white-space:nowrap;max-width:100%}
+.sig-comp-allset{display:flex;flex-wrap:wrap;align-items:center;gap:15px;min-width:0;min-height:150px;padding:19px 17px;border:1px solid var(--sig-line);border-radius:19px 7px 22px 8px;background:var(--sig-paper)}
+.sig-comp-allset>div{min-width:0;flex:1 1 10rem}
+.sig-comp-allset-mark{display:grid;place-items:center;flex:none;width:57px;height:57px;border:6px solid var(--sig-red);border-radius:50%;color:var(--sig-ink)}
+.sig-composition .sig-comp-allset-title{font-size:2rem;line-height:1.1;font-weight:650;letter-spacing:-.05em}
+.sig-comp-allset p{font-size:.75rem;line-height:1.4;color:var(--sig-muted);margin-top:5px}
+/* B has a materially different hierarchy and silhouette: people cross a dark
+   photo cover; a single ivory sheet integrates dated responsibilities/agenda. */
+.sig-composition--connected .sig-comp-header{background:var(--sig-charcoal);color:var(--sig-paper)}
+.sig-composition--connected .sig-comp-brand{color:var(--sig-paper)}
+.sig-composition--connected .sig-comp-header .sig-utility{border-color:#69665f;background:var(--sig-charcoal);color:var(--sig-paper)}
+.sig-composition--connected .sig-comp-avatar{background:var(--sig-paper);color:var(--sig-ink)}
+.sig-comp-cover{padding:6px var(--sig-comp-inset) 35px;background:var(--sig-charcoal);color:var(--sig-paper)}
+.sig-comp-cover>img{position:absolute;inset:0 0 0 auto;z-index:-1;width:52%;height:100%;object-fit:cover;clip-path:polygon(28% 0,100% 0,100% 100%,0 100%)}
+.sig-comp-cover>div{position:relative;z-index:1;width:max-content;max-width:calc(100% - 25px);padding-right:8px;background:var(--sig-charcoal)}
+.sig-comp-cover .sig-comp-dateline{color:#e1d7c9;font-size:.5625rem}
+.sig-comp-cover .sig-comp-greeting{font-size:.8125rem}
+.sig-comp-cover::after{content:'';position:absolute;z-index:-1;right:0;bottom:0;width:60px;height:75px;background:var(--sig-red);clip-path:polygon(100% 0,100% 100%,0 100%)}
+.sig-composition--connected .sig-comp-people{position:relative;isolation:isolate;margin:-23px 0 0;padding:0 var(--sig-comp-inset) 8px}
+.sig-composition--connected .sig-comp-people::before{content:'';position:absolute;z-index:-1;inset:14px 0 0;background:var(--sig-ivory);clip-path:polygon(0 0,82% 0,88% 12px,100% 12px,100% 100%,0 100%)}
+.sig-composition--connected .sig-comp-portraits{align-self:start}
+.sig-composition--connected .sig-comp-portraits>button{width:54px;height:54px;border-color:var(--sig-ivory)}
+.sig-composition--connected .sig-comp-group{padding-top:24px}
+.sig-composition--connected .sig-comp-people-control{margin-top:17px}
+.sig-composition--connected .sig-comp-people-main{min-height:86px}
+.sig-composition--connected .sig-comp-day-sheet{position:relative;isolation:isolate;margin:0 12px 12px;padding:13px 14px 8px;background:transparent}
+.sig-composition--connected .sig-comp-day-sheet::before{content:'';position:absolute;z-index:-1;inset:0;background:var(--sig-paper);border:1px solid var(--sig-line);border-radius:20px 7px 24px 7px;clip-path:polygon(0 0,100% 0,100% calc(100% - 19px),calc(100% - 19px) 100%,0 100%)}
+.sig-composition--connected .sig-comp-section-line>h4{font-size:.9375rem}
+.sig-composition--connected .sig-comp-primary{display:flex;flex-wrap:wrap;gap:0 12px;padding:6px 0 0;color:var(--sig-ink)}
+.sig-composition--connected .sig-comp-primary::before{display:none}
+.sig-composition--connected .sig-comp-priority-meta{display:block;flex:0 0 3.875rem;max-width:100%;margin:0}
+.sig-composition--connected .sig-comp-priority-date .sig-date{min-width:0;width:100%;min-height:83px;padding:2px 10px 2px 0}
+.sig-composition--connected .sig-comp-priority-date .sig-date-number{font-size:2.6rem}
+.sig-composition--connected .sig-comp-priority-date .sig-date-month{font-size:.625rem}
+.sig-composition--connected .sig-comp-priority-date .sig-date-weekday{font-size:.5625rem}
+.sig-composition--connected .sig-comp-priority-copy{flex:1 1 10rem;min-width:min(100%,10rem);max-width:100%;width:auto;padding:0;background:transparent;align-self:center}
+.sig-composition--connected .sig-comp-priority-copy .sig-comp-priority-kicker{font-size:.5625rem;color:var(--sig-muted);margin-bottom:5px}
+.sig-composition--connected .sig-comp-priority-copy h4{font-size:1.9375rem;overflow-wrap:normal}
+.sig-composition--connected .sig-comp-priority-copy p{color:var(--sig-muted)}
+.sig-composition--connected .sig-comp-response-action:not(.sig-comp-response-action--compact){flex-basis:100%;margin-top:10px}
+.sig-composition--connected .sig-comp-secondary{margin:7px -4px 0;padding:8px 11px;min-height:60px;color:var(--sig-paper)}
+.sig-composition--connected .sig-comp-secondary::before{border:0;border-radius:12px 4px 15px 4px;background:var(--sig-charcoal);clip-path:polygon(7px 0,100% 0,calc(100% - 7px) 100%,0 100%)}
+.sig-composition--connected .sig-comp-secondary p{color:#e1d7c9}
+.sig-composition--connected .sig-comp-agenda{margin-top:16px}
+.sig-composition--connected .sig-comp-agenda .sig-comp-section-line>h4{font-size:.875rem}
+.sig-composition--connected .sig-comp-allset{min-height:146px;padding:13px 5px;border:0;background:transparent}
+.sig-composition--connected .sig-comp-footer{margin-bottom:0}
+@media(max-width:360px){
+ .signature-surface .sig-composition{--sig-comp-inset:14px}
+ .sig-comp-brand>strong{font-size:1.1875rem}
+ .sig-composition--brief .sig-comp-masthead{grid-template-columns:minmax(min(100%,12rem),1fr) minmax(0,70px)}
+ .sig-comp-dateline{font-size:.5625rem}
+ .sig-comp-priority-copy{max-width:100%}
+ .sig-comp-primary{padding-inline:14px}
+ .sig-composition .sig-comp-priority-copy>h4{font-size:1.8125rem}
+ .sig-comp-event{grid-template-columns:2.125rem minmax(0,1fr);gap:5px 8px}
+ .sig-comp-event-date{grid-column:1;grid-row:1/3}
+ .sig-comp-event-copy{grid-column:2;grid-row:1}
+ .sig-comp-event-state{grid-column:2;grid-row:2;max-width:none;text-align:left}
+ .sig-comp-event-state.is-saved{justify-content:flex-start}
+ .sig-comp-people-main{gap:6px}
+ .sig-composition .sig-comp-portraits>button{width:44px;height:44px}
+ .sig-composition .sig-comp-portraits>button+button{margin-left:-17px}
+ .sig-comp-group>strong{font-size:.75rem}
+ .sig-composition--connected .sig-comp-primary{gap:0 10px}
+ .sig-composition--connected .sig-comp-priority-meta{flex-basis:3.375rem}
+}
+/* Intrinsic rem columns yield to enlarged text. Decorative photography never
+   imposes a min-content column or a clipped text box. */
+.sig-comp-primary{overflow:visible}
+.sig-comp-priority-copy{min-width:min(100%,13rem)}
+@media(max-width:500px){
+ .sig-comp-nav{scroll-margin-bottom:12px}
+}
+@media(prefers-reduced-motion:reduce){.sig-composition *{animation:none!important;transition:none!important;scroll-behavior:auto!important}}

@@ -1,0 +1,10 @@
+{
+  "tag": "rally-one/checkpoints/2026-11-28-signature-s1-s2-review",
+  "object": "c56f9cfbb3cc5f3f746d2c2e592853a199636423",
+  "target": "905f7da15d8039c53ce47f42f2d2392125c41334",
+  "meaning": "Unaccepted S1/S2 review recovery checkpoint, not owner acceptance",
+  "successor": "rally-one/signature-s3",
+  "base": "905f7da15d8039c53ce47f42f2d2392125c41334",
+  "runtime": "799a2690b62773487845aea93ee76377c4682c29",
+  "remote": "c56f9cfbb3cc5f3f746d2c2e592853a199636423\trefs/tags/rally-one/checkpoints/2026-11-28-signature-s1-s2-review\n905f7da15d8039c53ce47f42f2d2392125c41334\trefs/tags/rally-one/checkpoints/2026-11-28-signature-s1-s2-review^{}"
+}

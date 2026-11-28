@@ -5,12 +5,13 @@
  */
 (function(root,factory){
  'use strict';
- const api=factory();
+ const Widgets=typeof module==='object'&&module.exports?require('./widgets.js'):root.FoundationWidgets;
+ const api=factory(Widgets);
  if(typeof module==='object'&&module.exports)module.exports=api;
  if(root)root.FoundationTeam=api;
-})(typeof window!=='undefined'?window:null,function(){
+})(typeof window!=='undefined'?window:null,function(Widgets){
 'use strict';
-const esc=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const esc=Widgets.esc;
 function project(snapshot){
  const c=snapshot.context,m=snapshot.model;
  const member=c.permissions.team;
@@ -35,7 +36,8 @@ function render(vm,{feedback='',blocked=false,servingPreview=''}={}){
   '<h1 id="route-title" tabindex="-1">'+(vm.member?'Your team.':'Find your team.')+'</h1>';
  if(servingPreview)return header+servingPreview+'</section>';
  if(!vm.member)return header+'<p class="route-lead">You have not joined a fictional serving team in this demo scenario.</p>'+
-  '<div class="route-preview-card"><span class="route-stage-label">NO SERVING MEMBERSHIP</span>'+
+  '<div class="route-preview-card team-form-empty"><span class="team-empty-icon">'+Widgets.icon('people')+'</span>'+
+  '<span class="route-stage-label">NO SERVING MEMBERSHIP</span><h2>Make people feel at home.</h2>'+
   '<p>Explore serving opportunities in the existing full demo. Browsing never creates a membership.</p>'+
   '<a class="route-full-app" href="../index.html">Explore the existing demo <span aria-hidden="true">↗</span></a></div></section>';
  const status=vm.response==='confirmed'?'Confirmed':
@@ -44,21 +46,25 @@ function render(vm,{feedback='',blocked=false,servingPreview=''}={}){
  const date=vm.shift?vm.shift.toLocaleDateString('en-US',{weekday:'long',month:'short',day:'numeric'})+' · '+
   vm.shift.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'}):
   vm.response==='declined'?'You marked that you cannot serve.':'No verified upcoming shift';
- const text='<section class="team-assignment" aria-labelledby="team-assignment-title">'+
+ const dateMark=vm.shift?'<div class="team-date-mark" aria-hidden="true"><span>'+esc(vm.shift.toLocaleDateString('en-US',{month:'short'}))+'</span>'+
+  '<b>'+esc(vm.shift.getDate())+'</b></div>':'';
+ const text='<section class="team-assignment team-form-assignment" aria-labelledby="team-assignment-title">'+
   '<span class="group-overline">NEXT ASSIGNMENT · SAMPLE</span>'+
-  '<h2 id="team-assignment-title">'+esc(vm.teamName)+'</h2>'+
-  '<p>'+esc(date)+' · '+esc(vm.location)+'</p>'+
-  '<div class="team-availability"><span>Availability</span><strong class="'+(vm.response==='confirmed'?'is-confirmed':'')+'">'+esc(status)+'</strong></div>'+
-  '<p class="team-disclosure">A response represents availability in the fictional schedule, not recorded attendance.</p>'+
+  '<div class="team-assignment-main">'+dateMark+'<div class="team-assignment-copy"><h2 id="team-assignment-title">'+esc(vm.teamName)+'</h2>'+
+  '<p>'+esc(date)+'</p><p class="team-assignment-location">'+esc(vm.location)+'</p></div></div>'+
+  '<div class="team-availability team-form-availability"><span>Availability</span><strong class="'+(vm.response==='confirmed'?'is-confirmed':'')+'">'+esc(status)+'</strong></div>'+
   (vm.response==='unknown'||blocked?'<p class="team-blocked">Saved availability cannot be changed safely until this data is resolved.</p>':
-  '<div class="team-actions">'+
+  '<div class="team-actions team-form-actions'+(vm.response==='pending'?' is-pending':'')+'" role="group" aria-label="Your serving availability">'+
    '<button type="button" data-team-action="serving-response" data-value="confirmed" aria-pressed="'+String(vm.response==='confirmed')+'"'+(vm.response==='confirmed'?' class="is-selected"':'')+'>Confirm serving</button>'+
    '<button type="button" data-team-action="serving-response" data-value="declined" aria-pressed="'+String(vm.response==='declined')+'"'+(vm.response==='declined'?' class="is-selected"':'')+'>Can’t make it</button>'+
-   '</div>')+'</section>';
- const image='<section class="team-identity"><div class="team-identity-copy"><span class="group-overline">SERVING TOGETHER</span>'+
-  '<h2>Small acts. Real impact.</h2><p>Welcome people as they arrive. Your time and presence help create a place to belong.</p></div>'+
-  '<img src="../assets/campuses/north.jpg" alt="Citizen Church North Campus building" width="440" height="185" decoding="async"></section>';
- const coverage='<section class="team-coverage" aria-labelledby="team-coverage-title">'+
+   '</div>')+'<p class="team-disclosure team-form-disclosure">A response represents availability in the fictional schedule, not recorded attendance.</p></section>';
+ const image='<section class="team-identity team-form-identity"><div class="team-identity-copy"><span class="group-overline">SERVING TOGETHER</span>'+
+  '<h2>Welcome people in.</h2><p>Help people feel at home as they arrive.</p></div>'+
+  '<img src="../assets/campuses/north.jpg" alt="Citizen Church North Campus building" width="112" height="112" decoding="async"></section>';
+ const room=Widgets.utility({title:'Open team conversation',detail:'Your team’s Room · Chat, Plans and People',icon:'chat',
+  href:'?screen=connect&channel=room',route:'connect',focusId:'team-connect'}).replace('class="utility utility-link"','class="utility utility-link route-full-app team-room-link"');
+ const coverage='<section class="team-coverage team-form-coverage'+(vm.response==='declined'?' is-needed':'')+'" aria-labelledby="team-coverage-title">'+
+  '<span class="team-coverage-kicker">'+(vm.response==='declined'?'COVERAGE · SAMPLE':'TEAM COORDINATION')+'</span>'+
   '<h2 id="team-coverage-title">Coverage and coordination</h2>'+
   '<p>'+(vm.coverage?'You have a fictional local coverage request saved for this declined serving shift.':
     vm.response==='declined'?'If you cannot serve, you can save a fictional coverage request on this device.':
@@ -66,9 +72,10 @@ function render(vm,{feedback='',blocked=false,servingPreview=''}={}){
   (vm.response==='declined'&&!blocked?'<button type="button" class="team-coverage-action" data-team-action="serving-coverage" data-value="'+(vm.coverage?'withdraw':'request')+'">'+
     (vm.coverage?'Withdraw sample coverage request':'Request sample coverage')+'</button>':'')+
   '<p class="team-coverage-note">This is only a local scheduling fixture. No coverage message is delivered to teammates or church staff.</p>'+
-  '<a class="route-full-app" data-route="connect" data-return-focus="team-connect" href="?screen=connect&channel=room">Open team conversation</a>'+
+  room+
   '<a class="route-full-app" href="../index.html">Open serving tools in the existing full demo <span aria-hidden="true">↗</span></a></section>';
- const leader=vm.authorizedLeader?'<p class="team-leader-notice">Authorized team-leader scenario · no attendance inferred from confirmations.</p>':'';
+ const leader=vm.authorizedLeader?'<section class="team-leader-panel" aria-labelledby="team-leader-title"><span class="team-leader-icon">'+Widgets.icon('people')+'</span>'+
+  '<div><h2 id="team-leader-title">Team leader</h2><p class="team-leader-notice">Authorized team-leader scenario · no attendance inferred from confirmations.</p></div></section>':'';
  return header+(feedback?'<p class="group-feedback" role="status">'+esc(feedback)+'</p>':'')+
   text+(vm.response==='declined'?coverage+image:image+coverage)+leader+'</section>';
 }
