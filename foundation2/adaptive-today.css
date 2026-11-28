@@ -74,3 +74,5 @@ body.signature-mode{background:#e5ded3}
 .shell.signature-shell .adaptive-today .responsibility h2{width:100%;max-width:none}
 .shell.signature-shell .adaptive-today .coming{padding-block:0;background:transparent;box-shadow:none}
 .shell.signature-shell .adaptive-today .coming summary{font-size:13px;color:#6e6359}
+.shell.signature-shell .adaptive-today .scripture{text-decoration:none}
+.shell.signature-shell .adaptive-today a.community{text-decoration:none}
