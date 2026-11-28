@@ -45,6 +45,7 @@ jobs:
           node scripts/experience-e3b-browser-check.mjs http://127.0.0.1:8527/
           node scripts/experience-e3b-showcase.mjs http://127.0.0.1:8527/
           node scripts/signature-browser-check.mjs http://127.0.0.1:8527/
+          node scripts/signature-s3-browser-check.mjs http://127.0.0.1:8527/
       - name: Preserve visual evidence
         if: always()
         uses: actions/upload-artifact@v4
@@ -59,5 +60,6 @@ jobs:
             test-results/experience-e2b-e3a/
             test-results/experience-e3b/
             test-results/signature/
+            test-results/signature-s3/
           retention-days: 30
           if-no-files-found: warn

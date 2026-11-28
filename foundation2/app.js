@@ -109,6 +109,7 @@ function mountConnect(){
 }
 function draw(focus=false){
  presentationMotion.cancel();
+ presentationMotion.capture(root);
  document.querySelector('.shell').classList.toggle('signature-shell',route==='today');
  document.body.classList.toggle('signature-mode',route==='today');
  const now=new Date(),chat=conversation(),session=FoundationMemberSession.derive({owner:localScenario(select.value),state,ui,conversation:chat,now}),snapshot=session.snapshot;

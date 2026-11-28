@@ -1,5 +1,6 @@
 /* Ephemeral presentation only. Existing projections and successful saves own
  * every fact below; motion never writes state, announces status or moves focus.
+ * capture(root) may remember one draw's keyed geometry before replacement;
  * update(snapshot, root) follows the real draw. The caller supplies a receipt
  * only for that draw's successful save and available:false for unknown,
  * deferred, visitor or read-only sources. commitmentSignature is an optional
@@ -63,13 +64,14 @@
  }
  function classify(before,after){return classifySnapshots(snapshot(before),snapshot(after));}
  function create(options={}){
-  let previous=null,disposed=false,media=null;
+  let previous=null,captured=null,disposed=false,media=null;
   const active=new Set();
   const query=options.matchMedia===undefined?
    (typeof globalThis.matchMedia==='function'?globalThis.matchMedia.bind(globalThis):null):options.matchMedia;
   let mediaFailed=false;
   if(typeof query==='function')try{media=query('(prefers-reduced-motion: reduce)');}catch(_){mediaFailed=true;}
   function cancel(){
+   captured=null;
    for(const animation of active)try{animation.cancel();}catch(_){/* A detached effect has no presentation to restore. */}
    active.clear();
   }
@@ -92,12 +94,79 @@
    }catch(_){/* Animation support must never interfere with the actual draw. */}
   }
   function find(root,selector){return typeof root?.querySelector==='function'?root.querySelector(selector):null;}
+  function viewport(root){
+   try{
+    const view=root?.ownerDocument?.defaultView;
+    if(!view||![view.innerWidth,view.innerHeight,view.scrollX,view.scrollY].every(Number.isFinite)||view.innerWidth<=0||view.innerHeight<=0)return null;
+    return {width:view.innerWidth,height:view.innerHeight,x:view.scrollX,y:view.scrollY};
+   }catch(_){return null;}
+  }
+  function rect(node){
+   try{
+    const value=node?.getBoundingClientRect?.();
+    if(!value||![value.left,value.top,value.width,value.height].every(Number.isFinite)||value.width<=0||value.height<=0||
+     [value.left,value.top,value.width,value.height].some(number=>Math.abs(number)>1000000))return null;
+    return freeze({left:value.left,top:value.top,right:value.left+value.width,bottom:value.top+value.height,width:value.width,height:value.height});
+   }catch(_){return null;}
+  }
+  function visible(value,view){return !!(value&&view&&value.right>0&&value.left<view.width&&value.bottom>0&&value.top<view.height);}
+  function domain(root,count){
+   try{
+    const node=find(root,'.sig-priority-domain[data-stack-size]');
+    return node?.getAttribute('data-stack-size')===String(count)?node:null;
+   }catch(_){return null;}
+  }
+  function capture(root){
+   captured=null;
+   if(disposed||reduced()||!previous||previous.route!=='today'||!previous.available||!previous.taskIds.length)return;
+   try{
+    const view=viewport(root),stack=rect(domain(root,previous.taskIds.length));
+    if(!visible(stack,view)||typeof root?.querySelectorAll!=='function')return;
+    const tasks=new Map();
+    for(const node of root.querySelectorAll('.priority[data-motion-task],.responsibility[data-motion-task]')){
+     const id=node.getAttribute('data-motion-task');
+     if(!previous.taskIds.includes(id)||tasks.has(id))return;
+     const bounds=rect(node);
+     if(!bounds)return;
+     tasks.set(id,bounds);
+    }
+    if(tasks.size!==previous.taskIds.length)return;
+    captured={snapshot:previous,view,stack,tasks};
+   }catch(_){/* Missing presentation geometry cannot interfere with a draw. */}
+  }
+  function currentGeometry(before,geometry,root,next){
+   if(!geometry||geometry.snapshot!==before||next?.route!=='today')return null;
+   const view=viewport(root);
+   if(!view||Object.keys(view).some(key=>view[key]!==geometry.view[key]))return null;
+   const stack=rect(domain(root,next.taskIds.length));
+   if(!visible(stack,view))return null;
+   const primary=find(root,'.priority[data-motion-task]');
+   if(primary?.getAttribute('data-motion-task')!==next.primaryId||!visible(rect(primary),view))return null;
+   return {...geometry,current:stack};
+  }
+  function displacement(from,to,limit){return Math.max(-limit,Math.min(limit,from-to));}
+  function promotion(geometry,next,root){
+   if(!geometry)return null;
+   const node=find(root,'.priority[data-motion-task]');
+   if(node?.getAttribute('data-motion-task')!==next.primaryId)return null;
+   const from=geometry.tasks.get(next.primaryId),to=rect(node);
+   if(!from||!visible(to,geometry.view))return null;
+   return {node,frames:[{transform:'translate('+displacement(from.left,to.left,24)+'px, '+displacement(from.top,to.top,24)+'px)',opacity:.92},
+    {transform:'translate(0px, 0px)',opacity:1}]};
+  }
+  function layerReflow(geometry,root){
+   if(!geometry)return null;
+   const node=find(root,'.sig-priority-domain .sig-stack-layer--middle');
+   return node?{node,frames:[{transform:'translateY('+displacement(geometry.stack.bottom,geometry.current.bottom,12)+'px)',opacity:.68},
+    {transform:'translateY(0px)',opacity:1}]}:null;
+  }
   function update(value,root){
    if(disposed)return none;
-   const next=snapshot(value),change=classifySnapshots(previous,next);
+   const before=previous,geometry=captured,next=snapshot(value),change=classifySnapshots(before,next);
    previous=next;
    cancel();
    if(reduced()||!root)return change;
+   const measured=change.kind==='commitments'?currentGeometry(before,geometry,root,next):null;
    if(change.kind==='completion'){
     animate(find(root,'.settled:not(.welcome-card)'),[
      {transform:'translateY(3px)',opacity:.92},{transform:'translateY(0)',opacity:1}
@@ -112,12 +181,20 @@
      ],180);
      animate(find(root,'.group-feedback'),[{opacity:.82},{opacity:1}],180);
     }else{
-     if(change.primary)animate(find(root,'.priority'),[
-     {transform:'translateY(5px)',opacity:.92},{transform:'translateY(0)',opacity:1}
-     ],180);
-     if(change.stack)animate(find(root,'.responsibilities'),[
-     {transform:'translateY(4px)',opacity:.94},{transform:'translateY(0)',opacity:1}
-     ],180);
+     if(change.primary){
+      const moved=promotion(measured,next,root);
+      if(moved)animate(moved.node,moved.frames,200);
+      else animate(find(root,'.priority'),[
+       {transform:'translateY(5px)',opacity:.92},{transform:'translateY(0)',opacity:1}
+      ],180);
+     }
+     if(change.stack){
+      const layer=layerReflow(measured,root);
+      if(layer)animate(layer.node,layer.frames,200);
+      else animate(find(root,'.responsibilities'),[
+       {transform:'translateY(4px)',opacity:.94},{transform:'translateY(0)',opacity:1}
+      ],180);
+     }
     }
    }else if(change.kind==='route'&&options.routeTransitions===true){
     animate(find(root,'#route-title, .greeting'),[
@@ -132,7 +209,7 @@
    if(media?.removeEventListener)media.removeEventListener('change',preferenceChanged);
    else if(media?.removeListener)media.removeListener(preferenceChanged);
   }
-  return freeze({update,cancel,dispose});
+  return freeze({capture,update,cancel,dispose});
  }
  return freeze({classify,create});
 });

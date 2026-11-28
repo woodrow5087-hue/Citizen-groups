@@ -1,0 +1,200 @@
+{
+  "status": "pre-selection unaccepted interactive studies",
+  "origin": "http://127.0.0.1:8051",
+  "source": "working S3 from87b4932",
+  "clock": "2026-11-26T12:00:00Z",
+  "timezone": "America/Denver",
+  "profile": "Jordan / North Campus; fictional serveNov29/groupDec2;3unread;Anna/Jess/Marcus",
+  "reference": "Exact owner PNGs deferred; visible concept boards guide composition; no redraw/approximation.",
+  "sourceHashes": {
+    "foundation2/signature-gallery.js": "fb3e015d877dad67954d2293e7d1c87e98e66d4a66a548d2780f75b2958ff095",
+    "foundation2/signature-gallery.css": "8ee242c196118df6e5cf63623f81b8dff153335cfb68dfc13758e21055765386",
+    "foundation2/signature-compositions.css": "8d57247811547f5ddab8433a62e1b1309a2055224de1c216dbf17c8ff0b5cc76"
+  },
+  "records": [
+    {
+      "viewportWidth": 320,
+      "enlarged": false,
+      "mode": "a",
+      "width": 320,
+      "height": 820.0625,
+      "scroll": 318,
+      "over": []
+    },
+    {
+      "viewportWidth": 320,
+      "enlarged": false,
+      "mode": "b",
+      "width": 320,
+      "height": 842.9375,
+      "scroll": 318,
+      "over": []
+    },
+    {
+      "viewportWidth": 320,
+      "enlarged": true,
+      "mode": "a",
+      "width": 320,
+      "height": 1697.703125,
+      "scroll": 318,
+      "over": []
+    },
+    {
+      "viewportWidth": 320,
+      "enlarged": true,
+      "mode": "b",
+      "width": 320,
+      "height": 1838.078125,
+      "scroll": 318,
+      "over": []
+    },
+    {
+      "width": 320,
+      "axe": "pass normal+200%",
+      "storage": [],
+      "errors": [],
+      "interactions": "layout pass"
+    },
+    {
+      "viewportWidth": 375,
+      "enlarged": false,
+      "mode": "a",
+      "width": 375,
+      "height": 803,
+      "scroll": 373,
+      "over": []
+    },
+    {
+      "viewportWidth": 375,
+      "enlarged": false,
+      "mode": "b",
+      "width": 375,
+      "height": 822.4375,
+      "scroll": 373,
+      "over": []
+    },
+    {
+      "viewportWidth": 375,
+      "enlarged": true,
+      "mode": "a",
+      "width": 375,
+      "height": 1508.203125,
+      "scroll": 373,
+      "over": []
+    },
+    {
+      "viewportWidth": 375,
+      "enlarged": true,
+      "mode": "b",
+      "width": 375,
+      "height": 1657.46875,
+      "scroll": 373,
+      "over": []
+    },
+    {
+      "width": 375,
+      "axe": "pass normal+200%",
+      "storage": [],
+      "errors": [],
+      "interactions": "layout pass"
+    },
+    {
+      "viewportWidth": 390,
+      "enlarged": false,
+      "mode": "a",
+      "width": 390,
+      "height": 803,
+      "scroll": 388,
+      "over": []
+    },
+    {
+      "viewportWidth": 390,
+      "enlarged": false,
+      "mode": "b",
+      "width": 390,
+      "height": 822.4375,
+      "scroll": 388,
+      "over": []
+    },
+    {
+      "viewportWidth": 390,
+      "enlarged": true,
+      "mode": "a",
+      "width": 390,
+      "height": 1435.703125,
+      "scroll": 388,
+      "over": []
+    },
+    {
+      "viewportWidth": 390,
+      "enlarged": true,
+      "mode": "b",
+      "width": 390,
+      "height": 1584.875,
+      "scroll": 388,
+      "over": []
+    },
+    {
+      "width": 390,
+      "axe": "pass normal+200%",
+      "storage": [],
+      "errors": [],
+      "interactions": "2\u21921\u2192All Set, optional unread, focus, nav/dialog and display toggle pass"
+    },
+    {
+      "viewportWidth": 430,
+      "enlarged": false,
+      "mode": "a",
+      "width": 390,
+      "height": 803,
+      "scroll": 388,
+      "over": []
+    },
+    {
+      "viewportWidth": 430,
+      "enlarged": false,
+      "mode": "b",
+      "width": 390,
+      "height": 822.4375,
+      "scroll": 388,
+      "over": []
+    },
+    {
+      "viewportWidth": 430,
+      "enlarged": true,
+      "mode": "a",
+      "width": 390,
+      "height": 1435.703125,
+      "scroll": 388,
+      "over": []
+    },
+    {
+      "viewportWidth": 430,
+      "enlarged": true,
+      "mode": "b",
+      "width": 390,
+      "height": 1584.875,
+      "scroll": 388,
+      "over": []
+    },
+    {
+      "width": 430,
+      "axe": "pass normal+200%",
+      "storage": [],
+      "errors": [],
+      "interactions": "layout pass"
+    }
+  ],
+  "gitHeadAtCapture": "87b4932018630b85c746bb0db347527b273903da",
+  "workingSource": true,
+  "ownedFiles": [
+    "foundation2/signature-gallery.js",
+    "foundation2/signature-gallery.css",
+    "foundation2/signature-compositions.css"
+  ],
+  "selection": "not yet selected",
+  "normal390Heights": {
+    "a": 803,
+    "b": 822.4375
+  }
+}

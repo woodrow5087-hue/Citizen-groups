@@ -196,3 +196,115 @@ test('browser UMD and pure classifier have no document, network, storage, timers
  controller.update(before,null);controller.update(after,null);controller.dispose();
  assert.equal(JSON.stringify([before,after]),bytes);
 });
+
+function keyedGeometryHarness(){
+ const h=harness(),document=h.root.ownerDocument,priority=h.root.querySelector('.priority'),others=h.root.querySelector('.responsibilities');
+ const domain=document.createElement('section'),secondary=document.createElement('article'),layer=document.createElement('span');
+ domain.className='sig-priority-domain';domain.setAttribute('data-stack-size','2');
+ priority.setAttribute('data-motion-task','group-rsvp');secondary.className='responsibility';secondary.setAttribute('data-motion-task','serve-response');
+ layer.className='sig-stack-layer sig-stack-layer--middle';layer.setAttribute('aria-hidden','true');
+ h.root.insertBefore(domain,priority);domain.append(priority,others,layer);others.append(secondary);
+ const bounds=new Map(),place=(node,left,top,width,height)=>{bounds.set(node,{left,top,width,height});node.getBoundingClientRect=()=>bounds.get(node);};
+ place(domain,20,80,280,290);place(priority,20,80,280,180);place(secondary,24,290,272,70);
+ for(const node of [domain,secondary,layer])node.animate=(frames,options)=>{
+  const effect={cancelled:false,cancel(){this.cancelled=true;this.oncancel?.();}};
+  h.calls.push({node,frames,options,effect});return effect;
+ };
+ function promote(){
+  priority.setAttribute('data-motion-task','serve-response');secondary.remove();others.remove();
+  domain.setAttribute('data-stack-size','1');place(domain,20,80,280,172);place(priority,20,80,280,160);
+ }
+ return {...h,domain,priority,secondary,layer,place,promote};
+}
+
+test('one-draw source-keyed geometry promotes the actual remaining task and reflows its real layer',()=>{
+ const h=keyedGeometryHarness(),before=active(),after=saved({primaryId:'serve-response',taskIds:['serve-response']});
+ Object.freeze(before.taskIds);Object.freeze(before);Object.freeze(after.taskIds);Object.freeze(after);
+ const input=JSON.stringify([before,after]),receipt=h.root.querySelector('.receipt').outerHTML;
+ h.root.ownerDocument.body.tabIndex=-1;h.root.ownerDocument.body.focus();const focused=h.root.ownerDocument.activeElement;
+ h.controller.update(before,h.root);
+ assert.equal(h.controller.capture(h.root),undefined);h.promote();const html=h.root.outerHTML;
+ assert.deepEqual(h.controller.update(after,h.root),{kind:'commitments',primary:true,stack:true});
+ assert.equal(h.calls.length,2);assert.equal(h.calls[0].node,h.priority);assert.equal(h.calls[1].node,h.layer);
+ assert.deepEqual(h.calls[0].frames,[{transform:'translate(4px, 24px)',opacity:.92},{transform:'translate(0px, 0px)',opacity:1}]);
+ assert.deepEqual(h.calls[1].frames,[{transform:'translateY(12px)',opacity:.68},{transform:'translateY(0px)',opacity:1}]);
+ for(const call of h.calls){
+  assert.equal(call.options.duration,200);assert.equal(call.options.fill,'none');assert.equal(call.options.iterations,1);
+  for(const frame of call.frames)assert.deepEqual(Object.keys(frame).sort(),['opacity','transform']);
+ }
+ assert.equal(h.root.outerHTML,html);assert.equal(h.root.querySelector('.receipt').outerHTML,receipt);
+ assert.equal(h.root.ownerDocument.activeElement,focused);assert.equal(JSON.stringify([before,after]),input);
+ h.controller.update(after,h.root);assert.equal(h.calls.length,2,'A redraw consumes geometry without replaying movement');
+ assert.ok(h.calls.every(call=>call.effect.cancelled));h.controller.dispose();
+});
+
+test('geometry is consumed by one update and explicit cancellation cannot leave a stale promotion origin',()=>{
+ for(const discard of ['redraw','cancel','reordered']){
+  const h=keyedGeometryHarness();h.controller.update(active(),h.root);h.controller.capture(h.root);
+  if(discard==='cancel')h.controller.cancel();
+  else h.controller.update(discard==='reordered'?active({taskIds:['serve-response','group-rsvp']}):active(),h.root);
+  h.promote();h.controller.update(saved({primaryId:'serve-response',taskIds:['serve-response']}),h.root);
+  assert.equal(h.calls.length,1,'Only the existing priority fallback remains when there is no live secondary section');
+  assert.equal(h.calls[0].frames[0].transform,'translateY(5px)',discard);
+  assert.equal(h.calls[0].options.duration,180);h.controller.dispose();
+ }
+});
+
+test('the actual final response cancels keyed reflow and finishes only the real All Set panel',()=>{
+ const h=keyedGeometryHarness();h.controller.update(active(),h.root);h.controller.capture(h.root);h.promote();
+ h.controller.update(saved({primaryId:'serve-response',taskIds:['serve-response']}),h.root);
+ assert.equal(h.calls.length,2);h.controller.capture(h.root);
+ const settled=h.root.querySelector('.settled');h.priority.remove();h.layer.remove();h.domain.append(settled);h.domain.setAttribute('data-stack-size','0');
+ const html=h.root.outerHTML;
+ assert.equal(h.controller.update(calm(),h.root).kind,'completion');
+ assert.equal(h.calls.length,4);assert.ok(h.calls.slice(0,2).every(call=>call.effect.cancelled));
+ assert.equal(h.calls[2].node,settled);assert.equal(h.calls[3].node,h.root.querySelector('.greeting h1'));
+ assert.equal(h.root.outerHTML,html);h.controller.update(calm(),h.root);
+ assert.equal(h.calls.length,4,'All Set cannot replay on the next draw');h.controller.dispose();
+});
+
+test('missing, duplicate, mismatched or invalid source geometry falls back without repairing markup',()=>{
+ for(const invalid of ['missing','duplicate','count','nonfinite','scroll']){
+  const h=keyedGeometryHarness();h.controller.update(active(),h.root);
+  if(invalid==='missing')h.secondary.removeAttribute('data-motion-task');
+  if(invalid==='duplicate')h.secondary.setAttribute('data-motion-task','group-rsvp');
+  if(invalid==='count')h.domain.setAttribute('data-stack-size','1');
+  if(invalid==='nonfinite')h.place(h.secondary,24,NaN,272,70);
+  h.controller.capture(h.root);
+  if(invalid==='scroll')Object.defineProperty(h.root.ownerDocument.defaultView,'scrollY',{value:10,configurable:true});
+  h.promote();const html=h.root.outerHTML;
+  assert.doesNotThrow(()=>h.controller.update(saved({primaryId:'serve-response',taskIds:['serve-response']}),h.root));
+  assert.equal(h.calls.length,1);assert.equal(h.calls[0].frames[0].transform,'translateY(5px)',invalid);
+  assert.equal(h.root.outerHTML,html);h.controller.dispose();
+ }
+});
+
+test('a finite offscreen prior task still has a bounded origin, while an offscreen current primary uses the old fallback',()=>{
+ const h=keyedGeometryHarness();h.place(h.secondary,24,900,272,70);
+ h.controller.update(active(),h.root);h.controller.capture(h.root);h.promote();
+ h.controller.update(saved({primaryId:'serve-response',taskIds:['serve-response']}),h.root);
+ assert.equal(h.calls.length,2);assert.equal(h.calls[0].frames[0].transform,'translate(4px, 24px)');
+ assert.equal(h.calls[1].node,h.layer);h.controller.dispose();
+ const below=keyedGeometryHarness();below.controller.update(active(),below.root);below.controller.capture(below.root);below.promote();
+ below.place(below.priority,20,900,280,160);
+ below.controller.update(saved({primaryId:'serve-response',taskIds:['serve-response']}),below.root);
+ assert.equal(below.calls.length,1);assert.equal(below.calls[0].frames[0].transform,'translateY(5px)');below.controller.dispose();
+});
+
+test('captured geometry never entitles a failed save, persona switch, unavailable state or reduced-motion replay',()=>{
+ for(const suppressed of [
+  {receipt:''},{receipt:{ok:false,message:'No response saved.'}},{owner:'another-persona'},
+  {available:false},{route:'groups'}
+ ]){
+  const h=keyedGeometryHarness();h.controller.update(active(),h.root);h.controller.capture(h.root);h.promote();
+  const next=saved({primaryId:'serve-response',taskIds:['serve-response'],...suppressed});
+  h.controller.update(next,h.root);
+  assert.equal(h.calls.length,0,JSON.stringify(suppressed));
+  h.controller.update(next,h.root);assert.equal(h.calls.length,0);h.controller.dispose();
+ }
+ const h=keyedGeometryHarness();h.controller.update(active(),h.root);h.controller.capture(h.root);h.change(true);h.promote();
+ h.controller.update(saved({primaryId:'serve-response',taskIds:['serve-response']}),h.root);assert.equal(h.calls.length,0);
+ h.change(false);h.controller.update(saved({primaryId:'serve-response',taskIds:['serve-response']}),h.root);
+ assert.equal(h.calls.length,0,'Reduced motion consumes the real transition without a later replay');
+ h.controller.dispose();assert.doesNotThrow(()=>h.controller.capture(h.root));
+});
