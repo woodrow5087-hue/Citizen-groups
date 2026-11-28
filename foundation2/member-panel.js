@@ -28,7 +28,7 @@ function create({getSession,getUI,getStore,profileChanged,perform,navigate}){
   shell('Ask Rally', '<p>Commitments need a response. Messages, care opportunities and Scripture remain optional.</p>'+RallyPersonalCompanion.render(supported,query,notice,[],turn.suggestions));
  }
  document.getElementById('ask-rally').addEventListener('click',()=>{returnFocus=document.getElementById('ask-rally');ask();});
- document.addEventListener('click',e=>{const button=e.target.closest('[data-profile-entry]');if(button){returnFocus=button;profile();}});
+ document.addEventListener('click',e=>{const askEntry=e.target.closest('[data-ask-entry]');if(askEntry){returnFocus=askEntry;ask();return;}const button=e.target.closest('[data-profile-entry]');if(button){returnFocus=button;profile();}});
  document.getElementById('member-profile-open').addEventListener('click',()=>{returnFocus=document.querySelector('#preview-tools>summary');document.getElementById('preview-tools').removeAttribute('open');profile();});
  dialog.addEventListener('click',e=>{
   const b=e.target.closest('button');if(!b)return;
