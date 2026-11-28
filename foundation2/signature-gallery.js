@@ -14,6 +14,15 @@
   {kicker:'Make space',title:'A moment<br>to Read.',detail:'Optional Scripture · visual specimen',photo:'../assets/today-priority/sandia-ridge.webp'}
  ];
  const events=[{date:new Date(2026,11,5,18),title:'Wednesday Group',detail:'North Commons · sample gathering'},{date:new Date(2026,11,6,9),title:'Welcome Team',detail:'North Campus · sample assignment'}];
+ // S3 composition choices are local specimen selections, never app state.
+ // Both studies consume the same two supplied sample facts and keep optional
+ // unread unchanged. These booleans cannot read or command a member engine.
+ const compositions={brief:{serve:false,rsvp:false},connected:{serve:false,rsvp:false}};
+ let compositionView='compare';
+ const compositionFacts=[
+  {id:'serve',title:'Welcome Team',detail:'North Campus',date:new Date(2026,10,29,9),label:'Confirm availability',short:'Confirm',photo:'../assets/today-priority/group.webp'},
+  {id:'rsvp',title:'Wednesday Group',detail:'North Commons',date:new Date(2026,11,2,18,30),label:'RSVP · I’m in',short:'RSVP',photo:'../assets/rally-one/community.webp'}
+ ];
  const action=(label,kind,options={})=>S.action({label,attrs:{'data-sig-action':kind},...options});
  function family(id,title,detail,content,extra=''){
   return '<section id="'+id+'" class="gallery-family '+extra+'" aria-labelledby="'+id+'-title"><header class="gallery-family-head"><h2 id="'+id+'-title">'+esc(title)+'</h2><p>'+esc(detail)+'</p></header>'+content+'</section>';
@@ -37,8 +46,58 @@
   const remaining=Number(state.rsvp===null)+Number(!state.confirmed);
   return S.completion({complete:remaining===0,title:remaining===0?'All Set!':'Your response.',detail:remaining===0?'Both specimen choices are selected.':'Choose the sample RSVP and commitment states.',remaining})+'<p class="gallery-caption">Only your two selections drive this specimen. No member progress or attendance is inferred.</p>';
  }
+ function compositionAction(mode,item,compact=false){
+  return S.action({label:compact?item.short:item.label,tone:compact?'paper':'red',split:!compact,icon:compact?null:'arrow',className:'sig-comp-response-action'+(compact?' sig-comp-response-action--compact':''),attrs:{'data-sig-action':'composition-response','data-composition':mode,'data-sig-value':item.id,'aria-label':item.label+' for the fictional '+item.title}});
+ }
+ function compositionPeople(mode){
+  return '<section class="sig-comp-people" aria-label="'+mode+' fictional community"><div class="sig-comp-people-main"><div class="sig-portraits sig-comp-portraits" role="group" aria-label="Fictional contacts Anna, Jess and Marcus">'+portraits.slice(0,3).map(p=>'<button type="button" data-sig-action="composition-person" data-composition="'+mode+'" data-sig-value="'+p.file+'" aria-label="Inspect '+esc(p.name)+' fictional portrait"><img src="../assets/rally-one/'+p.file+'.webp" alt="" width="150" height="150"></button>').join('')+'</div><div class="sig-comp-group"><strong>Wednesday Group</strong><button type="button" class="sig-comp-unread" data-sig-action="composition-detail" data-composition="'+mode+'" data-sig-value="Connect"><span class="sig-comp-unread-dot" aria-hidden="true"></span>3 new messages</button></div><button type="button" class="sig-utility sig-comp-people-control" data-sig-action="composition-detail" data-composition="'+mode+'" data-sig-value="People" aria-label="People and community">'+icon('plus')+'</button></div></section>';
+ }
+ function compositionAgenda(mode){
+  const choices=compositions[mode];
+  return '<section class="sig-comp-agenda" aria-label="'+mode+' fictional upcoming schedule"><div class="sig-comp-section-line"><h4>Coming up</h4><span>Your schedule</span></div><div class="sig-comp-agenda-list">'+compositionFacts.map(item=>'<button type="button" class="sig-comp-event" data-sig-action="composition-event" data-composition="'+mode+'" data-sig-value="'+item.id+'"><time datetime="'+item.date.toISOString()+'" class="sig-comp-event-date"><span>'+esc(item.date.toLocaleDateString('en-US',{month:'short'}))+'</span><strong>'+item.date.getDate()+'</strong></time><span class="sig-comp-event-copy"><strong>'+item.title+'</strong><small>'+esc(dateLabelForStudy(item.date))+' · '+item.detail+'</small></span><span class="sig-comp-event-state '+(choices[item.id]?'is-saved':'')+'">'+(choices[item.id]?icon('check')+'<span>Saved</span>':'Needs reply')+'</span></button>').join('')+'</div></section>';
+ }
+ function dateLabelForStudy(date){return date.toLocaleDateString('en-US',{weekday:'short'})+' · '+date.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'});}
+ function compositionResponses(mode){
+  const pending=compositionFacts.filter(item=>!compositions[mode][item.id]),primary=pending[0],secondary=pending[1];
+  const header='<div class="sig-comp-section-line"><h4>'+(pending.length?'Your next step':'Responses saved')+'</h4><span>'+pending.length+' '+(pending.length===1?'response':'responses')+'</span></div>';
+  if(!primary)return '<section class="sig-comp-responses" aria-label="'+mode+' fictional response selections">'+header+'<div class="sig-comp-response-surface sig-comp-allset"><span class="sig-comp-allset-mark" aria-hidden="true">'+icon('check')+'</span><div><h4 class="sig-serif sig-comp-allset-title" tabindex="-1">All Set.</h4><p>Both sample responses are saved.<br>Connection stays optional.</p></div></div></section>';
+  const top=mode==='brief'?'<span class="sig-comp-priority-kicker">UP NEXT</span><time datetime="'+primary.date.toISOString()+'">'+esc(dateLabelForStudy(primary.date))+'</time>':'<div class="sig-comp-priority-date">'+S.dateBadge(primary.date)+'</div>';
+  return '<section class="sig-comp-responses" aria-label="'+mode+' fictional response selections" data-pending="'+pending.length+'">'+header+'<div class="sig-comp-folds '+(secondary?'has-secondary':'')+'"><article class="sig-comp-response-surface sig-comp-primary">'+(mode==='brief'?'<img class="sig-comp-priority-photo" src="'+primary.photo+'" alt="" width="440" height="220">':'')+'<div class="sig-comp-priority-meta">'+top+'</div><div class="sig-comp-priority-copy">'+(mode==='connected'?'<span class="sig-comp-priority-kicker">UP NEXT</span>':'')+'<h4 class="sig-serif">'+primary.title+'</h4><p>'+primary.detail+'</p></div>'+compositionAction(mode,primary)+'</article>'+(secondary?'<article class="sig-comp-secondary"><div><h4>'+secondary.title+'</h4><p>'+secondary.detail+'</p></div>'+compositionAction(mode,secondary,true)+'</article>':'')+'</div></section>';
+ }
+ function compositionHeader(mode){
+  return '<header class="sig-comp-header"><span class="sig-comp-brand"><img src="../assets/citizen-flag.svg" alt="" width="24" height="24"><strong>RALLY<span>ONE.</span></strong></span><div><button type="button" class="sig-utility" data-sig-action="composition-detail" data-composition="'+mode+'" data-sig-value="Connect" aria-label="Open Connect specimen">'+icon('chat')+'</button><button type="button" class="sig-comp-avatar" data-sig-action="composition-detail" data-composition="'+mode+'" data-sig-value="Jordan" aria-label="Inspect Jordan fictional profile">J</button></div></header>';
+ }
+ function compositionNav(mode){
+  return '<nav class="sig-nav sig-comp-nav" aria-label="'+(mode==='brief'?'Folded Brief':'Connected Day')+' four-destination navigation specimen">'+[['Today','calendar'],['Groups','people'],['Team','heart'],['Read','book']].map(([label,glyph])=>'<button type="button" data-sig-action="composition-detail" data-composition="'+mode+'" data-sig-value="'+label+'"'+(label==='Today'?' aria-current="page"':'')+'>'+icon(glyph)+'<span>'+label+'</span></button>').join('')+'</nav>';
+ }
+ function compositionPhone(mode){
+  const choices=compositions[mode],count=Number(!choices.serve)+Number(!choices.rsvp);
+  const greeting='<p class="sig-comp-greeting">Good morning, <button type="button" data-sig-action="composition-detail" data-composition="'+mode+'" data-sig-value="Jordan">Jordan.</button></p>';
+  const masthead=mode==='brief'?'<header class="sig-comp-masthead"><div><p class="sig-comp-dateline">THU, NOV 26 · NORTH CAMPUS</p><h3 class="sig-serif">Today<span>.</span></h3>'+greeting+'</div><img src="../assets/campuses/north.jpg" alt="" width="180" height="180"></header>':'<header class="sig-comp-cover"><img src="../assets/rally-one/community.webp" alt="" width="440" height="220"><div><p class="sig-comp-dateline">THU, NOV 26 · NORTH CAMPUS</p><h3 class="sig-serif">Today<span>.</span></h3>'+greeting+'</div></header>';
+  const ask=S.action({label:'Ask Rally',tone:'ink',split:true,icon:'arrow',className:'sig-comp-ask',attrs:{'data-sig-action':'composition-detail','data-composition':mode,'data-sig-value':'Ask Rally'}});
+  return compositionHeader(mode)+masthead+(mode==='connected'?compositionPeople(mode):'')+'<div class="sig-comp-day-sheet" data-response-count="'+count+'">'+compositionResponses(mode)+compositionAgenda(mode)+'</div>'+(mode==='brief'?compositionPeople(mode):'')+'<div class="sig-comp-footer">'+ask+'</div>'+compositionNav(mode);
+ }
+ function compositionStudy(mode,title,detail){
+  return '<article class="gallery-composition-study" data-study="'+mode+'"><header class="gallery-study-heading"><div><span class="gallery-eyebrow">Study '+(mode==='brief'?'A':'B')+'</span><h3>'+title+'</h3><p>'+detail+'</p></div><button type="button" class="gallery-reset" data-sig-action="composition-reset" data-composition="'+mode+'">Reset study '+(mode==='brief'?'A':'B')+'</button></header><div id="composition-'+mode+'" class="sig-composition sig-composition--'+mode+'" data-sig-composition="'+mode+'" data-s3-study="'+(mode==='brief'?'a':'b')+'">'+compositionPhone(mode)+'</div><p class="gallery-study-caption">Jordan · North Campus · fictional local study. Anna, Jess and Marcus are sample contacts. Choices clear on reload; 3 optional messages remain unchanged.</p></article>';
+ }
+ function compositionStudies(){
+  return '<section id="composition-studies" class="gallery-family-wide gallery-composition-studies" aria-labelledby="composition-studies-title"><header class="gallery-family-head"><h2 id="composition-studies-title">S3 · Two ways to shape Today</h2><p>Matched facts. Different compositions. Try both responses, then compare the one-response and All Set states.</p></header><p class="gallery-study-reference">The four owner-supplied boards remain the primary art direction. Exact original PNG embedding is deferred until supplied; no reference image has been redrawn or approximated.</p><div class="gallery-study-selector sig-segments" role="group" aria-label="Composition study display">'+[['compare','Compare both'],['brief','A · Folded Brief'],['connected','B · Connected Day']].map(([value,label])=>'<button type="button" data-sig-action="composition-view" data-sig-value="'+value+'" aria-pressed="'+String(compositionView===value)+'">'+label+'</button>').join('')+'</div><div class="gallery-study-grid">'+compositionStudy('brief','The Folded Brief','An ivory editorial page. Priorities form one layered folio; dates and people follow in compact rails.')+compositionStudy('connected','The Connected Day','A photographic charcoal cover. People cross its seam; a dated, interlocking day sheet brings the next steps together.')+'</div><a class="gallery-study-anchor" href="#actions">Continue to the original component families '+icon('arrow')+'</a></section>';
+ }
+ function updateCompositionView(){
+  mount.querySelectorAll('[data-study]').forEach(study=>{study.hidden=compositionView!=='compare'&&study.dataset.study!==compositionView;});
+  mount.querySelectorAll('[data-sig-action=composition-view]').forEach(button=>button.setAttribute('aria-pressed',String(button.dataset.sigValue===compositionView)));
+  mount.querySelector('.gallery-study-grid').classList.toggle('is-single',compositionView!=='compare');
+ }
+ function updateComposition(mode){
+  const phone=document.getElementById('composition-'+mode);phone.innerHTML=compositionPhone(mode);
+  const next=phone.querySelector('[data-sig-action=composition-response]')||phone.querySelector('.sig-comp-allset-title');
+  next?.focus({preventScroll:true});
+  if(!matchMedia('(prefers-reduced-motion: reduce)').matches){
+   phone.querySelector('.sig-comp-response-surface')?.animate([{transform:'translateY(6px)',opacity:.7},{transform:'translateY(0)',opacity:1}],{duration:180,easing:'ease-out'});
+  }
+ }
  function build(){
-  mount.innerHTML=family('actions','Signature actions','A decisive shape. A clear next step.',
+  mount.innerHTML=compositionStudies()+family('actions','Signature actions','A decisive shape. A clear next step.',
    '<div class="gallery-action-collection">'+action('Ask Rally','ask',{icon:'spark',split:true})+action('RSVP','focus-rsvp',{icon:'check',tone:'ink',split:true})+action('Request coverage','coverage',{icon:'calendar',tone:'paper'})+'<div class="gallery-paired-actions">'+action('Not this time','decline',{tone:'paper',icon:'close'})+action('Confirm','confirm',{icon:'check'})+'</div><p id="action-feedback" class="gallery-inline-feedback" role="status">Try an action to inspect its feedback.</p><details class="gallery-component-states"><summary>Inspect disabled, busy and retry states</summary><div>'+S.action({label:'Unavailable example',tone:'paper',attrs:{disabled:true}})+S.action({label:'Saving example…',tone:'ink',attrs:{disabled:true,'aria-busy':'true'}})+action('Try again','retry',{tone:'paper'})+'</div></details></div>')+
    family('smart-stack','Smart Stack','Sculptural layers, one deliberate focus.','<div id="stack-specimen">'+stackMarkup()+'</div>')+
    family('calendar','Calendar, agenda & timeline','Compact dates. One integrated sequence.','<div class="gallery-calendar"><div id="calendar-week">'+weekMarkup()+'</div>'+'<div id="calendar-agenda">'+agendaMarkup()+'</div></div>')+
@@ -52,6 +111,7 @@
    family('completion','Completion & All Set','The finish follows an explicit choice.','<div id="completion-output">'+completionMarkup()+'</div><button type="button" class="gallery-reset gallery-reset-small" data-sig-action="reset-choices">Reset response choices</button>')+
    family('navigation','Four destinations. Always connected.','Premium navigation with one consistent Connect control.',
     '<div class="gallery-navigation-top"><p class="sig-serif">Church, together.</p><button type="button" class="sig-utility" data-sig-action="connect" aria-label="Inspect separate Connect access">'+icon('chat')+'</button></div><nav class="sig-nav gallery-nav" aria-label="Four-destination navigation specimen">'+[['today','Today','calendar'],['groups','Groups','people'],['team','Team','heart'],['read','Read','book']].map(([value,label,glyph])=>'<button type="button" data-sig-action="nav" data-sig-value="'+value+'"'+(value===state.navigation?' aria-current="page"':'')+'>'+icon(glyph)+'<span>'+label+'</span></button>').join('')+'</nav><p id="navigation-feedback" class="gallery-selection-note" role="status">Today selected. This specimen does not navigate or alter the application.</p>','gallery-family-wide');
+  updateCompositionView();
  }
  const dialog=document.getElementById('gallery-dialog');let dialogOrigin=null;
  function openDetail(title,content,origin){
@@ -71,7 +131,24 @@
   const kind=button.dataset.sigAction,value=button.dataset.sigValue;
   if(kind==='dialog-close'){closeDetail();return;}
   if(kind==='reset'){
-   Object.assign(state,{stack:0,segment:'all',rsvp:null,confirmed:false,week:new Date(2026,10,30,12),selected:new Date(2026,11,5,12),navigation:'today',saved:false});build();announce('All component specimens reset. No application data was changed.');return;
+   Object.assign(state,{stack:0,segment:'all',rsvp:null,confirmed:false,week:new Date(2026,10,30,12),selected:new Date(2026,11,5,12),navigation:'today',saved:false});Object.values(compositions).forEach(choices=>{choices.serve=false;choices.rsvp=false;});compositionView='compare';build();announce('All component specimens reset. No application data was changed.');return;
+  }
+  if(kind==='composition-view'){compositionView=value;updateCompositionView();return;}
+  if(kind==='composition-reset'||kind==='composition-response'){
+   const mode=button.dataset.composition;if(!compositions[mode])return;
+   if(kind==='composition-reset'){compositions[mode].serve=false;compositions[mode].rsvp=false;}else if(value==='serve'||value==='rsvp')compositions[mode][value]=true;
+   updateComposition(mode);const remaining=Number(!compositions[mode].serve)+Number(!compositions[mode].rsvp);
+   announce((mode==='brief'?'Study A':'Study B')+': '+(remaining?remaining+' sample '+(remaining===1?'response remains.':'responses remain.'):'All Set. Both sample responses selected.')+' Optional unread stays at 3.');return;
+  }
+  if(kind==='composition-person'){
+   const person=portraits.find(person=>person.file===value);if(person)openDetail(person.name,'<img class="gallery-dialog-portrait" src="../assets/rally-one/'+person.file+'.webp" alt="" width="150" height="150"><p>Fictional contact in the matched Jordan / North Campus composition study. No presence, attendance or live membership is inferred.</p>',button);return;
+  }
+  if(kind==='composition-event'){
+   const item=compositionFacts.find(item=>item.id===value);if(item)openDetail(item.title,'<p>'+esc(item.date.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'}))+' · '+esc(item.date.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'}))+' · '+item.detail+'</p><p>Fictional event detail. No application schedule or response is read or changed.</p>',button);return;
+  }
+  if(kind==='composition-detail'){
+   const content=value==='Jordan'?'Jordan · North Campus · Group + serving team. This profile is a fixed fictional presentation fixture.':value==='Connect'?'Three optional sample messages remain unread. Opening this local detail does not mark them read or create a conversation.':value==='People'?'Anna, Jess and Marcus are fictional portrait examples. Community actions stay human-led; nothing is sent or inferred.':value==='Ask Rally'?'A local Signature action specimen. The working application keeps its established Ask Rally owner and permissions.':'The four destinations remain Today, Groups, Team and Read. This composition control opens a local detail; it does not add an application route.';
+   openDetail(value,'<p>'+esc(content)+'</p>',button);return;
   }
   if(kind==='stack-next'){
    state.stack=(state.stack+1)%samples.length;document.getElementById('stack-specimen').innerHTML=stackMarkup();document.querySelector('[data-sig-action=stack-next]').focus({preventScroll:true});announce('Smart Stack specimen '+(state.stack+1)+' of '+samples.length+'.');return;

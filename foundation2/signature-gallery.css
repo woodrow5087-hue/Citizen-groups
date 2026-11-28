@@ -1,3 +1,4 @@
+@import url('signature-compositions.css');
 @font-face{font-family:Manrope;src:url('../assets/fonts/Manrope.ttf') format('truetype');font-weight:200 800;font-style:normal;font-display:swap}
 *{box-sizing:border-box}
 html{scroll-padding-block:24px}
@@ -38,6 +39,25 @@ body.signature-gallery{margin:0;background:#f7f1e8;color:#201f1d;font-family:Man
 .gallery-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:56px 64px;padding-bottom:64px}
 .gallery-family{min-width:0;scroll-margin-top:24px}
 .gallery-family-wide{grid-column:1/-1}
+.gallery-composition-studies{padding-bottom:46px;border-bottom:1px solid #c9bfb3}
+.gallery-composition-studies>.gallery-family-head p{max-width:650px}
+.gallery-study-reference{max-width:760px;font-size:.8125rem;line-height:1.6;color:#655f59;margin:0 0 18px}
+.gallery-study-selector{max-width:680px;margin:0 0 28px}
+.gallery-study-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:28px 40px;align-items:start}
+.gallery-study-grid.is-single{grid-template-columns:minmax(0,1fr)}
+.gallery-composition-study{min-width:0}
+.gallery-study-heading{display:flex;flex-wrap:wrap;align-items:flex-start;justify-content:space-between;gap:10px 18px;max-width:390px;margin:0 auto 18px}
+.gallery-study-heading>div{min-width:0;flex:1 1 13rem}
+.gallery-study-heading .gallery-eyebrow{margin:0 0 4px;font-size:.625rem}
+.gallery-study-heading h3{font-size:1.1875rem;line-height:1.25;font-weight:800;letter-spacing:-.04em;margin:0 0 6px}
+.gallery-study-heading p{font-size:.75rem;line-height:1.6;color:#655f59;margin:0}
+.gallery-study-heading .gallery-reset{flex:0 0 auto;font-size:.6875rem!important;white-space:nowrap}
+.gallery-composition-study>.sig-composition{width:100%;max-width:390px;margin-inline:auto;border:1px solid #d3c7b6;border-radius:22px;box-shadow:0 8px 24px #3824180a;scroll-margin-block:20px}
+.gallery-study-caption{max-width:390px;margin:12px auto 0;font-size:.6875rem;line-height:1.6;color:#655f59}
+.gallery-study-anchor{display:inline-flex;align-items:center;gap:10px;min-height:44px;margin-top:24px;color:#201f1d;font-size:.8125rem;font-weight:750;text-decoration-thickness:1px;text-underline-offset:4px}
+.gallery-study-anchor .sig-icon{width:18px;height:18px}
+@media(max-width:900px){.gallery-study-grid{grid-template-columns:minmax(0,1fr)}}
+@media(max-width:600px){.gallery-study-grid{margin-inline:-18px}.gallery-study-heading,.gallery-study-caption{padding-inline:18px}.gallery-composition-study>.sig-composition{border-radius:0;max-width:390px}.gallery-study-selector{flex-wrap:wrap}.gallery-study-selector>button{flex:1 1 9rem}.gallery-study-anchor{flex-wrap:wrap}}
 .gallery-family-head{margin-bottom:24px;padding-left:16px;border-left:4px solid #e3002b}
 .gallery-family-head h2{font-size:1rem;line-height:1.25;text-transform:uppercase;letter-spacing:.13em;margin:0 0 8px;font-weight:850}
 .gallery-family-head p{color:#72695f;font-size:.875rem;line-height:1.45;margin:0;max-width:360px}
@@ -209,6 +229,7 @@ body.signature-gallery{margin:0;background:#f7f1e8;color:#201f1d;font-family:Man
  .gallery-dialog{padding:24px}
 }
 @media(max-width:360px){
+ .gallery-study-grid{margin-inline:-14px}
  .gallery-topbar,.gallery-intro,.gallery-review-note,.gallery-grid,.gallery-footer{width:calc(100% - 28px)}
  .gallery-intro h1{font-size:3.05rem}
  .gallery-utilities .sig-utility{width:52px;height:52px}
