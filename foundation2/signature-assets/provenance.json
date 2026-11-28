@@ -1,0 +1,47 @@
+{
+  "family": "Fraunces",
+  "cssFamily": "Rally Signature Serif",
+  "use": "Selective editorial display in owner-authorized Rally Signature S1/S2; no existing asset replaced.",
+  "license": "SIL Open Font License 1.1",
+  "upstream": "https://github.com/google/fonts/tree/main/ofl/fraunces",
+  "files": [
+    {
+      "file": "Fraunces-Variable.ttf",
+      "source": "https://raw.githubusercontent.com/google/fonts/main/ofl/fraunces/Fraunces%5BSOFT%2CWONK%2Copsz%2Cwght%5D.ttf",
+      "sha256": "177ff6c0f14e5550a3c624247cd1189611d4eb65d000b14944c63d967958abbb",
+      "bytes": 360440
+    },
+    {
+      "file": "OFL-Fraunces.txt",
+      "source": "https://raw.githubusercontent.com/google/fonts/main/ofl/fraunces/OFL.txt",
+      "sha256": "bdf4c22802eaf804f998195871c6b8938aac2ac14b2d78a8bd66a6f1eced833b",
+      "bytes": 4391
+    }
+  ],
+  "axes": [
+    {
+      "tag": "opsz",
+      "min": 9.0,
+      "default": 9.0,
+      "max": 144.0
+    },
+    {
+      "tag": "wght",
+      "min": 100.0,
+      "default": 900.0,
+      "max": 900.0
+    },
+    {
+      "tag": "SOFT",
+      "min": 0.0,
+      "default": 0.0,
+      "max": 100.0
+    },
+    {
+      "tag": "WONK",
+      "min": 0.0,
+      "default": 1.0,
+      "max": 1.0
+    }
+  ]
+}

@@ -68,4 +68,18 @@ window.FoundationConnectFrame={navigate(next){
  else if(next.screen==='direct')$('.people-rail [data-person="'+next.person+'"]')?.click();
  else $('.conversation-row[data-open="'+next.screen+'"]')?.click();
 }};
+// Deferred controller scripts complete before DOMContentLoaded; images may
+// still be loading. Expose only the bound, permission-filtered message UI.
+document.addEventListener('DOMContentLoaded',()=>{
+ if(!document.body.classList.contains('connect-member'))return;
+ const active=parent.document.activeElement;
+ const mayFocus=active===window.frameElement||active===parent.document.body||active===parent.document.getElementById('today');
+ host.ready?.();
+ // The accepted controller's initial focus happened while the frame was
+ // unavailable. Restore its heading only if the user has not moved elsewhere.
+ if(mayFocus){
+  const heading=$('.screen:not([hidden]) .chat-header h2,.screen:not([hidden]) .room-identity h2,.screen:not([hidden]) .inbox-headline h2');
+  if(heading){heading.tabIndex=-1;heading.focus({preventScroll:true});}
+ }
+},{once:true});
 })();

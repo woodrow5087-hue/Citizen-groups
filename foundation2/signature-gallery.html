@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+ <meta charset="utf-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+ <meta name="color-scheme" content="light">
+ <meta name="description" content="Rally Signature: an isolated, interactive component study for owner creative review.">
+ <title>Rally Signature · Living Component Gallery</title>
+ <link rel="icon" href="../assets/citizen-flag.svg" type="image/svg+xml">
+ <link rel="stylesheet" href="signature.css">
+ <link rel="stylesheet" href="signature-gallery.css">
+ <script src="signature-components.js" defer></script>
+ <script src="signature-gallery.js" defer></script>
+</head>
+<body class="signature-surface signature-gallery">
+ <a class="gallery-skip" href="#gallery-main">Skip to component specimens</a>
+ <header class="gallery-topbar">
+  <a class="gallery-brand" href="./"><img src="../assets/citizen-flag.svg" alt="" width="32" height="32"><span>RALLY <strong>ONE.</strong><small>CITIZEN CHURCH</small></span></a>
+  <a class="gallery-return" href="./">Return to Today</a>
+ </header>
+ <main id="gallery-main" tabindex="-1">
+  <section class="gallery-intro" aria-labelledby="gallery-title">
+   <div class="gallery-intro-copy">
+    <p class="gallery-eyebrow">S1 · Living design system</p>
+    <h1 id="gallery-title" class="sig-serif">Rally<br><em>Signature.</em></h1>
+    <p class="gallery-lead">A more human shape<br>for church, together.</p>
+    <p class="gallery-scope">Interactive component specimens for creative review. All people and events are fictional examples. Selections stay on this page and clear on reload; no application data is read or saved.</p>
+    <button type="button" class="gallery-reset" data-sig-action="reset">Reset specimens</button>
+   </div>
+   <figure class="gallery-intro-art">
+    <img src="../assets/campuses/central.jpg" alt="Approved Citizen campus exterior example" width="447" height="447">
+    <figcaption><span>PERSONAL.</span><span>CONNECTED.</span><span>ON MISSION.</span></figcaption>
+   </figure>
+  </section>
+  <div class="gallery-review-note"><span aria-hidden="true">/</span><p>Explore the shapes. Try the states. Review the character.<br><strong>This gallery is a visual specimen, not another application.</strong></p></div>
+  <div id="gallery-components" class="gallery-grid"><p role="status">Opening component gallery…</p></div>
+ </main>
+ <footer class="gallery-footer"><img src="../assets/citizen-flag.svg" alt="" width="31" height="31"><p>We rally together so no one stands alone.</p><span>RALLY SIGNATURE · S1 CREATIVE REVIEW</span></footer>
+ <dialog id="gallery-dialog" class="gallery-dialog" aria-labelledby="gallery-dialog-title">
+  <button type="button" class="sig-utility gallery-dialog-close" data-sig-action="dialog-close" aria-label="Close specimen detail">×</button>
+  <div id="gallery-dialog-content"></div>
+ </dialog>
+ <p id="gallery-announcement" class="gallery-sr-only" role="status" aria-live="polite"></p>
+</body>
+</html>

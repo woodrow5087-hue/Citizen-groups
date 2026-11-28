@@ -1,0 +1,14 @@
+{
+  "status": "DEFERRED_NOT_A_PASSING_GATE",
+  "authorization": "Owner authorized deferral after a maximum 20-minute targeted investigation; review ended early with no new rendering experiments.",
+  "recordedAtUTC": "2026-11-26T19:37:10.960123+00:00",
+  "promotionCandidate": "37c4be939a03071d8fdae746eb14b501849b9063",
+  "approvedManifestSHA256": "87418a8d58c72b2e08dd0e485f580cadeb6fe4ab1c3410db36a64f2ede8c57d7",
+  "approvedInventory": 72,
+  "runtimeChanges": 0,
+  "physicalAcceptance": "3/3 carried forward; Gate8 preserved",
+  "activeScope": "No reliability implementation sprint opened; backlog only.",
+  "archiveSHA256": "53ca45c9ea383003a8b9c6beafaf5a0341b44c137d2087fad70e9f02ac2da9e4",
+  "archiveBytes": 26773007,
+  "repositoryClean": true
+}
