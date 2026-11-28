@@ -1,0 +1,17 @@
+{
+  "acceptedHead": "6718fd77ad539186067b7270e931f554d43a2bd6",
+  "pr": 155,
+  "reportedBy": "project owner, current conversation",
+  "journeys": {
+    "passed": 2,
+    "total": 2
+  },
+  "supplemental": {
+    "passed": 12,
+    "total": 12
+  },
+  "visualAcceptance": true,
+  "device": "iPhone 18 Pro",
+  "iOS": "27.2.1 (24B156)",
+  "promotionConditionalOnCanonicalGate": true
+}

@@ -1,0 +1,458 @@
+{
+  "S01": {
+    "path": "foundation2/index.html",
+    "line": 23,
+    "scope": "Foundation entry, personas, dependencies and legacy fallback",
+    "url": "https://github.com/woodrow5087-hue/Citizen-groups/blob/b7bb0687a498f2ba9ab1f2a244b187013ceea339/foundation2/index.html#L23"
+  },
+  "S02": {
+    "path": "foundation2/app.js",
+    "line": 49,
+    "scope": "Foundation state/context, event controller and route effects",
+    "url": "https://github.com/woodrow5087-hue/Citizen-groups/blob/b7bb0687a498f2ba9ab1f2a244b187013ceea339/foundation2/app.js#L49"
+  },
+  "S03": {
+    "path": "foundation2/today-model.js",
+    "line": 6,
+    "scope": "Commitment projection, All Set eligibility and optional signals",
+    "url": "https://github.com/woodrow5087-hue/Citizen-groups/blob/b7bb0687a498f2ba9ab1f2a244b187013ceea339/foundation2/today-model.js#L6"
+  },
+  "S04": {
+    "path": "foundation2/today-view.js",
+    "line": 29,
+    "scope": "Direct Today/All Set and optional utility composition",
+    "url": "https://github.com/woodrow5087-hue/Citizen-groups/blob/b7bb0687a498f2ba9ab1f2a244b187013ceea339/foundation2/today-view.js#L29"
+  },
+  "S05": {
+    "path": "rally-one-intelligence.js",
+    "line": 18,
+    "scope": "Shared deterministic context/model/focus snapshot",
+    "url": "https://github.com/woodrow5087-hue/Citizen-groups/blob/b7bb0687a498f2ba9ab1f2a244b187013ceea339/rally-one-intelligence.js#L18"
+  },
+  "S06": {
+    "path": "rally-one-unified-focus.js",
+    "line": 25,
+    "scope": "Shared eligibility, weighted selection and two-action limit",
+    "url": "https://github.com/woodrow5087-hue/Citizen-groups/blob/b7bb0687a498f2ba9ab1f2a244b187013ceea339/rally-one-unified-focus.js#L25"
+  },
+  "S07": {
+    "path": "rally-one-member-context.js",
+    "line": 18,
+    "scope": "Canonical demonstration permissions, care and transitions",
+    "url": "https://github.com/woodrow5087-hue/Citizen-groups/blob/b7bb0687a498f2ba9ab1f2a244b187013ceea339/rally-one-member-context.js#L18"
+  },
+  "S08": {
+    "path": "foundation2/state-store.js",
+    "line": 22,
+    "scope": "Namespaced fixture persistence and canonical guard reuse",
+    "url": "https://github.com/woodrow5087-hue/Citizen-groups/blob/b7bb0687a498f2ba9ab1f2a244b187013ceea339/foundation2/state-store.js#L22"
+  },
+  "S09": {
+    "path": "rallypoint-storage-guard.js",
+    "line": 10,
+    "scope": "Original primary/UI/journal keys and guarded writes",
+    "url": "https://github.com/woodrow5087-hue/Citizen-groups/blob/b7bb0687a498f2ba9ab1f2a244b187013ceea339/rallypoint-storage-guard.js#L10"
+  },
+  "S10": {
+    "path": "rally-one-app-state.js",
+    "line": 9,
+    "scope": "Existing compatible state fields/defaults/normalization",
+    "url": "https://github.com/woodrow5087-hue/Citizen-groups/blob/b7bb0687a498f2ba9ab1f2a244b187013ceea339/rally-one-app-state.js#L9"
+  },
+  "S11": {
+    "path": "foundation2/connect-adapter.js",
+    "line": 13,
+    "scope": "Namespaced modern group domain/read cursor adapter",
+    "url": "https://github.com/woodrow5087-hue/Citizen-groups/blob/b7bb0687a498f2ba9ab1f2a244b187013ceea339/foundation2/connect-adapter.js#L13"
+  },
+  "S12": {
+    "path": "foundation2/connect-view.js",
+    "line": 13,
+    "scope": "Group inbox/thread UI and explicit migration limits",
+    "url": "https://github.com/woodrow5087-hue/Citizen-groups/blob/b7bb0687a498f2ba9ab1f2a244b187013ceea339/foundation2/connect-view.js#L13"
+  },
+  "S13": {
+    "path": "connect-member.js",
+    "line": 39,
+    "scope": "Integrated group repository, reactions, drafts and host-backed channels",
+    "url": "https://github.com/woodrow5087-hue/Citizen-groups/blob/b7bb0687a498f2ba9ab1f2a244b187013ceea339/connect-member.js#L39"
+  },
+  "S14": {
+    "path": "rallypoint.js",
+    "line": 654,
+    "scope": "Connect host interface, DM/Room app-state writes and focus/keyboard",
+    "url": "https://github.com/woodrow5087-hue/Citizen-groups/blob/b7bb0687a498f2ba9ab1f2a244b187013ceea339/rallypoint.js#L654"
+  },
+  "S15": {
+    "path": "connect-design-lab.js",
+    "line": 18,
+    "scope": "Per-person draft Map, search, composer and room tabs",
+    "url": "https://github.com/woodrow5087-hue/Citizen-groups/blob/b7bb0687a498f2ba9ab1f2a244b187013ceea339/connect-design-lab.js#L18"
+  },
+  "S16": {
+    "path": "rallypoint-conversation-read-model.js",
+    "line": 10,
+    "scope": "Modern conversation key/schema/fixture/read-cursor authority",
+    "url": "https://github.com/woodrow5087-hue/Citizen-groups/blob/b7bb0687a498f2ba9ab1f2a244b187013ceea339/rallypoint-conversation-read-model.js#L10"
+  },
+  "S17": {
+    "path": "foundation2/groups.js",
+    "line": 14,
+    "scope": "Groups RSVP/care/leader UI and discovery fallback",
+    "url": "https://github.com/woodrow5087-hue/Citizen-groups/blob/b7bb0687a498f2ba9ab1f2a244b187013ceea339/foundation2/groups.js#L14"
+  },
+  "S18": {
+    "path": "foundation2/team.js",
+    "line": 14,
+    "scope": "Team availability/coverage and limited leader presentation",
+    "url": "https://github.com/woodrow5087-hue/Citizen-groups/blob/b7bb0687a498f2ba9ab1f2a244b187013ceea339/foundation2/team.js#L14"
+  },
+  "S19": {
+    "path": "foundation2/read.js",
+    "line": 15,
+    "scope": "Scripture/reflection/leader paths and full game launchers",
+    "url": "https://github.com/woodrow5087-hue/Citizen-groups/blob/b7bb0687a498f2ba9ab1f2a244b187013ceea339/foundation2/read.js#L15"
+  },
+  "S20": {
+    "path": "foundation2/member-actions.js",
+    "line": 24,
+    "scope": "Additional Read/coverage transitions delegating canonical actions",
+    "url": "https://github.com/woodrow5087-hue/Citizen-groups/blob/b7bb0687a498f2ba9ab1f2a244b187013ceea339/foundation2/member-actions.js#L24"
+  },
+  "S21": {
+    "path": "rallypoint-welcome.js",
+    "line": 38,
+    "scope": "Accepted welcome/onboarding/preferences and guarded commit",
+    "url": "https://github.com/woodrow5087-hue/Citizen-groups/blob/b7bb0687a498f2ba9ab1f2a244b187013ceea339/rallypoint-welcome.js#L38"
+  },
+  "S22": {
+    "path": "rally-one-groups-v2.js",
+    "line": 19,
+    "scope": "Accepted people rail, profiles, discovery and Groups widgets",
+    "url": "https://github.com/woodrow5087-hue/Citizen-groups/blob/b7bb0687a498f2ba9ab1f2a244b187013ceea339/rally-one-groups-v2.js#L19"
+  },
+  "S23": {
+    "path": "rallypoint-personal-companion.js",
+    "line": 1,
+    "scope": "Deterministic Ask Rally language/context/response service",
+    "url": "https://github.com/woodrow5087-hue/Citizen-groups/blob/b7bb0687a498f2ba9ab1f2a244b187013ceea339/rallypoint-personal-companion.js#L1"
+  },
+  "S24": {
+    "path": "lib/member-context-contract.cjs",
+    "line": 1,
+    "scope": "Nine-domain provider-neutral quality envelope, tool/server only",
+    "url": "https://github.com/woodrow5087-hue/Citizen-groups/blob/b7bb0687a498f2ba9ab1f2a244b187013ceea339/lib/member-context-contract.cjs#L1"
+  },
+  "S25": {
+    "path": "lib/conversation-contracts.cjs",
+    "line": 1,
+    "scope": "Versioned conversation/message/reaction/read-cursor schema",
+    "url": "https://github.com/woodrow5087-hue/Citizen-groups/blob/b7bb0687a498f2ba9ab1f2a244b187013ceea339/lib/conversation-contracts.cjs#L1"
+  },
+  "S26": {
+    "path": "lib/action-contracts.cjs",
+    "line": 27,
+    "scope": "Action/source-reference/gathering/serving/care schema",
+    "url": "https://github.com/woodrow5087-hue/Citizen-groups/blob/b7bb0687a498f2ba9ab1f2a244b187013ceea339/lib/action-contracts.cjs#L27"
+  },
+  "S27": {
+    "path": "lib/mock-conversation-repository.cjs",
+    "line": 58,
+    "scope": "Membership/org-scoped message/reaction operations",
+    "url": "https://github.com/woodrow5087-hue/Citizen-groups/blob/b7bb0687a498f2ba9ab1f2a244b187013ceea339/lib/mock-conversation-repository.cjs#L58"
+  },
+  "S28": {
+    "path": "lib/migration-rehearsal.cjs",
+    "line": 34,
+    "scope": "Uncommitted raw-source review and in-memory rollback only",
+    "url": "https://github.com/woodrow5087-hue/Citizen-groups/blob/b7bb0687a498f2ba9ab1f2a244b187013ceea339/lib/migration-rehearsal.cjs#L34"
+  },
+  "S29": {
+    "path": "pilot/s11a-synthetic-auth.cjs",
+    "line": 58,
+    "scope": "Synthetic auth challenge, grant/session and scoped reader",
+    "url": "https://github.com/woodrow5087-hue/Citizen-groups/blob/b7bb0687a498f2ba9ab1f2a244b187013ceea339/pilot/s11a-synthetic-auth.cjs#L58"
+  },
+  "S30": {
+    "path": "pilot/s11b-synthetic-planning-center.cjs",
+    "line": 16,
+    "scope": "Bounded synthetic Groups read, validation and freshness",
+    "url": "https://github.com/woodrow5087-hue/Citizen-groups/blob/b7bb0687a498f2ba9ab1f2a244b187013ceea339/pilot/s11b-synthetic-planning-center.cjs#L16"
+  },
+  "S31": {
+    "path": "pilot/s11c-synthetic-privacy.cjs",
+    "line": 9,
+    "scope": "Purpose/field allowlists, candidate retention, trusted consent",
+    "url": "https://github.com/woodrow5087-hue/Citizen-groups/blob/b7bb0687a498f2ba9ab1f2a244b187013ceea339/pilot/s11c-synthetic-privacy.cjs#L9"
+  },
+  "S32": {
+    "path": "pilot/s11d-resilient-transport.cjs",
+    "line": 7,
+    "scope": "Bounded idempotent GET-only resilience, no network client",
+    "url": "https://github.com/woodrow5087-hue/Citizen-groups/blob/b7bb0687a498f2ba9ab1f2a244b187013ceea339/pilot/s11d-resilient-transport.cjs#L7"
+  },
+  "S33": {
+    "path": "pilot/s11e-local-review.cjs",
+    "line": 1,
+    "scope": "Loopback-only synthetic review composition",
+    "url": "https://github.com/woodrow5087-hue/Citizen-groups/blob/b7bb0687a498f2ba9ab1f2a244b187013ceea339/pilot/s11e-local-review.cjs#L1"
+  },
+  "S34": {
+    "path": "pilot/f2-synthetic-serving.cjs",
+    "line": 22,
+    "scope": "Synthetic serving scope/consent/freshness and build-time dates",
+    "url": "https://github.com/woodrow5087-hue/Citizen-groups/blob/b7bb0687a498f2ba9ab1f2a244b187013ceea339/pilot/f2-synthetic-serving.cjs#L22"
+  },
+  "S35": {
+    "path": "scripts/build-group-preview.cjs",
+    "line": 15,
+    "scope": "Build-time synthetic group observation and static outcome",
+    "url": "https://github.com/woodrow5087-hue/Citizen-groups/blob/b7bb0687a498f2ba9ab1f2a244b187013ceea339/scripts/build-group-preview.cjs#L15"
+  },
+  "S36": {
+    "path": "foundation2/serving-preview.js",
+    "line": 23,
+    "scope": "Read-only serving projection without runtime freshness clock",
+    "url": "https://github.com/woodrow5087-hue/Citizen-groups/blob/b7bb0687a498f2ba9ab1f2a244b187013ceea339/foundation2/serving-preview.js#L23"
+  },
+  "S37": {
+    "path": "foundation2/group-preview.js",
+    "line": 22,
+    "scope": "Group ready/empty/restricted/unavailable projection",
+    "url": "https://github.com/woodrow5087-hue/Citizen-groups/blob/b7bb0687a498f2ba9ab1f2a244b187013ceea339/foundation2/group-preview.js#L22"
+  },
+  "S38": {
+    "path": "scripts/build.cjs",
+    "line": 10,
+    "scope": "Context-specific legacy root and PR-only Foundation publication",
+    "url": "https://github.com/woodrow5087-hue/Citizen-groups/blob/b7bb0687a498f2ba9ab1f2a244b187013ceea339/scripts/build.cjs#L10"
+  },
+  "S39": {
+    "path": "rallypoint-memorize.js",
+    "line": 1,
+    "scope": "Accepted BSB content and Classic/Blank Battle engine",
+    "url": "https://github.com/woodrow5087-hue/Citizen-groups/blob/b7bb0687a498f2ba9ab1f2a244b187013ceea339/rallypoint-memorize.js#L1"
+  },
+  "S40": {
+    "path": "rally-one-memory-actions.js",
+    "line": 9,
+    "scope": "Accepted Classic game action owner",
+    "url": "https://github.com/woodrow5087-hue/Citizen-groups/blob/b7bb0687a498f2ba9ab1f2a244b187013ceea339/rally-one-memory-actions.js#L9"
+  },
+  "S41": {
+    "path": "blank-battle.js",
+    "line": 10,
+    "scope": "Independent game key, normalization and silent storage fallback",
+    "url": "https://github.com/woodrow5087-hue/Citizen-groups/blob/b7bb0687a498f2ba9ab1f2a244b187013ceea339/blank-battle.js#L10"
+  },
+  "S42": {
+    "path": "verseplay/core/storage.js",
+    "line": 1,
+    "scope": "Independent content-keyed game saves/preferences/legacy migration",
+    "url": "https://github.com/woodrow5087-hue/Citizen-groups/blob/b7bb0687a498f2ba9ab1f2a244b187013ceea339/verseplay/core/storage.js#L1"
+  },
+  "S43": {
+    "path": "verseplay/games/verse-circuit/controller.js",
+    "line": 1,
+    "scope": "Circuit engine/content/storage/render/sound composition",
+    "url": "https://github.com/woodrow5087-hue/Citizen-groups/blob/b7bb0687a498f2ba9ab1f2a244b187013ceea339/verseplay/games/verse-circuit/controller.js#L1"
+  },
+  "S44": {
+    "path": "verseplay/core/circuit-engine.js",
+    "line": 1,
+    "scope": "DOM-free Circuit transition engine",
+    "url": "https://github.com/woodrow5087-hue/Citizen-groups/blob/b7bb0687a498f2ba9ab1f2a244b187013ceea339/verseplay/core/circuit-engine.js#L1"
+  },
+  "S45": {
+    "path": "verse-circuit-playground.html",
+    "line": 18,
+    "scope": "Approved accessible return link targets legacy root",
+    "url": "https://github.com/woodrow5087-hue/Citizen-groups/blob/b7bb0687a498f2ba9ab1f2a244b187013ceea339/verse-circuit-playground.html#L18"
+  },
+  "S46": {
+    "path": "blank-battle.html",
+    "line": 17,
+    "scope": "Approved standalone return link targets root",
+    "url": "https://github.com/woodrow5087-hue/Citizen-groups/blob/b7bb0687a498f2ba9ab1f2a244b187013ceea339/blank-battle.html#L17"
+  },
+  "S47": {
+    "path": ".github/workflows/foundation2-review.yml",
+    "line": 3,
+    "scope": "PR/path/head-branch-conditioned Foundation acceptance",
+    "url": "https://github.com/woodrow5087-hue/Citizen-groups/blob/b7bb0687a498f2ba9ab1f2a244b187013ceea339/.github/workflows/foundation2-review.yml#L3"
+  },
+  "S48": {
+    "path": ".github/workflows/verseplay.yml",
+    "line": 3,
+    "scope": "PR/path-conditioned independent VersePlay acceptance",
+    "url": "https://github.com/woodrow5087-hue/Citizen-groups/blob/b7bb0687a498f2ba9ab1f2a244b187013ceea339/.github/workflows/verseplay.yml#L3"
+  },
+  "S49": {
+    "path": ".github/workflows/rally-point-preview-qa.yml",
+    "line": 3,
+    "scope": "Canonical push and PR comprehensive legacy/functional/visual gate",
+    "url": "https://github.com/woodrow5087-hue/Citizen-groups/blob/b7bb0687a498f2ba9ab1f2a244b187013ceea339/.github/workflows/rally-point-preview-qa.yml#L3"
+  },
+  "S50": {
+    "path": "scripts/foundation2-browser-check.mjs",
+    "line": 419,
+    "scope": "Accepted three journey assertions and capture-only visual report",
+    "url": "https://github.com/woodrow5087-hue/Citizen-groups/blob/b7bb0687a498f2ba9ab1f2a244b187013ceea339/scripts/foundation2-browser-check.mjs#L419"
+  },
+  "S51": {
+    "path": "test/foundation2-today.test.cjs",
+    "line": 7,
+    "scope": "Accepted commitment-only All Set with unread activity",
+    "url": "https://github.com/woodrow5087-hue/Citizen-groups/blob/b7bb0687a498f2ba9ab1f2a244b187013ceea339/test/foundation2-today.test.cjs#L7"
+  },
+  "S52": {
+    "path": "test/helpers/ux03-visual.cjs",
+    "line": 10,
+    "scope": "Fixed immutable inventory/source/raw-zero guards and fixture pose",
+    "url": "https://github.com/woodrow5087-hue/Citizen-groups/blob/b7bb0687a498f2ba9ab1f2a244b187013ceea339/test/helpers/ux03-visual.cjs#L10"
+  },
+  "S53": {
+    "path": "scripts/s8-visual-regression.mjs",
+    "line": 49,
+    "scope": "Protected historical sources and intentional visual scopes",
+    "url": "https://github.com/woodrow5087-hue/Citizen-groups/blob/b7bb0687a498f2ba9ab1f2a244b187013ceea339/scripts/s8-visual-regression.mjs#L49"
+  },
+  "S54": {
+    "path": "rally-one-widgets.js",
+    "line": 1,
+    "scope": "Existing presentation-only decorations, no domain ownership",
+    "url": "https://github.com/woodrow5087-hue/Citizen-groups/blob/b7bb0687a498f2ba9ab1f2a244b187013ceea339/rally-one-widgets.js#L1"
+  },
+  "S55": {
+    "path": "foundation2/design.css",
+    "line": 4,
+    "scope": "Accepted Foundation font/tokens/component rules and touch/motion",
+    "url": "https://github.com/woodrow5087-hue/Citizen-groups/blob/b7bb0687a498f2ba9ab1f2a244b187013ceea339/foundation2/design.css#L4"
+  },
+  "S56": {
+    "path": "docs/PREMIUM_ALIVE_HYBRID_V01_IMPLEMENTATION.md",
+    "line": 3,
+    "scope": "Historical ALIVE concept and fictional/asset limitations",
+    "url": "https://github.com/woodrow5087-hue/Citizen-groups/blob/b7bb0687a498f2ba9ab1f2a244b187013ceea339/docs/PREMIUM_ALIVE_HYBRID_V01_IMPLEMENTATION.md#L3"
+  },
+  "S57": {
+    "path": "docs/rally-one/m2/CONNECT-ALIVE-V1.md",
+    "line": 3,
+    "scope": "Accepted people-first messaging concept and host boundary",
+    "url": "https://github.com/woodrow5087-hue/Citizen-groups/blob/b7bb0687a498f2ba9ab1f2a244b187013ceea339/docs/rally-one/m2/CONNECT-ALIVE-V1.md#L3"
+  },
+  "S59": {
+    "path": "engineering/s8-data-contracts.md",
+    "line": 1,
+    "scope": "Contract quality/ownership and future provider boundary",
+    "url": "https://github.com/woodrow5087-hue/Citizen-groups/blob/b7bb0687a498f2ba9ab1f2a244b187013ceea339/engineering/s8-data-contracts.md#L1"
+  },
+  "S60": {
+    "path": "engineering/foundation2-development-program.md",
+    "line": 1,
+    "scope": "Historical phased acceptance and current documented boundaries",
+    "url": "https://github.com/woodrow5087-hue/Citizen-groups/blob/b7bb0687a498f2ba9ab1f2a244b187013ceea339/engineering/foundation2-development-program.md#L1"
+  },
+  "S61": {
+    "path": "engineering/s11e-restricted-pilot-readiness.md",
+    "line": 1,
+    "scope": "Synthetic-only pilot limits and future leadership decisions",
+    "url": "https://github.com/woodrow5087-hue/Citizen-groups/blob/b7bb0687a498f2ba9ab1f2a244b187013ceea339/engineering/s11e-restricted-pilot-readiness.md#L1"
+  },
+  "S62": {
+    "path": "wednesday-chat-lab.js",
+    "line": 4,
+    "scope": "Existing reusable group controller, draft/reply/reaction/retry/save",
+    "url": "https://github.com/woodrow5087-hue/Citizen-groups/blob/b7bb0687a498f2ba9ab1f2a244b187013ceea339/wednesday-chat-lab.js#L4"
+  },
+  "S63": {
+    "path": "rally-one-launch-mode.js",
+    "line": 9,
+    "scope": "Existing runtime mode resolution; canonical branch not automatic Rally One",
+    "url": "https://github.com/woodrow5087-hue/Citizen-groups/blob/b7bb0687a498f2ba9ab1f2a244b187013ceea339/rally-one-launch-mode.js#L9"
+  },
+  "S64": {
+    "path": "index.html",
+    "line": 13,
+    "scope": "Legacy entry styles/scripts and preserved experience",
+    "url": "https://github.com/woodrow5087-hue/Citizen-groups/blob/b7bb0687a498f2ba9ab1f2a244b187013ceea339/index.html#L13"
+  },
+  "S65": {
+    "path": "lib/mock-access-policy.cjs",
+    "line": 1,
+    "scope": "Contract-level synthetic permissions and org boundaries",
+    "url": "https://github.com/woodrow5087-hue/Citizen-groups/blob/b7bb0687a498f2ba9ab1f2a244b187013ceea339/lib/mock-access-policy.cjs#L1"
+  },
+  "S66": {
+    "path": "rally-one-navigation.js",
+    "line": 9,
+    "scope": "Legacy route effects and authorized Connect redirection",
+    "url": "https://github.com/woodrow5087-hue/Citizen-groups/blob/b7bb0687a498f2ba9ab1f2a244b187013ceea339/rally-one-navigation.js#L9"
+  },
+  "S67": {
+    "path": "rally-one-care-flow.js",
+    "line": 17,
+    "scope": "Explicit named fictional care progression and optional human action",
+    "url": "https://github.com/woodrow5087-hue/Citizen-groups/blob/b7bb0687a498f2ba9ab1f2a244b187013ceea339/rally-one-care-flow.js#L17"
+  },
+  "S68": {
+    "path": "scripts/build-chat-lab.cjs",
+    "line": 12,
+    "scope": "Exact bundled F-02 sources and stale lab-only header",
+    "url": "https://github.com/woodrow5087-hue/Citizen-groups/blob/b7bb0687a498f2ba9ab1f2a244b187013ceea339/scripts/build-chat-lab.cjs#L12"
+  },
+  "S69": {
+    "path": "rallypoint.js",
+    "line": 113,
+    "scope": "Legacy explicit attendance and fictional follow-up renderer",
+    "url": "https://github.com/woodrow5087-hue/Citizen-groups/blob/b7bb0687a498f2ba9ab1f2a244b187013ceea339/rallypoint.js#L113"
+  },
+  "S70": {
+    "path": "package.json",
+    "line": 3,
+    "scope": "Existing commands and declared Node/development dependencies",
+    "url": "https://github.com/woodrow5087-hue/Citizen-groups/blob/b7bb0687a498f2ba9ab1f2a244b187013ceea339/package.json#L3"
+  },
+  "S71": {
+    "path": "rallypoint.js",
+    "line": 468,
+    "scope": "Accepted legacy Read surface and game entry",
+    "url": "https://github.com/woodrow5087-hue/Citizen-groups/blob/b7bb0687a498f2ba9ab1f2a244b187013ceea339/rallypoint.js#L468"
+  },
+  "S72": {
+    "path": "foundation2/navigation.js",
+    "line": 12,
+    "scope": "Foundation route names and exactly four primary tabs",
+    "url": "https://github.com/woodrow5087-hue/Citizen-groups/blob/b7bb0687a498f2ba9ab1f2a244b187013ceea339/foundation2/navigation.js#L12"
+  },
+  "S73": {
+    "path": "rallypoint-verseplay-ui.js",
+    "line": 1,
+    "scope": "Existing Classic VersePlay renderer",
+    "url": "https://github.com/woodrow5087-hue/Citizen-groups/blob/b7bb0687a498f2ba9ab1f2a244b187013ceea339/rallypoint-verseplay-ui.js#L1"
+  },
+  "S74": {
+    "path": "rallypoint-today.js",
+    "line": 8,
+    "scope": "Rolling weekly local-fixture event dates",
+    "url": "https://github.com/woodrow5087-hue/Citizen-groups/blob/b7bb0687a498f2ba9ab1f2a244b187013ceea339/rallypoint-today.js#L8"
+  },
+  "S75": {
+    "path": "rallypoint.js",
+    "line": 783,
+    "scope": "Original attention/activity dialog over existing fixture state",
+    "url": "https://github.com/woodrow5087-hue/Citizen-groups/blob/b7bb0687a498f2ba9ab1f2a244b187013ceea339/rallypoint.js#L783"
+  },
+  "S76": {
+    "path": "rallypoint.js",
+    "line": 259,
+    "scope": "Sample group discovery and local interest toggles",
+    "url": "https://github.com/woodrow5087-hue/Citizen-groups/blob/b7bb0687a498f2ba9ab1f2a244b187013ceea339/rallypoint.js#L259"
+  },
+  "S77": {
+    "path": "rallypoint.js",
+    "line": 400,
+    "scope": "Team discovery/joining explicitly future; sample-entry affordances",
+    "url": "https://github.com/woodrow5087-hue/Citizen-groups/blob/b7bb0687a498f2ba9ab1f2a244b187013ceea339/rallypoint.js#L400"
+  }
+}

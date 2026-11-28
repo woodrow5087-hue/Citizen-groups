@@ -14,11 +14,17 @@ try{
   const context=await browser.newContext({viewport:{width,height},isMobile:true,hasTouch:true,reducedMotion:'reduce'});
   const page=await context.newPage();
   const errors=[];page.on('pageerror',e=>errors.push(e.message));
+  // This parity journey exercises the group hero's shared portraits. On a
+  // real Saturday the existing <=48h serving policy correctly selects a hero
+  // without group faces; keep this fixture independent of the execution day.
+  await page.clock.setFixedTime(new Date('2026-11-26T12:00:00Z'));
   await page.goto(base);
   await page.locator('[data-welcome="login"]:visible').click();
   await page.locator('[data-welcome="demo"]:visible').click();
   await page.locator('#rp-gateway').waitFor({state:'hidden'});
   await page.locator('.rally-one .f09-board').waitFor();
+  assert.equal(await page.locator('.f09b-hero').getAttribute('data-priority'),'group-unread',
+    'Portrait parity requires the explicit group-hero clock fixture');
   const rail=page.locator('.gv2-today-people');
   await rail.waitFor();
   assert.deepEqual(await rail.locator('.gv2-rail-button[data-person]').evaluateAll(els=>els.map(el=>el.dataset.person)),

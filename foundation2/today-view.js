@@ -1,62 +1,30 @@
-/* Foundation 2: direct Today renderer. One markup owner, no legacy DOM rewriting.
- * All display text is derived from the read-only presentation model.
- */
-(function(root,factory){
- const api=factory();
- if(typeof module==='object'&&module.exports)module.exports=api;
- else root.FoundationView=api;
-})(globalThis,function(){
+/* Approved Adaptive Today V2 presentation over the existing read-only VM.
+ * No prototype state, role switcher, reset, storage or permission owner. */
+(function(root,factory){const api=factory(typeof module==='object'&&module.exports?require('./widgets.js'):root.FoundationWidgets);if(typeof module==='object'&&module.exports)module.exports=api;else root.FoundationView=api;})(globalThis,function(W){
 'use strict';
-const esc=value=>String(value??'').replace(/[&<>"']/g,ch=>({
- '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
-}[ch]));
-const arrow='<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h16m-6-6 6 6-6 6"/></svg>';
-const chat='<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M6 4h12a3 3 0 0 1 3 3v8a3 3 0 0 1-3 3h-7l-5 3v-3a3 3 0 0 1-3-3V7a3 3 0 0 1 3-3Z"/><circle cx="8.5" cy="11" r=".85" fill="currentColor" stroke="none"/><circle cx="12" cy="11" r=".85" fill="currentColor" stroke="none"/><circle cx="15.5" cy="11" r=".85" fill="currentColor" stroke="none"/></svg>';
-const book='<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 6C9 4 6 4 2 4v15c4 0 7 0 10 2 3-2 6-2 10-2V4c-4 0-7 0-10 2Zm0 0v15"/></svg>';
-const image='<img src="../assets/rally-one/community.webp" alt="" width="440" height="130" decoding="async">';
-const welcomeImage='<img src="../assets/rally-one/community.webp" alt="" width="440" height="220" decoding="async">';
-const faces='<div class="faces" aria-hidden="true"><img src="../assets/rally-one/anna.webp" alt="" width="30" height="30" loading="lazy"><img src="../assets/rally-one/jess.webp" alt="" width="30" height="30" loading="lazy"><img src="../assets/rally-one/marcus.webp" alt="" width="30" height="30" loading="lazy"></div>';
-const dateLabel=d=>d instanceof Date&&Number.isFinite(d.valueOf())?
- d.toLocaleDateString('en-US',{weekday:'short'})+' · '+d.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'}):'';
-function action(item,vm,compact=false){
- if(item.command==='leader'){
-  return '<details class="leader-actions"><summary>Review sample check-ins <span aria-hidden="true">›</span></summary><div class="leader-people">'+
-   vm.leaderIds.map(id=>'<button type="button" data-command="leader" data-person="'+esc(id)+'">Mark '+esc(id)+' reviewed</button>').join('')+'</div></details>';
- }
- const label=compact&&item.command==='serve'?'Confirm':compact&&item.command==='rsvp'?'RSVP':item.label;
- return '<button type="button" class="action'+(compact?' action-compact':'')+'" data-command="'+esc(item.command)+'" aria-label="'+esc(item.label)+'">'+esc(label)+arrow+'</button>';
+// Native popover content is instantiated only while open. This keeps inactive
+// response controls out of the live tree; browser focus/Escape retain ownership.
+if(typeof document!=='undefined'){
+ document.addEventListener('beforetoggle',event=>{const panel=event.target;if(!panel.matches?.('.adaptive-response')||event.newState!=='open'||panel.querySelector('.adaptive-response-content'))return;panel.append(panel.querySelector('template').content.cloneNode(true));},true);
+ document.addEventListener('toggle',event=>{if(event.target.matches?.('.adaptive-response')&&event.newState==='closed')event.target.querySelector('.adaptive-response-content')?.remove();},true);
 }
+const esc=W.esc,arrow=W.icon('arrow');
+const date=d=>d instanceof Date&&Number.isFinite(d.valueOf())?d.toLocaleDateString('en-US',{weekday:'short'})+' · '+d.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'}):'Date unavailable';
+const route=(r,label,cls='secondary',focus='today-'+r,query='')=>'<a class="'+cls+'" href="?screen='+r+query+'" data-route="'+r+'" data-return-focus="'+focus+'"'+(label.startsWith('<svg')?' aria-label="Open '+(r==='read'?'Scripture':r==='connect'?'conversation':r)+'"':'')+'>'+label+'</a>';
+function actions(p,v){if(p.command==='leader')return '<details class="leader-actions"><summary>Review sample check-ins</summary>'+v.leaderIds.map(id=>'<button class="secondary" data-command="leader" data-person="'+esc(id)+'">Mark '+esc(id)+' reviewed</button>').join('')+'</details>';
+ const serving=p.command==='serve';return '<div class="actions"><button class="action" data-command="'+p.command+'" aria-label="'+esc((serving?'Confirm':'I’m going')+' · '+p.title)+'">'+(serving?'Confirm':'I’m going')+'</button><button class="secondary" data-command="'+(serving?'serve-decline':'rsvp-maybe')+'">'+(serving?'Can’t make it':'Maybe')+'</button></div>';}
 function render(v,receipt='',schedulePreview=''){
- const p=v.primary;
- const meta=p?'<div class="priority-meta"><span class="kicker">UP NEXT</span><span>'+esc(dateLabel(p.date))+'</span></div>':'';
- const main=p?'<article class="priority" aria-label="Next responsibility">'+meta+
-  '<div class="priority-body"><div class="priority-copy"><h2>'+esc(p.title)+'</h2><p>'+esc(p.detail)+'</p>'+
-  (p.command==='rsvp'?faces:'')+'</div>'+(p.command==='rsvp'?'<div class="priority-photo">'+image+'</div>':'')+'</div>'+
-  action(p,v)+'</article>':'';
- const settled=!p&&v.calm?'<article class="settled">'+(v.member?'<div class="settled-photo">'+image+'</div>':'')+
-  '<div class="settled-copy"><h2>'+(v.member?'Life is better together.':'Small acts. Real impact.')+'</h2>'+
-  '<p>'+(v.member?'Take a moment to connect with your people.':'Your serving community is here for you.')+'</p></div></article>':'';
- const welcome=v.guest?'<article class="settled welcome-card"><div class="welcome-photo">'+welcomeImage+'</div><div class="settled-copy"><span class="welcome-kicker">RALLY ONE · YOUR COMMUNITY</span><h2>We rally together so no one stands alone.</h2>'+
-  '<p>Find a place to connect at your own pace.</p>'+
-  '<a href="?screen=groups" data-route="groups" data-return-focus="today-groups">Explore groups '+arrow+'</a></div></article>':'';
- const secondary=v.secondary.length?'<section class="responsibilities" aria-label="Other responsibilities">'+
-  '<div class="section-heading"><h2>Also needs a response</h2><span>'+v.secondary.length+' more</span></div>'+
-  '<div class="responsibility-list">'+v.secondary.map(x=>'<article class="responsibility"><div class="responsibility-copy"><strong>'+esc(x.title)+'</strong><small>'+esc(x.detail)+'</small></div>'+action(x,v,true)+'</article>').join('')+'</div></section>':'';
- const paused=v.paused.length?'<details class="deferred-panel"><summary>Saved for later <span>'+v.paused.length+'</span></summary>'+
-  v.paused.map(x=>'<div class="deferred-item"><strong>'+esc(x.title)+'</strong>'+action(x,v)+'</div>').join('')+'</details>':'';
- const schedule=v.schedule.length?'<section class="coming" aria-label="Coming up"><div class="section-heading"><h2>Coming up</h2><span>Your schedule</span></div>'+
-  '<div class="schedule">'+v.schedule.map(x=>'<div class="event"><div class="day" aria-hidden="true"><small>'+esc(x.date?.toLocaleDateString('en-US',{weekday:'short'})||'—')+'</small><b>'+esc(x.date?.getDate()||'—')+'</b></div>'+
-  '<div class="event-copy"><strong>'+esc(x.title)+'</strong><small>'+esc(x.detail)+'</small></div>'+
-  '<span class="event-status '+(x.statusTone==='complete'?'complete':'')+'">'+esc(x.status)+'</span></div>').join('')+'</div></section>':'';
- let optional='';
- if(v.unavailable)optional='<aside class="utility" role="status"><span class="utility-icon">'+chat+'</span><div><strong>Conversation unavailable</strong><small>Saved messages could not be read in this preview.</small></div></aside>';
- else if(v.unknownTeam)optional='<aside class="utility" role="status"><span class="utility-icon">'+book+'</span><div><strong>Serving response unavailable</strong><small>Review the saved schedule in the full application.</small></div></aside>';
- else if(v.unread>0)optional='<a class="utility utility-link" href="?screen=connect" data-route="connect" data-return-focus="today-connect"><span class="utility-icon">'+chat+'</span><div><strong>'+esc(v.unread)+' new group '+(v.unread===1?'message':'messages')+'</strong><small>Open Connect</small></div>'+arrow+'</a>';
- else if(v.reading)optional='<a class="utility utility-link" href="?screen=read" data-route="read" data-return-focus="today-read"><span class="utility-icon">'+book+'</span><div><strong>A moment with God</strong><small>'+esc(v.passage)+' · Scripture and prayer</small></div>'+arrow+'</a>';
- const heading='<header class="greeting"><div class="eyebrow">'+esc(v.date)+(v.campus==='unspecified'?'':' · '+esc(v.campus)+' campus')+'</div>'+
-  '<h1>'+esc(v.greeting)+'</h1><p class="summary '+(v.calm?'complete':'')+'">'+esc(v.summary)+'</p></header>';
- return heading+'<p class="receipt" role="status" aria-live="polite">'+esc(receipt)+'</p>'+
-  main+settled+welcome+secondary+paused+schedule+schedulePreview+optional;
+ const items=[v.primary,...v.secondary].filter(Boolean),p=items[0],second=items.slice(1);
+ const main=p?'<article class="tile wide priority '+(p.command==='rsvp'?'hero':'dark')+'" data-motion-task="'+esc(p.id)+'" aria-label="Next responsibility"><div class="eyebrow">'+esc(date(p.date))+'</div><h2>'+esc(p.title)+'</h2><p>'+esc(p.detail)+'</p>'+actions(p,v)+'</article>':v.guest?'<article class="tile wide hero settled welcome-card"><div class="eyebrow">Find your people</div><h2>Life together.</h2><p>Discover community at your own pace.</p><div class="actions">'+route('groups','Explore groups','action','today-groups')+'</div></article>':v.calm?'<article class="tile wide quiet settled sig-completion--complete"><div class="eyebrow red">✓ All set</div><h2>Make room for connection.</h2><p>Nothing needs your response.</p>'+route(v.member?'groups':'team','Your plans')+'</article>':'<article class="tile wide quiet"><p class="summary">'+esc(v.summary)+'</p></article>';
+ const secondary=second.map(x=>'<article class="tile serve-tile responsibility" data-motion-task="'+esc(x.id)+'"><div class="eyebrow red">'+esc(x.command==='serve'?'Serving':'Your next step')+'</div><div class="big">'+(x.date instanceof Date?esc(x.date.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'}).replace(/\s[AP]M$/,'')):'')+'</div><h2>'+esc(x.title)+'</h2><p class="muted">'+esc(x.detail)+'</p>'+'<button class="arrow" popovertarget="adaptive-'+esc(x.id)+'" aria-label="Review '+esc(x.title)+'">'+arrow+'</button><div class="adaptive-response" id="adaptive-'+esc(x.id)+'" popover><template><div class="adaptive-response-content"><button class="secondary" popovertarget="adaptive-'+esc(x.id)+'" popovertargetaction="hide">Close</button><h2>'+esc(x.title)+'</h2><p>'+esc(date(x.date))+' · '+esc(x.detail)+'</p>'+actions(x,v)+'</div></template></div></article>').join('');
+ const people=v.member&&!schedulePreview&&!v.unavailable?'<section class="wide community-people"><h2>Your people<span class="red">.</span></h2><div class="people">'+['jess','anna','marcus','taylor'].map(id=>'<button class="person" data-rel-contact="'+id+'" data-return-focus="adaptive-'+id+'"><img src="signature-assets/adaptive/'+id+'.jpg" alt=""><span>'+esc({anna:'Anna',jess:'Jess',marcus:'Marcus',taylor:'Taylor'}[id])+'</span></button>').join('')+'<button class="person" data-rel-entry="people" data-return-focus="signature-people" aria-label="Group people"><span class="round">+</span>Group</button></div></section>':'';
+ const community=v.member&&!v.unavailable&&!schedulePreview?'<a href="?screen=connect&amp;thread=group" data-route="connect" data-return-focus="today-connect" class="tile community '+(v.unread>0?'utility':'')+'"><div class="eyebrow">Community</div><div class="big">'+(Number.isInteger(v.unread)?esc(String(v.unread).padStart(2,'0')):'—')+'</div><p>'+esc(v.unread>0?v.unread+' new group '+(v.unread===1?'message':'messages'):'Caught up')+'</p><div class="mini">'+['jess','anna','marcus'].map(id=>'<img src="signature-assets/adaptive/'+id+'.jpg" alt="">').join('')+'</div>'+'<span class="arrow" aria-hidden="true">'+arrow+'</span></a>':'';
+ const team=!v.member&&!v.guest&&!schedulePreview&&!v.unknownTeam?'<article class="tile community"><div class="eyebrow">Your team</div><h2>Team Room</h2>'+route('connect','Open','secondary','today-team-room','&channel=room')+'</article>':'';
+ const read='<a class="tile wide scripture '+(!v.unavailable&&!v.unknownTeam&&!(v.unread>0)?'utility':'')+'" href="?screen=read" data-route="read" data-return-focus="today-read"><div><div class="eyebrow red">Today’s Scripture</div><h2>A moment with God</h2><p class="muted">'+esc(v.passage)+' · Optional</p></div><span class="arrow" aria-hidden="true">'+arrow+'</span></a>';
+ const warning=v.unavailable?'<aside class="tile wide utility" role="status"><strong>Conversation unavailable</strong><p>Your saved messages are not assumed read.</p>'+route('connect','Review Connect')+'</aside>':v.unknownTeam?'<aside class="tile wide utility" role="status"><strong>Serving response unavailable</strong><p>No response inferred.</p>'+route('team','Review your schedule')+'</aside>':'';
+ const paused=v.paused.length?'<details class="tile wide deferred-panel"><summary>Saved for later <span>'+v.paused.length+'</span></summary>'+v.paused.map(x=>'<div class="deferred-item"><strong>'+esc(x.title)+'</strong>'+actions(x,v)+'</div>').join('')+'</details>':'';
+ const schedule=v.schedule.length?'<details class="tile wide coming"><summary>Your plans</summary><div class="schedule">'+v.schedule.map(x=>route(x.id==='group'?'groups':'team','<strong>'+esc(x.title)+'</strong><small>'+'<time datetime="'+esc(x.date instanceof Date?x.date.toISOString():'')+'">'+esc(date(x.date))+'</time>'+' · '+esc(x.detail)+' · '+esc(x.status)+'</small>','event','agenda-'+x.id)).join('')+'</div></details>':'';
+ const care=v.authorizedLeader&&v.care?'<section class="tile wide leader"><div class="eyebrow red">Leader · optional care</div><h2>A moment of care.</h2><p>Review shared care in your group.</p>'+route('groups','Review request','secondary','adaptive-care')+'</section>':'';
+ return '<div class="adaptive-today" data-composition="adaptive-v2"><header class="greet greeting"><h1>'+esc(v.greeting)+'</h1><div class="member-context"><button data-profile-entry data-return-focus="today-profile" aria-label="Edit profile for '+esc(v.name||'Friend')+'">'+esc(v.name||'Friend')+'</button><p class="muted">'+esc(v.date)+' · '+esc(v.campus)+'</p></div><p class="muted">'+esc(v.involvement)+'</p></header><p class="receipt" role="status" aria-live="polite">'+esc(receipt)+'</p><div class="grid sig-priority-domain" data-stack-size="'+items.length+'">'+main+care+(v.calm?people:'')+secondary+community+team+(!v.calm?people:'')+warning+paused+schedulePreview+read+schedule+'<button class="ask wide" data-ask-entry data-return-focus="today-ask">✧ &nbsp; Ask Rally <span aria-hidden="true">→</span></button></div></div>';
 }
-return Object.freeze({render});
-});
+return Object.freeze({render});});

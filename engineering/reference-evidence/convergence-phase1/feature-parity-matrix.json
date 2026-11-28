@@ -1,0 +1,382 @@
+[
+  {
+    "id": "C01",
+    "capability": "Title, tagline, welcome/onboarding",
+    "currentStatus": "Legacy implemented; Foundation lacks the full entry flow (tagline appears in visitor card).",
+    "sourceAndDomainOwner": "RallyWelcome + RallyLaunchMode; Foundation entry/view [S21] [S63] [S01] [S04]",
+    "stateOwners": "ST1/ST2/ST8",
+    "permissionsAndPrivacy": "Fictional profile only; locked demo login is not authentication.",
+    "existingAcceptanceEvidence": "EV1/EV4; source S21/S01",
+    "dependenciesDeficienciesMigration": "Reuse accepted splash/campus/involvement flow; connect to one context before default. G05"
+  },
+  {
+    "id": "C02",
+    "capability": "Name, campus, memberships and role",
+    "currentStatus": "Legacy editable preferences; Foundation scenario selector with Friend/north defaults and six isolated local personas.",
+    "sourceAndDomainOwner": "RallyToday/AppState/MemberContext; FoundationStateStore [S10] [S07] [S08]",
+    "stateOwners": "ST1/ST2/ST6/ST8",
+    "permissionsAndPrivacy": "Explicit booleans and local leader role; neither is a verified church identity.",
+    "existingAcceptanceEvidence": "EV1/EV2/EV4",
+    "dependenciesDeficienciesMigration": "Adopt an explicit demonstration context bridge; never silently transfer authority or overwrite legacy preferences. G05/G15"
+  },
+  {
+    "id": "C03",
+    "capability": "Four tabs, Connect access, deep links/history",
+    "currentStatus": "Both implemented; distinct navigation owners. Foundation has ?screen/thread/game and restored window focus/scroll; legacy uses controller + overlay history.",
+    "sourceAndDomainOwner": "RallyNavigation; FoundationNavigation/App [S66] [S02] [S01] [S72]",
+    "stateOwners": "ST1/ST8; URL/history",
+    "permissionsAndPrivacy": "Permission checks belong to domains; routing alone grants no access.",
+    "existingAcceptanceEvidence": "EV1/EV2/EV4, official three journeys",
+    "dependenciesDeficienciesMigration": "Retain both entry points; specify cross-root fallback and launcher return semantics. G10"
+  },
+  {
+    "id": "C04",
+    "capability": "Today commitments and explanations",
+    "currentStatus": "Both implemented, with different accepted presentation policies; Foundation builds three responsibility candidates rather than selecting the shared focus output.",
+    "sourceAndDomainOwner": "RallyIntelligence/UnifiedFocus; FoundationToday [S05] [S06] [S03]",
+    "stateOwners": "ST1/ST2/ST4 or ST6/ST7",
+    "permissionsAndPrivacy": "Group/team/leader gates; no inference from attendance.",
+    "existingAcceptanceEvidence": "EV1/EV2; test S51",
+    "dependenciesDeficienciesMigration": "Owner decision on commitment versus recommendation semantics; one explainable shared context, no second ranking engine. G04"
+  },
+  {
+    "id": "C05",
+    "capability": "All Set, deferred, visitor and unknown states",
+    "currentStatus": "Both implemented; Foundation can be All Set with unread activity. It prevents All Set for visitor, unknown response, unavailable or provider-preview modes.",
+    "sourceAndDomainOwner": "UnifiedFocus/Board versus FoundationToday [S06] [S03] [S51]",
+    "stateOwners": "ST1/ST6",
+    "permissionsAndPrivacy": "Unknown is not zero or completion; optional Scripture is not overdue duty.",
+    "existingAcceptanceEvidence": "EV1/EV2/EV4; explicit accepted test S51",
+    "dependenciesDeficienciesMigration": "Preserve accepted meaning; unify terminology with Ask Rally only after decision. G04"
+  },
+  {
+    "id": "C06",
+    "capability": "Ask Rally typed questions, follow-ups and confirmations",
+    "currentStatus": "Legacy implemented; Foundation does not load the PersonalCompanion UI/service. Shared low-level intelligence is loaded, not equivalent Ask access.",
+    "sourceAndDomainOwner": "RallyPersonalCompanion + root dialog/action seams [S23] [S05] [S02] [S01]",
+    "stateOwners": "ST1/ST2/ST4/ST12",
+    "permissionsAndPrivacy": "Deterministic/local; scoped conversations reset on context change; explicit actions only.",
+    "existingAcceptanceEvidence": "EV1; accepted legacy journey tests",
+    "dependenciesDeficienciesMigration": "Reuse service and action seams, expose from Foundation over the same current context; no external AI replacement. G06"
+  },
+  {
+    "id": "C07",
+    "capability": "Circular people rail, profile and member directory",
+    "currentStatus": "Legacy interactive profiles/direct-message entry; Foundation Today faces are decorative and Groups has no equivalent directory/profile route.",
+    "sourceAndDomainOwner": "GroupsV2/legacy controller; FoundationView/Groups [S22] [S04] [S17]",
+    "stateOwners": "ST2/ST5 or ST6; transient profile route",
+    "permissionsAndPrivacy": "Fictional approved portraits; membership-scoped messaging.",
+    "existingAcceptanceEvidence": "EV1; UX02/UX03 guards; EV2 limited Foundation",
+    "dependenciesDeficienciesMigration": "Reuse accepted profiles/IDs and authorized interaction contract; do not substitute initials or fake presence. G08"
+  },
+  {
+    "id": "C08",
+    "capability": "Group discovery for visitors",
+    "currentStatus": "Legacy sample discovery/directory implemented; Foundation provides an in-app introductory destination plus full-demo fallback, not complete discovery.",
+    "sourceAndDomainOwner": "GroupsV2 + root; FoundationGroups [S22] [S17]",
+    "stateOwners": "ST1/ST2; Foundation ST6",
+    "permissionsAndPrivacy": "Browsing never establishes real or implicit membership.",
+    "existingAcceptanceEvidence": "EV1/EV2/EV4 visitor route acceptance",
+    "dependenciesDeficienciesMigration": "Integrate actual accepted discovery behavior, or explicitly approved destination-specific fallback. G08/G10"
+  },
+  {
+    "id": "C09",
+    "capability": "Group gathering, Going/Maybe/clear and Today consistency",
+    "currentStatus": "Implemented local fixture in both; Foundation also offers explicit clear response.",
+    "sourceAndDomainOwner": "MemberContext transitions; FoundationGroups/App [S07] [S17] [S02]",
+    "stateOwners": "ST1 or ST6",
+    "permissionsAndPrivacy": "Group membership required; RSVP is not attendance.",
+    "existingAcceptanceEvidence": "EV1/EV2/EV4 group journey",
+    "dependenciesDeficienciesMigration": "Preserve field authority and receipts; connect provider read data without a competing RSVP writer. G15 Undated sample RSVP is not an event-scoped production response; see G22."
+  },
+  {
+    "id": "C10",
+    "capability": "Modern group conversation and unread cursor",
+    "currentStatus": "Both use the same F-02 repository/Read model, but separate keys. Foundation exposes one Wednesday thread only.",
+    "sourceAndDomainOwner": "RallyConversationRead + mock repository; FoundationConnect [S16] [S27] [S11]",
+    "stateOwners": "ST4 or ST7",
+    "permissionsAndPrivacy": "Active conversation membership/org checks; denied/unavailable expose no bodies; unknown unread stays null.",
+    "existingAcceptanceEvidence": "EV1/EV2; Foundation Connect source tests",
+    "dependenciesDeficienciesMigration": "Reuse domain/read cursor; define context and namespace mapping before broader channels. G07/G15"
+  },
+  {
+    "id": "C11",
+    "capability": "Group sends, persisted drafts and quoted replies",
+    "currentStatus": "Implemented in integrated legacy and Foundation; saves are browser-local simulated delivery.",
+    "sourceAndDomainOwner": "ConnectMember/Wed controller; FoundationConnect/App [S13] [S62] [S11] [S02]",
+    "stateOwners": "ST4/ST7",
+    "permissionsAndPrivacy": "700-character UI/adapter bounds; safe text; no remote messages or real receipts.",
+    "existingAcceptanceEvidence": "EV1/EV2 group send/reload/reply checks",
+    "dependenciesDeficienciesMigration": "Retain exact save/read/reply semantics when reusing premium UI. G07"
+  },
+  {
+    "id": "C12",
+    "capability": "Group reactions, retry and delivery affordances",
+    "currentStatus": "Legacy premium group supports heart reactions; reusable Wednesday lab supports multiple reactions and retry. Foundation adapter/view exposes send/reply but no reaction/retry controls.",
+    "sourceAndDomainOwner": "F-02 repository; ConnectMember/Wed UI [S27] [S13] [S62] [S11] [S12]",
+    "stateOwners": "ST4/ST7",
+    "permissionsAndPrivacy": "Reactions require sent messages/member scope; delivery remains a local simulation.",
+    "existingAcceptanceEvidence": "EV1; domain units and lab journeys",
+    "dependenciesDeficienciesMigration": "Expose existing supported operations via adapter; do not synthesize real delivery/read receipts. G07"
+  },
+  {
+    "id": "C13",
+    "capability": "Inbox search, people/new-message chooser and empty states",
+    "currentStatus": "Accepted premium legacy UI implemented; Foundation has a single-thread inbox and no equivalent search/chooser/portrait rail.",
+    "sourceAndDomainOwner": "Connect design/member UI; FoundationConnectView [S15] [S13] [S12]",
+    "stateOwners": "ST4/ST5/ST12 or ST7",
+    "permissionsAndPrivacy": "Filter authorized content before search; no private roster for visitor.",
+    "existingAcceptanceEvidence": "EV1; 86-pair UX03 coverage; EV2 limited inbox",
+    "dependenciesDeficienciesMigration": "Reuse approved UX03 presentation with injected current context and existing owners. G07/G08"
+  },
+  {
+    "id": "C14",
+    "capability": "Direct messages, history and per-person drafts",
+    "currentStatus": "Legacy histories persist through app-state host. Premium direct drafts are an in-memory per-person Map in the open iframe; no reload/close durability shown in that path. Foundation explicitly unmigrated.",
+    "sourceAndDomainOwner": "Root Connect host + Connect UI [S14] [S15] [S12]",
+    "stateOwners": "ST5/ST12",
+    "permissionsAndPrivacy": "Demo group membership required; display-name mapping is fixture identity, not real authorization.",
+    "existingAcceptanceEvidence": "EV1; source Map/host boundary",
+    "dependenciesDeficienciesMigration": "Preserve history/permissions; reuse or narrowly extract host behavior; decide draft durability instead of claiming it exists. G07/G12 F-03 direct_thread is currently hard-denied [S65]; a direct schema alone is not authorization."
+  },
+  {
+    "id": "C15",
+    "capability": "Rally Room Chat/Plans/People and mirrored RSVP",
+    "currentStatus": "Legacy implemented fictional surfaces; Room messages/RSVP use app-state host, not the modern group repo. Foundation unmigrated.",
+    "sourceAndDomainOwner": "Root host/ConnectMember/Connect UI [S14] [S13] [S15] [S12]",
+    "stateOwners": "ST5/ST12",
+    "permissionsAndPrivacy": "Team membership; Room event RSVP differs from serving availability. No live presence.",
+    "existingAcceptanceEvidence": "EV1; UX03 room/tab/RSVP coverage",
+    "dependenciesDeficienciesMigration": "Preserve distinct semantics and authentic UI; do not collapse Room RSVP into teamStatus. G07"
+  },
+  {
+    "id": "C16",
+    "capability": "Prayer board, adding requests and optional prayer",
+    "currentStatus": "Legacy prayer posting/board implemented. Foundation shows one explicit source-backed care request and pray/resume controls, not a full posting board.",
+    "sourceAndDomainOwner": "Legacy primary state/CareFlow; FoundationGroups/MemberActions [S07] [S17] [S20]",
+    "stateOwners": "ST1 or ST6",
+    "permissionsAndPrivacy": "Fictional requests only; no real sensitive information or automatic outreach.",
+    "existingAcceptanceEvidence": "EV1/EV2; member action/source tests",
+    "dependenciesDeficienciesMigration": "Reuse explicit care authority; restore required board functions without copying private data into broad context. G09"
+  },
+  {
+    "id": "C17",
+    "capability": "Care pause/resume and human direct follow-up",
+    "currentStatus": "Legacy source-backed care progression/DM completion exists. Foundation has pray/resume and group-conversation entry, not the full pause/private follow-up path.",
+    "sourceAndDomainOwner": "RallyCareFlow/legacy controller; FoundationGroups [S05] [S07] [S17] [S67]",
+    "stateOwners": "ST1/ST5 or ST6/ST7",
+    "permissionsAndPrivacy": "No inferred distress, spiritual score or unsolicited messages.",
+    "existingAcceptanceEvidence": "EV1; accepted care journey; EV2 narrower",
+    "dependenciesDeficienciesMigration": "Preserve optional consent and explicit completion; reuse handlers rather than infer care from a group message. G09"
+  },
+  {
+    "id": "C18",
+    "capability": "Group leader review and attendance tools",
+    "currentStatus": "Foundation review of two named fictional follow-ups and Read leader controls implemented; legacy has broader authorized leader/attendance UI.",
+    "sourceAndDomainOwner": "MemberContext/legacy leader renderer; FoundationGroups [S07] [S17] [S20] [S69]",
+    "stateOwners": "ST1 or ST6",
+    "permissionsAndPrivacy": "Only explicit group-leader fixture; attendance must remain explicit, not inferred.",
+    "existingAcceptanceEvidence": "EV1/EV2/EV4 leader permission coverage",
+    "dependenciesDeficienciesMigration": "Inventory each legitimate tool; do not invent staff scores or treat review as contact/attendance. G09"
+  },
+  {
+    "id": "C19",
+    "capability": "Team confirmation/decline and coverage request/withdraw",
+    "currentStatus": "Both local workflows implemented; Foundation delegates ordinary commands and extends coverage on existing fields.",
+    "sourceAndDomainOwner": "MemberContext + FoundationMemberActions/Team [S07] [S20] [S18]",
+    "stateOwners": "ST1 or ST6",
+    "permissionsAndPrivacy": "Team member; coverage only after decline; no notifications/delivery.",
+    "existingAcceptanceEvidence": "EV1/EV2/EV4 volunteer journey",
+    "dependenciesDeficienciesMigration": "Preserve shared write authority, confirmation cleanup and no-attendance inference. G15 Bind future responses to a specific shift through contracts, not the rolling fixture date; G22."
+  },
+  {
+    "id": "C20",
+    "capability": "Team communication, huddle and leader coordination",
+    "currentStatus": "Legacy team chat/Room, huddle and authorized schedule/coverage review exist. Foundation has availability/coverage and leader notice; broader communication/tools fallback to full demo.",
+    "sourceAndDomainOwner": "Legacy Team/root Connect; FoundationTeam [S14] [S18]",
+    "stateOwners": "ST1/ST5 or ST6",
+    "permissionsAndPrivacy": "Team membership and explicit leader role; no automatic staff alerts.",
+    "existingAcceptanceEvidence": "EV1; EV2 narrower Team scope",
+    "dependenciesDeficienciesMigration": "Reuse existing coordination functions; do not equate a leader notice with complete leader parity. G07/G09"
+  },
+  {
+    "id": "C21",
+    "capability": "Scripture, personal prayer, reflection/next-day intention",
+    "currentStatus": "Foundation and legacy use accepted BSB content; Foundation supports optional read/pray, saved reflection and complete/defer/clear.",
+    "sourceAndDomainOwner": "RallyMemory + MemberContext/MemoryActions; FoundationRead [S39] [S20] [S19]",
+    "stateOwners": "ST1 or ST6",
+    "permissionsAndPrivacy": "Public Scripture/own local notes; not an assigned calendar or spiritual assessment.",
+    "existingAcceptanceEvidence": "EV1/EV2/EV4 Read/progress acceptance",
+    "dependenciesDeficienciesMigration": "Keep one content engine and private state owner; do not copy Studio KJV/sample mini-state as authority. G15"
+  },
+  {
+    "id": "C22",
+    "capability": "Authorized reading pathways/discussion question",
+    "currentStatus": "Implemented in both over existing plan/planQuestions fields; Foundation supports sermon/study/year.",
+    "sourceAndDomainOwner": "MemberContext permission + FoundationMemberActions/Read [S07] [S20] [S19]",
+    "stateOwners": "ST1 or ST6",
+    "permissionsAndPrivacy": "Explicit group leader only; no live publishing.",
+    "existingAcceptanceEvidence": "EV1/EV2 Read authorization tests",
+    "dependenciesDeficienciesMigration": "Retain paths/questions and per-plan storage; validate any additional legacy option before claiming parity. G09"
+  },
+  {
+    "id": "C23",
+    "capability": "Premium Read composition and game identity",
+    "currentStatus": "Legacy premium Read artwork/card identity protected; Foundation has its own accepted direct Read composition and basic game list. Studio mini-game is reference-only.",
+    "sourceAndDomainOwner": "Legacy UI/UX01E; FoundationRead/CSS [S19] [S55] [S39] [S71]",
+    "stateOwners": "Presentation; state ST1/ST6",
+    "permissionsAndPrivacy": "Existing approved assets only; no silent visual-reference replacement.",
+    "existingAcceptanceEvidence": "EV1 historical Read guards; EV2/EV4 Foundation",
+    "dependenciesDeficienciesMigration": "Converge approved visual language by explicit review, preserving all engines/actions and readable text. G14"
+  },
+  {
+    "id": "C24",
+    "capability": "Classic VersePlay Solo/Pass & Play",
+    "currentStatus": "Full original engine/actions/render reused in Foundation; guarded progress persists in its separate namespace.",
+    "sourceAndDomainOwner": "RallyMemory/RallyMemoryActions/RallyVersePlay [S39] [S40] [S02] [S19] [S73]",
+    "stateOwners": "ST1/ST9",
+    "permissionsAndPrivacy": "Public game content; no link from scores to pastoral assessment.",
+    "existingAcceptanceEvidence": "EV1/EV2/EV4 Classic game/progress",
+    "dependenciesDeficienciesMigration": "Reuse unchanged engine; any progress import requires explicit versioned compatibility/migration. G10/G15"
+  },
+  {
+    "id": "C25",
+    "capability": "Blank Battle",
+    "currentStatus": "Full original standalone engine retained; independent save key. Storage failures are caught so play continues without persistence feedback in that path.",
+    "sourceAndDomainOwner": "BlankBattle mount + RallyMemory [S41] [S39]",
+    "stateOwners": "ST10",
+    "permissionsAndPrivacy": "Browser-local game only; no actual identity or member score.",
+    "existingAcceptanceEvidence": "EV1 Blank Battle gate; EV4 game entry",
+    "dependenciesDeficienciesMigration": "Preserve engine/key; consider truthful unsaved-session notice separately. G10/G13"
+  },
+  {
+    "id": "C26",
+    "capability": "Verse Circuit",
+    "currentStatus": "Modular full game retained: core transition/content/state, renderer, controller, audio, independent versioned storage.",
+    "sourceAndDomainOwner": "VersePlay core/controller/render/storage [S43] [S44] [S42]",
+    "stateOwners": "ST11",
+    "permissionsAndPrivacy": "Public content; no sensitive member state; explicit sound preference.",
+    "existingAcceptanceEvidence": "EV3; EV4 entry; EV1 navigation protection",
+    "dependenciesDeficienciesMigration": "Keep all engine/content/animation boundaries and migration protections. G10"
+  },
+  {
+    "id": "C27",
+    "capability": "Standalone game return to launching experience",
+    "currentStatus": "Approved Circuit/Blank return links target the legacy root. Foundation Classic returns within Read; standalone launcher origin is not encoded.",
+    "sourceAndDomainOwner": "Standalone HTML + FoundationRead/navigation [S45] [S46] [S19] [S02]",
+    "stateOwners": "ST8/ST10/ST11",
+    "permissionsAndPrivacy": "Return destination must be a safe internal route; preserve progress.",
+    "existingAcceptanceEvidence": "EV2/EV4 prove Classic return and standalone entry, not a new Foundation-aware standalone return",
+    "dependenciesDeficienciesMigration": "Define origin-aware adapter/fallback without rewriting games; targeted direct/reload/gameplay return acceptance. G10"
+  },
+  {
+    "id": "C28",
+    "capability": "Accessibility, keyboard, text size, reduced motion and focus",
+    "currentStatus": "Both have substantial accepted coverage. Foundation has 72 captured scenes/axe plus history focus and nav clearance. Premium Connect visualViewport/composer behavior is not all reproduced in Foundation.",
+    "sourceAndDomainOwner": "Root overlay/UI; Foundation App/CSS [S14] [S02] [S55] [S50]",
+    "stateOwners": "Transient focus/history/scroll",
+    "permissionsAndPrivacy": "Semantic controls, no hidden permission-dependent focus targets.",
+    "existingAcceptanceEvidence": "EV1/EV2/EV3/EV4; physical details aggregate only",
+    "dependenciesDeficienciesMigration": "Reuse accepted behavior and add only affected targeted device assertions after changes; no blanket rerun now. G10/G14"
+  },
+  {
+    "id": "C29",
+    "capability": "Guarded storage, malformed/blocked/concurrent state",
+    "currentStatus": "Foundation reuses canonical journal/normalizer with distinct keys; modern chat has its own raw compare/save adapter. Legacy original state remains untouched.",
+    "sourceAndDomainOwner": "StorageGuard/AppState/Foundation stores/Read model [S09] [S10] [S08] [S11] [S16]",
+    "stateOwners": "ST1–ST11",
+    "permissionsAndPrivacy": "Browser-local storage is not secure member storage; fail closed/preserve original bytes.",
+    "existingAcceptanceEvidence": "EV1/EV2; Foundation store tests",
+    "dependenciesDeficienciesMigration": "Design a logical context bridge, not an indiscriminate store merge. G15"
+  },
+  {
+    "id": "C30",
+    "capability": "Data migration/rollback",
+    "currentStatus": "Existing raw-source migration planner and in-memory rehearsal are tools only. No general browser migration/rollback implementation for Foundation cutover.",
+    "sourceAndDomainOwner": "lib migration planner/rehearsal [S28]",
+    "stateOwners": "ST15; no live writer",
+    "permissionsAndPrivacy": "Unknown timestamps/identities must not be invented; backups may contain user-entered local content.",
+    "existingAcceptanceEvidence": "EV1 includes existing contract tests; source explicitly limits claims",
+    "dependenciesDeficienciesMigration": "Any real import: explicit approval, exact backups, schema/version/identity map, idempotence, abort and tested rollback. G15"
+  },
+  {
+    "id": "C31",
+    "capability": "Unified nine-domain data and quality contract",
+    "currentStatus": "Provider-neutral validated envelope exists for profile/involvement/relationships/serving/conversations/care/scripture/actions/permissions; not a universally wired screen repository.",
+    "sourceAndDomainOwner": "MemberContext contract + existing context/action/conversation schemas [S24] [S59] [S25] [S26]",
+    "stateOwners": "Owner-specific records; tool handoff has no store",
+    "permissionsAndPrivacy": "Distinguish unavailable/unknown/empty/stale/malformed/confirmed; no identity verification claim.",
+    "existingAcceptanceEvidence": "EV1 contract units; source S24",
+    "dependenciesDeficienciesMigration": "Keep allowlisted projections; adapt provider outputs at boundaries rather than bind presentation to a provider SDK. G15/G16"
+  },
+  {
+    "id": "C32",
+    "capability": "Synthetic Planning Center Groups read",
+    "currentStatus": "Build-time full synthetic consent/auth/scoped Groups chain; Today/Groups share minimized RO bundle. Empty distinct; stale/outage collapse to unavailable display.",
+    "sourceAndDomainOwner": "S11A/B/C/D + group builder/projector [S29] [S30] [S31] [S35] [S37]",
+    "stateOwners": "ST13/ST14",
+    "permissionsAndPrivacy": "Only fictional own-member group/gathering; no contacts/roster/prayer/messages.",
+    "existingAcceptanceEvidence": "EV1/EV2; accepted Gate7 evidence",
+    "dependenciesDeficienciesMigration": "Preserve chain; add as-of/freshness truth for later demo/cutover, not live access. G02/G16"
+  },
+  {
+    "id": "C33",
+    "capability": "Synthetic serving assignment",
+    "currentStatus": "Narrower build-time grant/consent flag + org/person/campus/team scope, freshness and GET resilience; shared RO Today/Team view. Not real Services API/auth integration.",
+    "sourceAndDomainOwner": "f2-synthetic-serving + builder/projector [S34] [S36]",
+    "stateOwners": "ST13",
+    "permissionsAndPrivacy": "Fictional serving:read scope; denied/unavailable/stale carry no assignment.",
+    "existingAcceptanceEvidence": "EV1/EV2; accepted Gate7 evidence",
+    "dependenciesDeficienciesMigration": "Do not claim the same auth-chain coverage as Groups; real Services contract/auth requires separate authorization. G02/G16"
+  },
+  {
+    "id": "C34",
+    "capability": "Authentication, consent, resilience and restricted pilot",
+    "currentStatus": "Synthetic server/tool contracts and loopback review exist; neither browser experience has live authenticated church integration.",
+    "sourceAndDomainOwner": "S11A/B/C/D/E, mock access policy [S29] [S30] [S31] [S32] [S33] [S65]",
+    "stateOwners": "ST14",
+    "permissionsAndPrivacy": "Opaque synthetic binding/session, trusted consent, minimized own-member read; candidate retention is not approved church policy.",
+    "existingAcceptanceEvidence": "EV1 S11 units and 11E loopback browser gate",
+    "dependenciesDeficienciesMigration": "Reuse contracts; obtain leadership/security/operations decisions before any live integration. G16"
+  },
+  {
+    "id": "C35",
+    "capability": "Publication, regression/source safeguards",
+    "currentStatus": "Legacy strict 64+86 comparisons intact. Foundation capture/report workflow is branch-specific, has narrow paths and no immutable Foundation pixel comparison. Canonical branch omits Foundation route.",
+    "sourceAndDomainOwner": "Build + workflows/visual guards [S38] [S47] [S48] [S49] [S50] [S52] [S53]",
+    "stateOwners": "Build outputs/evidence, not member state",
+    "permissionsAndPrivacy": "Production remains main; no invented status or baseline relaxation.",
+    "existingAcceptanceEvidence": "EV1/EV2/EV3, accepted deployment provenance",
+    "dependenciesDeficienciesMigration": "Fix future branch applicability and authorize Foundation-specific reference protection before default cutover. G01/G03"
+  },
+  {
+    "id": "C36",
+    "capability": "Studio 13 / ALIVE presentation reuse",
+    "currentStatus": "Studio13 private interactive candidate and screens are creative references; ALIVE/premium widgets/Connect patterns are accepted legacy presentation. Foundation implements its own accepted direct design.",
+    "sourceAndDomainOwner": "Studio handoff; ALIVE/RallyWidgets/FoundationCSS [S54] [S55] [S56] [S57]",
+    "stateOwners": "ST16/presentation only",
+    "permissionsAndPrivacy": "No supplied-photo publication without rights/hosting clearance; no prototype state/role engine reuse.",
+    "existingAcceptanceEvidence": "Private reference inspection + hashes; EV1/EV4 accepted app evidence",
+    "dependenciesDeficienciesMigration": "Reuse composition, authentic approved portraits, typography, purposeful feedback; retain full existing behaviors and reference boundaries. G14/G17"
+  },
+  {
+    "id": "C37",
+    "capability": "Activity/attention access and response receipts",
+    "currentStatus": "Original has attention badge/dialog derived from existing unread/serving/leader state; not real notifications. Foundation has inline ephemeral receipts and utilities, no equivalent activity entry.",
+    "sourceAndDomainOwner": "RallyToday + root dialog; Foundation App/View [S75] [S74] [S02] [S04]",
+    "stateOwners": "ST1/ST2/ST4 or ST6/ST7; receipt text transient",
+    "permissionsAndPrivacy": "Use current authorized facts; never invent delivered notifications, engagement telemetry or a second attention counter.",
+    "existingAcceptanceEvidence": "EV1 original navigation/action coverage; EV2/EV4 Foundation receipts",
+    "dependenciesDeficienciesMigration": "2B explicitly retain agreed attention entry/action reachability over the same snapshot; G06/G04. No notification service is implied."
+  },
+  {
+    "id": "C38",
+    "capability": "Group interest and serving discovery/joining limits",
+    "currentStatus": "Original sample group interest toggle exists; Foundation intro/fallback has no equivalent toggle. Real serving-team discovery/joining is explicitly not implemented in the original either.",
+    "sourceAndDomainOwner": "Root groupBrowse/interest and Team empty renderer [S76] [S77] [S17] [S18]",
+    "stateOwners": "ST1 interest array; no real membership/provider write",
+    "permissionsAndPrivacy": "Interest is saved locally, not submitted and does not join a group. Serving sample entry is a demo persona, not an assignment request.",
+    "existingAcceptanceEvidence": "EV1 original guest/discovery suites; EV2/EV4 Foundation route scope",
+    "dependenciesDeficienciesMigration": "G08: preserve agreed existing sample-interest behavior. Real discovery/joining requires separately approved product/integration work; do not invent it as a parity requirement."
+  }
+]
