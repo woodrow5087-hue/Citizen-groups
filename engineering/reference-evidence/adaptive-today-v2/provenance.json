@@ -1,0 +1,13 @@
+{
+  "reference": "owner-uploaded Adaptive Today V2 HTML",
+  "files": {
+    "engineering/reference-evidence/adaptive-today-v2/approved-prototype.html": "5aa40604d632454fac96c8561f91fbb2ea73d7d0edcb859c60b53ec556ed1c00",
+    "foundation2/signature-assets/adaptive/anna.jpg": "437ad73072f6e096656b46a7dec8543aeaeda82046759a40d61a7a152cc007c7",
+    "foundation2/signature-assets/adaptive/hero.jpg": "7a451df89f20bceb7dbb52d6002dd2f047fd527b4186e232368ce95af189236b",
+    "foundation2/signature-assets/adaptive/jess.jpg": "ec9478bbc1835c7910ad82fce4802064d6654c92cb10bf5827269fbdf1545370",
+    "foundation2/signature-assets/adaptive/marcus.jpg": "2bb8429bc4c14af1cf06033de855fd4e29a2d3462a6fe16656b6cc0ce87a4cf3",
+    "foundation2/signature-assets/adaptive/taylor.jpg": "4417f9f2eb6f998e2090c0240d92fc6e79d7062eb45439d2cd7b58a0e2605a63"
+  },
+  "simulatedStateImported": false,
+  "publication": "Only extracted approved photos, presentation renderer/CSS and existing readonly command adapters; original HTML is engineering-only."
+}

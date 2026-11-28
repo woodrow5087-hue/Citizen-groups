@@ -1,6 +1,16 @@
 # Rally One Foundation 2.0 — Gated Development Program
-Status: S4 bounded visual rollout/demo stabilization authorized from PR161 exact7544f48; sole successor `rally-one/signature-s4`. Existing Signature direction approved for continued isolated development, not final demonstration or physical acceptance. Stop and freeze for owner demonstration acceptance after this block.
+Status: Adaptive Today V2 owner-approved prototype integration authorized from frozen S4 PR162 exact0784afd; sole successor `rally-one/adaptive-today-v2`. Stop for owner review; physical/promotion gates remain open.
 Canonical: `076a3393eef013304e715c6bc283031af4040df1` (authorized PR155 merge; accepted2C tree unchanged).
+
+## Adaptive Today V2 — approved experience integration
+
+Owner supplied original self-contained HTML, retained privately under `engineering/reference-evidence/adaptive-today-v2/approved-prototype.html`, SHA256 `5aa40604d632454fac96c8561f91fbb2ea73d7d0edcb859c60b53ec556ed1c00`. It is the primary experience reference, superseding the Today composition freeze only for this bounded integration. Base S4 PR162 exact `0784afd86f70f93a9fc636229a4d17ce0dcbd24d` remains frozen. Its Foundation46165631257 passed; fullQA46165631184 failed protected standalone390×500 inbox1321raw/390nonAA/931AA, distinct from prior embedded320395raw. No historical investigation/rerun.
+
+Scope fixed: Today renderer/CSS, additive readonly permission/care projection and adapters for the already-supported Maybe/decline transitions; one CSS import and private provenance/validation. Existing authoritative dates/ordering, pending check-ins, unavailable/deferred/provider states, unread cursors, successful-save receipts, focus and game/messaging/state/permission owners remain. Prototype photos are exact extracted assets from this newly owner-approved reference; Studio13/private historical originals remain excluded. Existing Today-only scope is isolated from old Connected Day CSS; other destinations/shell rollout remains S4. Native response popovers reuse existing authoritative commands, with native Escape/return focus. No prototype role selector/reset/state/inline handlers are imported.
+
+Preserve all existing tests, source guards, reference files and thresholds. Legacy assertions that explicitly require superseded photo/stack markup must remain and be honestly reported as incompatible with the approved reference; do not manufacture compatible hidden markup or claim passing old gates. Add meaningful five-role normal/enlarged/reduced-motion/native popover/persistence/unread checks; verify non-Today preservation and independent exact immutable served bytes. Original reference comparisons include untouched prototype controls, with intentional production exclusions explained. Actual dates/role permissions/data remain source-backed, even where prototype fixtures differ.
+
+Essential physical acceptance: Safari/VoiceOver,200% text, adaptive response layout/All Set after real saved commitments, native popover Escape/return, profile/contact/Ask/Connect routing, keyboard/drafts/navigation/safe areas/final content. Existing E3B scroll physical and historical promotion blockers remain separately outstanding. Freeze at candidate and stop for owner review; no alternative design/cosmetic sprint, architecture/new engine/features, issue153/SVG work, external messages/live data, canonical merge/default cutover or production.
 
 ## Rally Signature S4 — bounded rollout and demonstration freeze
 
